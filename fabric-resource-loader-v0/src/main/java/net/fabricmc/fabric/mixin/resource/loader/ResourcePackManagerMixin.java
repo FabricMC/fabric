@@ -19,7 +19,6 @@ package net.fabricmc.fabric.mixin.resource.loader;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -46,9 +45,10 @@ import net.minecraft.resource.ResourceType;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricResourcePackProfile;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
+import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 
 @Mixin(ResourcePackManager.class)
-public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
+public abstract class ResourcePackManagerMixin {
 	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger("ResourcePackManagerMixin");
 
@@ -85,40 +85,14 @@ public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
 
 	@Inject(method = "buildEnabledProfiles", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList;copyOf(Ljava/util/Collection;)Lcom/google/common/collect/ImmutableList;", shift = At.Shift.BEFORE))
 	private void handleAutoEnableDisable(Collection<String> enabledNames, CallbackInfoReturnable<List<ResourcePackProfile>> cir, @Local List<ResourcePackProfile> enabledAfterFirstRun) {
-		this.refreshAutoEnabledPacks(enabledAfterFirstRun);
+		ModResourcePackUtil.refreshAutoEnabledPacks(enabledAfterFirstRun, this.profiles);
 	}
 
 	@Inject(method = "enable", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", shift = At.Shift.AFTER))
 	private void handleAutoEnable(String profile, CallbackInfoReturnable<Boolean> cir, @Local List<ResourcePackProfile> newlyEnabled) {
 		if (ModResourcePackCreator.POST_CHANGE_HANDLE_REQUIRED.contains(profile)) {
-			this.refreshAutoEnabledPacks(newlyEnabled);
+			ModResourcePackUtil.refreshAutoEnabledPacks(newlyEnabled, this.profiles);
 		}
-	}
-
-	@Unique
-	private void refreshAutoEnabledPacks(List<ResourcePackProfile> enabledProfiles) {
-		LOGGER.info("Started with: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
-		enabledProfiles.removeIf(profile -> ((FabricResourcePackProfile) profile).isHidden());
-		LOGGER.info("Removed internal packs: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
-		ListIterator<ResourcePackProfile> it = enabledProfiles.listIterator();
-		// LinkedHashSet for debug log sort, will switch to normal HashSet once finished
-		Set<String> seen = new LinkedHashSet<>();
-
-		while (it.hasNext()) {
-			ResourcePackProfile profile = it.next();
-			seen.add(profile.getName());
-
-			for (ResourcePackProfile p : this.profiles.values()) {
-				FabricResourcePackProfile fp = (FabricResourcePackProfile) p;
-
-				if (fp.isHidden() && fp.parentsEnabled(seen) && seen.add(p.getName())) {
-					it.add(p);
-					LOGGER.info("cur @ {}, auto-enabled {}, currently enabled: {}", profile.getName(), p.getName(), seen);
-				}
-			}
-		}
-
-		LOGGER.info("Final: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
 	}
 
 	@Inject(method = "disable", at = @At(value = "INVOKE", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z"))

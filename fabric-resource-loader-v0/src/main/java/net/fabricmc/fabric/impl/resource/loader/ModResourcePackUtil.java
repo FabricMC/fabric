@@ -23,7 +23,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -35,6 +38,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.DataConfiguration;
@@ -56,6 +61,7 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
  */
 public final class ModResourcePackUtil {
 	public static final Gson GSON = new Gson();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModResourcePackUtil.class);
 
 	private ModResourcePackUtil() {
 	}
@@ -79,6 +85,31 @@ public final class ModResourcePackUtil {
 				packs.add(pack);
 			}
 		}
+	}
+
+	public static void refreshAutoEnabledPacks(List<ResourcePackProfile> enabledProfiles, Map<String, ResourcePackProfile> allProfiles) {
+		LOGGER.info("Started with: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
+		enabledProfiles.removeIf(profile -> ((FabricResourcePackProfile) profile).isHidden());
+		LOGGER.info("Removed internal packs: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
+		ListIterator<ResourcePackProfile> it = enabledProfiles.listIterator();
+		// LinkedHashSet for debug log sort, will switch to normal HashSet once finished
+		Set<String> seen = new LinkedHashSet<>();
+
+		while (it.hasNext()) {
+			ResourcePackProfile profile = it.next();
+			seen.add(profile.getName());
+
+			for (ResourcePackProfile p : allProfiles.values()) {
+				FabricResourcePackProfile fp = (FabricResourcePackProfile) p;
+
+				if (fp.isHidden() && fp.parentsEnabled(seen) && seen.add(p.getName())) {
+					it.add(p);
+					LOGGER.info("cur @ {}, auto-enabled {}, currently enabled: {}", profile.getName(), p.getName(), seen);
+				}
+			}
+		}
+
+		LOGGER.info("Final: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
 	}
 
 	public static boolean containsDefault(String filename, boolean modBundled) {

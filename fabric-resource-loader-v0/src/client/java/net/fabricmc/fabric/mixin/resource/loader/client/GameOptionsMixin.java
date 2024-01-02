@@ -99,7 +99,7 @@ public class GameOptionsMixin {
 
 		for (ResourcePackProfile profile : profiles) {
 			// Always add "Fabric Mods" pack to enabled resource packs.
-			if (profile.getSource() == ModResourcePackCreator.RESOURCE_PACK_SOURCE) {
+			if (profile.getName().equals(ModResourcePackCreator.FABRIC)) {
 				resourcePacks.add(profile.getName());
 				continue;
 			}
