@@ -36,6 +36,9 @@ import net.fabricmc.fabric.api.resource.ModResourcePack;
  * Represents a resource pack provider for mods and built-in mods resource packs.
  */
 public class ModResourcePackCreator implements ResourcePackProvider {
+	/**
+	 * The ID of the root resource pack profile for bundled packs.
+	 */
 	public static final String FABRIC = "fabric";
 	private static final String PROGRAMMER_ART = "programmer_art";
 	private static final String HIGH_CONTRAST = "high_contrast";
