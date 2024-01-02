@@ -8,6 +8,7 @@
     "BlockEntityRendererFactoriesMixin",
     "BuiltinModelItemRendererMixin",
     "CapeFeatureRendererMixin",
+    "ClientWorldMixin",
     "DimensionEffectsAccessor",
     "EntityModelLayersAccessor",
     "EntityModelsMixin",
