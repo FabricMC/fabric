@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
@@ -43,9 +44,12 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 	private static final String PROGRAMMER_ART = "programmer_art";
 	private static final String HIGH_CONTRAST = "high_contrast";
 	public static final Set<String> POST_CHANGE_HANDLE_REQUIRED = Set.of(FABRIC, PROGRAMMER_ART, HIGH_CONTRAST);
-	private static final Predicate<Set<String>> BASE_PARENT = enabled -> enabled.contains(FABRIC);
-	private static final Predicate<Set<String>> PROGRAMMER_ART_PARENT = enabled -> enabled.contains(FABRIC) && enabled.contains(PROGRAMMER_ART);
-	private static final Predicate<Set<String>> HIGH_CONTRAST_PARENT = enabled -> enabled.contains(FABRIC) && enabled.contains(HIGH_CONTRAST);
+	@VisibleForTesting
+	public static final Predicate<Set<String>> BASE_PARENT = enabled -> enabled.contains(FABRIC);
+	@VisibleForTesting
+	public static final Predicate<Set<String>> PROGRAMMER_ART_PARENT = enabled -> enabled.contains(FABRIC) && enabled.contains(PROGRAMMER_ART);
+	@VisibleForTesting
+	public static final Predicate<Set<String>> HIGH_CONTRAST_PARENT = enabled -> enabled.contains(FABRIC) && enabled.contains(HIGH_CONTRAST);
 	/**
 	 * This can be used to check if a pack profile is for mod-provided packs.
 	 */
