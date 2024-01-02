@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.util.Identifier;
+import net.minecraft.util.dynamic.RuntimeOps;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -43,6 +44,14 @@ public final class AttachmentRegistryImpl {
 		}
 	}
 
+	private static <T> AttachmentType.EntityCopyHandler<T> copyHandlerFromCodec(Codec<T> codec) {
+		return (original, oldEntity, newEntity) -> codec.encodeStart(RuntimeOps.INSTANCE, original)
+				.flatMap(s -> codec.decode(RuntimeOps.INSTANCE, s))
+				.result()
+				.orElseThrow()
+				.getFirst();
+	}
+
 	@Nullable
 	public static AttachmentType<?> get(Identifier id) {
 		return attachmentRegistry.get(id);
@@ -56,20 +65,43 @@ public final class AttachmentRegistryImpl {
 		@Nullable
 		private Supplier<A> defaultInitializer = null;
 		@Nullable
-		private Codec<A> persistenceCodec = null;
-		private boolean copyOnPlayerRespawn = false;
+		private Codec<A> codec = null;
+		@Nullable
+		private AttachmentType.EntityCopyHandler<A> copyHandler = null;
+		private boolean persistent = false;
+		private boolean copyOnDeath = false;
 
 		@Override
-		public AttachmentRegistry.Builder<A> persistent(Codec<A> codec) {
-			Objects.requireNonNull(codec, "codec cannot be null");
-
-			this.persistenceCodec = codec;
+		public AttachmentRegistry.Builder<A> persistent() {
+			this.persistent = true;
 			return this;
 		}
 
 		@Override
-		public AttachmentRegistry.Builder<A> copyOnPlayerRespawn() {
-			this.copyOnPlayerRespawn = true;
+		public AttachmentRegistry.Builder<A> copyOnDeath() {
+			this.copyOnDeath = true;
+			return this;
+		}
+
+		@Override
+		public AttachmentRegistry.Builder<A> entityCopyHandler(AttachmentType.EntityCopyHandler<A> copyHandler) {
+			Objects.requireNonNull(copyHandler, "entity copy handler cannot be null");
+
+			this.copyHandler = copyHandler;
+			return this;
+		}
+
+		@Override
+		public AttachmentRegistry.Builder<A> codec(Codec<A> codec) {
+			Objects.requireNonNull(codec, "codec cannot be null");
+
+			if (this.codec != null) {
+				throw new IllegalArgumentException(
+						"A codec was already set for this attachment type. Declare it once using the Builder#codec() method instead"
+				);
+			}
+
+			this.codec = codec;
 			return this;
 		}
 
@@ -83,7 +115,19 @@ public final class AttachmentRegistryImpl {
 
 		@Override
 		public AttachmentType<A> buildAndRegister(Identifier id) {
-			var attachment = new AttachmentTypeImpl<>(id, defaultInitializer, persistenceCodec, copyOnPlayerRespawn);
+			if (codec == null && persistent) {
+				throw new IllegalArgumentException("Persistence was enabled, but no codec was provided");
+			}
+
+			if (codec != null && copyHandler == null) {
+				this.copyHandler = copyHandlerFromCodec(codec);
+			}
+
+			if (copyOnDeath && copyHandler == null) {
+				throw new IllegalArgumentException("Copy on death was enabled, but no way of copying attachments was provided");
+			}
+
+			var attachment = new AttachmentTypeImpl<>(id, defaultInitializer, codec, copyHandler, persistent, copyOnDeath);
 			register(id, attachment);
 			return attachment;
 		}

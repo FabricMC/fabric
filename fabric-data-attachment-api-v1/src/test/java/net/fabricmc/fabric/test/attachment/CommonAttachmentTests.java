@@ -147,26 +147,41 @@ public class CommonAttachmentTests {
 
 	@Test
 	void testEntityCopy() {
-		AttachmentType<Boolean> notCopiedOnRespawn = AttachmentRegistry.create(
-				new Identifier(MOD_ID, "not_copied_on_respawn")
+		AttachmentType<Boolean> notCopiedAtAll = AttachmentRegistry.create(
+				new Identifier(MOD_ID, "not_copied_at_all")
 		);
-		AttachmentType<Boolean> copiedOnRespawn = AttachmentRegistry.<Boolean>builder()
-				.copyOnPlayerRespawn()
-				.buildAndRegister(new Identifier(MOD_ID, "copied_on_respawn"));
+		AttachmentType<Boolean> copiedNotOnDeath = AttachmentRegistry.<Boolean>builder()
+				.codec(Codec.BOOL)
+				.buildAndRegister(new Identifier(MOD_ID, "copied_not_on_death"));
+		AttachmentType<Boolean> copiedOnDeath = AttachmentRegistry.<Boolean>builder()
+				.copyOnDeath(Codec.BOOL)
+				.buildAndRegister(new Identifier(MOD_ID, "copied_on_death"));
+		AttachmentType<Boolean> customCopy = AttachmentRegistry.<Boolean>builder()
+				.copyOnDeath()
+				.entityCopyHandler((original, oldEntity, newEntity) -> !original) // very bad, only for testing
+				.buildAndRegister(new Identifier(MOD_ID, "custom_copy"));
 
 		Entity original = mock(Entity.class, CALLS_REAL_METHODS);
-		original.setAttached(notCopiedOnRespawn, true);
-		original.setAttached(copiedOnRespawn, true);
+		original.setAttached(notCopiedAtAll, true);
+		original.setAttached(copiedNotOnDeath, true);
+		original.setAttached(copiedOnDeath, true);
+		original.setAttached(customCopy, true);
 
-		Entity respawnTarget = mock(Entity.class, CALLS_REAL_METHODS);
-		Entity nonRespawnTarget = mock(Entity.class, CALLS_REAL_METHODS);
+		Entity nonDeathTarget = mock(Entity.class, CALLS_REAL_METHODS);
+		AttachmentTargetImpl.copyEntityAttachments(original, nonDeathTarget, true);
 
-		AttachmentTargetImpl.copyOnRespawn((AttachmentTargetImpl) original, (AttachmentTargetImpl) respawnTarget, false);
-		AttachmentTargetImpl.copyOnRespawn((AttachmentTargetImpl) original, (AttachmentTargetImpl) nonRespawnTarget, true);
-		assertTrue(respawnTarget.hasAttached(copiedOnRespawn));
-		assertFalse(respawnTarget.hasAttached(notCopiedOnRespawn));
-		assertTrue(nonRespawnTarget.hasAttached(copiedOnRespawn));
-		assertTrue(nonRespawnTarget.hasAttached(notCopiedOnRespawn));
+		assertFalse(nonDeathTarget.hasAttached(notCopiedAtAll));
+		assertEquals(true, nonDeathTarget.getAttached(copiedNotOnDeath));
+		assertEquals(true, nonDeathTarget.getAttached(copiedOnDeath));
+		assertEquals(false, nonDeathTarget.getAttached(customCopy));
+
+		Entity deathTarget = mock(Entity.class, CALLS_REAL_METHODS);
+		AttachmentTargetImpl.copyEntityAttachments(nonDeathTarget, deathTarget, false);
+
+		assertFalse(deathTarget.hasAttached(notCopiedAtAll));
+		assertFalse(deathTarget.hasAttached(copiedNotOnDeath));
+		assertEquals(true, deathTarget.getAttached(copiedOnDeath));
+		assertEquals(true, deathTarget.getAttached(customCopy));
 	}
 
 	@Test

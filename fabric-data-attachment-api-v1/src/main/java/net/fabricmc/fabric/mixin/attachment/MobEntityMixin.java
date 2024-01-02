@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.MobEntity;
 
@@ -39,6 +40,6 @@ abstract class MobEntityMixin implements AttachmentTargetImpl {
 			CallbackInfoReturnable<T> cir,
 			@Local MobEntity converted
 	) {
-		AttachmentTargetImpl.copyOnRespawn(this, (AttachmentTargetImpl) converted, true);
+		AttachmentTargetImpl.copyEntityAttachments((Entity) (Object) this, converted, true);
 	}
 }

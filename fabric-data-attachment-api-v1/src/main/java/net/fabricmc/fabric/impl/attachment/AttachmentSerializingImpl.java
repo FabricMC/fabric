@@ -45,9 +45,10 @@ public class AttachmentSerializingImpl {
 
 		for (Map.Entry<AttachmentType<?>, ?> entry : attachments.entrySet()) {
 			AttachmentType<?> type = entry.getKey();
-			Codec<Object> codec = (Codec<Object>) type.persistenceCodec();
 
-			if (codec != null) {
+			if (type.persistent()) {
+				Codec<Object> codec = (Codec<Object>) type.codec();
+				// non-nullity enforced by builder API
 				codec.encodeStart(NbtOps.INSTANCE, entry.getValue())
 						.get()
 						.ifRight(partial -> {
@@ -75,10 +76,10 @@ public class AttachmentSerializingImpl {
 					continue;
 				}
 
-				Codec<?> codec = type.persistenceCodec();
-
-				if (codec != null) {
-					codec.parse(NbtOps.INSTANCE, compound.get(key))
+				if (type.persistent()) {
+					// non-nullity enforced by builder API
+					type.codec()
+							.parse(NbtOps.INSTANCE, compound.get(key))
 							.get()
 							.ifRight(partial -> {
 								LOGGER.warn("Couldn't deserialize attachment " + type.identifier() + ", skipping. Error:");
@@ -100,7 +101,7 @@ public class AttachmentSerializingImpl {
 		}
 
 		for (AttachmentType<?> type : map.keySet()) {
-			if (type.isPersistent()) {
+			if (type.persistent()) {
 				return true;
 			}
 		}

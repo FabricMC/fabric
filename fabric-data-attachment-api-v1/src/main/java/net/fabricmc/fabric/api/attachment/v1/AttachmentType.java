@@ -22,6 +22,7 @@ import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 
 /**
@@ -41,19 +42,17 @@ public interface AttachmentType<A> {
 	Identifier identifier();
 
 	/**
-	 * An optional {@link Codec} used for reading and writing attachments to NBT for persistence.
+	 * An optional {@link Codec} used for reading and writing attachments to NBT for persistence and copying.
 	 *
-	 * @return the persistence codec, may be null
+	 * @return the persistence codec, may be {@code null}
 	 */
 	@Nullable
-	Codec<A> persistenceCodec();
+	Codec<A> codec();
 
 	/**
 	 * @return whether the attachments persist across server restarts
 	 */
-	default boolean isPersistent() {
-		return persistenceCodec() != null;
-	}
+	boolean persistent();
 
 	/**
 	 * If an object has no value associated to an attachment,
@@ -66,13 +65,40 @@ public interface AttachmentType<A> {
 	 * As an example, for a (mutable) list/array attachment type,
 	 * the initializer should create a new independent instance each time it is called.</p>
 	 *
-	 * @return the initializer for this attachment
+	 * @return the initializer for this attachment, may be {@code null}
 	 */
 	@Nullable
 	Supplier<A> initializer();
 
 	/**
+	 * @return the {@link EntityCopyHandler} of this attachment type, may be {@code null}
+	 */
+	@Nullable
+	AttachmentType.EntityCopyHandler<A> entityCopyHandler();
+
+	/**
 	 * @return whether the attachments should persist after a player's death and respawn
 	 */
-	boolean copyOnPlayerRespawn();
+	boolean copyOnDeath();
+
+	/**
+	 * A functional interface to handle copying attachment data from an old entity instance to a new one, for example
+	 * during player respawn, entity conversion, or when an entity is teleported between worlds.
+	 *
+	 * <p>It is <i>imperative</i> that the data attached to the new entity doesn't hold a reference to the old entity,
+	 * as that can and will break in unexpected ways.</p>
+	 */
+	@FunctionalInterface
+	interface EntityCopyHandler<T> {
+		/**
+		 * Copies an attachment's data from an old entity instance (which will be discarded) to a new one. The data returned
+		 * will be attached to the new entity and <i>must not</i> hold a reference to the old one.
+		 *
+		 * @param original  the previously attached data
+		 * @param oldEntity the entity to copy the attachment from
+		 * @param newEntity the entity to copy the attachment to
+		 * @return the new data for this attachment. <i>Must not</i> hold a reference to {@code oldEntity}.
+		 */
+		T copyAttachment(T original, Entity oldEntity, Entity newEntity);
+	}
 }
