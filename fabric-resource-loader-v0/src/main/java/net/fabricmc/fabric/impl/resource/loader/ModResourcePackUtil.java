@@ -33,9 +33,7 @@ import java.util.Set;
 
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -48,6 +46,7 @@ import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
+import net.minecraft.resource.metadata.PackResourceMetadata;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
@@ -147,15 +146,17 @@ public final class ModResourcePackUtil {
 		}
 	}
 
-	public static JsonObject getMetadataPackJson(int packVersion, JsonElement description) {
-		JsonObject pack = new JsonObject();
-		pack.addProperty("pack_format", packVersion);
-		pack.add("description", description);
-		return pack;
+	public static PackResourceMetadata getMetadataPack(int packVersion, Text description) {
+		return new PackResourceMetadata(description, packVersion, Optional.empty());
+	}
+
+	public static JsonObject getMetadataPackJson(int packVersion, Text description) {
+		return PackResourceMetadata.SERIALIZER.toJson(getMetadataPack(packVersion, description));
 	}
 
 	public static String serializeMetadata(int packVersion, String description) {
-		JsonObject pack = getMetadataPackJson(packVersion, new JsonPrimitive(description));
+		// This seems to be still manually deserialized
+		JsonObject pack = getMetadataPackJson(packVersion, Text.literal(description));
 		JsonObject metadata = new JsonObject();
 		metadata.add("pack", pack);
 		return GSON.toJson(metadata);

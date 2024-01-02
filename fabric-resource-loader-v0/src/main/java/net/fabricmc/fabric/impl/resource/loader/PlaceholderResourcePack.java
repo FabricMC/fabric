@@ -21,9 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Set;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.mojang.serialization.JsonOps;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,19 +29,19 @@ import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.metadata.PackResourceMetadata;
+import net.minecraft.resource.metadata.ResourceMetadataMap;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Identifier;
 
 public record PlaceholderResourcePack(ResourceType type) implements ResourcePack {
 	private static final Text DESCRIPTION_TEXT = Text.translatable("pack.description.modResources");
-	private static final JsonElement DESCRIPTION_JSON = TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, DESCRIPTION_TEXT).result().get();
 
-	public JsonObject getMetadata() {
-		return ModResourcePackUtil.getMetadataPackJson(
+	public PackResourceMetadata getMetadata() {
+		return ModResourcePackUtil.getMetadataPack(
 				SharedConstants.getGameVersion().getResourceVersion(type),
-				DESCRIPTION_JSON
+				DESCRIPTION_TEXT
 		);
 	}
 
@@ -55,7 +52,7 @@ public record PlaceholderResourcePack(ResourceType type) implements ResourcePack
 			switch (segments[0]) {
 			case "pack.mcmeta":
 				return () -> {
-					String metadata = ModResourcePackUtil.GSON.toJson(getMetadata());
+					String metadata = ModResourcePackUtil.GSON.toJson(PackResourceMetadata.SERIALIZER.toJson(getMetadata()));
 					return IOUtils.toInputStream(metadata, StandardCharsets.UTF_8);
 				};
 			case "pack.png":
@@ -87,12 +84,7 @@ public record PlaceholderResourcePack(ResourceType type) implements ResourcePack
 	@Nullable
 	@Override
 	public <T> T parseMetadata(ResourceMetadataReader<T> metaReader) {
-		if ("pack".equals(metaReader.getKey())) {
-			return metaReader.fromJson(getMetadata());
-		}
-
-		// This pack does not have any overlays.
-		return null;
+		return ResourceMetadataMap.of(PackResourceMetadata.SERIALIZER, getMetadata()).get(metaReader);
 	}
 
 	@Override
