@@ -38,8 +38,8 @@ import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Identifier;
 
 public record PlaceholderResourcePack(ResourceType type) implements ResourcePack {
-	public static final Text DESCRIPTION_TEXT = Text.translatable("pack.description.modResources");
-	public static final JsonElement DESCRIPTION_JSON = TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, DESCRIPTION_TEXT).result().get();
+	private static final Text DESCRIPTION_TEXT = Text.translatable("pack.description.modResources");
+	private static final JsonElement DESCRIPTION_JSON = TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, DESCRIPTION_TEXT).result().get();
 
 	public JsonObject getMetadata() {
 		return ModResourcePackUtil.getMetadataPackJson(
