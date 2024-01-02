@@ -88,9 +88,9 @@ public final class ModResourcePackUtil {
 	}
 
 	public static void refreshAutoEnabledPacks(List<ResourcePackProfile> enabledProfiles, Map<String, ResourcePackProfile> allProfiles) {
-		LOGGER.info("Started with: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
+		LOGGER.debug("[Fabric] Starting internal pack sorting with: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
 		enabledProfiles.removeIf(profile -> ((FabricResourcePackProfile) profile).isHidden());
-		LOGGER.info("Removed internal packs: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
+		LOGGER.debug("[Fabric] Removed all internal packs, result: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
 		ListIterator<ResourcePackProfile> it = enabledProfiles.listIterator();
 		// LinkedHashSet for debug log sort, will switch to normal HashSet once finished
 		Set<String> seen = new LinkedHashSet<>();
@@ -104,12 +104,12 @@ public final class ModResourcePackUtil {
 
 				if (fp.isHidden() && fp.parentsEnabled(seen) && seen.add(p.getName())) {
 					it.add(p);
-					LOGGER.info("cur @ {}, auto-enabled {}, currently enabled: {}", profile.getName(), p.getName(), seen);
+					LOGGER.debug("[Fabric] cur @ {}, auto-enabled {}, currently enabled: {}", profile.getName(), p.getName(), seen);
 				}
 			}
 		}
 
-		LOGGER.info("Final: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
+		LOGGER.debug("[Fabric] Final sorting result: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
 	}
 
 	public static boolean containsDefault(String filename, boolean modBundled) {
