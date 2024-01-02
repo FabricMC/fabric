@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "client": [
     "ArmorFeatureRendererMixin",
+    "AtlasSourceManagerAccessor",
     "BlockColorsMixin",
     "BlockEntityRendererFactoriesMixin",
     "BuiltinModelItemRendererMixin",
