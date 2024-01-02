@@ -28,9 +28,6 @@
   ],
   "accessWidener": "fabric-resource-loader-v0.accesswidener",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/class_3288": ["net/fabricmc/fabric/impl/resource/loader/FabricResourcePackProfile"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

@@ -98,7 +98,7 @@ public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
 	@Unique
 	private void refreshAutoEnabledPacks(List<ResourcePackProfile> enabledProfiles) {
 		LOGGER.info("Started with: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
-		enabledProfiles.removeIf(FabricResourcePackProfile::isHidden);
+		enabledProfiles.removeIf(profile -> ((FabricResourcePackProfile) profile).isHidden());
 		LOGGER.info("Removed internal packs: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
 		ListIterator<ResourcePackProfile> it = enabledProfiles.listIterator();
 		// LinkedHashSet for debug log sort, will switch to normal HashSet once finished
@@ -109,7 +109,9 @@ public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
 			seen.add(profile.getName());
 
 			for (ResourcePackProfile p : this.profiles.values()) {
-				if (p.isHidden() && p.parentsEnabled(seen) && seen.add(p.getName())) {
+				FabricResourcePackProfile fp = (FabricResourcePackProfile) p;
+
+				if (fp.isHidden() && fp.parentsEnabled(seen) && seen.add(p.getName())) {
 					it.add(p);
 					LOGGER.info("cur @ {}, auto-enabled {}, currently enabled: {}", profile.getName(), p.getName(), seen);
 				}
@@ -124,7 +126,7 @@ public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
 		if (ModResourcePackCreator.POST_CHANGE_HANDLE_REQUIRED.contains(profile)) {
 			Set<String> currentlyEnabled = enabled.stream().map(ResourcePackProfile::getName).collect(Collectors.toSet());
 			LOGGER.info("Currently enabled: {}", currentlyEnabled);
-			enabled.removeIf(p -> !p.parentsEnabled(currentlyEnabled));
+			enabled.removeIf(p -> !((FabricResourcePackProfile) p).parentsEnabled(currentlyEnabled));
 			LOGGER.info("Auto-removal on disable {}: {}", profile, enabled.stream().map(ResourcePackProfile::getName).toList());
 		}
 	}

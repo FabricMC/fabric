@@ -31,6 +31,8 @@ import net.minecraft.client.gui.screen.pack.ResourcePackOrganizer;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourcePackProfile;
 
+import net.fabricmc.fabric.impl.resource.loader.FabricResourcePackProfile;
+
 @Mixin(ResourcePackOrganizer.class)
 public class ResourcePackOrganizerMixin {
 	@Shadow
@@ -47,13 +49,13 @@ public class ResourcePackOrganizerMixin {
 	 */
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void removeHiddenPacksInit(Runnable updateCallback, Function iconIdSupplier, ResourcePackManager resourcePackManager, Consumer applier, CallbackInfo ci) {
-		this.enabledPacks.removeIf(ResourcePackProfile::isHidden);
-		this.disabledPacks.removeIf(ResourcePackProfile::isHidden);
+		this.enabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).isHidden());
+		this.disabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).isHidden());
 	}
 
 	@Inject(method = "refresh", at = @At("TAIL"))
 	private void removeHiddenPacksRefresh(CallbackInfo ci) {
-		this.enabledPacks.removeIf(ResourcePackProfile::isHidden);
-		this.disabledPacks.removeIf(ResourcePackProfile::isHidden);
+		this.enabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).isHidden());
+		this.disabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).isHidden());
 	}
 }
