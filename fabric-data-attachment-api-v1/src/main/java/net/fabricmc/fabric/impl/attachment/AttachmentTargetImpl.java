@@ -26,17 +26,17 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 public interface AttachmentTargetImpl extends AttachmentTarget {
 	/**
 	 * Copies entity attachments when it is respawned and a new instance is created.
-	 * Is triggered on player respawn, return from the End, or entity conversion.
-	 * In the first case, only the attachments with {@link AttachmentType#copyOnPlayerRespawn()} will be transferred.
+	 * Is triggered on player respawn, entity conversion, return from the End or cross-world entity teleportation.
+	 * In the first two cases, only the attachments with {@link AttachmentType#copyOnDeath()} will be transferred.
 	 */
 	@SuppressWarnings("unchecked")
-	static void copyOnRespawn(AttachmentTargetImpl original, AttachmentTargetImpl target, boolean alive) {
+	static void copyOnRespawn(AttachmentTargetImpl original, AttachmentTargetImpl target, boolean isDeath) {
 		Map<AttachmentType<?>, ?> attachments = original.fabric_getAttachments();
 
 		for (Map.Entry<AttachmentType<?>, ?> entry : attachments.entrySet()) {
 			AttachmentType<Object> type = (AttachmentType<Object>) entry.getKey();
 
-			if (alive || type.copyOnPlayerRespawn()) {
+			if (!isDeath || type.copyOnDeath()) {
 				target.setAttached(type, entry.getValue());
 			}
 		}

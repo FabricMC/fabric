@@ -26,12 +26,26 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.WorldChunk;
 
 /**
  * Marks all objects on which data can be attached using {@link AttachmentType}s.
  *
  * <p>Fabric implements this on {@link Entity}, {@link BlockEntity}, {@link ServerWorld} and {@link WorldChunk} via mixin.</p>
+ *
+ * <p>Note about {@link BlockEntity} and {@link WorldChunk} targets: these objects need to be notified of changes to their
+ * state (using {@link BlockEntity#markDirty()} and {@link Chunk#setNeedsSaving(boolean)} respectively), otherwise the modifications will not take effect properly.
+ * The {@link #setAttached(AttachmentType, Object)} method handles this automatically, but this needs to be done manually
+ * when attached data is mutable, for example:
+ * <pre>{@code
+ * AttachmentType<MutableType> MUTABLE_ATTACHMENT_TYPE = ...;
+ * BlockEntity be = ...;
+ * MutableType data = be.getAttachedOrCreate(MUTABLE_ATTACHMENT_TYPE);
+ * data.mutate();
+ * be.markDirty(); // Required because we are not using setAttached
+ * }</pre>
+ * </p>
  */
 @ApiStatus.Experimental
 @ApiStatus.NonExtendable

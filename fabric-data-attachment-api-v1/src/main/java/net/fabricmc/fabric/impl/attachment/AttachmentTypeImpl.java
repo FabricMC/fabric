@@ -29,5 +29,5 @@ public record AttachmentTypeImpl<A>(
 		Identifier identifier,
 		@Nullable Supplier<A> initializer,
 		@Nullable Codec<A> persistenceCodec,
-		boolean copyOnPlayerRespawn
+		boolean copyOnDeath
 ) implements AttachmentType<A> { }

@@ -22,13 +22,30 @@ import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 /**
  * An attachment allows "attaching" arbitrary data to various game objects (entities, block entities, worlds and chunks at the moment).
- * Use the methods provided in {@link AttachmentRegistry} to create and register attachments.
+ * Use the methods provided in {@link AttachmentRegistry} to create and register attachments. Attachments can
+ * optionally be made to persist between restarts using a provided {@link Codec}.
  *
- * <p>Attachments can optionally be made to persist between restarts using a provided {@link Codec}.</p>
+ * <p>While the API places no restrictions on the types of data that can be attached, it is generally encouraged to use
+ * immutable types. More generally, different attachments <i>must not</i> share mutable state, and it is <i>strongly advised</i>
+ * for attachments not to hold internal references to their target. See the following note on entity targets.</p>
+ *
+ * <p>Note on {@link Entity} targets: in several instances, the name needs to copy data from one {@link Entity} to another.
+ * These are player respawning, mob conversion, return from the End and cross-world entity teleportation. By default,
+ * attachments are simply copied wholesale, up to {@link #copyOnDeath()}. Since one entity instance is discarded,
+ * an attachment that keeps a reference to an {@link Entity} instance can and will break unexpectedly. If,
+ * for whatever reason, keeping to reference to the target entity is absolutely necessary, be sure to use
+ * {@link ServerPlayerEvents#COPY_FROM}, {@link ServerEntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD}
+ * and a mixin into {@link MobEntity#convertTo(EntityType, boolean)} to implement custom copying logic.</p>
  *
  * @param <A> type of the attached data. It is encouraged for this to be an immutable type.
  */
@@ -72,7 +89,8 @@ public interface AttachmentType<A> {
 	Supplier<A> initializer();
 
 	/**
-	 * @return whether the attachments should persist after a player's death and respawn
+	 * @return whether the attachments should persist after an entity dies, for example when a player respawns or
+	 * when a mob is converted (e.g. zombie → drowned)
 	 */
-	boolean copyOnPlayerRespawn();
+	boolean copyOnDeath();
 }

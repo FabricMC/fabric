@@ -39,6 +39,8 @@ abstract class MobEntityMixin implements AttachmentTargetImpl {
 			CallbackInfoReturnable<T> cir,
 			@Local MobEntity converted
 	) {
-		AttachmentTargetImpl.copyOnRespawn(this, (AttachmentTargetImpl) converted, true);
+		// TODO: add this to event API and migrate to use the event
+		// Counting conversion as a form of death here
+		AttachmentTargetImpl.copyOnRespawn(this, (AttachmentTargetImpl) converted, false);
 	}
 }

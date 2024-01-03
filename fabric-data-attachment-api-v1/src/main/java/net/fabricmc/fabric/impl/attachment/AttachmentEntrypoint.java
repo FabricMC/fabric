@@ -17,13 +17,18 @@
 package net.fabricmc.fabric.impl.attachment;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 public class AttachmentEntrypoint implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) ->
-				AttachmentTargetImpl.copyOnRespawn((AttachmentTargetImpl) oldPlayer, (AttachmentTargetImpl) newPlayer, alive)
+				AttachmentTargetImpl.copyOnRespawn((AttachmentTargetImpl) oldPlayer, (AttachmentTargetImpl) newPlayer, !alive)
 		);
+		ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.register(((originalEntity, newEntity, origin, destination) ->
+				AttachmentTargetImpl.copyOnRespawn((AttachmentTargetImpl) originalEntity, (AttachmentTargetImpl) newEntity, false))
+		);
+		// using the corresponding player event is unnecessary as no new instance is created
 	}
 }
