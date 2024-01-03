@@ -161,8 +161,8 @@ public class CommonAttachmentTests {
 		Entity respawnTarget = mock(Entity.class, CALLS_REAL_METHODS);
 		Entity nonRespawnTarget = mock(Entity.class, CALLS_REAL_METHODS);
 
-		AttachmentTargetImpl.copyOnRespawn((AttachmentTargetImpl) original, (AttachmentTargetImpl) respawnTarget, false);
-		AttachmentTargetImpl.copyOnRespawn((AttachmentTargetImpl) original, (AttachmentTargetImpl) nonRespawnTarget, true);
+		AttachmentTargetImpl.copyOnRespawn((AttachmentTargetImpl) original, (AttachmentTargetImpl) respawnTarget, true);
+		AttachmentTargetImpl.copyOnRespawn((AttachmentTargetImpl) original, (AttachmentTargetImpl) nonRespawnTarget, false);
 		assertTrue(respawnTarget.hasAttached(copiedOnRespawn));
 		assertFalse(respawnTarget.hasAttached(notCopiedOnRespawn));
 		assertTrue(nonRespawnTarget.hasAttached(copiedOnRespawn));
