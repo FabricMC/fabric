@@ -22,6 +22,8 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 public class AttachmentEntrypoint implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		ServerPlayerEvents.COPY_FROM.register(AttachmentTargetImpl::copyEntityAttachments);
+		ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) ->
+				AttachmentTargetImpl.copyOnRespawn((AttachmentTargetImpl) oldPlayer, (AttachmentTargetImpl) newPlayer, alive)
+		);
 	}
 }

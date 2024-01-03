@@ -102,90 +102,24 @@ public final class AttachmentRegistry {
 	/**
 	 * A builder for creating {@link AttachmentType}s with finer control over their properties.
 	 *
-	 * <p>Note on entity attachments: sometimes, the game needs to copy data between two different entity instances.
-	 * This happens for example on player respawn, when a mob converts to another type, or when the player returns from the End.
-	 * Since one entity instance is discarded, it is imperative that the attached data doesn't hold a reference to the old instance.</p>
-	 * <ul>
-	 *     <li>If a {@link Codec codec} is provided using {@link #codec(Codec)}, it will automatically be used for copying data.</li>
-	 *     <li>If finer control is desired, a {@link AttachmentType.EntityCopyHandler custom copy handler} can be specified using {@link #entityCopyHandler(AttachmentType.EntityCopyHandler)}.</li>
-	 *     <li>If neither are provided, <i>no attempt at copy will be made</i>, and attached data <b>will be lost</b>
-	 *     in the situations outlined above. This can sometimes be useful for even finer control over copying, but
-	 *     is generally undesirable for attachment types used on entities.</li>
-	 * </ul>
-	 *
 	 * @param <A> the type of the attached data
-	 * @see #copyOnDeath()
-	 * @see #copyOnDeath(Codec)
-	 * @see #entityCopyHandler(AttachmentType.EntityCopyHandler)
 	 */
 	public interface Builder<A> {
 		/**
-		 * Declares that attachments corresponding to this type should persist between server restarts,
-		 * using the provided {@link Codec} for (de)serialization.
-		 *
-		 * <p>A shorthand for {@code persistent().codec(codec)}, cannot be used in conjunction with {@link #copyOnDeath(Codec)},
-		 * as {@link #codec(Codec)} can only be called once.</p>
-		 *
-		 * @param codec the codec used for (de)serialization
-		 * @return the builder
-		 * @see #codec(Codec)
-		 */
-		default Builder<A> persistent(Codec<A> codec) {
-			return persistent().codec(codec);
-		}
-
-		/**
-		 * Declares that attachments corresponding to this type should persist between server restarts. A codec must be
-		 * declared using {@link #codec(Codec)} at some point, or {@link #buildAndRegister(Identifier)} will fail.
-		 *
-		 * @return the builder
-		 */
-		Builder<A> persistent();
-
-		/**
-		 * Declares that when an entity dies and respawns in some way, the attachments corresponding to this type
-		 * should be copied, using the provided {@link Codec} to copy data
-		 * between entity instances. This is used either when a player dies and respawns, or when a mob converts to another
-		 * (for example, zombie → drowned, or zombie villager → villager).
-		 *
-		 * <p>A shorthand for {@code copyEntityAttachments().codec(codec)}, and cannot be used in conjunction with {@link #persistent(Codec)},
-		 * as {@link #codec(Codec)} can only be called once.</p>
-		 *
-		 * @param codec a codec
-		 * @return the builder
-		 * @see #codec(Codec)
-		 */
-		default Builder<A> copyOnDeath(Codec<A> codec) {
-			return copyOnDeath().codec(codec);
-		}
-
-		/**
-		 * Declares that when a player dies and respawns, the attachments corresponding to this type should remain.
-		 * When using this method, some method for attachment copying must be specified as explained in the description
-		 * of {@link Builder}, otherwise {@link #buildAndRegister(Identifier)} will fail.
-		 *
-		 * @return the builder
-		 * @see Builder
-		 */
-		Builder<A> copyOnDeath();
-
-		/**
-		 * Sets the {@link AttachmentType.EntityCopyHandler} for this attachment type, used when copying attachments between
-		 * entity instances.
-		 *
-		 * @param copyHandler the copy handler
-		 * @return the builder
-		 */
-		Builder<A> entityCopyHandler(AttachmentType.EntityCopyHandler<A> copyHandler);
-
-		/**
-		 * Sets the codec used for (de)serialization of this attachment type. Must only be called once during the
-		 * builder's existence.
+		 * Declares that attachments should persist between server restarts, using the provided {@link Codec} for
+		 * (de)serialization.
 		 *
 		 * @param codec the codec used for (de)serialization
 		 * @return the builder
 		 */
-		Builder<A> codec(Codec<A> codec);
+		Builder<A> persistent(Codec<A> codec);
+
+		/**
+		 * Declares that when a player dies and respawns, the attachments corresponding of this type should remain.
+		 *
+		 * @return the builder
+		 */
+		Builder<A> copyOnPlayerRespawn();
 
 		/**
 		 * Sets the default initializer for this attachment type. The initializer will be called by
