@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.attachment;
 
 import java.util.Map;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.nbt.NbtCompound;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
@@ -33,6 +35,10 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 	static void copyOnRespawn(AttachmentTargetImpl original, AttachmentTargetImpl target, boolean isDeath) {
 		Map<AttachmentType<?>, ?> attachments = original.fabric_getAttachments();
 
+		if (attachments == null) {
+			return;
+		}
+
 		for (Map.Entry<AttachmentType<?>, ?> entry : attachments.entrySet()) {
 			AttachmentType<Object> type = (AttachmentType<Object>) entry.getKey();
 
@@ -42,6 +48,7 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 		}
 	}
 
+	@Nullable
 	default Map<AttachmentType<?>, ?> fabric_getAttachments() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
