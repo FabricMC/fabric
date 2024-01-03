@@ -134,11 +134,11 @@ public class CustomItemPredicateTests {
 		// language=json
 		String input = """
 				{
-				  "items": [
-				    "minecraft:enchanted_golden_apple"
-				  ],
-				  "nbt": "{display:{Name:\\"Example\\"}}",
-				  "some:unknown_predicate": true
+					"items": [
+						"minecraft:enchanted_golden_apple"
+					],
+					"nbt": "{display:{Name:\\"Example\\"}}",
+					"some:unknown_predicate": true
 				}
 				""";
 
