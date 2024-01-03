@@ -62,7 +62,7 @@ public final class ShearsHelper implements ModInitializer {
 			}
 
 			Set<RegistryEntry<Item>> shears = ImmutableSet.<RegistryEntry<Item>>builderWithExpectedSize(shearsItems.size())
-					.addAll(Registries.ITEM.getOrCreateEntryList(FABRIC_SHEARS))
+					.addAll(Registries.ITEM.iterateEntries(FABRIC_SHEARS))
 					.addAll(shearsItems)
 					.build(); // use ImmutableSet for performance when using addAll on an ImmutableList builder
 
