@@ -32,7 +32,7 @@ public final class CustomItemPredicateRegistry {
 	 */
 	@SuppressWarnings("unchecked")
 	public static void register(Identifier id, Codec<? extends CustomItemPredicate> codec) {
-		Preconditions.checkArgument(FabricItemPredicateCodec.REGISTRY.containsKey(id), "There's already a codec that registered with this id");
+		Preconditions.checkArgument(!FabricItemPredicateCodec.REGISTRY.containsKey(id), "There's already a codec that registered with this id");
 
 		if (FabricItemPredicateCodec.REGISTRY.containsValue(codec)) {
 			throw new IllegalArgumentException("The codec is already registered with id " + FabricItemPredicateCodec.REGISTRY.inverse().get(codec));
