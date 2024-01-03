@@ -25,7 +25,7 @@ import net.fabricmc.fabric.impl.item.FabricItemPredicateCodec;
 
 public final class CustomItemPredicateRegistry {
 	/**
-	 * Register a codec to be used to serialize/deserialize a custom item predicate
+	 * Registers a codec to be used to serialize/deserialize a custom item predicate.
 	 *
 	 * @param id    the predicate id
 	 * @param codec the predicate codec
