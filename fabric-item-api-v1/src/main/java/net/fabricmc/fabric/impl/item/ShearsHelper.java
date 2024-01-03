@@ -30,15 +30,13 @@ import net.minecraft.item.ShearsItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
-import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
+import net.fabricmc.fabric.api.item.v1.FabricItem;
 import net.fabricmc.fabric.mixin.item.shears.accessors.DirectRegistryEntryListAccessor;
 
 public final class ShearsHelper implements ModInitializer {
-	public static final TagKey<Item> FABRIC_SHEARS = TagRegistration.ITEM_TAG_REGISTRATION.registerFabric("shears");
 	public static final List<RegistryEntryList<Item>> MATCH_TOOL_REGISTRY_ENTRIES = new ArrayList<>();
 
 	@Override
@@ -62,7 +60,7 @@ public final class ShearsHelper implements ModInitializer {
 			}
 
 			Set<RegistryEntry<Item>> shears = ImmutableSet.<RegistryEntry<Item>>builderWithExpectedSize(shearsItems.size())
-					.addAll(Registries.ITEM.iterateEntries(FABRIC_SHEARS))
+					.addAll(Registries.ITEM.iterateEntries(FabricItem.FABRIC_SHEARS))
 					.addAll(shearsItems)
 					.build(); // use ImmutableSet for performance when using addAll on an ImmutableList builder
 

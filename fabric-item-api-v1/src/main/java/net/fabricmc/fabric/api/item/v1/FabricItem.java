@@ -18,8 +18,6 @@ package net.fabricmc.fabric.api.item.v1;
 
 import com.google.common.collect.Multimap;
 
-import net.fabricmc.fabric.impl.item.ShearsHelper;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.dispenser.ShearsDispenserBehavior;
 import net.minecraft.enchantment.EfficiencyEnchantment;
@@ -32,8 +30,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.loot.condition.MatchToolLootCondition;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Hand;
+
+import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 
 /**
  * General-purpose Fabric-provided extensions for {@link Item} subclasses.
@@ -44,6 +45,8 @@ import net.minecraft.util.Hand;
  * to be evaluated on a case-by-case basis. Otherwise, they are better suited for more specialized APIs.
  */
 public interface FabricItem {
+	TagKey<Item> FABRIC_SHEARS = TagRegistration.ITEM_TAG_REGISTRATION.registerFabric("shears");
+
 	/**
 	 * When the NBT of an item stack in the main hand or off hand changes, vanilla runs an "update animation".
 	 * This function is called on the client side when the NBT or count of the stack has changed, but not the item,
@@ -55,6 +58,7 @@ public interface FabricItem {
 	 * @param newStack the new stack, also of this item
 	 * @return true to run the vanilla animation, false to cancel it.
 	 */
+	@SuppressWarnings("JavadocReference")
 	default boolean allowNbtUpdateAnimation(PlayerEntity player, Hand hand, ItemStack oldStack, ItemStack newStack) {
 		return true;
 	}
@@ -109,7 +113,7 @@ public interface FabricItem {
 	 * @return {@code true} if this item should behave like shears.
 	 */
 	default boolean isShears(ItemStack stack) {
-		return this instanceof ShearsItem || stack.isIn(ShearsHelper.FABRIC_SHEARS);
+		return this instanceof ShearsItem || stack.isIn(FABRIC_SHEARS);
 	}
 
 	/**
@@ -140,6 +144,7 @@ public interface FabricItem {
 	 * @param stack the consumed {@link ItemStack}
 	 * @return the leftover item stack
 	 */
+	@SuppressWarnings("DataFlowIssue")
 	default ItemStack getRecipeRemainder(ItemStack stack) {
 		return ((Item) this).hasRecipeRemainder() ? ((Item) this).getRecipeRemainder().getDefaultStack() : ItemStack.EMPTY;
 	}
