@@ -52,10 +52,10 @@ public class CustomItemPredicateTest implements ModInitializer, DataGeneratorEnt
 		pack.addProvider(AdvancementProvider::new);
 	}
 
-	private static class TieredItem extends Item {
+	public static class TieredItem extends Item {
 		private final int tier;
 
-		TieredItem(int tier) {
+		public TieredItem(int tier) {
 			super(new FabricItemSettings());
 			this.tier = tier;
 		}
@@ -102,7 +102,6 @@ public class CustomItemPredicateTest implements ModInitializer, DataGeneratorEnt
 
 		@Override
 		public void generateAdvancement(Consumer<AdvancementEntry> consumer) {
-			// Make sure only the one that actually has custom predicate that generate a list.
 			consumer.accept(Advancement.Builder.create()
 					.criterion("with_custom", InventoryChangedCriterion.Conditions.items(ItemPredicate.Builder.create()
 							.count(NumberRange.IntRange.atLeast(3))

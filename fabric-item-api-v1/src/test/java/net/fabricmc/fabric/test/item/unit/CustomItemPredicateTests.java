@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.item.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,6 +38,7 @@ import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.potion.Potions;
@@ -53,9 +55,10 @@ import net.fabricmc.fabric.impl.item.FabricItemPredicateCodec;
 import net.fabricmc.fabric.test.item.CustomItemPredicateTest;
 import net.fabricmc.fabric.test.item.CustomItemPredicateTest.NoOpItemPredicate;
 import net.fabricmc.fabric.test.item.CustomItemPredicateTest.TierItemPredicate;
+import net.fabricmc.fabric.test.item.CustomItemPredicateTest.TieredItem;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class CustomItemPredicateCodecTests {
+public class CustomItemPredicateTests {
 	@BeforeAll
 	static void setup() {
 		SharedConstants.createGameVersion();
@@ -131,11 +134,11 @@ public class CustomItemPredicateCodecTests {
 		// language=json
 		String input = """
 				{
-				"items": [
-					"minecraft:enchanted_golden_apple"
-				],
-				"nbt": "{display:{Name:\\"Example\\"}}",
-				"some:unknown_predicate": true
+				  "items": [
+				    "minecraft:enchanted_golden_apple"
+				  ],
+				  "nbt": "{display:{Name:\\"Example\\"}}",
+				  "some:unknown_predicate": true
 				}
 				""";
 
@@ -144,5 +147,21 @@ public class CustomItemPredicateCodecTests {
 
 		assertTrue(result.error().isPresent());
 		assertEquals("Unknown custom predicate id some:unknown_predicate", result.error().orElseThrow().message());
+	}
+
+	@Test
+	void match_stack() {
+		ItemStack tier3count1 = new ItemStack(new TieredItem(3), 1);
+		ItemStack tier3count2 = new ItemStack(new TieredItem(3), 2);
+		ItemStack tier4 = new ItemStack(new TieredItem(4), 1);
+
+		ItemPredicate predicate = ItemPredicate.Builder.create()
+				.custom(new TierItemPredicate(3))
+				.count(NumberRange.IntRange.exactly(1))
+				.build();
+
+		assertTrue(predicate.test(tier3count1));
+		assertFalse(predicate.test(tier3count2));
+		assertFalse(predicate.test(tier4));
 	}
 }
