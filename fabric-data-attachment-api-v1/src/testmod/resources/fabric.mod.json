@@ -5,9 +5,15 @@
   "version": "1.0.0",
   "environment": "*",
   "license": "Apache-2.0",
+  "depends": {
+    "fabric-data-attachment-api-v1": "*"
+  },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.attachment.PersistentAttachmentTest"
+      "net.fabricmc.fabric.test.attachment.AttachmentTestMod"
+    ],
+    "fabric-gametest": [
+      "net.fabricmc.fabric.test.attachment.gametest.AttachmentCopyTests"
     ]
   }
 }

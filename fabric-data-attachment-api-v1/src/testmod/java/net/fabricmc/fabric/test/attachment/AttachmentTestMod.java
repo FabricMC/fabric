@@ -29,10 +29,10 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
-public class PersistentAttachmentTest implements ModInitializer {
+public class AttachmentTestMod implements ModInitializer {
 	public static final String MOD_ID = "fabric-data-attachment-api-v1-testmod";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	public static final AttachmentType<String> DUMMY = AttachmentRegistry.createPersistent(
+	public static final AttachmentType<String> PERSISTENT = AttachmentRegistry.createPersistent(
 			new Identifier(MOD_ID, "persistent"),
 			Codec.STRING
 	);
@@ -49,18 +49,18 @@ public class PersistentAttachmentTest implements ModInitializer {
 				LOGGER.info("First launch, setting up");
 
 				overworld = server.getOverworld();
-				overworld.setAttached(DUMMY, "world_data");
+				overworld.setAttached(PERSISTENT, "world_data");
 
 				chunk = overworld.getChunk(0, 0);
-				chunk.setAttached(DUMMY, "chunk_data");
+				chunk.setAttached(PERSISTENT, "chunk_data");
 			} else {
 				LOGGER.info("Second launch, testing");
 
 				overworld = server.getOverworld();
-				if (!"world_data".equals(overworld.getAttached(DUMMY))) throw new AssertionError();
+				if (!"world_data".equals(overworld.getAttached(PERSISTENT))) throw new AssertionError();
 
 				chunk = overworld.getChunk(0, 0);
-				if (!"chunk_data".equals(chunk.getAttached(DUMMY))) throw new AssertionError();
+				if (!"chunk_data".equals(chunk.getAttached(PERSISTENT))) throw new AssertionError();
 			}
 		});
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> firstLaunch = false);

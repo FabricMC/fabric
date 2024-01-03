@@ -151,7 +151,7 @@ public class CommonAttachmentTests {
 				new Identifier(MOD_ID, "not_copied_on_respawn")
 		);
 		AttachmentType<Boolean> copiedOnRespawn = AttachmentRegistry.<Boolean>builder()
-				.copyOnPlayerRespawn()
+				.copyOnDeath()
 				.buildAndRegister(new Identifier(MOD_ID, "copied_on_respawn"));
 
 		Entity original = mock(Entity.class, CALLS_REAL_METHODS);

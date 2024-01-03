@@ -119,7 +119,7 @@ public final class AttachmentRegistry {
 		 *
 		 * @return the builder
 		 */
-		Builder<A> copyOnPlayerRespawn();
+		Builder<A> copyOnDeath();
 
 		/**
 		 * Sets the default initializer for this attachment type. The initializer will be called by

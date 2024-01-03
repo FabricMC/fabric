@@ -68,7 +68,7 @@ public final class AttachmentRegistryImpl {
 		}
 
 		@Override
-		public AttachmentRegistry.Builder<A> copyOnPlayerRespawn() {
+		public AttachmentRegistry.Builder<A> copyOnDeath() {
 			this.copyOnPlayerRespawn = true;
 			return this;
 		}
