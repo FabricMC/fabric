@@ -2,6 +2,17 @@ version = getSubprojectVersion(project)
 
 loom {
 	accessWidenerPath = file("src/main/resources/fabric-gametest-api-v1.accesswidener")
+
+	runs {
+		testmodClient {
+			client()
+			name = "Testmod Client"
+			vmArg "-Dfabric-api.gametest.structures.output-dir=${file("src/testmod/resources/data/fabric-gametest-api-v1-testmod/gametest/structures")}"
+
+			ideConfigGenerated = true
+			source sourceSets.testmodClient
+		}
+	}
 }
 
 moduleDependencies(project, [
