@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.item;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -33,18 +34,18 @@ import net.minecraft.util.Hand;
 
 @Mixin(WolfEntity.class)
 class WolfEntityMixin {
-	@SuppressWarnings("MissingUnique")
-	private static final ThreadLocal<ItemStack> fabric_interactMob_itemStack = new ThreadLocal<>();
+	@Unique
+	private static final ThreadLocal<ItemStack> INTERACTION_STACK = new ThreadLocal<>();
 
 	@Inject(method = "interactMob", at = @At("HEAD"))
 	private void storeCopy(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-		fabric_interactMob_itemStack.set(player.getStackInHand(hand).copy());
+		INTERACTION_STACK.set(player.getStackInHand(hand).copy());
 	}
 
 	@Redirect(method = "interactMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
 	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, PlayerEntity player, Hand hand) {
-		FoodComponent fc = fabric_interactMob_itemStack.get().getFoodComponent();
-		fabric_interactMob_itemStack.remove();
+		FoodComponent fc = INTERACTION_STACK.get().getFoodComponent();
+		INTERACTION_STACK.remove();
 		return fc;
 	}
 
