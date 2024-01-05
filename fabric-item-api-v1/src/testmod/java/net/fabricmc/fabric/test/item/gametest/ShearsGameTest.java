@@ -1,5 +1,8 @@
 package net.fabricmc.fabric.test.item.gametest;
 
+import java.util.Objects;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.entity.DispenserBlockEntity;
@@ -21,8 +24,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 
-import java.util.Objects;
-
 public class ShearsGameTest implements FabricGameTest, ModInitializer {
 	public static final Item REAL_SHEARS = new ShearsItem(new FabricItemSettings().maxDamage(38)); // to show that ShearsItem will work
 	public static final Item FAKE_SHEARS = new Item(new FabricItemSettings().maxDamage(38)); // to show that anything in fabric:shears will work
@@ -36,9 +37,8 @@ public class ShearsGameTest implements FabricGameTest, ModInitializer {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void harvestGrassTest(TestContext context) {
-		PlayerEntity player = context.createMockSurvivalPlayer();
-		testMineGrass(REAL_SHEARS, player, context);
-		testMineGrass(FAKE_SHEARS, player, context);
+		context.addTask(() -> testMineGrass(REAL_SHEARS, context));
+		context.addTask(() -> testMineGrass(FAKE_SHEARS, context));
 		context.complete();
 	}
 
@@ -54,23 +54,14 @@ public class ShearsGameTest implements FabricGameTest, ModInitializer {
 	public void dispenserShearsTest(TestContext context) {
 		context.setBlockState(POS, Blocks.DISPENSER.getDefaultState().with(DispenserBlock.TRIGGERED, true));
 		DispenserBlockEntity blockEntity = (DispenserBlockEntity) Objects.requireNonNull(context.getBlockEntity(POS));
-		blockEntity.setStack(0, REAL_SHEARS.getDefaultStack());
-		SheepEntity sheep1 = context.spawnEntity(EntityType.SHEEP, POS.north());
-		activateDispenser(context);
-		context.expectItem(getWool(sheep1));
-		sheep1.kill();
-		blockEntity.setStack(0, REAL_SHEARS.getDefaultStack());
-		SheepEntity sheep2 = context.spawnEntity(EntityType.SHEEP, POS.north());
-		activateDispenser(context);
-		context.expectItem(getWool(sheep2));
+		context.addTask(() -> testDispenserShears(REAL_SHEARS, blockEntity, context));
+		context.addTask(() -> testDispenserShears(FAKE_SHEARS, blockEntity, context));
 		context.complete();
 	}
 
-	private void testMineGrass(Item item, PlayerEntity player, TestContext context) {
-		player.setStackInHand(Hand.MAIN_HAND, item.getDefaultStack());
-		context.setBlockState(POS, Blocks.SHORT_GRASS);
-		context.getWorld().breakBlock(context.getAbsolutePos(POS), true, player);
-		context.expectItem(Items.SHORT_GRASS);
+	private void testMineGrass(Item item, TestContext context) {
+		Block.dropStacks(Blocks.SHORT_GRASS.getDefaultState(), context.getWorld(), POS, null, null, item.getDefaultStack());
+		context.addTask(() -> context.expectItem(Items.SHORT_GRASS));
 	}
 
 	private void testShearSheep(Item item, PlayerEntity player, TestContext context) {
@@ -81,11 +72,17 @@ public class ShearsGameTest implements FabricGameTest, ModInitializer {
 		sheep.kill();
 	}
 
-	private Item getWool(SheepEntity sheep) {
-		return Registries.ITEM.get(new Identifier(sheep.getColor().getName() + "_wool"));
+	private void testDispenserShears(Item item, DispenserBlockEntity blockEntity, TestContext context) {
+		blockEntity.setStack(0, item.getDefaultStack());
+		SheepEntity sheep = context.spawnEntity(EntityType.SHEEP, POS.north());
+		context.putAndRemoveRedstoneBlock(POS.up(), 1);
+		context.addTask(() -> {
+			context.expectItem(getWool(sheep));
+			sheep.kill();
+		});
 	}
 
-	private void activateDispenser(TestContext context) {
-		context.getWorld().scheduleBlockTick(context.getAbsolutePos(POS), Blocks.DISPENSER, 0);
+	private Item getWool(SheepEntity sheep) {
+		return Registries.ITEM.get(new Identifier(sheep.getColor().getName() + "_wool"));
 	}
 }
