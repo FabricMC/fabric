@@ -6,7 +6,7 @@ version = rootProject.version
 
 publishing.publications {
 	register('mavenJava', MavenPublication) {
-		from(components['versionCatalog'])
+		from components.versionCatalog
 	}
 }
 
@@ -21,7 +21,7 @@ tasks.register('configureCatalog') {
 		doConfigureCatalog()
 	}
 }
-tasks.generateCatalogAsToml {
+tasks.named('generateCatalogAsToml') {
 	dependsOn('configureCatalog')
 }
 
