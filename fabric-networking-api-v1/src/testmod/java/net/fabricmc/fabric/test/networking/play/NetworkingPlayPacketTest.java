@@ -21,6 +21,7 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -38,6 +39,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
@@ -47,6 +49,7 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 public final class NetworkingPlayPacketTest implements ModInitializer {
 	public static final Identifier TEST_CHANNEL = NetworkingTestmods.id("test_channel");
 	private static final Identifier UNKNOWN_TEST_CHANNEL = NetworkingTestmods.id("unknown_test_channel");
+	private static boolean spamUnknownPackets = false;
 
 	public static void sendToTestChannel(ServerPlayerEntity player, String stuff) {
 		ServerPlayNetworking.getSender(player).sendPacket(new OverlayPacket(Text.literal(stuff)), future -> {
@@ -55,7 +58,13 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 	}
 
 	private static void sendToUnknownChannel(ServerPlayerEntity player) {
-		ServerPlayNetworking.getSender(player).sendPacket(UNKNOWN_TEST_CHANNEL, PacketByteBufs.create());
+		PacketByteBuf buf = PacketByteBufs.create();
+
+		for (int i = 0; i < 20; i++) {
+			buf.writeUuid(UUID.randomUUID());
+		}
+
+		ServerPlayNetworking.getSender(player).sendPacket(UNKNOWN_TEST_CHANNEL, buf);
 	}
 
 	public static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -69,6 +78,11 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 				}))
 				.then(literal("unknown").executes(ctx -> {
 					sendToUnknownChannel(ctx.getSource().getPlayer());
+					return Command.SINGLE_SUCCESS;
+				}))
+				.then(literal("spamUnknown").executes(ctx -> {
+					spamUnknownPackets = true;
+					ctx.getSource().sendMessage(Text.literal("Spamming unknown packets state:" + spamUnknownPackets));
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("bufctor").executes(ctx -> {
@@ -105,6 +119,19 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			NetworkingPlayPacketTest.registerCommand(dispatcher);
+		});
+
+		ServerTickEvents.START_SERVER_TICK.register(server -> {
+			if (!spamUnknownPackets) {
+				return;
+			}
+
+			// Send many unknown packets, used to debug https://github.com/FabricMC/fabric/issues/3505
+			for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+				for (int i = 0; i < 50; i++) {
+					sendToUnknownChannel(player);
+				}
+			}
 		});
 	}
 
