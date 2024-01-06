@@ -19,18 +19,18 @@ package net.fabricmc.fabric.mixin.entity.event;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import net.minecraft.entity.EntityType;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.MobEntity;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 
 @Mixin(MobEntity.class)
 public class MobEntityMixin {
-	@Inject(method = "convertTo", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
-	private <T extends MobEntity> void afterEntityConverted(EntityType<T> entityType, boolean keepEquipment, CallbackInfoReturnable<T> cir, @Local T converted) {
-		ServerLivingEntityEvents.MOB_CONVERSION.invoker().onConversion((MobEntity) (Object) this, converted, keepEquipment);
+	@ModifyArg(method = "convertTo", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
+	private Entity afterEntityConverted(Entity converted, @Local(argsOnly = true) boolean keepEquipment) {
+		ServerLivingEntityEvents.MOB_CONVERSION.invoker().onConversion((MobEntity) (Object) this, (MobEntity) converted, keepEquipment);
+		return converted;
 	}
 }
