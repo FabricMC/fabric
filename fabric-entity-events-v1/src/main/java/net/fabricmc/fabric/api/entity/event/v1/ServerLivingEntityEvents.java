@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.entity.event.v1;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.mob.MobEntity;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -73,6 +74,18 @@ public final class ServerLivingEntityEvents {
 		}
 	});
 
+	/**
+	 * An event that is called when a mob has been converted to another type.
+	 *
+	 * <p>When this event is called, the old instance has not yet been discarded, and the new one has not yet been spawned.
+	 * Mods may use this event to copy some of the old entity's data to the converted one.</p>
+	 */
+	public static final Event<MobConversion> MOB_CONVERSION = EventFactory.createArrayBacked(MobConversion.class, callbacks -> (previous, converted, keepEquiment) -> {
+		for (MobConversion callback : callbacks) {
+			callback.onConversion(previous, converted, keepEquiment);
+		}
+	});
+
 	@FunctionalInterface
 	public interface AllowDamage {
 		/**
@@ -93,7 +106,7 @@ public final class ServerLivingEntityEvents {
 		/**
 		 * Called when a living entity takes fatal damage (before totems of undying can take effect).
 		 *
-		 * @param entity the entity
+		 * @param entity       the entity
 		 * @param damageSource the source of the fatal damage
 		 * @param damageAmount the amount of damage that has killed the entity
 		 * @return true if the death should go ahead, false to cancel the death.
@@ -106,10 +119,21 @@ public final class ServerLivingEntityEvents {
 		/**
 		 * Called when a living entity dies. The death cannot be canceled at this point.
 		 *
-		 * @param entity the entity
+		 * @param entity       the entity
 		 * @param damageSource the source of the fatal damage
 		 */
 		void afterDeath(LivingEntity entity, DamageSource damageSource);
+	}
+
+	@FunctionalInterface
+	public interface MobConversion {
+		/**
+		 * Called when a mob is converted to another type.
+		 *
+		 * @param previous  the previous entity instance
+		 * @param converted the new instance for the converted entity
+		 */
+		void onConversion(MobEntity previous, MobEntity converted, boolean keepEquipment);
 	}
 
 	private ServerLivingEntityEvents() {
