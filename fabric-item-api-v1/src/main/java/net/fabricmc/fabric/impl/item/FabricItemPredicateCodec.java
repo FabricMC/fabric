@@ -73,18 +73,16 @@ public final class FabricItemPredicateCodec extends MapCodec<ItemPredicate> {
 			input.entries().forEach(entry -> {
 				if (result.getValue().error().isPresent()) return;
 
-				result.setValue(Identifier.CODEC.decode(ops, entry.getFirst()).flatMap(key -> {
-					Identifier customId = key.getFirst();
-
+				result.setValue(Identifier.CODEC.parse(ops, entry.getFirst()).flatMap(customId -> {
 					if (customId.getNamespace().equals(Identifier.DEFAULT_NAMESPACE) && vanillaKeys.contains(customId.getPath())) {
-						return DataResult.success(predicate);
+						return result.getValue();
 					}
 
 					@Nullable Codec<CustomItemPredicate> customCodec = REGISTRY.get(customId);
 					if (customCodec == null) return DataResult.error(() -> "Unknown custom predicate id " + customId);
 
-					return customCodec.decode(ops, entry.getSecond()).map(p -> {
-						customs.add(p.getFirst());
+					return customCodec.parse(ops, entry.getSecond()).map(custom -> {
+						customs.add(custom);
 						return predicate;
 					});
 				}));

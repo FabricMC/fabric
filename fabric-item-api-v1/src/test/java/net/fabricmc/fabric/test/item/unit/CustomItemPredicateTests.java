@@ -26,7 +26,6 @@ import java.util.List;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import org.junit.jupiter.api.BeforeAll;
@@ -108,7 +107,7 @@ public class CustomItemPredicateTests {
 		assertTrue(jsonResult.result().isPresent());
 		JsonElement json = jsonResult.result().orElseThrow();
 
-		DataResult<ItemPredicate> reserializedResult = ItemPredicate.CODEC.decode(JsonOps.INSTANCE, json).map(Pair::getFirst);
+		DataResult<ItemPredicate> reserializedResult = ItemPredicate.CODEC.parse(JsonOps.INSTANCE, json);
 		assertTrue(reserializedResult.result().isPresent());
 		ItemPredicate reserialized = reserializedResult.result().orElseThrow();
 
@@ -143,7 +142,7 @@ public class CustomItemPredicateTests {
 				""";
 
 		JsonObject json = JsonHelper.deserialize(input);
-		DataResult<Pair<ItemPredicate, JsonElement>> result = ItemPredicate.CODEC.decode(JsonOps.INSTANCE, json);
+		DataResult<ItemPredicate> result = ItemPredicate.CODEC.parse(JsonOps.INSTANCE, json);
 
 		assertTrue(result.error().isPresent());
 		assertEquals("Unknown custom predicate id some:unknown_predicate", result.error().orElseThrow().message());
