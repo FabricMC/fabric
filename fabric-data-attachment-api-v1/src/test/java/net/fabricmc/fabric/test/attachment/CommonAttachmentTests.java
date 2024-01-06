@@ -59,7 +59,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 public class CommonAttachmentTests {
 	private static final String MOD_ID = "example";
-	private final AttachmentType<Integer> PERSISTENT = AttachmentRegistry.createPersistent(
+	private static final AttachmentType<Integer> PERSISTENT = AttachmentRegistry.createPersistent(
 			new Identifier(MOD_ID, "persistent"),
 			Codec.INT
 	);

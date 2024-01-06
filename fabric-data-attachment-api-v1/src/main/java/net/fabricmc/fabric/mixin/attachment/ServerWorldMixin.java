@@ -21,7 +21,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 
@@ -36,7 +35,7 @@ abstract class ServerWorldMixin {
 		var type = new PersistentState.Type<>(
 				() -> new AttachmentPersistentState(world),
 				nbt -> AttachmentPersistentState.read(world, nbt),
-				DataFixTypes.LEVEL
+				null // Object builder API 12.1.0 and later makes this a no-op
 		);
 		world.getPersistentStateManager().getOrCreate(type, AttachmentPersistentState.ID);
 	}

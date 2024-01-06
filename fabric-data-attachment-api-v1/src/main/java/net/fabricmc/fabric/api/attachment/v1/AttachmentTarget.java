@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
@@ -46,6 +47,14 @@ import net.minecraft.world.chunk.WorldChunk;
  * be.markDirty(); // Required because we are not using setAttached
  * }</pre>
  * </p>
+ *
+ * <p>
+ * Note about {@link BlockEntity} targets: by default, many block entities use their NBT to synchronize with the client.
+ * That would mean persistent attachments are automatically synced with the client for those block entities. As this is
+ * undesirable behavior, the API completely removes attachments from the result of {@link BlockEntity#toInitialChunkDataNbt()},
+ * which takes care of all vanilla types. However, modded block entities may be coded differently, so be wary of this
+ * when attaching data to modded block entities.
+ * </p>
  */
 @ApiStatus.Experimental
 @ApiStatus.NonExtendable
@@ -65,14 +74,14 @@ public interface AttachmentTarget {
 	}
 
 	/**
-	 * Gets the data associated with the given {@link AttachmentType}, throwing an exception if it doesn't yet exist.
+	 * Gets the data associated with the given {@link AttachmentType}, throwing a {@link NullPointerException} if it doesn't yet exist.
 	 *
 	 * @param type the attachment type
 	 * @param <A>  the type of the data
 	 * @return the attached data
 	 */
 	default <A> A getAttachedOrThrow(AttachmentType<A> type) {
-		return Objects.requireNonNull(getAttached(type));
+		return Objects.requireNonNull(getAttached(type), "No value was attached");
 	}
 
 	/**
@@ -144,17 +153,16 @@ public interface AttachmentTarget {
 	 * @param <A>          the type of the attached data
 	 * @return the attached data, or the default value
 	 */
-	default <A> A getAttachedOrElse(AttachmentType<A> type, A defaultValue) {
-		Objects.requireNonNull(defaultValue, "default value cannot be null");
-
+	@Contract("_, !null -> !null")
+	default <A> A getAttachedOrElse(AttachmentType<A> type, @Nullable A defaultValue) {
 		A attached = getAttached(type);
 		return attached == null ? defaultValue : attached;
 	}
 
 	/**
 	 * Gets the data associated with the given {@link AttachmentType}, or gets the provided default value from the
-	 * argument if it doesn't exist. Unlike {@link #getAttachedOrCreate(AttachmentType, Supplier)}, this doesn't
-	 * initialize the attachment with the default value.
+	 * provided non-{@code null} supplier if it doesn't exist. The supplier may return {@code null}.
+	 * Unlike {@link #getAttachedOrCreate(AttachmentType, Supplier)}, this doesn't initialize the attachment with the default value.
 	 *
 	 * @param type         the attachment type
 	 * @param defaultValue the default value supplier to use as fallback
@@ -162,7 +170,7 @@ public interface AttachmentTarget {
 	 * @return the attached data, or the default value
 	 */
 	default <A> A getAttachedOrGet(AttachmentType<A> type, Supplier<A> defaultValue) {
-		Objects.requireNonNull(defaultValue, "default value cannot be null");
+		Objects.requireNonNull(defaultValue, "default value supplier cannot be null");
 
 		A attached = getAttached(type);
 		return attached == null ? defaultValue.get() : attached;
@@ -182,7 +190,8 @@ public interface AttachmentTarget {
 	}
 
 	/**
-	 * Tests whether the given {@link AttachmentType} has any associated data.
+	 * Tests whether the given {@link AttachmentType} has any associated data. This doesn't create any data, and may return
+	 * {@code false} even for attachment types with an automatic initializer.
 	 *
 	 * @param type the attachment type
 	 * @return whether there is associated data
@@ -206,10 +215,11 @@ public interface AttachmentTarget {
 
 	/**
 	 * Modifies the data associated with the given {@link AttachmentType}. Functionally the same as calling {@link #getAttached(AttachmentType)},
-	 * applying the modifier, then calling {@link #setAttached(AttachmentType, Object)} with the result.
+	 * applying the modifier, then calling {@link #setAttached(AttachmentType, Object)} with the result. The modifier
+	 * takes in the currently attached value, or {@code null} if no attachment is present.
 	 *
 	 * @param type     the attachment type
-	 * @param modifier the operation to apply to the current data
+	 * @param modifier the operation to apply to the current data, or to {@code null} if it doesn't exist yet
 	 * @param <A>      the type of the data
 	 * @return the previous data
 	 */

@@ -104,6 +104,7 @@ public final class AttachmentRegistry {
 	 *
 	 * @param <A> the type of the attached data
 	 */
+	@ApiStatus.NonExtendable
 	public interface Builder<A> {
 		/**
 		 * Declares that attachments should persist between server restarts, using the provided {@link Codec} for

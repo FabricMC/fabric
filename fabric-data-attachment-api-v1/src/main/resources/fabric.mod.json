@@ -16,7 +16,8 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.15.1"
+    "fabricloader": ">=0.15.1",
+    "fabric-object-builder-api-v1": ">=12.1.0"
   },
   "description": "Allows conveniently attaching data to existing game objects",
   "mixins": [

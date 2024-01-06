@@ -57,7 +57,7 @@ public final class AttachmentRegistryImpl {
 		private Supplier<A> defaultInitializer = null;
 		@Nullable
 		private Codec<A> persistenceCodec = null;
-		private boolean copyOnPlayerRespawn = false;
+		private boolean copyOnDeath = false;
 
 		@Override
 		public AttachmentRegistry.Builder<A> persistent(Codec<A> codec) {
@@ -69,7 +69,7 @@ public final class AttachmentRegistryImpl {
 
 		@Override
 		public AttachmentRegistry.Builder<A> copyOnDeath() {
-			this.copyOnPlayerRespawn = true;
+			this.copyOnDeath = true;
 			return this;
 		}
 
@@ -83,7 +83,7 @@ public final class AttachmentRegistryImpl {
 
 		@Override
 		public AttachmentType<A> buildAndRegister(Identifier id) {
-			var attachment = new AttachmentTypeImpl<>(id, defaultInitializer, persistenceCodec, copyOnPlayerRespawn);
+			var attachment = new AttachmentTypeImpl<>(id, defaultInitializer, persistenceCodec, copyOnDeath);
 			register(id, attachment);
 			return attachment;
 		}
