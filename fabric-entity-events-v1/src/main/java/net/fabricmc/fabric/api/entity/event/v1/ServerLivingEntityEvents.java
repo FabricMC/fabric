@@ -106,7 +106,7 @@ public final class ServerLivingEntityEvents {
 		/**
 		 * Called when a living entity takes fatal damage (before totems of undying can take effect).
 		 *
-		 * @param entity       the entity
+		 * @param entity the entity
 		 * @param damageSource the source of the fatal damage
 		 * @param damageAmount the amount of damage that has killed the entity
 		 * @return true if the death should go ahead, false to cancel the death.
@@ -119,7 +119,7 @@ public final class ServerLivingEntityEvents {
 		/**
 		 * Called when a living entity dies. The death cannot be canceled at this point.
 		 *
-		 * @param entity       the entity
+		 * @param entity the entity
 		 * @param damageSource the source of the fatal damage
 		 */
 		void afterDeath(LivingEntity entity, DamageSource damageSource);
@@ -130,7 +130,7 @@ public final class ServerLivingEntityEvents {
 		/**
 		 * Called when a mob is converted to another type.
 		 *
-		 * @param previous  the previous entity instance
+		 * @param previous the previous entity instance
 		 * @param converted the new instance for the converted entity
 		 */
 		void onConversion(MobEntity previous, MobEntity converted, boolean keepEquipment);
