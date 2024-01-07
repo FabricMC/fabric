@@ -5,6 +5,7 @@
   "mixins": [
     "AttachmentTargetsMixin",
     "BlockEntityMixin",
+    "BlockEntityUpdateS2CPacketMixin",
     "ChunkSerializerMixin",
     "EntityMixin",
     "MobEntityMixin",

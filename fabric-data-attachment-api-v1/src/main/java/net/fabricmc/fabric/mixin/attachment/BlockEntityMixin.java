@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,7 +24,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 
-import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 @Mixin(BlockEntity.class)
@@ -44,21 +42,5 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	)
 	private void writeBlockEntityAttachments(CallbackInfoReturnable<NbtCompound> cir) {
 		this.fabric_writeAttachmentsToNbt(cir.getReturnValue());
-	}
-
-	@ModifyReturnValue(
-			method = "toInitialChunkDataNbt",
-			at = @At("RETURN")
-	)
-	private NbtCompound removeAttachmentsForChunkLoadSync(NbtCompound nbt) {
-		/*
-		 * Many BEs use createNbt() for client sync, so persistent attachments will always be synced with client,
-		 * which may be undesirable. This mixin removes them, awaiting a proper syncing API.
-		 *
-		 * A mixin into BlockEntityUpdateS2CPacket#create would be more robust, so robust in fact that it would make
-		 * manual syncing impossible.
-		 */
-		nbt.remove(AttachmentTarget.NBT_ATTACHMENT_KEY);
-		return nbt;
 	}
 }

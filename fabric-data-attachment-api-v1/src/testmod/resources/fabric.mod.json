@@ -14,7 +14,11 @@
       "net.fabricmc.fabric.test.attachment.AttachmentTestMod"
     ],
     "fabric-gametest": [
-      "net.fabricmc.fabric.test.attachment.gametest.AttachmentCopyTests"
+      "net.fabricmc.fabric.test.attachment.gametest.AttachmentCopyTests",
+      "net.fabricmc.fabric.test.attachment.gametest.BlockEntityTests"
     ]
-  }
+  },
+  "mixins": [
+    "fabric-data-attachment-api-v1-testmod.mixins.json"
+  ]
 }
