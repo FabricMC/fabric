@@ -21,12 +21,10 @@ import java.util.List;
 import com.mojang.serialization.Codec;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.item.ItemStack;
@@ -41,8 +39,11 @@ import net.fabricmc.fabric.impl.item.ItemPredicateExtensions;
 abstract class ItemPredicateMixin implements ItemPredicateExtensions, FabricItemPredicate {
 	@Shadow
 	@Final
-	@Mutable
 	public static Codec<ItemPredicate> CODEC;
+
+	static {
+		CODEC = FabricItemPredicateCodec.init(CODEC);
+	}
 
 	@Unique
 	private List<CustomItemPredicate> custom = List.of();
@@ -55,12 +56,6 @@ abstract class ItemPredicateMixin implements ItemPredicateExtensions, FabricItem
 	@Override
 	public void fabric_setCustom(List<CustomItemPredicate> custom) {
 		this.custom = custom;
-	}
-
-	@Inject(method = "<clinit>", at = @At("TAIL"))
-	private static void modifyCodec(CallbackInfo ci) {
-		Codec<ItemPredicate> vanillaCodec = CODEC;
-		CODEC = FabricItemPredicateCodec.init(vanillaCodec);
 	}
 
 	@Inject(method = "test", at = @At("HEAD"), cancellable = true)
