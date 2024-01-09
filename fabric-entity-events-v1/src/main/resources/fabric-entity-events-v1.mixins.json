@@ -6,9 +6,11 @@
     "EntityMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
+    "PigEntityMixin",
     "PlayerEntityMixin",
     "PlayerManagerMixin",
     "ServerPlayerEntityMixin",
+    "VillagerEntityMixin",
     "elytra.LivingEntityMixin",
     "elytra.PlayerEntityMixin"
   ],
