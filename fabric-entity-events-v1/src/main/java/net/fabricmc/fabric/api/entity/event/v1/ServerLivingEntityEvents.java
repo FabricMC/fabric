@@ -80,9 +80,9 @@ public final class ServerLivingEntityEvents {
 	 * <p>When this event is called, the old instance has not yet been discarded, and the new one has not yet been spawned.
 	 * Mods may use this event to copy some of the old entity's data to the converted one.</p>
 	 */
-	public static final Event<MobConversion> MOB_CONVERSION = EventFactory.createArrayBacked(MobConversion.class, callbacks -> (previous, converted, keepEquiment) -> {
+	public static final Event<MobConversion> MOB_CONVERSION = EventFactory.createArrayBacked(MobConversion.class, callbacks -> (previous, converted, keepEquipment) -> {
 		for (MobConversion callback : callbacks) {
-			callback.onConversion(previous, converted, keepEquiment);
+			callback.onConversion(previous, converted, keepEquipment);
 		}
 	});
 
