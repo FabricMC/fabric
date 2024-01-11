@@ -10,6 +10,7 @@
     "PlayerEntityMixin",
     "PlayerManagerMixin",
     "ServerPlayerEntityMixin",
+    "TadpoleEntityMixin",
     "VillagerEntityMixin",
     "elytra.LivingEntityMixin",
     "elytra.PlayerEntityMixin"

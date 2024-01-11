@@ -39,7 +39,7 @@ abstract class PigEntityMixin extends AnimalEntity {
 			method = "onStruckByLightning",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;spawnEntity(Lnet/minecraft/entity/Entity;)Z")
 	)
-	private Entity onThunderConversion(Entity converted) {
+	private Entity afterPiglinConversion(Entity converted) {
 		ServerLivingEntityEvents.MOB_CONVERSION.invoker().onConversion(this, (MobEntity) converted, false);
 		return converted;
 	}

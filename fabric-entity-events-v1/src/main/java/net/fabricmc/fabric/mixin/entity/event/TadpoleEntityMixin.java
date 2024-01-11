@@ -23,23 +23,23 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.entity.passive.FishEntity;
+import net.minecraft.entity.passive.TadpoleEntity;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 
-@Mixin(VillagerEntity.class)
-abstract class VillagerEntityMixin extends MerchantEntity {
-	VillagerEntityMixin(EntityType<? extends MerchantEntity> entityType, World world) {
+@Mixin(TadpoleEntity.class)
+abstract class TadpoleEntityMixin extends FishEntity {
+	TadpoleEntityMixin(EntityType<? extends FishEntity> entityType, World world) {
 		super(entityType, world);
 	}
 
 	@ModifyArg(
-			method = "onStruckByLightning",
+			method = "growUp",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;spawnEntityAndPassengers(Lnet/minecraft/entity/Entity;)V")
 	)
-	private Entity afterWitchConversion(Entity converted) {
+	private Entity afterGrowingUpToFrog(Entity converted) {
 		ServerLivingEntityEvents.MOB_CONVERSION.invoker().onConversion(this, (MobEntity) converted, false);
 		return converted;
 	}

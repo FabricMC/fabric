@@ -79,6 +79,9 @@ public final class ServerLivingEntityEvents {
 	 *
 	 * <p>When this event is called, the old instance has not yet been discarded, and the new one has not yet been spawned.
 	 * Mods may use this event to copy some of the old entity's data to the converted one.</p>
+	 *
+	 * <p>This event only handles cases where the entity type changes, requiring a new instance. Notably it does not
+	 * cover mooshrooms changing color from lightning, creepers getting charged, or wolves being tamed.</p>
 	 */
 	public static final Event<MobConversion> MOB_CONVERSION = EventFactory.createArrayBacked(MobConversion.class, callbacks -> (previous, converted, keepEquipment) -> {
 		for (MobConversion callback : callbacks) {
@@ -132,6 +135,7 @@ public final class ServerLivingEntityEvents {
 		 *
 		 * @param previous the previous entity instance
 		 * @param converted the new instance for the converted entity
+		 * @param keepEquipment whether the converted entity should keep the previous one's equipment, like armor
 		 */
 		void onConversion(MobEntity previous, MobEntity converted, boolean keepEquipment);
 	}
