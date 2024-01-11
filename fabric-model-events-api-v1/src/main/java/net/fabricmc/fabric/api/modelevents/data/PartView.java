@@ -20,12 +20,22 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import net.fabricmc.fabric.api.modelevents.PartTreePath;
+import net.fabricmc.fabric.impl.modelevents.FabricPartHooks;
 import net.minecraft.client.model.ModelPart;
 
 /**
  * Provides access to information about a model part as it is being rendered.
  */
 public interface PartView {
+    /**
+     * Bridge method for converting from a ModelPart back into a PartView into that part's contents.
+     *
+     * @return Optional associated view if one has been computed.
+     */
+    static Optional<PartView> of(ModelPart part) {
+        return Optional.ofNullable(FabricPartHooks.Container.of(part).getHooks().getView());
+    }
+
     /**
      * The absolute path representing where this part appears within a model's tree
      */

@@ -43,13 +43,16 @@ public class FabricPartHooks {
         this.parent = parent;
     }
 
+    // Note: We only create our data structures on the first usage, not construction.
+    //       This is to ensure consistent behavior is maintained even when mods make
+    //       changes to the part's contents late after construction.
     public void onPartRendered(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha) {
         try {
             if (view == null) {
-                getRoot().initializePaths(PartTreePathImpl.EMPTY);
+                getRoot().setPath(PartTreePathImpl.EMPTY);
                 if (view == null) {
                     // this shouldn't happen, but just in case it does assume we are the root (or I guess we're an orphan).
-                    view = new PartViewImpl(part, PartTreePathImpl.EMPTY);
+                    setPath(PartTreePathImpl.EMPTY);
                 }
             }
         } finally {
@@ -60,17 +63,22 @@ public class FabricPartHooks {
         view.dispatchEvents(matrices, vertices, light, overlay, red, green, blue, alpha);
     }
 
-    void initializePaths(PartTreePathImpl path) {
+    // called recursively
+    void setPath(PartTreePathImpl path) {
         this.view = new PartViewImpl(part, path);
         // cleanup
         parent = null;
+        part.getChildren().forEach((name, child) -> {
+            Container.of(child).getHooks().setPath(path.append(name));
+        });
     }
 
-    PartView getView() {
+    @Nullable
+    public PartView getView() {
         return view;
     }
 
-    FabricPartHooks getRoot() {
+    private FabricPartHooks getRoot() {
         return parent == null ? this : parent.getRoot();
     }
 

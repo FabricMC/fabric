@@ -18,17 +18,14 @@ package net.fabricmc.fabric.impl.modelevents;
 
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import org.jetbrains.annotations.ApiStatus;
-import com.google.common.base.Suppliers;
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.modelevents.ModelPartListener;
 import net.fabricmc.fabric.api.modelevents.PartTreePath;
 import net.fabricmc.fabric.api.modelevents.data.CubeData;
 import net.fabricmc.fabric.api.modelevents.data.DataCollection;
 import net.fabricmc.fabric.api.modelevents.data.PartView;
-import net.fabricmc.fabric.impl.modelevents.FabricPartHooks.Container;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -40,16 +37,14 @@ class PartViewImpl implements PartView {
 
     private final PartTreePath path;
     private final ModelPartListener eventListener;
-    private final Supplier<DataCollection<CubeData>> cubes;
+
+    @Nullable
+    private DataCollection<CubeData> cubes;
 
     public PartViewImpl(FabricPartHooks.Container part, PartTreePathImpl path) {
         this.part = part;
         this.path = path;
         this.eventListener = ModelPartCallbacksImpl.getInvoker(this.path);
-        this.cubes = Suppliers.memoize(() -> new ListDataCollection<>(part.getCuboids(), cuboid -> (CubeData)cuboid));
-        part.getChildren().forEach((name, child) -> {
-            Container.of(child).getHooks().initializePaths(path.append(name));
-        });
     }
 
     public void dispatchEvents(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha) {
@@ -69,7 +64,10 @@ class PartViewImpl implements PartView {
 
     @Override
     public DataCollection<CubeData> cubes() {
-        return cubes.get();
+        // Cube data is only constructed upon request to try and avoid overhead when rendering.
+        // Implemented as an if-null check rather than Suppliers.memoize(() -> {}) for similar reasons.
+        if (cubes == null) cubes = new ListDataCollection<>(part.getCuboids(), cuboid -> (CubeData)cuboid);
+        return cubes;
     }
 
     @Override
@@ -83,6 +81,7 @@ class PartViewImpl implements PartView {
 
     @Override
     public Optional<PartView> getChild(PartTreePath path) {
+        // Simple tree traversal following the path's nodes.
         ModelPart part = part();
         for (String name : path) {
             if (!part.hasChild(name)) {
@@ -90,17 +89,16 @@ class PartViewImpl implements PartView {
             }
             part = part.getChild(name);
         }
-        return Optional.ofNullable(FabricPartHooks.Container.of(part).getHooks().getView());
+        return PartView.of(part);
     }
 
     @Override
     public void forEachPart(Consumer<PartView> partConsumer) {
         part.getChildren().values().forEach(child -> {
-            PartView childView = FabricPartHooks.Container.of(child).getHooks().getView();
-            if (childView != null) {
+            PartView.of(child).ifPresent(childView -> {
                 partConsumer.accept(childView);
                 childView.forEachPart(partConsumer);
-            }
+            });
         });
     }
 }
