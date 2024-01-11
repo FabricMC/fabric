@@ -21,6 +21,7 @@ import java.util.Map;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.fabricmc.fabric.api.modelevents.data.PartView;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.model.ModelPart.Cuboid;
 import net.minecraft.client.render.VertexConsumer;
@@ -63,6 +64,10 @@ public class FabricPartHooks {
         this.view = new PartViewImpl(part, path);
         // cleanup
         parent = null;
+    }
+
+    PartView getView() {
+        return view;
     }
 
     FabricPartHooks getRoot() {

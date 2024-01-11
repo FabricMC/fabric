@@ -16,27 +16,35 @@
 
 package net.fabricmc.fabric.impl.modelevents;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.jetbrains.annotations.ApiStatus;
+
+import com.google.common.base.Suppliers;
+import com.google.common.collect.AbstractIterator;
 
 import net.fabricmc.fabric.api.modelevents.data.DataCollection;
 
 @ApiStatus.Internal
-public class ListDataCollection<K, T> implements DataCollection<T> {
-    private final List<K> values;
-    private final Function<K, T> lookupFunction;
+final class ListDataCollection<K, T> implements DataCollection<T> {
+    private final Supplier<Optional<T>>[] values;
 
+    @SuppressWarnings("unchecked")
     public ListDataCollection(List<K> values, Function<K, T> lookupFunction) {
-        this.values = values;
-        this.lookupFunction = lookupFunction;
+        this.values = values.stream()
+                // Raaaaah don't create a new optional all the time when people access
+                .map(value -> Suppliers.memoize(() -> Optional.ofNullable(lookupFunction.apply(value))))
+                .toArray(Supplier[]::new);
     }
 
     @Override
     public int size() {
-        return values.size();
+        return values.length;
     }
 
     @Override
@@ -44,16 +52,27 @@ public class ListDataCollection<K, T> implements DataCollection<T> {
         if (index < 0 || index >= size()) {
             return Optional.empty();
         }
-        return Optional.of(lookupFunction.apply(values.get(index)));
+        return values[index].get();
     }
 
     @Override
-    public Optional<T> getFirst() {
-        return getAt(0);
+    public void forEach(Consumer<? super T> consumer) {
+        for (var value : values) {
+            value.get().ifPresent(consumer);
+        }
     }
 
     @Override
-    public Optional<T> getLast() {
-        return getAt(size() - 1);
+    public Iterator<T> iterator() {
+        return new AbstractIterator<>() {
+            private int index;
+
+            @Override
+            protected T computeNext() {
+                Optional<T> value = Optional.empty();
+                while (index < size() && (value = getAt(index++)).isEmpty());
+                return value.orElseGet(this::endOfData);
+            }
+        };
     }
 }

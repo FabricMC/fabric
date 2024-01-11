@@ -17,49 +17,54 @@
 package net.fabricmc.fabric.test.modelevents;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.modelevents.ModelPartCallbacks;
+import net.fabricmc.fabric.api.modelevents.PartTreePath;
+import net.fabricmc.fabric.impl.modelevents.ModelPartCallbacksImpl;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.model.Dilation;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.model.TexturedModelData;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.model.EntityModelPartNames;
+import net.minecraft.entity.EntityType;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-
-// This test must pass without the tool attribute API present.
-// It has its own handlers for mining levels, which might "hide" this module
-// not working on its own.
-public final class ModelEventsTest implements ModInitializer {
-	private static final String ID = "fabric-model-events-api-v1-testmod";
+public final class ModelEventsTest implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelEventsTest.class);
 
 	@Override
-	public void onInitialize() {
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> test());
+	public void onInitializeClient() {
+	    List<AssertionError> errors = new ArrayList<>();
+
+	    test(errors, () -> {
+	        assert PartTreePath.of().isRoot();
+	    });
+	    test(errors, ModelEventsTest::checkEmptyPartPathCreation);
+	    test(errors, ModelEventsTest::checkPartPathParsing);
+	    test(errors, ModelEventsTest::checkPathIndexOfForShortPath);
+	    test(errors, ModelEventsTest::checkPathIndexOfForLongPath);
+	    test(errors, ModelEventsTest::checkPathComparisons);
+        test(errors, ModelEventsTest::registerEntityModelPartListener);
+        test(errors, ModelEventsTest::registerBlockEntityModelPartListener);
+        test(errors, ModelEventsTest::testModelRenderNesting);
+
+        if (errors.isEmpty()) {
+            LOGGER.info("Model Events tests passed!");
+        } else {
+            AssertionError error = new AssertionError("Model Events tests failed!");
+            errors.forEach(error::addSuppressed);
+            throw error;
+        }
 	}
 
-	private static void test() {
-		List<AssertionError> errors = new ArrayList<>();
-
-		if (errors.isEmpty()) {
-			LOGGER.info("Model Events tests passed!");
-		} else {
-			AssertionError error = new AssertionError("Model Events tests failed!");
-			errors.forEach(error::addSuppressed);
-			throw error;
-		}
-	}
 
 	private static void test(List<AssertionError> errors, Runnable runnable) {
 		try {
@@ -67,5 +72,92 @@ public final class ModelEventsTest implements ModInitializer {
 		} catch (AssertionError e) {
 			errors.add(e);
 		}
+	}
+
+	static void checkEmptyPartPathCreation() {
+	    assert PartTreePath.of() == PartTreePath.of("");
+	    assert PartTreePath.of() == PartTreePath.of(" ");
+	    assert PartTreePath.of() == PartTreePath.of(null);
+	    assert PartTreePath.of() == PartTreePath.of("/");
+	    assert "/a/b/c".contentEquals(PartTreePath.of("/a/b/c").toString());
+	}
+
+	static void checkPartPathParsing() {
+	    var path = PartTreePath.of("a/b/c");
+	    List<String> components = new ArrayList<>();
+	    for (String component : path) {
+	        components.add(component);
+	    }
+	    assert !path.isRoot();
+	    assert !path.isAbsolute();
+	    assert Arrays.equals(new String[] {"a", "b", "c"}, components.toArray(String[]::new));
+	}
+
+	static void checkPathIndexOfForShortPath() {
+        var path = PartTreePath.of("a/b/c");
+        assert path.indexOf(PartTreePath.of("a")) == 0;
+        assert path.indexOf(PartTreePath.of("b")) == 1;
+        assert path.indexOf(PartTreePath.of("c")) == 2;
+        assert path.indexOf(PartTreePath.of("d")) == -1;
+    }
+
+	static void checkPathIndexOfForLongPath() {
+        var path = PartTreePath.of("aaaaaaaaaa/bbbbbbbbbb/cccccccccccc/dddddddddd");
+        assert path.indexOf(PartTreePath.of("aaaaaaaaaa/bbbbbbbbbb/cccccccccccc")) == 0;
+        assert path.indexOf(PartTreePath.of("bbbbbbbbbb/cccccccccccc")) == 1;
+        assert path.indexOf(PartTreePath.of("cccccccccccc/dddddddddd")) == 2;
+        assert path.indexOf(PartTreePath.of("dddddddddd/eeeeeeeeeeee")) == -1;
+    }
+
+	static void checkPathComparisons() {
+	    var path = PartTreePath.of("beginning/middle/end");
+	    assert path.beginsWith(PartTreePath.of("beginning"));
+	    assert path.endsWith(PartTreePath.of("end"));
+	    assert path.includes(PartTreePath.of("middle"));
+	    assert !path.beginsWith(PartTreePath.of("middle"));
+	    assert !path.endsWith(PartTreePath.of("end"));
+	}
+
+	static void registerEntityModelPartListener() {
+	    assertListenerCount(PartTreePath.of(EntityModelPartNames.HAT), path -> {
+	        ModelPartCallbacks.get(path).register(EntityType.PLAYER, (player, partView, matrices, vertexConsumer, tickDelta, light, overlay, r, g, b, a) -> {
+	            if (MinecraftClient.getInstance().player == player) {
+	                ModelPart part = partView.part();
+	                LOGGER.info("Head rotation: p=" + part.pitch + ",y=" + part.yaw + ",r=" + part.roll);
+	                LOGGER.info("Head Cube Count: " + partView.cubes().size());
+	            }
+	        });
+	    }, 1);
+	}
+
+	static void registerBlockEntityModelPartListener() {
+	    assertListenerCount(PartTreePath.of("lid"), path -> {
+    	    ModelPartCallbacks.get(path).register(BlockEntityType.CHEST, (chest, partView, matrices, vertexConsumer, tickDelta, light, overlay, r, g, b, a) -> {
+                ModelPart part = partView.part();
+                LOGGER.info("Chest Lid rotation: p=" + part.pitch + ",y=" + part.yaw + ",r=" + part.roll);
+                LOGGER.info("Chest Lid Cube Count: " + partView.cubes().size());
+                LOGGER.info("Chest Lid Has Latch: " + part.hasChild("latch"));
+            });
+	    }, 1);
+	}
+
+	static void testModelRenderNesting() {
+	    assertListenerCount(PartTreePath.of(EntityModelPartNames.HEAD), path -> {
+	        // if the player's head is really big we know it's working
+	        ModelPart hatCopy = TexturedModelData.of(BipedEntityModel.getModelData(new Dilation(2), 0), 64, 64).createModel()
+	                .getChild(EntityModelPartNames.HEAD);
+
+            ModelPartCallbacks.get(path).register(EntityType.PLAYER, (player, partView, matrices, vertexConsumer, tickDelta, light, overlay, r, g, b, a) -> {
+                hatCopy.copyTransform(partView.part());
+                hatCopy.render(matrices, vertexConsumer, light, overlay, r, g, b, a);
+            });
+        }, 1);
+	}
+
+	static void assertListenerCount(PartTreePath path, Consumer<PartTreePath> registerAction, int expectedCountAfter) {
+	    registerAction.accept(path);
+        List<ModelPartCallbacksImpl> listeners = new ArrayList<>();
+        ModelPartCallbacksImpl.INSTANCES.findMatchingLeafNodes(path, listeners::add);
+	    assert listeners.size() == expectedCountAfter;
 	}
 }

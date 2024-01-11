@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.mixin.modelevents;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,7 +33,6 @@ import net.fabricmc.fabric.api.modelevents.data.CubeData;
 import net.fabricmc.fabric.api.modelevents.data.DataCollection;
 import net.fabricmc.fabric.api.modelevents.data.FaceData;
 import net.fabricmc.fabric.impl.modelevents.FaceDataImpl;
-import net.fabricmc.fabric.impl.modelevents.ListDataCollection;
 import net.minecraft.client.model.Dilation;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.model.ModelPart.Cuboid;
@@ -54,7 +51,14 @@ abstract class ModelPart_CuboidMixin implements CubeData {
     private Dilation fabric_dilation;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void init_Cuboid(int u, int v, float x, float y, float z, float sizeX, float sizeY, float sizeZ, float extraX, float extraY, float extraZ, boolean mirror, float textureWidth, float textureHeight, Set<Direction> set,
+    private void init_Cuboid(
+            int u, int v,
+            float x, float y, float z,
+            float sizeX, float sizeY, float sizeZ,
+            float extraX, float extraY, float extraZ,
+            boolean mirror,
+            float textureWidth, float textureHeight,
+            Set<Direction> enabledFaces,
             CallbackInfo info) {
         fabric_dilation = new Dilation(extraX, extraY, extraZ);
     }
@@ -74,22 +78,6 @@ abstract class ModelPart_CuboidMixin implements CubeData {
         if (fabric_cube_faces == null) {
             fabric_cube_faces = new EnumMap<>(Direction.class);
         }
-        return fabric_cube_faces.computeIfAbsent(direction, d -> {
-            List<FaceDataImpl.Container> faces = null;
-            for (var side : sides) {
-                FaceDataImpl.Container container = (FaceDataImpl.Container)side;
-                if (container.getFabricDirection() != d) {
-                    continue;
-                }
-                if (faces == null) {
-                    faces = new ArrayList<>();
-                }
-                faces.add(container);
-            }
-            if (faces == null) {
-                return DataCollection.of();
-            }
-            return new ListDataCollection<>(faces, FaceDataImpl.Container::getFabricFaceData);
-        });
+        return FaceDataImpl.computeFromFaces(fabric_cube_faces, direction, sides);
     }
 }

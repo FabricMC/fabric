@@ -17,22 +17,16 @@
 package net.fabricmc.fabric.impl.modelevents;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
+import it.unimi.dsi.fastutil.Stack;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
 
 @ApiStatus.Internal
-public class ModelRenderContext {
-    public static int light;
-    @Nullable
-    public static Entity currentEntity;
-    @Nullable
-    public static EntityRenderer<?> currentEntityRenderer;
-    @Nullable
-    public static BlockEntity currentBlockEntity;
-    @Nullable
-    public static BlockEntityRenderer<?> currentBlockEntityRenderer;
+public final class ModelRenderContext {
+    public static final Stack<Entity> CURRENT_ENTITY = new ObjectArrayList<>();
+    public static final Stack<BlockEntity> CURRENT_BLOCK_ENTITY = new ObjectArrayList<>();
+
+    private ModelRenderContext() { }
 }

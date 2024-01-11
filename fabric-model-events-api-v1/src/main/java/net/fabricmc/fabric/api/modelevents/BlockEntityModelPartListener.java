@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.modelevents;
 import net.fabricmc.fabric.api.modelevents.data.PartView;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 
 /**
@@ -37,7 +36,7 @@ import net.minecraft.client.util.math.MatrixStack;
  */
 @FunctionalInterface
 public interface BlockEntityModelPartListener<T extends BlockEntity> {
-    void onModelPartRendered(T blockEntity, BlockEntityRenderer<T> renderer, PartView part,
+    void onModelPartRendered(T blockEntity, PartView part,
             MatrixStack matrices, VertexConsumer vertexConsumer,
             float tickDelta,
             int light, int overlay,

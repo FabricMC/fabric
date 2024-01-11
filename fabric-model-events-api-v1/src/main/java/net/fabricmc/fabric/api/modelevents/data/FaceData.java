@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.modelevents.data;
 
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import net.minecraft.util.math.Direction;
@@ -35,12 +36,24 @@ public interface FaceData {
 
     /**
      * The face direction vector for use when applying directional lighting.
-     *
+     * <p>
      * If the face is mirrored, will be the opposite of {@see direction}.
      *
      * @return The lighting normal vector.
      */
     Vector3f lightingDirection();
+
+    /**
+     * Gets the face orientation.
+     * <p>
+     * The returned quaternion represents a rotation perpendicular to the plane parallel to this that you can use to rotate
+     * a model to render
+     *
+     * @return Quaternion rotation
+     */
+    default Quaternionf rotation() {
+        return direction().getRotationQuaternion();
+    }
 
     /**
      * The minimum axis vector of this face.

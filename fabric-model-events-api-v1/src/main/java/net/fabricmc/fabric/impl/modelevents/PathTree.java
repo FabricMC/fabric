@@ -24,12 +24,14 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import net.fabricmc.fabric.api.modelevents.ModelPartCallbacks;
 import net.fabricmc.fabric.api.modelevents.PartTreePath;
 
+@VisibleForTesting
 @ApiStatus.Internal
-class PathTree<T> {
+public class PathTree<T> {
     private final Map<Key, T> entries = new HashMap<>();
     private final Node<T> treeNode = new Node<>();
 

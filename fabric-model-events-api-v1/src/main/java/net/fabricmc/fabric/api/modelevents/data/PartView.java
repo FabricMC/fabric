@@ -16,11 +16,14 @@
 
 package net.fabricmc.fabric.api.modelevents.data;
 
+import java.util.Optional;
+import java.util.function.Consumer;
+
 import net.fabricmc.fabric.api.modelevents.PartTreePath;
 import net.minecraft.client.model.ModelPart;
 
 /**
- * Provides access to the information about a model part.
+ * Provides access to information about a model part as it is being rendered.
  */
 public interface PartView {
     /**
@@ -29,7 +32,7 @@ public interface PartView {
     PartTreePath path();
 
     /**
-     * Provides a direct reference to the ModelPart being rendered
+     * Provides a direct reference to the ModelPart this view is abstracted over
      */
     ModelPart part();
 
@@ -37,4 +40,27 @@ public interface PartView {
      * Data-view of the cubes contained within this part
      */
     DataCollection<CubeData> cubes();
+
+    /**
+     * Gets the corresponding view into one of this part's children.
+     *
+     * @param name Name of the part to locate.
+     * @return Optional part view
+     */
+    Optional<PartView> getChild(String name);
+
+    /**
+     * Gets the corresponding view into one of this part's children.
+     *
+     * @param path Relative path of the child element to find
+     * @return Optional part view
+     */
+    Optional<PartView> getChild(PartTreePath path);
+
+    /**
+     * Iterates through all of the children and their children under this part.
+     *
+     * @param partConsumer Consumer for each part view encountered along the tree.
+     */
+    void forEachPart(Consumer<PartView> partConsumer);
 }

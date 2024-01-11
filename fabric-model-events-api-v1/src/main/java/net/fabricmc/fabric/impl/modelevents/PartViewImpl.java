@@ -16,8 +16,12 @@
 
 package net.fabricmc.fabric.impl.modelevents;
 
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import com.google.common.base.Suppliers;
 
 import net.fabricmc.fabric.api.modelevents.ModelPartListener;
 import net.fabricmc.fabric.api.modelevents.PartTreePath;
@@ -33,21 +37,19 @@ import net.minecraft.client.util.math.MatrixStack;
 @ApiStatus.Internal
 class PartViewImpl implements PartView {
     private final FabricPartHooks.Container part;
-    @Nullable
-    private PartTreePath path;
-    @Nullable
-    private final ModelPartListener eventListener;
 
-    @Nullable
-    private DataCollection<CubeData> cubeCollection;
+    private final PartTreePath path;
+    private final ModelPartListener eventListener;
+    private final Supplier<DataCollection<CubeData>> cubes;
 
     public PartViewImpl(FabricPartHooks.Container part, PartTreePathImpl path) {
         this.part = part;
         this.path = path;
+        this.eventListener = ModelPartCallbacksImpl.getInvoker(this.path);
+        this.cubes = Suppliers.memoize(() -> new ListDataCollection<>(part.getCuboids(), cuboid -> (CubeData)cuboid));
         part.getChildren().forEach((name, child) -> {
             Container.of(child).getHooks().initializePaths(path.append(name));
         });
-        this.eventListener = ModelPartCallbacksImpl.getInvoker(this.path);
     }
 
     public void dispatchEvents(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha) {
@@ -67,9 +69,38 @@ class PartViewImpl implements PartView {
 
     @Override
     public DataCollection<CubeData> cubes() {
-        if (cubeCollection == null) {
-            cubeCollection = new ListDataCollection<>(part.getCuboids(), cuboid -> (CubeData)cuboid);
+        return cubes.get();
+    }
+
+    @Override
+    public Optional<PartView> getChild(String name) {
+        if (!part().hasChild(name)) {
+            return Optional.empty();
         }
-        return cubeCollection;
+
+        return Optional.ofNullable(FabricPartHooks.Container.of(part().getChild(name)).getHooks().getView());
+    }
+
+    @Override
+    public Optional<PartView> getChild(PartTreePath path) {
+        ModelPart part = part();
+        for (String name : path) {
+            if (!part.hasChild(name)) {
+                return Optional.empty();
+            }
+            part = part.getChild(name);
+        }
+        return Optional.ofNullable(FabricPartHooks.Container.of(part).getHooks().getView());
+    }
+
+    @Override
+    public void forEachPart(Consumer<PartView> partConsumer) {
+        part.getChildren().values().forEach(child -> {
+            PartView childView = FabricPartHooks.Container.of(child).getHooks().getView();
+            if (childView != null) {
+                partConsumer.accept(childView);
+                childView.forEachPart(partConsumer);
+            }
+        });
     }
 }

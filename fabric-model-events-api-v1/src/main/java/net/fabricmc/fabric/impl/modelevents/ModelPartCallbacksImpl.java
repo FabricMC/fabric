@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.modelevents;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.event.Event;
@@ -26,14 +27,18 @@ import net.fabricmc.fabric.api.modelevents.EntityModelPartListener;
 import net.fabricmc.fabric.api.modelevents.ModelPartCallbacks;
 import net.fabricmc.fabric.api.modelevents.ModelPartListener;
 import net.fabricmc.fabric.api.modelevents.PartTreePath;
+import net.fabricmc.fabric.api.modelevents.data.PartView;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 
 @ApiStatus.Internal
-public class ModelPartCallbacksImpl implements ModelPartCallbacks {
-    private static final PathTree<ModelPartCallbacksImpl> INSTANCES = new PathTree<>();
+public final class ModelPartCallbacksImpl implements ModelPartCallbacks {
+    @VisibleForTesting
+    public static final PathTree<ModelPartCallbacksImpl> INSTANCES = new PathTree<>();
 
     public static ModelPartCallbacks get(MatchingStrategy matchingStrategy, PartTreePath path) {
         return INSTANCES.getOrCreate(matchingStrategy, path, ModelPartCallbacksImpl::new);
@@ -45,29 +50,32 @@ public class ModelPartCallbacksImpl implements ModelPartCallbacks {
         return createInvoker(eventListeners.toArray(ModelPartListener[]::new));
     }
 
-    private static final ModelPartListener createInvoker(ModelPartListener[] listeners) {
+    private static ModelPartListener createInvoker(ModelPartListener[] listeners) {
         return (part, matrices, vertices, delta, light, overlay, r, g, b, a) -> {
             for (var listener : listeners) {
+                matrices.push();
                 listener.onModelPartRendered(part, matrices, vertices, delta, light, overlay, r, g, b, a);
+                matrices.pop();
             }
         };
     }
 
     private final Event<ModelPartListener> event = EventFactory.createArrayBacked(ModelPartListener.class, ModelPartCallbacksImpl::createInvoker);
 
+    private ModelPartCallbacksImpl() {}
+
     @Override
     public void register(ModelPartListener listener) {
-        event.register(listener);
+        event.register(new GuardedListener(listener));
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T extends Entity> void register(EntityType<T> entityType, EntityModelPartListener<T> listener) {
         register((part, matrices, vertices, delta, light, overlay, r, g, b, a) -> {
-            if (ModelRenderContext.currentEntity != null
-                    && ModelRenderContext.currentEntityRenderer != null
-                    && ModelRenderContext.currentEntity.getType() == entityType) {
-                ((EntityModelPartListener)listener).onModelPartRendered(ModelRenderContext.currentEntity, ModelRenderContext.currentEntityRenderer, part, matrices, vertices, delta, light, overlay, r, g, b, a);
+            if (!ModelRenderContext.CURRENT_ENTITY.isEmpty()
+                    && ModelRenderContext.CURRENT_ENTITY.top().getType() == entityType) {
+                ((EntityModelPartListener)listener).onModelPartRendered(ModelRenderContext.CURRENT_ENTITY.top(), part, matrices, vertices, delta, light, overlay, r, g, b, a);
             }
         });
     }
@@ -76,11 +84,40 @@ public class ModelPartCallbacksImpl implements ModelPartCallbacks {
     @Override
     public <T extends BlockEntity> void register(BlockEntityType<T> entityType, BlockEntityModelPartListener<T> listener) {
         register((part, matrices, vertices, delta, light, overlay, r, g, b, a) -> {
-            if (ModelRenderContext.currentBlockEntity != null
-                    && ModelRenderContext.currentBlockEntityRenderer != null
-                    && ModelRenderContext.currentBlockEntity.getType() == entityType) {
-                ((BlockEntityModelPartListener)listener).onModelPartRendered(ModelRenderContext.currentBlockEntity, ModelRenderContext.currentBlockEntityRenderer, part, matrices, vertices, delta, light, overlay, r, g, b, a);
+            if (!ModelRenderContext.CURRENT_BLOCK_ENTITY.isEmpty()
+                    && ModelRenderContext.CURRENT_BLOCK_ENTITY.top().getType() == entityType) {
+                ((BlockEntityModelPartListener)listener).onModelPartRendered(ModelRenderContext.CURRENT_BLOCK_ENTITY.top(), part, matrices, vertices, delta, light, overlay, r, g, b, a);
             }
         });
     }
+
+    private static final class GuardedListener implements ModelPartListener {
+        private boolean active;
+        private final ModelPartListener listener;
+
+        public GuardedListener(ModelPartListener listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        public void onModelPartRendered(PartView part, MatrixStack matrices, VertexConsumer vertexConsumer, float tickDelta, int light, int overlay, float red, float green, float blue, float alpha) {
+            if (active) {
+                return;
+            }
+            active = true;
+            try {
+                listener.onModelPartRendered(part, matrices, vertexConsumer, tickDelta, light, overlay, red, green, blue, alpha);
+            } finally {
+                active = false;
+            }
+        }
+    }
 }
+
+
+
+
+
+
+
+

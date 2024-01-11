@@ -16,25 +16,50 @@
 
 package net.fabricmc.fabric.impl.modelevents;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3f;
 
+import net.fabricmc.fabric.api.modelevents.data.DataCollection;
 import net.fabricmc.fabric.api.modelevents.data.FaceData;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.util.math.Direction;
 
 @ApiStatus.Internal
-public class FaceDataImpl implements FaceData {
-    private final Direction direction;
-    private final ModelPart.Quad quad;
-    public final Vector3f min = new Vector3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
-    public final Vector3f max = new Vector3f(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
-    public final Vector3f size = new Vector3f();
-    public final Vector3f center = new Vector3f();
+public record FaceDataImpl (
+        Direction direction,
+        Vector3f lightingDirection,
+        Vector3f min,
+        Vector3f max,
+        Vector3f size,
+        Vector3f center
+    ) implements FaceData {
+    public static DataCollection<FaceData> computeFromFaces(Map<Direction, DataCollection<FaceData>> cache, Direction direction, ModelPart.Quad[] sides) {
+        return cache.computeIfAbsent(direction, d -> {
+            List<FaceDataImpl.Container> faces = null;
+            for (var side : sides) {
+                if (((Container)side).getFabricDirection() != d) {
+                    continue;
+                }
+                if (faces == null) {
+                    faces = new ArrayList<>();
+                }
+                faces.add((Container)side);
+            }
+            return faces == null ? DataCollection.of() : new ListDataCollection<>(faces, Container::getFabricFaceData);
+        });
+    }
 
-    public FaceDataImpl(Direction direction, ModelPart.Quad quad) {
-        this.direction = direction;
-        this.quad = quad;
+    public FaceDataImpl(Container face, ModelPart.Quad quad) {
+        this(face.getFabricDirection(), quad.direction,
+                new Vector3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE),
+                new Vector3f(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE),
+                new Vector3f(),
+                new Vector3f()
+        );
 
         switch (quad.vertices.length) {
             case 0:
@@ -59,36 +84,6 @@ public class FaceDataImpl implements FaceData {
 
         max.sub(min, size);
         max.mul(0.5F, center).add(min);
-    }
-
-    @Override
-    public Direction direction() {
-        return direction;
-    }
-
-    @Override
-    public Vector3f lightingDirection() {
-        return quad.direction;
-    }
-
-    @Override
-    public Vector3f min() {
-        return min;
-    }
-
-    @Override
-    public Vector3f max() {
-        return max;
-    }
-
-    @Override
-    public Vector3f size() {
-        return size;
-    }
-
-    @Override
-    public Vector3f center() {
-        return center;
     }
 
     public interface Container {

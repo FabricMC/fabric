@@ -16,14 +16,17 @@
 
 package net.fabricmc.fabric.api.modelevents.data;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Represents a managed collection of data.
  *
  * @param <T> The data elements this collection contains.
  */
-public interface DataCollection<T> {
+public interface DataCollection<T> extends Iterable<T> {
     /**
      * The empty data collection.
      */
@@ -36,6 +39,14 @@ public interface DataCollection<T> {
         @Override
         public Optional<Object> getAt(int index) {
             return Optional.empty();
+        }
+
+        @Override
+        public void forEach(Consumer<Object> consumer) {}
+
+        @Override
+        public Iterator<Object> iterator() {
+            return List.of().iterator();
         }
     };
 

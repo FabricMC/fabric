@@ -47,7 +47,7 @@ class ModelPart_QuadMixin implements FaceDataImpl.Container {
     @Override
     public FaceData getFabricFaceData() {
         if (fabric_face_data == null) {
-            fabric_face_data = new FaceDataImpl(fabric_direction, (ModelPart.Quad)(Object)this);
+            fabric_face_data = new FaceDataImpl(this, (ModelPart.Quad)(Object)this);
         }
         return fabric_face_data;
     }
