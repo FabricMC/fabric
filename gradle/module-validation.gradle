@@ -8,7 +8,7 @@ import groovy.json.JsonSlurper
  */
 
 subprojects {
-	if (it.name == "deprecated") {
+	if (it.name == "deprecated" || it.name == "fabric-api-bom" || it.name == "fabric-api-catalog") {
 		return
 	}
 
