@@ -90,10 +90,36 @@ public interface ModelPartCallbacks {
      */
     <T extends BlockEntity> void register(BlockEntityType<T> entityType, BlockEntityModelPartListener<T> listener);
 
+    /**
+     * Represents the strategy used when determining whether a model's path matches with the requested path for an event.
+     */
     public enum MatchingStrategy {
+        /**
+         * The paths are the same.
+         */
         EXACT,
+        /**
+         * The beginning of the model part's path matches, but may have other elements following.
+         * <p>
+         * Use this to listen for render events for any child nodes of the requested part.
+         */
         STARTS_WITH,
+        /**
+         * The end of the model part's path matches, but may have other elements preceding.
+         * <p>
+         * Use this to listen for a part who's name (and optionally parents) match the requested path,
+         * but may appear nested deep within a model's overall structure.
+         * <p>
+         * This is the default when registering.
+         */
         ENDS_WITH,
+        /**
+         * The path is matched if the requested path appears anywhere within.
+         * Elements may appear before or after the requested path.
+         * <p>
+         * Use this to listen for any child nodes of the requested part even if it appears nested
+         * deep within a model's overall structure.
+         */
         CONTAINS
     }
 }
