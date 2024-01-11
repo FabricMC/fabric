@@ -18,8 +18,11 @@ package net.fabricmc.fabric.impl.modelevents;
 
 import java.util.List;
 import java.util.Map;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.fabricmc.fabric.api.modelevents.data.PartView;
 import net.minecraft.client.model.ModelPart;
@@ -28,12 +31,16 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
 @ApiStatus.Internal
-public class FabricPartHooks {
+public final class FabricPartHooks {
+    private static final Logger LOGGER = LoggerFactory.getLogger("fabric-model-events-v1");
+
     private final Container part;
     @Nullable
     private FabricPartHooks parent;
     @Nullable
     private PartViewImpl view;
+
+    private boolean settingPath;
 
     public FabricPartHooks(Container part) {
         this.part = part;
@@ -65,12 +72,21 @@ public class FabricPartHooks {
 
     // called recursively
     void setPath(PartTreePathImpl path) {
-        this.view = new PartViewImpl(part, path);
-        // cleanup
-        parent = null;
-        part.getChildren().forEach((name, child) -> {
-            Container.of(child).getHooks().setPath(path.append(name));
-        });
+        if (settingPath) {
+            LOGGER.warn("Loop detected in model tree at $", path);
+            return; // Parts shouldn't have loops, but just in case, prevent re-entry
+        }
+        settingPath = true;
+        try {
+            this.view = new PartViewImpl(part, path);
+            // cleanup
+            parent = null;
+            part.getChildren().forEach((name, child) -> {
+                Container.of(child).getHooks().setPath(path.append(name));
+            });
+        } finally {
+            settingPath = false;
+        }
     }
 
     @Nullable

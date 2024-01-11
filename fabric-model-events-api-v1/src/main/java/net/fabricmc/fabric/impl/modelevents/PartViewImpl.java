@@ -32,7 +32,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
 @ApiStatus.Internal
-class PartViewImpl implements PartView {
+final class PartViewImpl implements PartView {
     private final FabricPartHooks.Container part;
 
     private final PartTreePath path;
@@ -41,10 +41,10 @@ class PartViewImpl implements PartView {
     @Nullable
     private DataCollection<CubeData> cubes;
 
-    public PartViewImpl(FabricPartHooks.Container part, PartTreePathImpl path) {
+    PartViewImpl(FabricPartHooks.Container part, PartTreePathImpl path) {
         this.part = part;
         this.path = path;
-        this.eventListener = ModelPartCallbacksImpl.getInvoker(this.path);
+        this.eventListener = ModelPartCallbacksImpl.getInvoker(path);
     }
 
     public void dispatchEvents(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha) {
