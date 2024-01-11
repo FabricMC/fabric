@@ -32,8 +32,8 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 	 * In the first two cases, only the attachments with {@link AttachmentType#copyOnDeath()} will be transferred.
 	 */
 	@SuppressWarnings("unchecked")
-	static void copyOnRespawn(AttachmentTargetImpl original, AttachmentTargetImpl target, boolean isDeath) {
-		Map<AttachmentType<?>, ?> attachments = original.fabric_getAttachments();
+	static void copyOnRespawn(AttachmentTarget original, AttachmentTarget target, boolean isDeath) {
+		Map<AttachmentType<?>, ?> attachments = ((AttachmentTargetImpl) original).fabric_getAttachments();
 
 		if (attachments == null) {
 			return;

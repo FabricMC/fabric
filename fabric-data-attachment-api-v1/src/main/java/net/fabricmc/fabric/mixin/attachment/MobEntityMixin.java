@@ -41,6 +41,6 @@ abstract class MobEntityMixin implements AttachmentTargetImpl {
 	) {
 		// TODO: add this to event API and migrate to use the event
 		// Counting conversion as a form of death here
-		AttachmentTargetImpl.copyOnRespawn(this, (AttachmentTargetImpl) converted, true);
+		AttachmentTargetImpl.copyOnRespawn(this, converted, true);
 	}
 }
