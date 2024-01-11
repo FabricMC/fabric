@@ -44,7 +44,7 @@ final class PartViewImpl implements PartView {
     PartViewImpl(FabricPartHooks.Container part, PartTreePathImpl path) {
         this.part = part;
         this.path = path;
-        this.eventListener = ModelPartCallbacksImpl.getInvoker(path);
+        this.eventListener = ModelPartCallbacksImpl.createInvoker(path);
     }
 
     public void dispatchEvents(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha) {

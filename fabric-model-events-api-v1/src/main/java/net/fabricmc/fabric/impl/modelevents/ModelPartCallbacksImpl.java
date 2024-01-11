@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.impl.modelevents;
 
+import java.util.Objects;
+
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -37,6 +40,7 @@ import net.minecraft.entity.EntityType;
 
 @ApiStatus.Internal
 public final class ModelPartCallbacksImpl implements ModelPartCallbacks {
+    private static volatile long UPDATE_TIME = 0;
     @VisibleForTesting
     public static final PathTree<ModelPartCallbacksImpl> INSTANCES = new PathTree<>();
 
@@ -44,20 +48,8 @@ public final class ModelPartCallbacksImpl implements ModelPartCallbacks {
         return INSTANCES.getOrCreate(matchingStrategy, path, ModelPartCallbacksImpl::new);
     }
 
-    static ModelPartListener getInvoker(PartTreePath path) {
-        var eventListeners = new ObjectArrayList<>();
-        INSTANCES.findMatchingLeafNodes(path, c -> eventListeners.add(c.event.invoker()));
-        return createInvoker(eventListeners.toArray(ModelPartListener[]::new));
-    }
-
-    private static ModelPartListener createInvoker(ModelPartListener[] listeners) {
-        return (part, matrices, vertices, delta, light, overlay, r, g, b, a) -> {
-            for (var listener : listeners) {
-                matrices.push();
-                listener.onModelPartRendered(part, matrices, vertices, delta, light, overlay, r, g, b, a);
-                matrices.pop();
-            }
-        };
+    static ModelPartListener createInvoker(PartTreePath path) {
+        return new Invoker(path);
     }
 
     private final Event<ModelPartListener> event = EventFactory.createArrayBacked(ModelPartListener.class, ModelPartCallbacksImpl::createInvoker);
@@ -66,12 +58,15 @@ public final class ModelPartCallbacksImpl implements ModelPartCallbacks {
 
     @Override
     public void register(ModelPartListener listener) {
-        event.register(new GuardedListener(listener));
+        Objects.requireNonNull(listener);
+        event.register(guardRecursion(listener));
+        UPDATE_TIME = System.currentTimeMillis();
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T extends Entity> void register(EntityType<T> entityType, EntityModelPartListener<T> listener) {
+        Objects.requireNonNull(listener);
         register((part, matrices, vertices, delta, light, overlay, r, g, b, a) -> {
             if (!ModelRenderContext.CURRENT_ENTITY.isEmpty()
                     && ModelRenderContext.CURRENT_ENTITY.top().getType() == entityType) {
@@ -83,6 +78,7 @@ public final class ModelPartCallbacksImpl implements ModelPartCallbacks {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T extends BlockEntity> void register(BlockEntityType<T> entityType, BlockEntityModelPartListener<T> listener) {
+        Objects.requireNonNull(listener);
         register((part, matrices, vertices, delta, light, overlay, r, g, b, a) -> {
             if (!ModelRenderContext.CURRENT_BLOCK_ENTITY.isEmpty()
                     && ModelRenderContext.CURRENT_BLOCK_ENTITY.top().getType() == entityType) {
@@ -91,25 +87,52 @@ public final class ModelPartCallbacksImpl implements ModelPartCallbacks {
         });
     }
 
-    private static final class GuardedListener implements ModelPartListener {
-        private boolean active;
-        private final ModelPartListener listener;
+    static ModelPartListener createInvoker(ModelPartListener[] events) {
+        return (part, matrices, vertices, delta, light, overlay, r, g, b, a) -> {
+            for (var event : events) {
+                matrices.push();
+                event.onModelPartRendered(part, matrices, vertices, delta, light, overlay, r, g, b, a);
+                matrices.pop();
+            }
+        };
+    }
 
-        public GuardedListener(ModelPartListener listener) {
-            this.listener = listener;
+    private static ModelPartListener guardRecursion(final ModelPartListener listener) {
+        var guard = new Object() {
+            boolean active;
+        };
+        return (part, matrices, vertices, delta, light, overlay, r, g, b, a) -> {
+            // We don't want handlers recursively triggering themselves
+            if (guard.active) return;
+            guard.active = true;
+            try {
+                listener.onModelPartRendered(part, matrices, vertices, delta, light, overlay, r, g, b, a);
+            } finally {
+                guard.active = false;
+            }
+        };
+    }
+
+    private static final class Invoker implements ModelPartListener {
+        @Nullable
+        private volatile ModelPartListener listener;
+        private final PartTreePath path;
+        private volatile long compileTime = -1;
+
+        Invoker(PartTreePath path) {
+            this.path = path;
         }
 
         @Override
         public void onModelPartRendered(PartView part, MatrixStack matrices, VertexConsumer vertexConsumer, float tickDelta, int light, int overlay, float red, float green, float blue, float alpha) {
-            if (active) {
-                return;
+            if (listener == null || (UPDATE_TIME > compileTime)) {
+                compileTime = System.currentTimeMillis();
+                var eventListeners = new ObjectArrayList<>();
+                INSTANCES.findMatchingLeafNodes(path, c -> eventListeners.add(c.event.invoker()));
+                listener = createInvoker(eventListeners.toArray(ModelPartListener[]::new));
             }
-            active = true;
-            try {
-                listener.onModelPartRendered(part, matrices, vertexConsumer, tickDelta, light, overlay, red, green, blue, alpha);
-            } finally {
-                active = false;
-            }
+
+            listener.onModelPartRendered(part, matrices, vertexConsumer, tickDelta, light, overlay, red, green, blue, alpha);
         }
     }
 }
