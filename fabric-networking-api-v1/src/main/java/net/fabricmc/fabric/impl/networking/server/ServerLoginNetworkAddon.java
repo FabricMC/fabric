@@ -147,7 +147,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 		}
 
 		boolean understood = originalBuf != null;
-		@Nullable ServerLoginNetworking.LoginQueryResponseHandler handler = ServerNetworkingImpl.LOGIN.getHandler(channel);
+		@Nullable ServerLoginNetworking.LoginQueryResponseHandler handler = this.getHandler(channel);
 
 		if (handler == null) {
 			return false;
