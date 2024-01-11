@@ -37,8 +37,8 @@ public class ShearsGameTest implements FabricGameTest, ModInitializer {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void harvestGrassTest(TestContext context) {
-		context.addTask(() -> testMineGrass(REAL_SHEARS, context));
-		context.addTask(() -> testMineGrass(FAKE_SHEARS, context));
+		context.waitAndRun(1, () -> testMineGrass(REAL_SHEARS, context));
+		context.waitAndRun(1, () -> testMineGrass(FAKE_SHEARS, context));
 		context.complete();
 	}
 
@@ -54,14 +54,14 @@ public class ShearsGameTest implements FabricGameTest, ModInitializer {
 	public void dispenserShearsTest(TestContext context) {
 		context.setBlockState(POS, Blocks.DISPENSER.getDefaultState().with(DispenserBlock.TRIGGERED, true));
 		DispenserBlockEntity blockEntity = (DispenserBlockEntity) Objects.requireNonNull(context.getBlockEntity(POS));
-		context.addTask(() -> testDispenserShears(REAL_SHEARS, blockEntity, context));
-		context.addTask(() -> testDispenserShears(FAKE_SHEARS, blockEntity, context));
+		context.waitAndRun(1, () -> testDispenserShears(REAL_SHEARS, blockEntity, context));
+		context.waitAndRun(1, () -> testDispenserShears(FAKE_SHEARS, blockEntity, context));
 		context.complete();
 	}
 
 	private void testMineGrass(Item item, TestContext context) {
 		Block.dropStacks(Blocks.SHORT_GRASS.getDefaultState(), context.getWorld(), POS, null, null, item.getDefaultStack());
-		context.addTask(() -> context.expectItem(Items.SHORT_GRASS));
+		context.waitAndRun(1, () -> context.expectItem(Items.SHORT_GRASS));
 	}
 
 	private void testShearSheep(Item item, PlayerEntity player, TestContext context) {
@@ -75,8 +75,9 @@ public class ShearsGameTest implements FabricGameTest, ModInitializer {
 	private void testDispenserShears(Item item, DispenserBlockEntity blockEntity, TestContext context) {
 		blockEntity.setStack(0, item.getDefaultStack());
 		SheepEntity sheep = context.spawnEntity(EntityType.SHEEP, POS.north());
+		sheep.setAiDisabled(true);
 		context.putAndRemoveRedstoneBlock(POS.up(), 1);
-		context.addTask(() -> {
+		context.waitAndRun(1, () -> {
 			context.expectItem(getWool(sheep));
 			sheep.kill();
 		});
