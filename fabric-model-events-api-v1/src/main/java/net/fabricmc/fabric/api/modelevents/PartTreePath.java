@@ -34,19 +34,12 @@ public interface PartTreePath extends Iterable<String> {
      * Creates a new model path from a string value.
      */
     static PartTreePath of(String path) {
-        boolean absolute = false;
         if (path != null && path.startsWith("/")) {
-            absolute = true;
             path = path.substring(1);
         }
 
-        return path == null || path.isEmpty() ? of() : new PartTreePathImpl(absolute, List.of(path.split("/")));
+        return path == null || path.isEmpty() ? of() : new PartTreePathImpl(List.of(path.split("/")));
     }
-
-    /**
-     * Returns whether this path is absolute.
-     */
-    boolean isAbsolute();
 
     /**
      * Finds the position at which a specific part appears on this path.

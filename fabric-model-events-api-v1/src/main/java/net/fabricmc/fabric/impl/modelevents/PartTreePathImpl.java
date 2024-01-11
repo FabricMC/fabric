@@ -18,8 +18,6 @@ package net.fabricmc.fabric.impl.modelevents;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
-
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,23 +26,16 @@ import net.fabricmc.fabric.api.modelevents.PartTreePath;
 
 @ApiStatus.Internal
 public class PartTreePathImpl implements PartTreePath {
-    public static final PartTreePathImpl EMPTY = new PartTreePathImpl(true, List.of());
+    public static final PartTreePathImpl EMPTY = new PartTreePathImpl(List.of());
 
     private final List<String> path;
     private final int depth;
-    private final boolean absolute;
     @Nullable
     private String pathString;
 
-    public PartTreePathImpl(boolean absolute, List<String> path) {
+    public PartTreePathImpl(List<String> path) {
         this.path = new ObjectArrayList<>(path);
         this.depth = path.size();
-        this.absolute = absolute;
-    }
-
-    @Override
-    public boolean isAbsolute() {
-        return absolute;
     }
 
     @Override
@@ -74,7 +65,7 @@ public class PartTreePathImpl implements PartTreePath {
     }
 
     public PartTreePathImpl append(String name) {
-        PartTreePathImpl copy = new PartTreePathImpl(isAbsolute(), path);
+        PartTreePathImpl copy = new PartTreePathImpl(path);
         copy.path.add(name);
         return copy;
     }
@@ -82,14 +73,14 @@ public class PartTreePathImpl implements PartTreePath {
     @Override
     public String toString() {
         if (pathString == null) {
-            pathString = (isAbsolute() ? "/" : "") + String.join("/", path.toArray(String[]::new));
+            pathString = String.join("/", path.toArray(String[]::new));
         }
         return pathString;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(isAbsolute(), path);
+        return path.hashCode();
     }
 
     @Override

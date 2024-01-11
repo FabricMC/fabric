@@ -79,7 +79,7 @@ public final class ModelEventsTest implements ClientModInitializer {
 	    assert PartTreePath.of() == PartTreePath.of(" ");
 	    assert PartTreePath.of() == PartTreePath.of(null);
 	    assert PartTreePath.of() == PartTreePath.of("/");
-	    assert "/a/b/c".contentEquals(PartTreePath.of("/a/b/c").toString());
+	    assert "a/b/c".contentEquals(PartTreePath.of("/a/b/c").toString());
 	}
 
 	static void checkPartPathParsing() {
@@ -89,7 +89,6 @@ public final class ModelEventsTest implements ClientModInitializer {
 	        components.add(component);
 	    }
 	    assert !path.isRoot();
-	    assert !path.isAbsolute();
 	    assert Arrays.equals(new String[] {"a", "b", "c"}, components.toArray(String[]::new));
 	}
 
