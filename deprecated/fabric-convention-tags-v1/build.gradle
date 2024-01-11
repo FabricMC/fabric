@@ -1,0 +1,6 @@
+version = getSubprojectVersion(project)
+
+moduleDependencies(project, [
+    'fabric-api-base',
+    'fabric-convention-tags-v2'
+])

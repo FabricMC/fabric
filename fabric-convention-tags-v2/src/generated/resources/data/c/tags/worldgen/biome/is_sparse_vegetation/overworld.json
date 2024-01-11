@@ -1,0 +1,25 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:is_savanna",
+      "required": false
+    },
+    {
+      "id": "#c:is_desert",
+      "required": false
+    },
+    {
+      "id": "#c:is_dead",
+      "required": false
+    },
+    {
+      "id": "#c:is_wasteland",
+      "required": false
+    },
+    {
+      "id": "#c:vegetation_sparse",
+      "required": false
+    }
+  ]
+}

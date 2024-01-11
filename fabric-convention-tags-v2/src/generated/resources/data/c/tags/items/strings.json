@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:string",
+    {
+      "id": "#c:strings",
+      "required": false
+    }
+  ]
+}

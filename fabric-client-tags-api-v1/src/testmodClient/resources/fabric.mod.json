@@ -6,7 +6,7 @@
   "environment": "*",
   "license": "Apache-2.0",
   "depends": {
-    "fabric-convention-tags-v1": "*"
+    "fabric-convention-tags-v2": "*"
   },
   "entrypoints": {
     "client": [

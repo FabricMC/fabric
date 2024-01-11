@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:blue_dye",
+    {
+      "id": "#c:blue_dyes",
+      "required": false
+    }
+  ]
+}

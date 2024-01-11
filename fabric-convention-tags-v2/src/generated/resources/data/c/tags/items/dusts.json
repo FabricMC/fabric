@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:dusts/glowstone",
+      "required": false
+    },
+    {
+      "id": "#c:dusts/redstone",
+      "required": false
+    }
+  ]
+}

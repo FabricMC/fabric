@@ -31,9 +31,9 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalEnchantmentTags;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
@@ -51,7 +51,7 @@ public class ClientTagTest implements ClientModInitializer {
 		}
 
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-			if (ClientTags.getOrCreateLocalTag(ConventionalEnchantmentTags.INCREASES_BLOCK_DROPS) == null) {
+			if (ClientTags.getOrCreateLocalTag(ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS) == null) {
 				throw new AssertionError("Expected to load c:fortune, but it was not found!");
 			}
 
@@ -63,7 +63,7 @@ public class ClientTagTest implements ClientModInitializer {
 				throw new AssertionError("Did not expect to find diamond block in c:ores, but it was found!");
 			}
 
-			if (!ClientTags.isInLocal(ConventionalBiomeTags.FOREST, BiomeKeys.FOREST)) {
+			if (!ClientTags.isInLocal(ConventionalBiomeTags.IS_FOREST, BiomeKeys.FOREST)) {
 				throw new AssertionError("Expected to find forest in c:forest, but it was not found!");
 			}
 

@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:shears",
+    {
+      "id": "#c:shears",
+      "required": false
+    }
+  ]
+}

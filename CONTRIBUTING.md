@@ -287,7 +287,7 @@ Fabric API is organized in different modules. Each module is located in a specif
 - Module names should be named after the exposed functionality.
     - Consider future developments when naming a module: they might later be expanded.
 - Module names should usually be suffixed by `-api`.
-    - Modules whose primary purpose is not interaction with their API do not need this suffix. For example, `fabric-transitive-access-wideners-v1` or `fabric-convention-tags-v1`.
+    - Modules whose primary purpose is not interaction with their API do not need this suffix. For example, `fabric-transitive-access-wideners-v1` or `fabric-convention-tags-v2`.
     - Event modules should have the `-events` suffix instead.
 - Module names should always be suffixed by a major version (`-v1`, `-v2`, etc).
     - The major version starts at `v1` for new functionality, unless they replace a module with equivalent functionality, in which case the version is incremented.

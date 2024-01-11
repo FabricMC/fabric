@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-convention-tags-testmod",
+  "name": "Fabric Convention Tags (Test Mod)",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-convention-tags-v2": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.tag.convention.v2.TagUtilTest"
+    ]
+  }
+}
