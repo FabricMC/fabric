@@ -34,6 +34,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +71,8 @@ import net.minecraft.registry.RegistryBuilder;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryFixedCodec;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
@@ -119,6 +123,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider(JapaneseLangProvider::new);
 		pack.addProvider(TestDynamicRegistryProvider::new);
 		pack.addProvider(TestPredicateProvider::new);
+		pack.addProvider(TestCustomCodecProvider::new);
 
 		TestBlockTagProvider blockTagProvider = pack.addProvider(TestBlockTagProvider::new);
 		pack.addProvider((output, registries) -> new TestItemTagProvider(output, registries, blockTagProvider));
@@ -435,6 +440,29 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public String getName() {
 			return "Predicates";
+		}
+	}
+
+	private static class TestCustomCodecProvider extends FabricCodecDataProvider<TestCustomCodecProvider.Entry> {
+		private TestCustomCodecProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, "biome_entry", Entry.CODEC);
+		}
+
+		@Override
+		protected void configure(BiConsumer<Identifier, Entry> provider, RegistryWrapper.WrapperLookup lookup) {
+			RegistryEntryLookup<Biome> biomes = lookup.createRegistryLookup().getOrThrow(RegistryKeys.BIOME);
+			provider.accept(new Identifier(MOD_ID, "custom_codec_test"), new Entry(biomes.getOrThrow(BiomeKeys.PLAINS)));
+		}
+
+		@Override
+		public String getName() {
+			return "Codec Test Using Dynamic Registry";
+		}
+
+		private record Entry(RegistryEntry<Biome> biome) {
+			private static final Codec<Entry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+					RegistryFixedCodec.of(RegistryKeys.BIOME).fieldOf("biome").forGetter(Entry::biome)
+			).apply(instance, Entry::new));
 		}
 	}
 }
