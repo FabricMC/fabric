@@ -26,10 +26,12 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -42,10 +44,17 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
  */
 public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	private final DataOutput.PathResolver pathResolver;
+	@Nullable
+	private final CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture;
 	private final Codec<T> codec;
 
 	protected FabricCodecDataProvider(FabricDataOutput dataOutput, DataOutput.OutputType outputType, String directoryName, Codec<T> codec) {
+		this(dataOutput, null, outputType, directoryName, codec);
+	}
+
+	protected FabricCodecDataProvider(FabricDataOutput dataOutput, @Nullable CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture, DataOutput.OutputType outputType, String directoryName, Codec<T> codec) {
 		this.pathResolver = dataOutput.getResolver(outputType, directoryName);
+		this.registriesFuture = registriesFuture;
 		this.codec = codec;
 	}
 
@@ -61,6 +70,13 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 			}
 		};
 
+		if (this.registriesFuture != null) {
+			return this.registriesFuture.thenCompose(lookup -> {
+				this.configure(provider, lookup);
+				return this.write(writer, entries);
+			});
+		}
+
 		this.configure(provider);
 		return this.write(writer, entries);
 	}
@@ -70,7 +86,14 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	 *
 	 * @param provider A consumer that accepts an {@link Identifier} and a value to register.
 	 */
-	protected abstract void configure(BiConsumer<Identifier, T> provider);
+	protected void configure(BiConsumer<Identifier, T> provider) {}
+
+	/**
+	 * Implement this method to register entries to generate using a {@link RegistryWrapper.WrapperLookup}.
+	 * @param provider A consumer that accepts an {@link Identifier} and a value to register.
+	 * @param lookup A lookup for registries.
+	 */
+	protected void configure(BiConsumer<Identifier, T> provider, RegistryWrapper.WrapperLookup lookup) {}
 
 	private JsonElement convert(Identifier id, T value) {
 		DataResult<JsonElement> dataResult = this.codec.encodeStart(JsonOps.INSTANCE, value);

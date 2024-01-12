@@ -41,7 +41,10 @@ import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockKeys;
 import net.minecraft.block.Blocks;
+import net.minecraft.data.DataOutput;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.server.recipe.RecipeExporter;
@@ -53,6 +56,9 @@ import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
+import net.minecraft.loot.condition.BlockStatePropertyLootCondition;
+import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.loot.condition.LootConditionTypes;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
@@ -60,6 +66,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryBuilder;
+import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.BlockTags;
@@ -77,6 +84,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.JsonKeySortOrderCallback;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
@@ -110,6 +118,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider(ExistingEnglishLangProvider::new);
 		pack.addProvider(JapaneseLangProvider::new);
 		pack.addProvider(TestDynamicRegistryProvider::new);
+		pack.addProvider(TestPredicateProvider::new);
 
 		TestBlockTagProvider blockTagProvider = pack.addProvider(TestBlockTagProvider::new);
 		pack.addProvider((output, registries) -> new TestItemTagProvider(output, registries, blockTagProvider));
@@ -408,6 +417,24 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public String getName() {
 			return "Test Dynamic Registry";
+		}
+	}
+
+	private static class TestPredicateProvider extends FabricCodecDataProvider<LootCondition> {
+		private TestPredicateProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, "predicates", LootConditionTypes.CODEC);
+		}
+
+		@Override
+		protected void configure(BiConsumer<Identifier, LootCondition> provider, RegistryWrapper.WrapperLookup lookup) {
+			RegistryEntryLookup<Block> blocks = lookup.createRegistryLookup().getOrThrow(RegistryKeys.BLOCK);
+			provider.accept(new Identifier(MOD_ID, "predicate_test"), BlockStatePropertyLootCondition.builder(
+					blocks.getOrThrow(BlockKeys.MELON).value()).build()); // Pretend this actually does something and we cannot access the blocks directly
+		}
+
+		@Override
+		public String getName() {
+			return "Predicates";
 		}
 	}
 }
