@@ -10,7 +10,7 @@
     "fabric-lifecycle-events-v1": "*"
   },
   "entrypoints": {
-    "main": [
+    "client": [
       "net.fabricmc.fabric.test.modelevents.ModelEventsTest"
     ]
   }
