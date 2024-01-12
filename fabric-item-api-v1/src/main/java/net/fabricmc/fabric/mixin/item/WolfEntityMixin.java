@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.mixin.item;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.passive.WolfEntity;
@@ -35,28 +35,23 @@ import net.minecraft.util.Hand;
 
 @Mixin(WolfEntity.class)
 class WolfEntityMixin {
-	@Unique
-	private static final ThreadLocal<ItemStack> INTERACTION_STACK = new ThreadLocal<>();
-
 	@Inject(method = "interactMob", at = @At("HEAD"))
-	private void storeCopy(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-		INTERACTION_STACK.set(player.getStackInHand(hand).copy());
+	private void storeCopy(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir, @Share("interaction_stack") LocalRef<ItemStack> stackRef) {
+		stackRef.set(player.getStackInHand(hand).copy());
 	}
 
-	@WrapOperation(method = "interactMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
-	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, Operation<Boolean> original, PlayerEntity player, Hand hand) {
-		FoodComponent fc = INTERACTION_STACK.get().getFoodComponent();
-		INTERACTION_STACK.remove();
-		return fc;
+	@Redirect(method = "interactMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
+	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, PlayerEntity player, Hand hand, @Share("interaction_stack") LocalRef<ItemStack> stackRef) {
+		return stackRef.get().getFoodComponent();
 	}
 
-	@WrapOperation(method = "isBreedingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
-	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, Operation<Boolean> original, ItemStack stack) {
+	@Redirect(method = "isBreedingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
+	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, ItemStack stack) {
 		return stack.getFoodComponent();
 	}
 
-	@WrapOperation(method = "isBreedingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z", ordinal = 0))
-	private boolean isStackAwareFood(Item instance, Operation<Boolean> original, ItemStack stack) {
+	@Redirect(method = "isBreedingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z", ordinal = 0))
+	private boolean isStackAwareFood(Item instance, ItemStack stack) {
 		return stack.isFood();
 	}
 }

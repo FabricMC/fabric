@@ -16,13 +16,12 @@
 
 package net.fabricmc.fabric.mixin.item;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.entity.LivingEntity;
@@ -76,28 +75,28 @@ abstract class ItemMixin implements ItemExtensions, FabricItem {
 		this.customDamageHandler = handler;
 	}
 
-	@WrapOperation(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
-	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, Operation<Boolean> original, World world, PlayerEntity user, Hand hand) {
+	@Redirect(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
+	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, World world, PlayerEntity user, Hand hand) {
 		return user.getStackInHand(hand).getFoodComponent();
 	}
 
-	@WrapOperation(method = "getMaxUseTime", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
-	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, Operation<Boolean> original, ItemStack stack) {
+	@Redirect(method = "getMaxUseTime", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
+	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, ItemStack stack) {
 		return stack.getFoodComponent();
 	}
 
-	@WrapOperation(method = {"getMaxUseTime", "getUseAction"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z"))
-	private boolean isStackAwareFood(Item instance, Operation<Boolean> original, ItemStack stack) {
+	@Redirect(method = {"getMaxUseTime", "getUseAction"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z"))
+	private boolean isStackAwareFood(Item instance, ItemStack stack) {
 		return stack.isFood();
 	}
 
-	@WrapOperation(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z"))
-	private boolean isStackAwareFood(Item instance, Operation<Boolean> original, World world, PlayerEntity user, Hand hand) {
+	@Redirect(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z"))
+	private boolean isStackAwareFood(Item instance, World world, PlayerEntity user, Hand hand) {
 		return user.getStackInHand(hand).isFood();
 	}
 
-	@WrapOperation(method = "finishUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z"))
-	private boolean isStackAwareFood(Item instance, Operation<Boolean> original, ItemStack stack, World world, LivingEntity user) {
+	@Redirect(method = "finishUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z"))
+	private boolean isStackAwareFood(Item instance, ItemStack stack, World world, LivingEntity user) {
 		return stack.isFood();
 	}
 }

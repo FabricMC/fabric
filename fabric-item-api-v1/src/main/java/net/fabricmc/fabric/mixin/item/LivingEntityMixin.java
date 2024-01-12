@@ -16,13 +16,12 @@
 
 package net.fabricmc.fabric.mixin.item;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.EquipmentSlot;
@@ -49,18 +48,18 @@ abstract class LivingEntityMixin {
 		}
 	}
 
-	@WrapOperation(method = "shouldSpawnConsumptionEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
-	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, Operation<Boolean> original) {
+	@Redirect(method = "shouldSpawnConsumptionEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
+	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance) {
 		return this.activeItemStack.getFoodComponent();
 	}
 
-	@WrapOperation(method = "applyFoodEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
-	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, Operation<Boolean> original, ItemStack stack, World world, LivingEntity targetEntity) {
+	@Redirect(method = "applyFoodEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getFoodComponent()Lnet/minecraft/item/FoodComponent;"))
+	private @Nullable FoodComponent getStackAwareFoodComponent(Item instance, ItemStack stack, World world, LivingEntity targetEntity) {
 		return stack.getFoodComponent();
 	}
 
-	@WrapOperation(method = "applyFoodEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z"))
-	private boolean isStackAwareFood(Item instance, Operation<Boolean> original, ItemStack stack, World world, LivingEntity targetEntity) {
+	@Redirect(method = "applyFoodEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z"))
+	private boolean isStackAwareFood(Item instance, ItemStack stack, World world, LivingEntity targetEntity) {
 		return stack.isFood();
 	}
 }

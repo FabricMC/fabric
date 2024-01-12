@@ -16,18 +16,17 @@
 
 package net.fabricmc.fabric.mixin.item;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.data.server.recipe.CookingRecipeJsonBuilder;
 import net.minecraft.item.Item;
 
 @Mixin(CookingRecipeJsonBuilder.class)
 class CookingRecipeJsonBuilderMixin {
-	@WrapOperation(method = "getSmeltingRecipeCategory", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z"))
-	private static boolean isStackAwareFood(Item instance, Operation<Boolean> original) {
+	@Redirect(method = "getSmeltingRecipeCategory", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isFood()Z"))
+	private static boolean isStackAwareFood(Item instance) {
 		return instance.getDefaultStack().isFood();
 	}
 }
