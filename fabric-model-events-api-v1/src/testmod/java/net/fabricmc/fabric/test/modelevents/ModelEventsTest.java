@@ -114,7 +114,7 @@ public final class ModelEventsTest implements ClientModInitializer {
 	    assert path.endsWith(PartTreePath.of("end"));
 	    assert path.includes(PartTreePath.of("middle"));
 	    assert !path.beginsWith(PartTreePath.of("middle"));
-	    assert !path.endsWith(PartTreePath.of("end"));
+	    assert !path.endsWith(PartTreePath.of("middle"));
 	}
 
 	static void registerEntityModelPartListener() {

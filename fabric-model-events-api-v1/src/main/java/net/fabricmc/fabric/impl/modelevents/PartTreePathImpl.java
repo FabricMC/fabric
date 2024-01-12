@@ -85,8 +85,8 @@ public final class PartTreePathImpl implements PartTreePath {
         IntArrayList possibleStarts = new IntArrayList(depth());
 
         // locate potential starts
-        for (int i = 0; i < this.path.length; i++) {
-            if (Objects.equals(this.path[0], parts[0])) {
+        for (int i = 0; i <= (this.path.length - parts.length); i++) {
+            if (Objects.equals(this.path[i], parts[0])) {
                 if (path.depth() == 1) {
                     // trivial case: if the path we're searching for is length 1, we don't have to go any further
                     return i;
@@ -121,7 +121,7 @@ public final class PartTreePathImpl implements PartTreePath {
     }
 
     private boolean subSectionEquals(int start, String[] values) {
-        return Arrays.equals(path, start, start + values.length, values, 0, values.length - 1);
+        return Arrays.equals(path, start, start + values.length, values, 0, values.length);
     }
 
     public PartTreePathImpl append(String name) {
