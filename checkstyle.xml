@@ -56,8 +56,8 @@
 
 	<!-- require blank after } in the same indentation level -->
 	<module name="RegexpMultiline">
-		<!-- \n<indentation>}\n<same indentation><whatever unless newline, '}' or starting with cas(e) or def(ault)> -->
-		<property name="format" value="(?&lt;=\n)([\t]+)\}\r?\n\1(?:[^\r\n\}cd]|c[^\r\na]|ca[^\r\ns]|d[^\r\ne]|de[^\r\nf])"/>
+		<!-- \n<indentation>}\n<same indentation><whatever unless newline, '}' or starting with cas(e), def(ault), or """ (multiline closing)> -->
+		<property name="format" value="(?&lt;=\n)([\t]+)\}\r?\n\1(?!(?![^\r\n\}cd]|c[^\r\na]|ca[^\r\ns]|d[^\r\ne]|de[^\r\nf])|(\&quot;\&quot;\&quot;))"/>
 		<property name="message" value="missing blank line after block at same indentation level"/>
 	</module>
 

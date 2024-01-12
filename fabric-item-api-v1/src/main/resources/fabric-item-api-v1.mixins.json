@@ -7,6 +7,8 @@
     "ArmorItemMixin",
     "BrewingStandBlockEntityMixin",
     "ItemMixin",
+    "ItemPredicateBuilderMixin",
+    "ItemPredicateMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
     "RecipeMixin"
