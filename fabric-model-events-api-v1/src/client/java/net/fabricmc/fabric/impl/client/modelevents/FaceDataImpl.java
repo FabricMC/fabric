@@ -83,7 +83,7 @@ public record FaceDataImpl (
         }
 
         max.sub(min, size);
-        max.mul(0.5F, center).add(min);
+        size.mul(0.5F, center).add(min);
     }
 
     public interface Container {

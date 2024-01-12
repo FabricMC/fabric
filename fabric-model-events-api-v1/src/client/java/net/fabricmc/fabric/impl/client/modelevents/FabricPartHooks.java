@@ -54,17 +54,12 @@ public final class FabricPartHooks {
     //       This is to ensure consistent behavior is maintained even when mods make
     //       changes to the part's contents late after construction.
     public void onPartRendered(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha) {
-        try {
+        if (view == null) {
+            getRoot().setPath(PartTreePathImpl.EMPTY);
             if (view == null) {
-                getRoot().setPath(PartTreePathImpl.EMPTY);
-                if (view == null) {
-                    // this shouldn't happen, but just in case it does assume we are the root (or I guess we're an orphan).
-                    setPath(PartTreePathImpl.EMPTY);
-                }
+                // this shouldn't happen, but just in case it does assume we are the root (or I guess we're an orphan).
+                setPath(PartTreePathImpl.EMPTY);
             }
-        } finally {
-            // cleanup
-            parent = null;
         }
 
         view.dispatchEvents(matrices, vertices, light, overlay, red, green, blue, alpha);
@@ -79,8 +74,6 @@ public final class FabricPartHooks {
         settingPath = true;
         try {
             this.view = new PartViewImpl(part, path);
-            // cleanup
-            parent = null;
             part.getChildren().forEach((name, child) -> {
                 Container.of(child).getHooks().setPath(path.append(name));
             });
@@ -94,7 +87,7 @@ public final class FabricPartHooks {
         return view;
     }
 
-    private FabricPartHooks getRoot() {
+    FabricPartHooks getRoot() {
         return parent == null ? this : parent.getRoot();
     }
 

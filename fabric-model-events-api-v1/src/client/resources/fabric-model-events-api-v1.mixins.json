@@ -5,6 +5,7 @@
   "mixins": [
     "BlockEntityRenderDispatcherMixin",
     "EntityRenderDispatcherMixin",
+    "ModelPartMixin",
     "ModelPart_CuboidMixin",
     "ModelPart_QuadMixin"
   ],

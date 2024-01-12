@@ -20,6 +20,7 @@ import org.joml.Vector3f;
 
 import net.minecraft.client.model.Dilation;
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
 
 /**
@@ -66,13 +67,43 @@ public interface CubeData {
     }
 
     /**
-     * The midpoint of the cube.
+     * The 3D dimensions of this cube
      */
-    default Vector3f getCenter() {
+    default Vector3f size() {
+        return new Vector3f(sizeX(), sizeY(), sizeZ());
+    }
+
+    /**
+     * The origin point of this cube
+     */
+    default Vector3f min() {
+        return new Vector3f(cuboid().minX, cuboid().minY, cuboid().minZ);
+    }
+
+    /**
+     * The maximum of this cube
+     */
+    default Vector3f max() {
+        return new Vector3f(cuboid().maxX, cuboid().maxY, cuboid().maxZ);
+    }
+
+    /**
+     * The midpoint of the cube
+     */
+    default Vector3f center() {
         return new Vector3f(
             cuboid().minX + (sizeX() / 2F),
             cuboid().minY + (sizeY() / 2F),
             cuboid().minZ + (sizeZ() / 2F)
         );
+    }
+
+    /**
+     * Translates a matrix stack to have the same origin as this cube.
+     *
+     * @param matrices The matrices to translate.
+     */
+    default void translate(MatrixStack matrices) {
+        matrices.translate(cuboid().minX / 16F, cuboid().minY / 16F, cuboid().minZ / 16F);
     }
 }

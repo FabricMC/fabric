@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.modelevents;
+package net.fabricmc.fabric.test.client.modelevents;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,18 +22,23 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.StreamSupport;
 
+import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.modelevents.ModelPartCallbacks;
-import net.fabricmc.fabric.api.modelevents.PartTreePath;
-import net.fabricmc.fabric.impl.modelevents.ModelPartCallbacksImpl;
+import net.fabricmc.fabric.api.client.modelevents.v1.ModelPartCallbacks;
+import net.fabricmc.fabric.api.client.modelevents.v1.PartTreePath;
+import net.fabricmc.fabric.api.client.modelevents.v1.data.CubeData;
+import net.fabricmc.fabric.api.client.modelevents.v1.data.PartView;
+import net.fabricmc.fabric.impl.client.modelevents.ModelPartCallbacksImpl;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.Dilation;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.model.TexturedModelData;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelPartNames;
 import net.minecraft.entity.EntityType;
@@ -137,12 +142,62 @@ public final class ModelEventsTest implements ClientModInitializer {
                 LOGGER.info("Chest Lid Cube Count: " + partView.cubes().size());
                 LOGGER.info("Chest Lid Has Latch: " + partView.getChild("latch").isPresent());
 
-                partView.cubes().getFirst().ifPresent(cube -> {
-                    cube.getFaces(Direction.UP).getFirst().ifPresent(face -> {
-                       matrices.multiply(face.rotation());
+                var vertexConsumers = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+                var debugConsumer = vertexConsumers.getBuffer(RenderLayer.getLines());
+
+                //part.pitch = -0.5F * tickDelta;
+                Consumer<CubeData> cubeConsumer = cube -> {
+                    matrices.push();
+                    cube.translate(matrices);
+
+                    //matrices.translate(0, 8, 0);
+                    WorldRenderer.drawBox(matrices, debugConsumer, 0, 0, 0, cube.sizeX() / 16F, cube.sizeY() / 16F, cube.sizeZ() / 16F, 1, 1, 0, 1);
+
+                    matrices.pop();
+                    matrices.push();
+
+                    for (var direction : Direction.values()) {
+                        var face = cube.getFaces(direction).getFirst().orElse(null);
+                        if (face != null) {
+                            matrices.push();
+                            face.size().mul(0.5F, face.center()).add(face.min());
+
+                            Vector3f center = face.center();
+                            float cubeL = 0.01F;
+                            matrices.translate(center.x / 16F, center.y / 16F, center.z / 16F);
+                            WorldRenderer.drawBox(matrices, debugConsumer, -cubeL, -cubeL, -cubeL, cubeL, cubeL, cubeL, 1, 0, 1, 1);
+                            Vector3f unitVector = face.direction().getUnitVector();
+                            matrices.translate(unitVector.x / 16F, unitVector.y / 16F, unitVector.z / 16F);
+                            WorldRenderer.drawBox(matrices, debugConsumer, -cubeL, -cubeL, -cubeL, cubeL, cubeL, cubeL, 1, 0, 1, 1);
+
+                            //matrices.scale(-0.025f, -0.025f, 0.025f);
+
+                            //Matrix4f posMat = matrices.peek().getPositionMatrix();
+                            //MinecraftClient.getInstance().textRenderer.draw(direction.name(), 0, 0, Colors.WHITE, false, posMat, vertexConsumers, TextRenderer.TextLayerType.SEE_THROUGH, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+                            matrices.pop();
+                        }
+                    }
+
+                    //matrices.multiply(MinecraftClient.getInstance().getEntityRenderDispatcher().getRotation());
+
+                    matrices.pop();
+                    // cube.getFaces(Direction.UP).getFirst().ifPresent(face -> {
+                    //   matrices.multiply(face.rotation());
                        // myModel.render(matrices, vertexConsumer, light, overlay, r, g, b, a);
-                    });
-                });
+                    // });
+                };
+                Consumer<PartView> partConsumer = new Consumer<>() {
+                    @Override
+                    public void accept(PartView view) {
+                        matrices.push();
+                        view.part().rotate(matrices);
+                        view.cubes().forEach(cubeConsumer);
+                        view.forEachChild(this);
+                        matrices.pop();
+                    }
+                };
+
+                partConsumer.accept(partView.root());
             });
 	    }, 1);
 	}

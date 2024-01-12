@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -43,16 +44,17 @@ abstract class ModelPartMixin implements FabricPartHooks.Container {
 
     private FabricPartHooks fabric_hooks;
 
-    @Inject(method = "<init>", at = @At("RETURN"))
+    @Dynamic("Compiler-generated class constructor method")
+    @Inject(method = "<init>", at = @At("RETURN"), remap = false)
     private void init_ModelPart(List<Cuboid> cuboids, Map<String, ModelPart> children, CallbackInfo info) {
         children.values().forEach(child -> {
             FabricPartHooks.Container.of(child).getHooks().setParent(getHooks());
         });
     }
 
-    @Inject(method = "render", at = @At(
+    @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;IIFFFF)V", at = @At(
             value = "INVOKE",
-            target = "net/minecraft/client/model/ModelPart.rotate(Lnet/minecraft/client/util/math/MatrixStack;) V"))
+            target = "net/minecraft/client/model/ModelPart.rotate(Lnet/minecraft/client/util/math/MatrixStack;)V"))
     private void on_render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha, CallbackInfo info) {
         if (hidden || !visible) {
             return;

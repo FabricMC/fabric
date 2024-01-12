@@ -53,6 +53,16 @@ final class PartViewImpl implements PartView {
     }
 
     @Override
+    public PartView root() {
+        // getView may be null if the element hasn't yet been initialised.
+        // This shouldn't ever happen unless a part view is being accessed
+        // outside of the normal event loop.
+        @Nullable
+        PartView rootView = part.getHooks().getRoot().getView();
+        return rootView == null ? this : rootView;
+    }
+
+    @Override
     public PartTreePath path() {
         return path;
     }
@@ -93,12 +103,9 @@ final class PartViewImpl implements PartView {
     }
 
     @Override
-    public void forEachPart(Consumer<PartView> partConsumer) {
+    public void forEachChild(Consumer<PartView> partConsumer) {
         part.getChildren().values().forEach(child -> {
-            PartView.of(child).ifPresent(childView -> {
-                partConsumer.accept(childView);
-                childView.forEachPart(partConsumer);
-            });
+            PartView.of(child).ifPresent(partConsumer);
         });
     }
 }

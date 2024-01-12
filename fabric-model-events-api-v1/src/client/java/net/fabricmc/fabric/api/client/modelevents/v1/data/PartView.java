@@ -68,9 +68,16 @@ public interface PartView {
     Optional<PartView> getChild(PartTreePath path);
 
     /**
-     * Iterates through all of the children and their children under this part.
+     * Gets the very top-most element in this part's tree.
+     * <p>
+     * If this part is an orphan, will return {@code this}
+     */
+    PartView root();
+
+    /**
+     * Iterates through all of the direct descendants of this part.
      *
      * @param partConsumer Consumer for each part view encountered along the tree.
      */
-    void forEachPart(Consumer<PartView> partConsumer);
+    void forEachChild(Consumer<PartView> childConsumer);
 }
