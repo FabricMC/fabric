@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.client.modelevents.v1.data;
 
 import org.joml.Vector3f;
 
+import net.fabricmc.fabric.api.client.modelevents.v1.traversal.ModelVisitor;
+import net.fabricmc.fabric.api.client.modelevents.v1.traversal.Traversable;
 import net.minecraft.client.model.Dilation;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.util.math.MatrixStack;
@@ -26,7 +28,7 @@ import net.minecraft.util.math.Direction;
 /**
  * Data pertaining to an individual cube.
  */
-public interface CubeData {
+public interface CubeData extends Traversable {
     /**
      * Gets a direct reference to the cube this data is describing.
      */
@@ -105,5 +107,10 @@ public interface CubeData {
      */
     default void translate(MatrixStack matrices) {
         matrices.translate(cuboid().minX / 16F, cuboid().minY / 16F, cuboid().minZ / 16F);
+    }
+
+    @Override
+    default void traverse(MatrixStack matrices, ModelVisitor visitor) {
+        visitor.visitCube(matrices, this);
     }
 }

@@ -26,6 +26,7 @@ import net.fabricmc.fabric.api.client.modelevents.v1.PartTreePath;
 import net.fabricmc.fabric.api.client.modelevents.v1.data.CubeData;
 import net.fabricmc.fabric.api.client.modelevents.v1.data.DataCollection;
 import net.fabricmc.fabric.api.client.modelevents.v1.data.PartView;
+import net.fabricmc.fabric.api.client.modelevents.v1.traversal.ModelVisitor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -107,5 +108,19 @@ final class PartViewImpl implements PartView {
         part.getChildren().values().forEach(child -> {
             PartView.of(child).ifPresent(partConsumer);
         });
+    }
+
+    @Override
+    public void traverse(MatrixStack matrices, ModelVisitor visitor) {
+        if (visitor.visitPart(matrices, this)) {
+            for (ModelPart child : part.getChildren().values()) {
+                PartView childView = FabricPartHooks.Container.of(child).getHooks().getView();
+                if (childView != null) {
+                    if (!visitor.visitPart(matrices, childView)) {
+                        return;
+                    }
+                }
+            }
+        }
     }
 }

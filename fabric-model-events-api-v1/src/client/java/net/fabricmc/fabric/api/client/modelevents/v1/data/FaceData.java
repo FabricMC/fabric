@@ -19,12 +19,15 @@ package net.fabricmc.fabric.api.client.modelevents.v1.data;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import net.fabricmc.fabric.api.client.modelevents.v1.traversal.ModelVisitor;
+import net.fabricmc.fabric.api.client.modelevents.v1.traversal.Traversable;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
 
 /**
  * Provides data pertaining to a cubes individual face.
  */
-public interface FaceData {
+public interface FaceData extends Traversable {
     /**
      * The physical orientation of this face.
      *
@@ -74,4 +77,10 @@ public interface FaceData {
      * The 3D center point of this face.
      */
     Vector3f center();
+
+
+    @Override
+    default void traverse(MatrixStack matrices, ModelVisitor visitor) {
+        visitor.visitFace(matrices, this);
+    }
 }

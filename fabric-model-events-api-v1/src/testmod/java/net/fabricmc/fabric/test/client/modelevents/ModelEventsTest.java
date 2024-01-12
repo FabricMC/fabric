@@ -29,23 +29,47 @@ import org.slf4j.LoggerFactory;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.modelevents.v1.ModelPartCallbacks;
 import net.fabricmc.fabric.api.client.modelevents.v1.PartTreePath;
-import net.fabricmc.fabric.api.client.modelevents.v1.data.CubeData;
-import net.fabricmc.fabric.api.client.modelevents.v1.data.PartView;
+import net.fabricmc.fabric.api.client.modelevents.v1.traversal.ModelVisitor;
 import net.fabricmc.fabric.impl.client.modelevents.ModelPartCallbacksImpl;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.model.Dilation;
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelPartNames;
 import net.minecraft.entity.EntityType;
-import net.minecraft.util.math.Direction;
 
 public final class ModelEventsTest implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelEventsTest.class);
+
+	private static final ModelVisitor DEBUG_VISITOR = ModelVisitor.builder()
+            .visitCubes((matrices, cube) -> {
+                var debugConsumer = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers().getBuffer(RenderLayer.getLines());
+                WorldRenderer.drawBox(matrices, debugConsumer, 0, 0, 0, cube.sizeX() / 16F, cube.sizeY() / 16F, cube.sizeZ() / 16F, 1, 1, 0, 1);
+                return true;
+            })
+            .visitFaces((matrices, face) -> {
+                var debugConsumer = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers().getBuffer(RenderLayer.getLines());
+                matrices.push();
+
+                Vector3f center = face.center();
+                float cubeL = 0.01F;
+                matrices.translate(center.x / 16F, center.y / 16F, center.z / 16F);
+                Vector3f unitVector = face.direction().getUnitVector();
+                WorldRenderer.drawBox(matrices, debugConsumer, -cubeL, -cubeL, -cubeL, cubeL, cubeL, cubeL,
+                        0.5F + unitVector.x * 0.5F,
+                        0.5F + unitVector.y * 0.5F,
+                        0.5F + unitVector.z * 0.5F,
+                        1);
+                matrices.translate(unitVector.x / 16F, unitVector.y / 16F, unitVector.z / 16F);
+                WorldRenderer.drawBox(matrices, debugConsumer, -cubeL, -cubeL, -cubeL, cubeL, cubeL, cubeL,
+                        0.5F + unitVector.x * 0.5F,
+                        0.5F + unitVector.y * 0.5F,
+                        0.5F + unitVector.z * 0.5F,
+                        1);
+                matrices.pop();
+                return true;
+            }).build();
 
 	@Override
 	public void onInitializeClient() {
@@ -141,76 +165,18 @@ public final class ModelEventsTest implements ClientModInitializer {
                 LOGGER.info("Chest Lid rotation: p=" + part.pitch + ",y=" + part.yaw + ",r=" + part.roll);
                 LOGGER.info("Chest Lid Cube Count: " + partView.cubes().size());
                 LOGGER.info("Chest Lid Has Latch: " + partView.getChild("latch").isPresent());
-
-                var vertexConsumers = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-                var debugConsumer = vertexConsumers.getBuffer(RenderLayer.getLines());
-
-                //part.pitch = -0.5F * tickDelta;
-                Consumer<CubeData> cubeConsumer = cube -> {
-                    matrices.push();
-                    cube.translate(matrices);
-
-                    //matrices.translate(0, 8, 0);
-                    WorldRenderer.drawBox(matrices, debugConsumer, 0, 0, 0, cube.sizeX() / 16F, cube.sizeY() / 16F, cube.sizeZ() / 16F, 1, 1, 0, 1);
-
-                    matrices.pop();
-                    matrices.push();
-
-                    for (var direction : Direction.values()) {
-                        var face = cube.getFaces(direction).getFirst().orElse(null);
-                        if (face != null) {
-                            matrices.push();
-                            face.size().mul(0.5F, face.center()).add(face.min());
-
-                            Vector3f center = face.center();
-                            float cubeL = 0.01F;
-                            matrices.translate(center.x / 16F, center.y / 16F, center.z / 16F);
-                            WorldRenderer.drawBox(matrices, debugConsumer, -cubeL, -cubeL, -cubeL, cubeL, cubeL, cubeL, 1, 0, 1, 1);
-                            Vector3f unitVector = face.direction().getUnitVector();
-                            matrices.translate(unitVector.x / 16F, unitVector.y / 16F, unitVector.z / 16F);
-                            WorldRenderer.drawBox(matrices, debugConsumer, -cubeL, -cubeL, -cubeL, cubeL, cubeL, cubeL, 1, 0, 1, 1);
-
-                            //matrices.scale(-0.025f, -0.025f, 0.025f);
-
-                            //Matrix4f posMat = matrices.peek().getPositionMatrix();
-                            //MinecraftClient.getInstance().textRenderer.draw(direction.name(), 0, 0, Colors.WHITE, false, posMat, vertexConsumers, TextRenderer.TextLayerType.SEE_THROUGH, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
-                            matrices.pop();
-                        }
-                    }
-
-                    //matrices.multiply(MinecraftClient.getInstance().getEntityRenderDispatcher().getRotation());
-
-                    matrices.pop();
-                    // cube.getFaces(Direction.UP).getFirst().ifPresent(face -> {
-                    //   matrices.multiply(face.rotation());
-                       // myModel.render(matrices, vertexConsumer, light, overlay, r, g, b, a);
-                    // });
-                };
-                Consumer<PartView> partConsumer = new Consumer<>() {
-                    @Override
-                    public void accept(PartView view) {
-                        matrices.push();
-                        view.part().rotate(matrices);
-                        view.cubes().forEach(cubeConsumer);
-                        view.forEachChild(this);
-                        matrices.pop();
-                    }
-                };
-
-                partConsumer.accept(partView.root());
+                partView.root().traverse(matrices, DEBUG_VISITOR);
             });
 	    }, 1);
 	}
 
 	static void testModelRenderNesting() {
 	    assertListenerCount(PartTreePath.of(EntityModelPartNames.HEAD), path -> {
-	        // if the player's head is really big we know it's working
-	        ModelPart hatCopy = TexturedModelData.of(BipedEntityModel.getModelData(new Dilation(2), 0), 64, 64).createModel()
-	                .getChild(EntityModelPartNames.HEAD);
-
+	        // if the player has two heads we know it's working
             ModelPartCallbacks.get(path).register(EntityType.PLAYER, (player, partView, matrices, vertexConsumer, tickDelta, light, overlay, r, g, b, a) -> {
-                hatCopy.copyTransform(partView.part());
-                hatCopy.render(matrices, vertexConsumer, light, overlay, r, g, b, a);
+                partView.part().pivotX = -5;
+                partView.part().render(matrices, vertexConsumer, light, overlay, r, g, b, a);
+                partView.part().pivotX = 4;
             });
         }, 1);
 	}
