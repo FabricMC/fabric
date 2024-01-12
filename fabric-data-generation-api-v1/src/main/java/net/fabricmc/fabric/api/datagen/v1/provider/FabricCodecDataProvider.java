@@ -108,7 +108,8 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	 * @deprecated Please use {@link FabricCodecDataProvider#configure(BiConsumer, RegistryWrapper.WrapperLookup)}.
 	 */
 	@Deprecated(forRemoval = true)
-	protected void configure(BiConsumer<Identifier, T> provider) {}
+	protected void configure(BiConsumer<Identifier, T> provider) {
+	}
 
 	/**
 	 * Implement this method to register entries to generate using a {@link RegistryWrapper.WrapperLookup}.
