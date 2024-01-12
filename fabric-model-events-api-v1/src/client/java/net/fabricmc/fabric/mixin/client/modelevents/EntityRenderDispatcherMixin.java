@@ -27,6 +27,15 @@ import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 
+/**
+ * We inject before and after rendering an entity via the dispatcher. This catches 99% of use cases
+ * Things that will be missed by this:
+ * - player arm rendering
+ * - mods that render an entity by doing {@code dispatcher.get(entity).render(...)}
+ *
+ * Without this injection (or rendering via other methods) normal events still work, but events that specifically
+ * depend on the entity being rendered being known, will be skipped.
+ */
 @Mixin(EntityRenderDispatcher.class)
 abstract class EntityRenderDispatcherMixin {
     private static final String RENDER = "render(Lnet/minecraft/entity/Entity;DDDFFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V";

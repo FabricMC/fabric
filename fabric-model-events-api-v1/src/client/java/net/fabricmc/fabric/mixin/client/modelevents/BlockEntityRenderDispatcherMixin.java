@@ -24,6 +24,9 @@ import net.fabricmc.fabric.impl.client.modelevents.ModelRenderContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 
+/**
+ * Common injection point for rendering a block entity
+ */
 @Mixin(BlockEntityRenderDispatcher.class)
 abstract class BlockEntityRenderDispatcherMixin {
     private static final String RUN_REPORTED = "runReported(Lnet/minecraft/block/entity/BlockEntity;Ljava/lang/Runnable;)V";

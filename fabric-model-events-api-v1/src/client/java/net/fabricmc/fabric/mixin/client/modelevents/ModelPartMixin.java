@@ -34,8 +34,14 @@ import net.minecraft.client.model.ModelPart.Cuboid;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 
+/**
+ * RE: priority
+ *     This mixin is applied last to ensure any other mods that want to inject are already applied before us.
+ *     This is to prevent our event being overwritten by (e.g. sodium) which may be making significant changes
+ *     to the render() method
+ */
 @ApiStatus.Internal
-@Mixin(ModelPart.class)
+@Mixin(value = ModelPart.class, priority = Integer.MAX_VALUE)
 abstract class ModelPartMixin implements FabricPartHooks.Container {
     @Shadow
     public boolean visible;
@@ -45,7 +51,7 @@ abstract class ModelPartMixin implements FabricPartHooks.Container {
     private FabricPartHooks fabric_hooks;
 
     @Dynamic("Compiler-generated class constructor method")
-    @Inject(method = "<init>", at = @At("RETURN"), remap = false)
+    @Inject(method = "<init>", at = @At("RETURN"))
     private void init_ModelPart(List<Cuboid> cuboids, Map<String, ModelPart> children, CallbackInfo info) {
         children.values().forEach(child -> {
             FabricPartHooks.Container.of(child).getHooks().setParent(getHooks());
