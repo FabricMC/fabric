@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.client.modelevents",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "BlockEntityRenderDispatcherMixin",
+    "EntityRenderDispatcherMixin",
+    "ModelPart_CuboidMixin",
+    "ModelPart_QuadMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

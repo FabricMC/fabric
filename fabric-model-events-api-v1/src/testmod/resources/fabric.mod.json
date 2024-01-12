@@ -11,7 +11,7 @@
   },
   "entrypoints": {
     "client": [
-      "net.fabricmc.fabric.test.modelevents.ModelEventsTest"
+      "net.fabricmc.fabric.test.client.modelevents.ModelEventsTest"
     ]
   }
 }
