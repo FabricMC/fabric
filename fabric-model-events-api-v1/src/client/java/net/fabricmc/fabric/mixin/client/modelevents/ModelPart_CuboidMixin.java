@@ -77,6 +77,7 @@ abstract class ModelPart_CuboidMixin implements CubeData {
 
     @Override
     public DataCollection<FaceData> getFaces(Direction direction) {
+        if (sides.length == 0) return DataCollection.of();
         if (fabric_cube_faces == null) fabric_cube_faces = new EnumMap<>(Direction.class);
         return FaceDataImpl.computeFromFaces(fabric_cube_faces, direction, sides);
     }

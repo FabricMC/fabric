@@ -30,7 +30,7 @@ import net.minecraft.util.math.Direction;
 
 @ApiStatus.Internal
 @Mixin(ModelPart.Quad.class)
-class ModelPart_QuadMixin implements FaceDataImpl.Container {
+abstract class ModelPart_QuadMixin implements FaceDataImpl.Container {
     private Direction fabric_direction;
     private FaceDataImpl fabric_face_data;
 
@@ -48,9 +48,7 @@ class ModelPart_QuadMixin implements FaceDataImpl.Container {
 
     @Override
     public FaceData getFabricFaceData() {
-        if (fabric_face_data == null) {
-            fabric_face_data = new FaceDataImpl(this, (ModelPart.Quad)(Object)this);
-        }
+        if (fabric_face_data == null) fabric_face_data = new FaceDataImpl(this);
         return fabric_face_data;
     }
 }

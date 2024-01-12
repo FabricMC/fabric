@@ -50,6 +50,14 @@ abstract class ModelPartMixin implements FabricPartHooks.Container {
 
     private FabricPartHooks fabric_hooks;
 
+    @Override
+    @Accessor("cuboids")
+    public abstract List<Cuboid> getCuboids();
+
+    @Override
+    @Accessor("children")
+    public abstract Map<String, ModelPart> getChildren();
+
     @Dynamic("Compiler-generated class constructor method")
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init_ModelPart(List<Cuboid> cuboids, Map<String, ModelPart> children, CallbackInfo info) {
@@ -71,17 +79,8 @@ abstract class ModelPartMixin implements FabricPartHooks.Container {
 
     @Override
     public FabricPartHooks getHooks() {
-        if (fabric_hooks == null) {
-            fabric_hooks = new FabricPartHooks(this);
-        }
+        if (fabric_hooks == null) fabric_hooks = new FabricPartHooks(this);
         return fabric_hooks;
     }
 
-    @Override
-    @Accessor("cuboids")
-    public abstract List<Cuboid> getCuboids();
-
-    @Override
-    @Accessor("children")
-    public abstract Map<String, ModelPart> getChildren();
 }
