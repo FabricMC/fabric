@@ -16,10 +16,8 @@
 
 package net.fabricmc.fabric.api.client.modelevents.v1.data;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
+import net.fabricmc.fabric.impl.client.modelevents.EmptyDataCollection;
 
 /**
  * Represents a managed collection of data.
@@ -28,34 +26,11 @@ import java.util.function.Consumer;
  */
 public interface DataCollection<T> extends Iterable<T> {
     /**
-     * The empty data collection.
-     */
-    DataCollection<?> EMPTY = new DataCollection<>() {
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public Optional<Object> getAt(int index) {
-            return Optional.empty();
-        }
-
-        @Override
-        public void forEach(Consumer<Object> consumer) {}
-
-        @Override
-        public Iterator<Object> iterator() {
-            return List.of().iterator();
-        }
-    };
-
-    /**
      * Returns an empty data collection for elements of type {@code T}.
      */
     @SuppressWarnings("unchecked")
     static <T> DataCollection<T> of() {
-        return (DataCollection<T>)EMPTY;
+        return (DataCollection<T>)EmptyDataCollection.INSTANCE;
     }
 
     /**

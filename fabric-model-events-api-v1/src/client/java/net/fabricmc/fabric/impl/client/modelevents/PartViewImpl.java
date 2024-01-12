@@ -77,7 +77,7 @@ final class PartViewImpl implements PartView {
     public DataCollection<CubeData> cubes() {
         // Cube data is only constructed upon request to try and avoid overhead when rendering.
         // Implemented as an if-null check rather than Suppliers.memoize(() -> {}) for similar reasons.
-        if (cubes == null) cubes = new ListDataCollection<>(part.getCuboids(), cuboid -> (CubeData)cuboid);
+        if (cubes == null) cubes = ListDataCollection.of(part.getCuboids(), cuboid -> (CubeData)cuboid);
         return cubes;
     }
 

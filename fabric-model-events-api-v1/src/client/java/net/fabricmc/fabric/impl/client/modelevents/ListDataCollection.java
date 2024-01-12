@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.client.modelevents;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -34,8 +35,15 @@ import net.fabricmc.fabric.api.client.modelevents.v1.data.DataCollection;
 final class ListDataCollection<K, T> implements DataCollection<T> {
     private final Supplier<Optional<T>>[] values;
 
+    public static <K, T> DataCollection<T> of(List<K> values, Function<K, T> lookupFunction) {
+        if (values == null || values.isEmpty()) {
+            return DataCollection.of();
+        }
+        return new ListDataCollection<>(values, lookupFunction);
+    }
+
     @SuppressWarnings("unchecked")
-    public ListDataCollection(List<K> values, Function<K, T> lookupFunction) {
+    private ListDataCollection(List<K> values, Function<K, T> lookupFunction) {
         this.values = values.stream()
                 // Raaaaah don't create a new optional all the time when people access
                 .map(value -> Suppliers.memoize(() -> Optional.ofNullable(lookupFunction.apply(value))))
@@ -57,6 +65,7 @@ final class ListDataCollection<K, T> implements DataCollection<T> {
 
     @Override
     public void forEach(Consumer<? super T> consumer) {
+        Objects.requireNonNull(consumer);
         for (var value : values) {
             value.get().ifPresent(consumer);
         }
@@ -70,7 +79,7 @@ final class ListDataCollection<K, T> implements DataCollection<T> {
             @Override
             protected T computeNext() {
                 Optional<T> value = Optional.empty();
-                while (index < size() && (value = getAt(index++)).isEmpty());
+                while (index < size() && (value = values[index++].get()).isEmpty());
                 return value.orElseGet(this::endOfData);
             }
         };

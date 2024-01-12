@@ -25,10 +25,20 @@ import net.minecraft.entity.Entity;
 
 @ApiStatus.Internal
 public final class ModelRenderContext {
-    public static final Stack<Entity> CURRENT_ENTITY = new ObjectArrayList<>();
-    public static final Stack<BlockEntity> CURRENT_BLOCK_ENTITY = new ObjectArrayList<>();
+    static final Stack<Entity> CURRENT_ENTITY = new ObjectArrayList<>();
+    static final Stack<BlockEntity> CURRENT_BLOCK_ENTITY = new ObjectArrayList<>();
 
     private ModelRenderContext() { }
+
+    public static void pushEntityContext(Entity entity) {
+        CURRENT_ENTITY.push(entity);
+    }
+
+    public static void popEntityContext() {
+        if (!CURRENT_ENTITY.isEmpty()) {
+            CURRENT_ENTITY.pop();
+        }
+    }
 
     public static Runnable captureBlockEntity(BlockEntity entity, Runnable renderAction) {
         return () -> {

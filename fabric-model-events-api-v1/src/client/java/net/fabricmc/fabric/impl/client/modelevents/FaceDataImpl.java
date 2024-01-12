@@ -49,8 +49,12 @@ public record FaceDataImpl (
                 }
                 faces.add((Container)side);
             }
-            return faces == null ? DataCollection.of() : new ListDataCollection<>(faces, Container::getFabricFaceData);
+            return ListDataCollection.of(faces, Container::getFabricFaceData);
         });
+    }
+
+    public FaceDataImpl(Container face) {
+        this(face, (ModelPart.Quad)face);
     }
 
     public FaceDataImpl(Container face, ModelPart.Quad quad) {

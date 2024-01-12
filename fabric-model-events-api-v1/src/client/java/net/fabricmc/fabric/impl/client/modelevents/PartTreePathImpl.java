@@ -49,17 +49,34 @@ public final class PartTreePathImpl implements PartTreePath {
         if (path.startsWith("/")) {
             path = path.substring(1);
         }
-        if (!Identifier.isPathValid(path)) {
-            throw new InvalidIdentifierException("Non [a-z0-9/._-] character in path of location: " + path);
-        }
-
+        validatePath(path);
         return path.isEmpty()
                 ? EMPTY
                 : INTERNER.intern(new PartTreePathImpl(path.split("/")));
     }
 
+    static void validatePath(String path) {
+        if (!Identifier.isPathValid(path)) {
+            throw new InvalidIdentifierException("Non [a-z0-9/._-] character in path: " + path);
+        }
+    }
+
+    static void validatePathComponent(String name) {
+        for (int i = 0; i < name.length(); i++) {
+            char c = name.charAt(i);
+            if (c == '/' || !Identifier.isPathCharacterValid(c)) {
+                throw new InvalidIdentifierException("Non [a-z0-9._-] character in path component: " + name);
+            }
+        }
+    }
+
     private PartTreePathImpl(String[] path) {
         this.path = path;
+    }
+
+    @Override
+    public String last() {
+        return isRoot() ? "" : path[path.length - 1];
     }
 
     @Override
@@ -124,11 +141,12 @@ public final class PartTreePathImpl implements PartTreePath {
         return Arrays.equals(path, start, start + values.length, values, 0, values.length);
     }
 
-    public PartTreePathImpl append(String name) {
+    PartTreePathImpl append(String name) {
         Objects.requireNonNull(name);
+        validatePathComponent(name);
         String[] newPath = Arrays.copyOf(path, path.length + 1);
         newPath[newPath.length - 1] = name;
-        return new PartTreePathImpl(newPath);
+        return INTERNER.intern(new PartTreePathImpl(newPath));
     }
 
     @Override

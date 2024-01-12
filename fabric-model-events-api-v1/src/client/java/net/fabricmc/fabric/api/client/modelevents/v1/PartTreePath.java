@@ -37,6 +37,11 @@ public interface PartTreePath extends Iterable<String> {
     }
 
     /**
+     * Gets the last element in this path.
+     */
+    String last();
+
+    /**
      * Finds the position at which a specific part appears on this path.
      * If the part cannot be found will return -1.
      * @return The index position of the part, otherwise -1.
