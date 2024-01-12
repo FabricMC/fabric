@@ -23,6 +23,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ComparatorBlock;
 import net.minecraft.block.ComposterBlock;
+import net.minecraft.block.JukeboxBlock;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.block.entity.ChiseledBookshelfBlockEntity;
 import net.minecraft.block.entity.FurnaceBlockEntity;
@@ -354,6 +355,25 @@ public class VanillaStorageTests {
 			context.checkBlockState(pos, state -> state.get(ComposterBlock.LEVEL) == 1, () -> "Composter should have level 1");
 		}
 
+		context.complete();
+	}
+
+	/**
+	 * Regression test for <a href="https://github.com/FabricMC/fabric/issues/3485">jukeboxes having their state changed mid-transaction</a>.
+	 */
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void testJukeboxState(TestContext context) {
+		BlockPos pos = new BlockPos(2, 2, 2);
+		context.setBlockState(pos, Blocks.JUKEBOX.getDefaultState());
+		Storage<ItemVariant> storage = ItemStorage.SIDED.find(context.getWorld(), context.getAbsolutePos(pos), Direction.UP);
+
+		try (Transaction tx = Transaction.openOuter()) {
+			storage.insert(ItemVariant.of(Items.MUSIC_DISC_11), 1, tx);
+			context.checkBlockState(pos, state -> !state.get(JukeboxBlock.HAS_RECORD), () -> "Jukebox should not have its state changed mid-transaction");
+			tx.commit();
+		}
+
+		context.checkBlockState(pos, state -> state.get(JukeboxBlock.HAS_RECORD), () -> "Jukebox should have its state changed");
 		context.complete();
 	}
 }

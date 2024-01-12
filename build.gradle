@@ -16,6 +16,11 @@ def ENV = System.getenv()
 version = project.version + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
 logger.lifecycle("Building Fabric: " + version)
 
+def metaProjects = [
+	'deprecated',
+	'fabric-api-bom',
+	'fabric-api-catalog'
+]
 
 import net.fabricmc.loom.util.gradle.SourceSetHelper
 import groovy.json.JsonSlurper
@@ -132,7 +137,7 @@ allprojects {
 		setupRepositories(repositories)
 	}
 
-	if (it.name == "deprecated") {
+	if (metaProjects.contains(it.name)) {
 		return
 	}
 
@@ -200,7 +205,7 @@ allprojects {
 	}
 
 	allprojects.each { p ->
-		if (project.name == "deprecated") {
+		if (metaProjects.contains(project.name)) {
 			return
 		}
 
@@ -332,7 +337,7 @@ remapTestmodJar {
 	def testModJarTasks = []
 
 	subprojects {
-		if (it.name == "deprecated" || !(it.file("src/testmod").exists() || it.file("src/testmodClient").exists())) {
+		if (metaProjects.contains(it.name) || !(it.file("src/testmod").exists() || it.file("src/testmodClient").exists())) {
 			return
 		}
 
@@ -374,7 +379,7 @@ javadoc {
 	}
 
 	allprojects.each {
-		if (it.name == "deprecated") {
+		if (metaProjects.contains(it.name)) {
 			return
 		}
 
@@ -592,7 +597,7 @@ def addPomMetadataInformation(Project project, MavenPom pom) {
 }
 
 subprojects {
-	if (it.name == "deprecated") {
+	if (metaProjects.contains(it.name)) {
 		return
 	}
 
@@ -663,7 +668,7 @@ publishing {
 				def depsNode = asNode().appendNode("dependencies")
 				subprojects.each {
 					// The maven BOM containing all of the deprecated modules is added manually below.
-					if (it.path.startsWith(":deprecated")) {
+					if (it.path.startsWith(":deprecated") || metaProjects.contains(it.name)) {
 						return
 					}
 
@@ -705,7 +710,7 @@ void setupRepositories(RepositoryHandler repositories) {
 }
 
 subprojects.each {
-	if (it.name == "deprecated") {
+	if (metaProjects.contains(it.name)) {
 		return
 	}
 
@@ -718,7 +723,7 @@ def devOnlyModules = ["fabric-gametest-api-v1",]
 dependencies {
 	afterEvaluate {
 		subprojects.each {
-			if (it.name == "deprecated") {
+			if (metaProjects.contains(it.name)) {
 				return
 			}
 
@@ -734,7 +739,7 @@ dependencies {
 remapJar {
 	afterEvaluate {
 		subprojects.each {
-			if (it.name in devOnlyModules || it.name == "deprecated") {
+			if (it.name in devOnlyModules || metaProjects.contains(it.name)) {
 				return
 			}
 
