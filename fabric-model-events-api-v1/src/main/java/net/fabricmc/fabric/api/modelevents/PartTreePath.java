@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.modelevents;
 
-import java.util.List;
 import net.fabricmc.fabric.impl.modelevents.PartTreePathImpl;
 
 /**
@@ -34,11 +33,7 @@ public interface PartTreePath extends Iterable<String> {
      * Creates a new model path from a string value.
      */
     static PartTreePath of(String path) {
-        if (path != null && path.startsWith("/")) {
-            path = path.substring(1);
-        }
-
-        return path == null || path.isEmpty() ? of() : new PartTreePathImpl(List.of(path.split("/")));
+        return PartTreePathImpl.of(path);
     }
 
     /**
@@ -71,7 +66,7 @@ public interface PartTreePath extends Iterable<String> {
      * Checks whether the specified part name corresponds to the last element in this path.
      */
     default boolean endsWith(PartTreePath path) {
-        return indexOf(path) == depth();
+        return indexOf(path) == (depth() - path.depth());
     }
 
     /**

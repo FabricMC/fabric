@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.StreamSupport;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelPartNames;
 import net.minecraft.entity.EntityType;
+import net.minecraft.util.math.Direction;
 
 public final class ModelEventsTest implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelEventsTest.class);
@@ -75,21 +77,19 @@ public final class ModelEventsTest implements ClientModInitializer {
 	}
 
 	static void checkEmptyPartPathCreation() {
+	    // all of these should return the same thing (don't change this to .equals()!)
 	    assert PartTreePath.of() == PartTreePath.of("");
 	    assert PartTreePath.of() == PartTreePath.of(" ");
 	    assert PartTreePath.of() == PartTreePath.of(null);
 	    assert PartTreePath.of() == PartTreePath.of("/");
+	    // check stripping of the leading '/'
 	    assert "a/b/c".contentEquals(PartTreePath.of("/a/b/c").toString());
 	}
 
 	static void checkPartPathParsing() {
-	    var path = PartTreePath.of("a/b/c");
-	    List<String> components = new ArrayList<>();
-	    for (String component : path) {
-	        components.add(component);
-	    }
-	    assert !path.isRoot();
-	    assert Arrays.equals(new String[] {"a", "b", "c"}, components.toArray(String[]::new));
+	    assert !PartTreePath.of("a/b/c").isRoot();
+	    // should be the same
+	    assert Arrays.equals(new String[] {"a", "b", "c"}, StreamSupport.stream(PartTreePath.of("a/b/c").spliterator(), false).toArray(String[]::new));
 	}
 
 	static void checkPathIndexOfForShortPath() {
@@ -131,11 +131,18 @@ public final class ModelEventsTest implements ClientModInitializer {
 
 	static void registerBlockEntityModelPartListener() {
 	    assertListenerCount(PartTreePath.of("lid"), path -> {
-    	    ModelPartCallbacks.get(path).register(BlockEntityType.CHEST, (chest, partView, matrices, vertexConsumer, tickDelta, light, overlay, r, g, b, a) -> {
+	        ModelPartCallbacks.get(path).register(BlockEntityType.CHEST, (chest, partView, matrices, vertexConsumer, tickDelta, light, overlay, r, g, b, a) -> {
                 ModelPart part = partView.part();
                 LOGGER.info("Chest Lid rotation: p=" + part.pitch + ",y=" + part.yaw + ",r=" + part.roll);
                 LOGGER.info("Chest Lid Cube Count: " + partView.cubes().size());
-                LOGGER.info("Chest Lid Has Latch: " + part.hasChild("latch"));
+                LOGGER.info("Chest Lid Has Latch: " + partView.getChild("latch").isPresent());
+
+                partView.cubes().getFirst().ifPresent(cube -> {
+                    cube.getFaces(Direction.UP).getFirst().ifPresent(face -> {
+                       matrices.multiply(face.rotation());
+                       // myModel.render(matrices, vertexConsumer, light, overlay, r, g, b, a);
+                    });
+                });
             });
 	    }, 1);
 	}
