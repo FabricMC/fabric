@@ -13,12 +13,14 @@ import net.minecraft.entity.Entity;
 
 @Mixin(EntityRenderDispatcher.class)
 abstract class EntityRenderDispatcherMixin {
-    @Inject(method = "render", at = @At("HEAD"))
+    private static final String RENDER = "render(Lnet/minecraft/entity/Entity;DDDFFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V";
+
+    @Inject(method = RENDER, at = @At("HEAD"))
     private <E extends Entity> void before_render(E entity, double x, double y, double z, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo info) {
         ModelRenderContext.CURRENT_ENTITY.push(entity);
     }
 
-    @Inject(method = "render", at = @At("RETURN"))
+    @Inject(method = RENDER, at = @At("RETURN"))
     private <E extends Entity> void after_render(E entity, double x, double y, double z, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo info) {
         if (!ModelRenderContext.CURRENT_ENTITY.isEmpty()) {
             ModelRenderContext.CURRENT_ENTITY.pop();

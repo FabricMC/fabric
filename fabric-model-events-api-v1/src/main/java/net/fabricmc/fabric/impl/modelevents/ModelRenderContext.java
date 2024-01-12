@@ -29,4 +29,17 @@ public final class ModelRenderContext {
     public static final Stack<BlockEntity> CURRENT_BLOCK_ENTITY = new ObjectArrayList<>();
 
     private ModelRenderContext() { }
+
+    public static Runnable captureBlockEntity(BlockEntity entity, Runnable renderAction) {
+        return () -> {
+            try {
+                ModelRenderContext.CURRENT_BLOCK_ENTITY.push(entity);
+                renderAction.run();
+            } finally {
+                if (!ModelRenderContext.CURRENT_BLOCK_ENTITY.isEmpty()) {
+                    ModelRenderContext.CURRENT_BLOCK_ENTITY.pop();
+                }
+            }
+        };
+    }
 }
