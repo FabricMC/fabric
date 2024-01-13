@@ -16,10 +16,8 @@
 
 package net.fabricmc.fabric.mixin.recipe.cooking;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.ModifyReceiver;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -54,33 +52,28 @@ import net.minecraft.util.dynamic.Codecs;
 @Mixin(CookingRecipeSerializer.class)
 public abstract class CookingRecipeSerializerMixin {
 	/**
-	 * Redirects the original MapCodec to include an alternative (and now primary) Codec that allows for both identifier
+	 * Modifies the original codec to include an alternative (and now primary) Codec that allows for both identifier
 	 * and counting of furnace recipe items.
 	 *
 	 * <p>If you wanted to alter this to allow users to extend the additional Codec, you could instead read the codec from
 	 * a more customisable data source.
 	 * @param originalCodec the original Codec for Item strings.
-	 * @param fieldName     the name of the field that was used to build the MapCodec. In 1.20.4 this was "result"
-	 * @param toMapCodec    the method call that transforms originalCodec to a MapCodec using field name. Here it is
-	 *                      applied after the new primary Codec is inserted.
-	 * @return a new MapCodec, built with the same field name, with an inserted Codec for additional
-	 *         serialisation/deserialisation functionality.
+	 * @param fieldName the name of the field that was used to build the MapCodec. In 1.20.4 this was "result"
+	 * @return a new Codec built with the <code>Codecs.alternatively()</code> function that allows the aforementioned
+	 * 		   serialisation/deserialisation functionality.
 	 */
-	@WrapOperation(
+	@ModifyReceiver(
 			method = "method_53766(ILnet/minecraft/recipe/AbstractCookingRecipe$RecipeFactory;Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;",
 			at = @At(
 					value = "INVOKE",
-					target = "Lcom/mojang/serialization/Codec;fieldOf(Ljava/lang/String;)Lcom/mojang/serialization/MapCodec;", // Lcom/mojang/serialization/Codec;fieldOf(Ljava/lang/String;)Lcom/mojang/serialization/MapCodec;
+					target = "Lcom/mojang/serialization/Codec;fieldOf(Ljava/lang/String;)Lcom/mojang/serialization/MapCodec;",
 					ordinal = 1,
 					remap = false
 			)
 	)
-	private static MapCodec<? extends ItemStack> addAlternativeCodec(Codec<? extends ItemStack> originalCodec, String fieldName, Operation<MapCodec<? extends ItemStack>> toMapCodec) {
-		return toMapCodec.call(
-				Codecs.alternatively(
-						ItemStack.RECIPE_RESULT_CODEC, // doesn't work with nbt - a custom codec would be required here
-						originalCodec
-				),
-				fieldName);
+	private static Codec<? extends ItemStack> addAlternativeCodec(Codec<? extends ItemStack> originalCodec, String fieldName) {
+		return Codecs.alternatively(
+				ItemStack.RECIPE_RESULT_CODEC, // doesn't work with nbt - a custom codec would be required here
+				originalCodec);
 	}
 }

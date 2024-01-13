@@ -17,11 +17,10 @@
 package net.fabricmc.fabric.mixin.recipe.cooking;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.item.ItemStack;
@@ -35,32 +34,30 @@ import net.minecraft.registry.DynamicRegistryManager;
 @Mixin(AbstractFurnaceBlockEntity.class)
 public abstract class AbstractFurnaceBlockEntityMixin {
 	/**
-	 * A wrapper altering the result of a smelting recipe when outputting into a partially filled output slot. 1.20.4
-	 * functionality increments the output by 1. This wrapper instead increases the count by the amount defined in the
-	 * recipe.
+	 * Argument modifier that alters the increment amount of a smelting recipe when outputting into a partially filled
+	 * output slot. The current (1.20.4) functionality is to always increment by 1. This is not compatible with multiple
+	 * item outputs. As such this modifies the argument and sets it to exactly the recipe output. Note: this overrides
+	 * any previous modifications to "amount".
 	 *
 	 * <p>Assumes that the increment will be valid and does not stop recipe if it would go over. E.g. an increment of
 	 * 65 would always be performed, if not stopped by other logic prior to this.
 	 *
-	 * @param outputStack the instance of the itemstack to increment, in the furnace's output slot.
-	 * @param increment the original incremented amount (1.20.4 this is always 1).
-	 * @param incrementItemStack the method responsible for increasing the item stack count.
-	 * @param registryManager the registry manager to access for the recipe
-	 * @param recipe the (!= null) recipe.
+	 * @param amount the original increment amount (1.20.4 this is always 1).
+	 * @param registryManager the registry manager to access for the recipe.
+	 * @param recipe the (!= null) cooking recipe.
+	 * @return the amount specified by the recipe, rather than the default 1.
 	 */
-	@WrapOperation(
+	@ModifyArg(
 			method = "craftRecipe",
 			at = @At(
 					value = "INVOKE",
 					target = "Lnet/minecraft/item/ItemStack;increment(I)V"
 			)
 	)
-	private static void incrementByRecipe(ItemStack outputStack, int increment, Operation<Void> incrementItemStack, DynamicRegistryManager registryManager, RecipeEntry<?> recipe) {
-		incrementItemStack.call(
-				outputStack,
-				recipe.value()
-						.getResult(registryManager)
-						.getCount());
+	private static int incrementByRecipe(int amount, @Local(argsOnly = true) DynamicRegistryManager registryManager, @Local(argsOnly = true) RecipeEntry<?> recipe) {
+		return recipe.value()
+				.getResult(registryManager)
+				.getCount();
 	}
 
 	/**
