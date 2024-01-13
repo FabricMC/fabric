@@ -91,7 +91,7 @@ public interface ModelPartCallbacks {
     <T extends BlockEntity> void register(BlockEntityType<T> entityType, BlockEntityModelPartListener<T> listener);
 
     /**
-     * Represents the strategy used when determining whether a model's path matches with the requested path for an event.
+     * Represents the strategy used when determining whether a model's path matches the requested path for an event.
      */
     public enum MatchingStrategy {
         /**
