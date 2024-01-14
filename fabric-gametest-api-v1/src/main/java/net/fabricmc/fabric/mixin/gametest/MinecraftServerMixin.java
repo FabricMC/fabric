@@ -18,7 +18,11 @@ package net.fabricmc.fabric.mixin.gametest;
 
 import java.util.function.BooleanSupplier;
 
+import net.minecraft.server.ServerTickManager;
+
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -29,10 +33,14 @@ import net.minecraft.test.TestManager;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
+	@Shadow
+	@Final
+	private ServerTickManager tickManager;
+
 	@Inject(method = "tickWorlds", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;updatePlayerLatency()V", shift = At.Shift.AFTER))
 	private void tickWorlds(BooleanSupplier shouldKeepTicking, CallbackInfo callbackInfo) {
 		// Called by vanilla when isDevelopment is enabled.
-		if (!SharedConstants.isDevelopment) {
+		if (!SharedConstants.isDevelopment && this.tickManager.shouldTick()) {
 			TestManager.INSTANCE.tick();
 		}
 	}
