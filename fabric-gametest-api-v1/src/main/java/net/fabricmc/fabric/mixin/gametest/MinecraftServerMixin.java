@@ -18,8 +18,6 @@ package net.fabricmc.fabric.mixin.gametest;
 
 import java.util.function.BooleanSupplier;
 
-import net.minecraft.server.ServerTickManager;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerTickManager;
 import net.minecraft.test.TestManager;
 
 @Mixin(MinecraftServer.class)
