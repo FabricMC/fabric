@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -52,7 +51,6 @@ abstract class ModelPartCuboidMixin implements CubeData {
 
     private Dilation fabric_dilation;
 
-    @Dynamic("Compiler-generated class constructor method")
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init_Cuboid(
             int u, int v,

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -60,7 +59,6 @@ abstract class ModelPartMixin implements FabricPartHooks.Container {
     @Accessor("children")
     public abstract Map<String, ModelPart> getChildren();
 
-    @Dynamic("Compiler-generated class constructor method")
     @Inject(method = "<init>", at = @At("RETURN"))
     private void initializeModelPartHooksOnConstructor(List<Cuboid> cuboids, Map<String, ModelPart> children, CallbackInfo info) {
         children.values().forEach(child -> {
