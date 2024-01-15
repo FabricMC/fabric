@@ -32,7 +32,8 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 abstract class BlockEntityRenderDispatcherMixin {
     @ModifyVariable(
             method = "runReported(Lnet/minecraft/block/entity/BlockEntity;Ljava/lang/Runnable;)V",
-            at = @At("HEAD")
+            at = @At("HEAD"),
+            argsOnly = true
     )
     private static Runnable captureBlockEntityRendererForModelPartEvents(Runnable runnable, BlockEntity blockEntity) {
         return ModelRenderContext.captureBlockEntity(blockEntity, runnable);
