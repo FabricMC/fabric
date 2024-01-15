@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.modelevents.v1.data;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3f;
 
 import net.fabricmc.fabric.api.client.modelevents.v1.traversal.ModelVisitor;
@@ -28,6 +29,7 @@ import net.minecraft.util.math.Direction;
 /**
  * Data pertaining to an individual cube.
  */
+@ApiStatus.NonExtendable
 public interface CubeData extends Traversable {
     /**
      * Gets a direct reference to the cube this data is describing.

@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.modelevents.v1.data;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -27,6 +28,7 @@ import net.minecraft.util.math.Direction;
 /**
  * Provides data pertaining to a cubes individual face.
  */
+@ApiStatus.NonExtendable
 public interface FaceData extends Traversable {
     /**
      * The physical orientation of this face.

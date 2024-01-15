@@ -17,13 +17,36 @@
 package net.fabricmc.fabric.api.client.modelevents.v1.data;
 
 import java.util.Optional;
+
+import org.jetbrains.annotations.ApiStatus;
+
 import net.fabricmc.fabric.impl.client.modelevents.EmptyDataCollection;
 
 /**
- * Represents a managed collection of data.
+ * Provides a limited, performance-prioritized, immutable view of a collection of data.
+ * <p>
+ * Individual elements can be accessed using {@link DataCollection#getAt(int)} with
+ * special members provided for the common use case of {@link DataCollection#getFirst()}
+ * and {@link DataCollection#getLast()} for getting the first and last element in the collection.
+ * <p>
+ * As all getter methods return {@link Optional}s little additional logic is required to
+ * account for cases where the data collection may be empty.
+ *
+ * Example usage:
+ * <pre>
+ *
+ * collection.getFirst().ifPresent(t -> {
+ *   doMyThingWithT(t);
+ * });
+ * collection.getLast().ifPresent(t -> {
+ *   doMyThingWithT(t);
+ * });
+ *
+ * </pre>
  *
  * @param <T> The data elements this collection contains.
  */
+@ApiStatus.NonExtendable
 public interface DataCollection<T> extends Iterable<T> {
     /**
      * Returns an empty data collection for elements of type {@code T}.

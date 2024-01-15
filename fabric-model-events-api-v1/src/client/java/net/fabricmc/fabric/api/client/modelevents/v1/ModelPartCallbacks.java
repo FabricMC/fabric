@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.modelevents.v1;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.fabricmc.fabric.impl.client.modelevents.ModelPartCallbacksImpl;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -40,6 +42,7 @@ import net.minecraft.entity.EntityType;
  * </pre>
  * }
  */
+@ApiStatus.NonExtendable
 public interface ModelPartCallbacks {
     /**
      * Gets a callbacks registry to register events upon a certain part is rendered.

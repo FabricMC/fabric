@@ -19,6 +19,8 @@ package net.fabricmc.fabric.api.client.modelevents.v1.data;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.fabricmc.fabric.api.client.modelevents.v1.PartTreePath;
 import net.fabricmc.fabric.api.client.modelevents.v1.traversal.Traversable;
 import net.fabricmc.fabric.impl.client.modelevents.FabricPartHooks;
@@ -27,9 +29,10 @@ import net.minecraft.client.model.ModelPart;
 /**
  * Provides access to information about a model part as it is being rendered.
  */
+@ApiStatus.NonExtendable
 public interface PartView extends Traversable {
     /**
-     * Bridge method for converting from a ModelPart back into a PartView.
+     * Bridge method for converting from a {@link ModelPart} back into a PartView.
      *
      * @return Optional associated view if one has been computed.
      */
@@ -48,7 +51,10 @@ public interface PartView extends Traversable {
     ModelPart part();
 
     /**
-     * Data-view of the cubes contained within this part
+     * Data-view of the cubes contained within this part.
+     *
+     * @see DataCollection
+     * @see CubeData
      */
     DataCollection<CubeData> cubes();
 

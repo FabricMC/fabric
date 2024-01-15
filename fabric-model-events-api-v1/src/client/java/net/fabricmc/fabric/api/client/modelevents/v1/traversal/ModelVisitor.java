@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.modelevents.v1.traversal;
 
 import java.util.function.BiPredicate;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.client.modelevents.v1.data.CubeData;
@@ -42,6 +43,7 @@ import net.minecraft.client.util.math.MatrixStack;
  * <p>
  * To create one, use {@code ModelVisitor#builder()}.
  */
+@ApiStatus.NonExtendable
 public interface ModelVisitor {
     /**
      * Called when visiting a model part and its children.
