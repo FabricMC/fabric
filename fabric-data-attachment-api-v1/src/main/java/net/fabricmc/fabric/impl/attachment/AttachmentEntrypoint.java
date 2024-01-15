@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.attachment;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 public class AttachmentEntrypoint implements ModInitializer {
@@ -30,5 +31,8 @@ public class AttachmentEntrypoint implements ModInitializer {
 				AttachmentTargetImpl.copyOnRespawn(originalEntity, newEntity, false))
 		);
 		// using the corresponding player event is unnecessary as no new instance is created
+		ServerLivingEntityEvents.MOB_CONVERSION.register((previous, converted, keepEquipment) ->
+				AttachmentTargetImpl.copyOnRespawn(previous, converted, true)
+		);
 	}
 }

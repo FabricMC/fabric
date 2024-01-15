@@ -8,7 +8,6 @@
     "BlockEntityUpdateS2CPacketMixin",
     "ChunkSerializerMixin",
     "EntityMixin",
-    "MobEntityMixin",
     "ServerWorldMixin"
   ],
   "injectors": {
