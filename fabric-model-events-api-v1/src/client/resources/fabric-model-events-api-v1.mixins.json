@@ -7,8 +7,8 @@
     "EntityRenderDispatcherMixin",
     "PlayerEntityRendererMixin",
     "ModelPartMixin",
-    "ModelPart_CuboidMixin",
-    "ModelPart_QuadMixin"
+    "ModelPartCuboidMixin",
+    "ModelPartQuadMixin"
   ],
   "injectors": {
     "defaultRequire": 1

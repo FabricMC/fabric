@@ -23,6 +23,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -41,14 +42,15 @@ import net.minecraft.client.util.math.MatrixStack;
  *     to the render() method
  */
 @ApiStatus.Internal
-@Mixin(value = ModelPart.class, priority = Integer.MAX_VALUE)
+@Mixin(value = ModelPart.class, priority = 900000 /* Priority set to inject last so mods' injections are not affected (i.e sodium, vulkan mod, etc) */)
 abstract class ModelPartMixin implements FabricPartHooks.Container {
     @Shadow
     public boolean visible;
     @Shadow
     public boolean hidden;
 
-    private FabricPartHooks fabric_hooks;
+    @Unique
+    private FabricPartHooks fabricPartHooks;
 
     @Override
     @Accessor("cuboids")
@@ -60,7 +62,7 @@ abstract class ModelPartMixin implements FabricPartHooks.Container {
 
     @Dynamic("Compiler-generated class constructor method")
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void init_ModelPart(List<Cuboid> cuboids, Map<String, ModelPart> children, CallbackInfo info) {
+    private void initializeModelPartHooksOnConstructor(List<Cuboid> cuboids, Map<String, ModelPart> children, CallbackInfo info) {
         children.values().forEach(child -> {
             FabricPartHooks.Container.of(child).getHooks().setParent(getHooks());
         });
@@ -69,7 +71,7 @@ abstract class ModelPartMixin implements FabricPartHooks.Container {
     @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;IIFFFF)V", at = @At(
             value = "INVOKE",
             target = "net/minecraft/client/model/ModelPart.rotate(Lnet/minecraft/client/util/math/MatrixStack;)V"))
-    private void on_render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha, CallbackInfo info) {
+    private void triggerModelPartEventsOnRender(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha, CallbackInfo info) {
         if (hidden || !visible) {
             return;
         }
@@ -79,8 +81,8 @@ abstract class ModelPartMixin implements FabricPartHooks.Container {
 
     @Override
     public FabricPartHooks getHooks() {
-        if (fabric_hooks == null) fabric_hooks = new FabricPartHooks(this);
-        return fabric_hooks;
+        if (fabricPartHooks == null) fabricPartHooks = new FabricPartHooks(this);
+        return fabricPartHooks;
     }
 
 }

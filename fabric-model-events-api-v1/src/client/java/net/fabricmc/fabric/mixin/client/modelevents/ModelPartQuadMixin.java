@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.client.modelevents;
 import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -30,25 +31,28 @@ import net.minecraft.util.math.Direction;
 
 @ApiStatus.Internal
 @Mixin(ModelPart.Quad.class)
-abstract class ModelPart_QuadMixin implements FaceDataImpl.Container {
-    private Direction fabric_direction;
-    private FaceDataImpl fabric_face_data;
+abstract class ModelPartQuadMixin implements FaceDataImpl.Container {
+    // direction name is used by the base class
+    @Unique
+    private Direction fabricDirection;
+    @Unique
+    private FaceDataImpl fabricFaceData;
 
     @Dynamic("Compiler-generated class constructor method")
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void init_Quad(ModelPart.Vertex[] vertices, float u1, float v1, float u2, float v2, float squishU, float squishV, boolean flip, Direction direction,
+    private void storeDirectionFromConstruction(ModelPart.Vertex[] vertices, float u1, float v1, float u2, float v2, float squishU, float squishV, boolean flip, Direction direction,
             CallbackInfo info) {
-        this.fabric_direction = direction;
+        this.fabricDirection = direction;
     }
 
     @Override
     public Direction getFabricDirection() {
-        return fabric_direction;
+        return fabricDirection;
     }
 
     @Override
     public FaceData getFabricFaceData() {
-        if (fabric_face_data == null) fabric_face_data = new FaceDataImpl(this);
-        return fabric_face_data;
+        if (fabricFaceData == null) fabricFaceData = new FaceDataImpl(this);
+        return fabricFaceData;
     }
 }

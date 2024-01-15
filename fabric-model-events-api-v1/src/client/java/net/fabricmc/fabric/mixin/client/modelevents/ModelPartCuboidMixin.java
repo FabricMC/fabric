@@ -42,7 +42,7 @@ import net.minecraft.util.math.Direction;
 
 @ApiStatus.Internal
 @Mixin(value = ModelPart.Cuboid.class, priority = Integer.MAX_VALUE)
-abstract class ModelPart_CuboidMixin implements CubeData {
+abstract class ModelPartCuboidMixin implements CubeData {
     @Shadow
     private @Final Quad[] sides;
 
