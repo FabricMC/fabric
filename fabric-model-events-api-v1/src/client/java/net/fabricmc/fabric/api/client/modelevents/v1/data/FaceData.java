@@ -42,7 +42,7 @@ public interface FaceData extends Traversable {
     /**
      * The face direction vector for use when applying directional lighting.
      * <p>
-     * If the face is mirrored, will be the opposite of {@see direction}.
+     * If the face is mirrored, will be the opposite of {@link FaceData#center()}.
      *
      * @return The lighting normal vector.
      */
@@ -79,7 +79,6 @@ public interface FaceData extends Traversable {
      * The 3D center point of this face.
      */
     Vector3fc center();
-
 
     @Override
     default void traverse(MatrixStack matrices, ModelVisitor visitor) {

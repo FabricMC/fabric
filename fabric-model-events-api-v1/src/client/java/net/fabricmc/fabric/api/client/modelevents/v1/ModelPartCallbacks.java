@@ -49,8 +49,8 @@ public interface ModelPartCallbacks {
      * <p>
      * This is a short-hand method and calling this is the equivalent of calling {@code ModelPartCallbacks.get(ModelPartCallbacks.MatchingStrategy.ENDS_WITH, path)}
      *
-     * @param path The path to check for
-     * @return ModelPartCallbacks object for registering event listeners.
+     * @param path the part name or location within a model listeners should be attached for
+     * @return object for registering event listeners
      */
     static ModelPartCallbacks get(PartTreePath path) {
         return get(MatchingStrategy.ENDS_WITH, path);
@@ -59,10 +59,10 @@ public interface ModelPartCallbacks {
     /**
      * Gets a callbacks registry to register listeners to be triggered upon rendering of model parts matching a certain name or path.
      * <p>
-     * The parts that cause events registered through this callback object is determined by the tree-path
+     * The parts that trigger events registered through this callback object is determined by the tree-path
      * and the matching strategy.
      *
-     * @param matchingStrategy Strategy for deciding whether a model part's path matches the path specified here.
+     * @param matchingStrategy strategy for deciding whether a model part's path matches the path specified here
      * @param path The path to check for
      * @return ModelPartCallbacks object for registering event listeners.
      */
@@ -79,7 +79,7 @@ public interface ModelPartCallbacks {
      * Registers an event to be invoked for a model part during entity rendering.
      *
      * @param <T> Entity class
-     * @param entityType entity type of the entity who's model rendering must trigger this event
+     * @param entityType entity type of the entity whose model rendering must trigger this event
      * @param listener Part rendering listener
      */
     <T extends Entity> void register(EntityType<T> entityType, EntityModelPartListener<T> listener);
@@ -88,7 +88,7 @@ public interface ModelPartCallbacks {
      * Registers an event to be invoked for a model part during block entity rendering.
      *
      * @param <T> BlockEntity class
-     * @param entityType block entity type of the block entity who's model rendering must trigger this event
+     * @param entityType block entity type of the block entity whose model rendering must trigger this event
      * @param listener Part rendering listener
      */
     <T extends BlockEntity> void register(BlockEntityType<T> entityType, BlockEntityModelPartListener<T> listener);
