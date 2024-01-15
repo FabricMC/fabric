@@ -45,7 +45,7 @@ import net.minecraft.entity.EntityType;
 @ApiStatus.NonExtendable
 public interface ModelPartCallbacks {
     /**
-     * Gets a callbacks registry to register events upon a certain part is rendered.
+     * Gets a callbacks registry to register listeners to be triggered upon rendering of model parts matching a certain name or path.
      * <p>
      * This is a short-hand method and calling this is the equivalent of calling {@code ModelPartCallbacks.get(ModelPartCallbacks.MatchingStrategy.ENDS_WITH, path)}
      *
@@ -57,7 +57,7 @@ public interface ModelPartCallbacks {
     }
 
     /**
-     * Gets a callbacks registry to register events upon a certain part is rendered.
+     * Gets a callbacks registry to register listeners to be triggered upon rendering of model parts matching a certain name or path.
      * <p>
      * The parts that cause events registered through this callback object is determined by the tree-path
      * and the matching strategy.
