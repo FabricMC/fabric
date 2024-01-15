@@ -5,11 +5,17 @@
   "mixins": [
     "AbstractFurnaceBlockEntityMixin",
     "ArmorItemMixin",
+    "BlockItemMixin",
     "BrewingStandBlockEntityMixin",
+    "CatEntityMixin",
+    "CookingRecipeJsonBuilderMixin",
+    "FoxEntityMixin",
+    "HungerManagerMixin",
     "ItemMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "RecipeMixin"
+    "RecipeMixin",
+    "WolfEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
