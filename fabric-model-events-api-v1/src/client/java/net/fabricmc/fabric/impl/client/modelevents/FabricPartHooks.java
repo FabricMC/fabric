@@ -68,7 +68,7 @@ public final class FabricPartHooks {
     // called recursively
     void setPath(PartTreePathImpl path) {
         if (settingPath) {
-            LOGGER.warn("Loop detected in model tree at $", path);
+            LOGGER.warn("Loop detected in model tree at {}", path);
             return; // Parts shouldn't have loops, but just in case, prevent re-entry
         }
         settingPath = true;
