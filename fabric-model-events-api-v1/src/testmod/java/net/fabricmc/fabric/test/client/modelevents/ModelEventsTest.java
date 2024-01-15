@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import java.util.stream.StreamSupport;
 
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,16 +54,16 @@ public final class ModelEventsTest implements ClientModInitializer {
                 VertexConsumer debugConsumer = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers().getBuffer(RenderLayer.getLines());
                 matrices.push();
 
-                Vector3f center = face.center();
+                Vector3fc center = face.center();
                 float cubeL = 0.01F;
-                matrices.translate(center.x / 16F, center.y / 16F, center.z / 16F);
+                matrices.translate(center.x() / 16F, center.y() / 16F, center.z() / 16F);
                 Vector3f unitVector = face.direction().getUnitVector();
                 WorldRenderer.drawBox(matrices, debugConsumer, -cubeL, -cubeL, -cubeL, cubeL, cubeL, cubeL,
                         0.5F + unitVector.x * 0.5F,
                         0.5F + unitVector.y * 0.5F,
                         0.5F + unitVector.z * 0.5F,
                         1);
-                matrices.translate(unitVector.x / 16F, unitVector.y / 16F, unitVector.z / 16F);
+                matrices.translate(unitVector.x() / 16F, unitVector.y() / 16F, unitVector.z() / 16F);
                 WorldRenderer.drawBox(matrices, debugConsumer, -cubeL, -cubeL, -cubeL, cubeL, cubeL, cubeL,
                         0.5F + unitVector.x * 0.5F,
                         0.5F + unitVector.y * 0.5F,

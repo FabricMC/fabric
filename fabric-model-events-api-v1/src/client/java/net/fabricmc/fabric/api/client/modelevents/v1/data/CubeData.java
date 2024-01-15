@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.modelevents.v1.data;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import net.fabricmc.fabric.api.client.modelevents.v1.traversal.ModelVisitor;
 import net.fabricmc.fabric.api.client.modelevents.v1.traversal.Traversable;
@@ -73,28 +74,28 @@ public interface CubeData extends Traversable {
     /**
      * The 3D dimensions of this cube
      */
-    default Vector3f size() {
+    default Vector3fc size() {
         return new Vector3f(sizeX(), sizeY(), sizeZ());
     }
 
     /**
      * The origin point of this cube
      */
-    default Vector3f min() {
+    default Vector3fc min() {
         return new Vector3f(cuboid().minX, cuboid().minY, cuboid().minZ);
     }
 
     /**
      * The maximum of this cube
      */
-    default Vector3f max() {
+    default Vector3fc max() {
         return new Vector3f(cuboid().maxX, cuboid().maxY, cuboid().maxZ);
     }
 
     /**
      * The midpoint of the cube
      */
-    default Vector3f center() {
+    default Vector3fc center() {
         return new Vector3f(
             cuboid().minX + (sizeX() / 2F),
             cuboid().minY + (sizeY() / 2F),

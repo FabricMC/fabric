@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.modelevents.v1.data;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import net.fabricmc.fabric.api.client.modelevents.v1.traversal.ModelVisitor;
 import net.fabricmc.fabric.api.client.modelevents.v1.traversal.Traversable;
@@ -46,7 +46,7 @@ public interface FaceData extends Traversable {
      *
      * @return The lighting normal vector.
      */
-    Vector3f lightingDirection();
+    Vector3fc lightingDirection();
 
     /**
      * Gets the face orientation.
@@ -63,22 +63,22 @@ public interface FaceData extends Traversable {
     /**
      * The minimum axis vector of this face.
      */
-    Vector3f min();
+    Vector3fc min();
 
     /**
      * The maximum axis vector of this face.
      */
-    Vector3f max();
+    Vector3fc max();
 
     /**
      * The 3D dimensions of this face.
      */
-    Vector3f size();
+    Vector3fc size();
 
     /**
      * The 3D center point of this face.
      */
-    Vector3f center();
+    Vector3fc center();
 
 
     @Override
