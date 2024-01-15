@@ -170,6 +170,14 @@ public final class ModelEventsTest implements ClientModInitializer {
 	    }, 1);
 	}
 
+	/**
+	 * Test for event listeners that render a model matching an existing event. This is to demonstrate (and test) that code
+	 * which does this does not result in any infinite recursion scenarios.
+	 * <p>
+	 * Simply-put, if an event is already active, it will not fire until after it returns.
+	 * <p>
+	 * Other events can still be fired in response to models you render here, however.
+	 */
 	static void testModelRenderNesting() {
 	    assertListenerCount(PartTreePath.of(EntityModelPartNames.HEAD), path -> {
 	        // if the player has two heads we know it's working
