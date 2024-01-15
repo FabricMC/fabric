@@ -36,7 +36,7 @@ import net.minecraft.client.util.math.MatrixStack;
 @Mixin(value = PlayerEntityRenderer.class, priority = 900000 /* Priority set to inject last so mods' injections are not affected */)
 abstract class PlayerEntityRendererMixin {
     // descriptor in a string to avoid repeating outselves.
-    private static final String RENDER_ARM = "renderArm(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/network/AbstractClientPlayer;Lnet/minecraft/client/model/ModelPart;Lnet/minecraft/client/model/ModelPart;)";
+    private static final String RENDER_ARM = "renderArm(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/network/AbstractClientPlayer;Lnet/minecraft/client/model/ModelPart;Lnet/minecraft/client/model/ModelPart;)V";
 
     @Inject(method = RENDER_ARM, at = @At("HEAD"))
     private void before_RenderArm(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity player, ModelPart arm, ModelPart sleeve, CallbackInfo info) {
