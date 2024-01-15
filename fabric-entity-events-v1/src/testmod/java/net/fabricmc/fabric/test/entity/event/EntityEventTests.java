@@ -114,6 +114,10 @@ public final class EntityEventTests implements ModInitializer {
 			LOGGER.info("{} died due to {} damage source", entity.getName().getString(), source.getName());
 		});
 
+		ServerLivingEntityEvents.MOB_CONVERSION.register((previous, converted, keepEquipment) -> {
+			LOGGER.info("{} is being converted to {} [{}]", previous.getName().getString(), converted.getName().getString(), keepEquipment);
+		});
+
 		EntitySleepEvents.ALLOW_SLEEPING.register((player, sleepingPos) -> {
 			// Can't sleep if holds blue wool
 			if (player.getStackInHand(Hand.MAIN_HAND).isOf(Items.BLUE_WOOL)) {

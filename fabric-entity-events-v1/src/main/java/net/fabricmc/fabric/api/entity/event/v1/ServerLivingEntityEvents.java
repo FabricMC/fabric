@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.entity.event.v1;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.mob.MobEntity;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -73,6 +74,21 @@ public final class ServerLivingEntityEvents {
 		}
 	});
 
+	/**
+	 * An event that is called when a mob has been converted to another type.
+	 *
+	 * <p>When this event is called, the old instance has not yet been discarded, and the new one has not yet been spawned.
+	 * Mods may use this event to copy some of the old entity's data to the converted one.</p>
+	 *
+	 * <p>This event only handles cases where the entity type changes, requiring a new instance. Notably it does not
+	 * cover mooshrooms changing color from lightning, creepers getting charged, or wolves being tamed.</p>
+	 */
+	public static final Event<MobConversion> MOB_CONVERSION = EventFactory.createArrayBacked(MobConversion.class, callbacks -> (previous, converted, keepEquipment) -> {
+		for (MobConversion callback : callbacks) {
+			callback.onConversion(previous, converted, keepEquipment);
+		}
+	});
+
 	@FunctionalInterface
 	public interface AllowDamage {
 		/**
@@ -110,6 +126,18 @@ public final class ServerLivingEntityEvents {
 		 * @param damageSource the source of the fatal damage
 		 */
 		void afterDeath(LivingEntity entity, DamageSource damageSource);
+	}
+
+	@FunctionalInterface
+	public interface MobConversion {
+		/**
+		 * Called when a mob is converted to another type.
+		 *
+		 * @param previous the previous entity instance
+		 * @param converted the new instance for the converted entity
+		 * @param keepEquipment whether the converted entity should keep the previous one's equipment, like armor
+		 */
+		void onConversion(MobEntity previous, MobEntity converted, boolean keepEquipment);
 	}
 
 	private ServerLivingEntityEvents() {
