@@ -30,7 +30,7 @@ class BumpVersionTask extends DefaultTask {
 			// Bump all versions. To be used when buildscript changes are made.
 			if (input == "allPatch") {
 				project.getChildProjects().values().forEach {
-					if (it.name == "deprecated") {
+					if (it.name == "deprecated" || it.name == "fabric-api-bom" || it.name == "fabric-api-catalog") {
 						return
 					}
 
