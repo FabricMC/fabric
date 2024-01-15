@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.client.modelevents;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -98,17 +99,15 @@ public final class ModelPartCallbacksImpl implements ModelPartCallbacks {
     }
 
     private static ModelPartListener guardRecursion(final ModelPartListener listener) {
-        var guard = new Object() {
-            boolean active;
-        };
+        MutableBoolean active = new MutableBoolean();
         return (part, matrices, vertices, delta, light, overlay, r, g, b, a) -> {
             // We don't want handlers recursively triggering themselves
-            if (guard.active) return;
-            guard.active = true;
+            if (active.booleanValue()) return;
+            active.setTrue();
             try {
                 listener.onModelPartRendered(part, matrices, vertices, delta, light, overlay, r, g, b, a);
             } finally {
-                guard.active = false;
+                active.setFalse();
             }
         };
     }
