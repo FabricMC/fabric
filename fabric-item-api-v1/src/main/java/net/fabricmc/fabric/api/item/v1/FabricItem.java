@@ -17,12 +17,14 @@
 package net.fabricmc.fabric.api.item.v1;
 
 import com.google.common.collect.Multimap;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -121,5 +123,16 @@ public interface FabricItem {
 	 */
 	default ItemStack getRecipeRemainder(ItemStack stack) {
 		return ((Item) this).hasRecipeRemainder() ? ((Item) this).getRecipeRemainder().getDefaultStack() : ItemStack.EMPTY;
+	}
+
+	/**
+	 * This is a stack-aware version of {@link Item#getFoodComponent()}.
+	 * Note that simple food component can also be set via {@link Item.Settings#food(FoodComponent)}.
+	 * If you want to get a food component for a stack, is <strong>recommended</strong> to use the stack version of this method: {@link FabricItemStack#getFoodComponent()}.
+	 *
+	 * @return this item's {@link FoodComponent}, or {@code null} if none was set
+	 */
+	default @Nullable FoodComponent getFoodComponent(ItemStack stack) {
+		return ((Item) this).getFoodComponent();
 	}
 }
