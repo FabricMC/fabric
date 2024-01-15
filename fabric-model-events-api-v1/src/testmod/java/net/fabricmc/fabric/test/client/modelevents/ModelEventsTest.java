@@ -35,6 +35,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.entity.model.EntityModelPartNames;
 import net.minecraft.entity.EntityType;
@@ -44,12 +45,12 @@ public final class ModelEventsTest implements ClientModInitializer {
 
 	private static final ModelVisitor DEBUG_VISITOR = ModelVisitor.builder()
             .visitCubes((matrices, cube) -> {
-                var debugConsumer = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers().getBuffer(RenderLayer.getLines());
+                VertexConsumer debugConsumer = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers().getBuffer(RenderLayer.getLines());
                 WorldRenderer.drawBox(matrices, debugConsumer, 0, 0, 0, cube.sizeX() / 16F, cube.sizeY() / 16F, cube.sizeZ() / 16F, 1, 1, 0, 1);
                 return true;
             })
             .visitFaces((matrices, face) -> {
-                var debugConsumer = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers().getBuffer(RenderLayer.getLines());
+                VertexConsumer debugConsumer = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers().getBuffer(RenderLayer.getLines());
                 matrices.push();
 
                 Vector3f center = face.center();
@@ -122,7 +123,7 @@ public final class ModelEventsTest implements ClientModInitializer {
 	}
 
 	static void checkPathIndexOfForShortPath() {
-        var path = PartTreePath.of("a/b/c");
+	    PartTreePath path = PartTreePath.of("a/b/c");
         assert path.indexOf(PartTreePath.of("a")) == 0;
         assert path.indexOf(PartTreePath.of("b")) == 1;
         assert path.indexOf(PartTreePath.of("c")) == 2;
@@ -130,7 +131,7 @@ public final class ModelEventsTest implements ClientModInitializer {
     }
 
 	static void checkPathIndexOfForLongPath() {
-        var path = PartTreePath.of("aaaaaaaaaa/bbbbbbbbbb/cccccccccccc/dddddddddd");
+	    PartTreePath path = PartTreePath.of("aaaaaaaaaa/bbbbbbbbbb/cccccccccccc/dddddddddd");
         assert path.indexOf(PartTreePath.of("aaaaaaaaaa/bbbbbbbbbb/cccccccccccc")) == 0;
         assert path.indexOf(PartTreePath.of("bbbbbbbbbb/cccccccccccc")) == 1;
         assert path.indexOf(PartTreePath.of("cccccccccccc/dddddddddd")) == 2;
@@ -138,7 +139,7 @@ public final class ModelEventsTest implements ClientModInitializer {
     }
 
 	static void checkPathComparisons() {
-	    var path = PartTreePath.of("beginning/middle/end");
+	    PartTreePath path = PartTreePath.of("beginning/middle/end");
 	    assert path.beginsWith(PartTreePath.of("beginning"));
 	    assert path.endsWith(PartTreePath.of("end"));
 	    assert path.includes(PartTreePath.of("middle"));
