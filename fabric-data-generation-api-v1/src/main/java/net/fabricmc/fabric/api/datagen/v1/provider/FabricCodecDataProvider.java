@@ -109,6 +109,7 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	 */
 	@Deprecated(forRemoval = true)
 	protected void configure(BiConsumer<Identifier, T> provider) {
+		throw new UnsupportedOperationException("Override this method.");
 	}
 
 	/**
@@ -118,6 +119,7 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	 */
 	protected void configure(BiConsumer<Identifier, T> provider, RegistryWrapper.WrapperLookup lookup) {
 		// TODO: Make abstract once the deprecated method is removed.
+		throw new UnsupportedOperationException("Override this method.");
 	}
 
 	private JsonElement convert(Identifier id, T value) {
