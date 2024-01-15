@@ -41,7 +41,7 @@ import net.minecraft.entity.EntityType;
 
 @ApiStatus.Internal
 public final class ModelPartCallbacksImpl implements ModelPartCallbacks {
-    private static volatile long UPDATE_TIME = 0;
+    private static volatile long updateTime = 0;
     @VisibleForTesting
     public static final PathTree<ModelPartCallbacksImpl> INSTANCES = new PathTree<>();
 
@@ -61,7 +61,7 @@ public final class ModelPartCallbacksImpl implements ModelPartCallbacks {
     public void register(ModelPartListener listener) {
         Objects.requireNonNull(listener);
         event.register(guardRecursion(listener));
-        UPDATE_TIME = System.currentTimeMillis();
+        updateTime = System.currentTimeMillis();
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -124,7 +124,7 @@ public final class ModelPartCallbacksImpl implements ModelPartCallbacks {
 
         @Override
         public void onModelPartRendered(PartView part, MatrixStack matrices, VertexConsumer vertexConsumer, float tickDelta, int light, int overlay, float red, float green, float blue, float alpha) {
-            if (listener == null || (UPDATE_TIME > compileTime)) {
+            if (listener == null || (updateTime > compileTime)) {
                 compileTime = System.currentTimeMillis();
                 var eventListeners = new ObjectArrayList<>();
                 INSTANCES.findMatchingLeafNodes(path, c -> eventListeners.add(c.event.invoker()));
