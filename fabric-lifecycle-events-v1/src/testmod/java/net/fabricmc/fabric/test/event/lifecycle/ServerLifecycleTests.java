@@ -54,5 +54,13 @@ public final class ServerLifecycleTests implements ModInitializer {
 		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
 			LOGGER.info("SyncDataPackContents received for {}", joined ? "join" : "reload");
 		});
+
+		ServerLifecycleEvents.BEFORE_SAVE.register(server -> {
+			LOGGER.info("Starting Save!");
+		});
+
+		ServerLifecycleEvents.AFTER_SAVE.register(server -> {
+			LOGGER.info("Save Finished!");
+		});
 	}
 }
