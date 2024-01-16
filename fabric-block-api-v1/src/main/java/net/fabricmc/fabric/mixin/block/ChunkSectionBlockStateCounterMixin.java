@@ -25,9 +25,8 @@ import net.minecraft.block.Blocks;
 
 @Mixin(targets = "net/minecraft/world/chunk/ChunkSection$BlockStateCounter")
 public class ChunkSectionBlockStateCounterMixin {
-
 	@Redirect(method = "accept(Lnet/minecraft/block/BlockState;I)V",
-			at = @At(value = "INVOKE" , target = "Lnet/minecraft/block/BlockState;isAir()Z"))
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isAir()Z"))
 	private boolean modifyAirCheck(BlockState blockState) {
 		return blockState.isOf(Blocks.AIR) || blockState.isOf(Blocks.CAVE_AIR) || blockState.isOf(Blocks.VOID_AIR);
 	}

@@ -26,7 +26,6 @@ import net.minecraft.world.chunk.ChunkSection;
 
 @Mixin(ChunkSection.class)
 public class ChunkSectionMixin {
-
 	@Redirect(method = "setBlockState(IIILnet/minecraft/block/BlockState;Z)Lnet/minecraft/block/BlockState;",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isAir()Z"))
 	private boolean modifyAirCheck(BlockState blockState) {
