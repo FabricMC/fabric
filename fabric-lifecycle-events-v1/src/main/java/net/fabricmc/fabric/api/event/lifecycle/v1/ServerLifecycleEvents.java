@@ -110,18 +110,18 @@ public final class ServerLifecycleEvents {
 	/**
 	 * Called before a Minecraft server begins saving data.
 	 */
-	public static final Event<StartSave> START_SAVE = EventFactory.createArrayBacked(StartSave.class, callbacks -> server -> {
-		for (StartSave callback : callbacks) {
-			callback.onStartSave(server);
+	public static final Event<BeforeSave> BEFORE_SAVE = EventFactory.createArrayBacked(BeforeSave.class, callbacks -> server -> {
+		for (BeforeSave callback : callbacks) {
+			callback.onBeforeSave(server);
 		}
 	});
 
 	/**
 	 * Called after a Minecraft server finishes saving data.
 	 */
-	public static final Event<EndSave> END_SAVE = EventFactory.createArrayBacked(EndSave.class, callbacks -> server -> {
-		for (EndSave callback : callbacks) {
-			callback.onEndSave(server);
+	public static final Event<AfterSave> AFTER_SAVE = EventFactory.createArrayBacked(AfterSave.class, callbacks -> server -> {
+		for (AfterSave callback : callbacks) {
+			callback.onAfterSave(server);
 		}
 	});
 
@@ -180,12 +180,12 @@ public final class ServerLifecycleEvents {
 	}
 
 	@FunctionalInterface
-	public interface StartSave {
-		void onStartSave(MinecraftServer server);
+	public interface BeforeSave {
+		void onBeforeSave(MinecraftServer server);
 	}
 
 	@FunctionalInterface
-	public interface EndSave {
-		void onEndSave(MinecraftServer server);
+	public interface AfterSave {
+		void onAfterSave(MinecraftServer server);
 	}
 }
