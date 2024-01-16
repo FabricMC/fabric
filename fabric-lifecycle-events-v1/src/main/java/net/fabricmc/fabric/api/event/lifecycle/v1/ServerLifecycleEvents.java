@@ -107,6 +107,24 @@ public final class ServerLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called before a Minecraft server begins saving data.
+	 */
+	public static final Event<StartSave> START_SAVE = EventFactory.createArrayBacked(StartSave.class, callbacks -> server -> {
+		for (StartSave callback : callbacks) {
+			callback.onStartSave(server);
+		}
+	});
+
+	/**
+	 * Called after a Minecraft server finishes saving data.
+	 */
+	public static final Event<EndSave> END_SAVE = EventFactory.createArrayBacked(EndSave.class, callbacks -> server -> {
+		for (EndSave callback : callbacks) {
+			callback.onEndSave(server);
+		}
+	});
+
 	@FunctionalInterface
 	public interface ServerStarting {
 		void onServerStarting(MinecraftServer server);
@@ -159,5 +177,15 @@ public final class ServerLifecycleEvents {
 		 * @param success if the reload was successful
 		 */
 		void endDataPackReload(MinecraftServer server, LifecycledResourceManager resourceManager, boolean success);
+	}
+
+	@FunctionalInterface
+	public interface StartSave {
+		void onStartSave(MinecraftServer server);
+	}
+
+	@FunctionalInterface
+	public interface EndSave {
+		void onEndSave(MinecraftServer server);
 	}
 }
