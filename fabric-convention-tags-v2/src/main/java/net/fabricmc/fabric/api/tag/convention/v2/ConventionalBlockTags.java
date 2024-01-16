@@ -129,6 +129,8 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
 
 	// Misc
+	public static final TagKey<Block> PLAYER_WORKSTATIONS_CRAFTING_TABLES = register("player_workstations/crafting_tables");
+	public static final TagKey<Block> PLAYER_WORKSTATIONS_FURNACES = register("player_workstations/furnaces");
 	/**
 	 * Blocks should be included in this tag if their movement/relocation can cause serious issues such
 	 * as world corruption upon being moved or for balance reason where the block should not be able to be relocated.

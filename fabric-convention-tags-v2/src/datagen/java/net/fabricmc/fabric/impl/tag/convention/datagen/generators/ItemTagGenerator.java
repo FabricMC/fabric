@@ -418,6 +418,12 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateOtherTags() {
+		getOrCreateTagBuilder(ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES)
+				.add(Items.CRAFTING_TABLE);
+
+		getOrCreateTagBuilder(ConventionalItemTags.PLAYER_WORKSTATIONS_FURNACES)
+				.add(Items.FURNACE);
+
 		getOrCreateTagBuilder(ConventionalItemTags.STRINGS)
 				.add(Items.STRING);
 

@@ -253,6 +253,8 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
 
 	// Other
+	public static final TagKey<Item> PLAYER_WORKSTATIONS_CRAFTING_TABLES = register("player_workstations/crafting_tables");
+	public static final TagKey<Item> PLAYER_WORKSTATIONS_FURNACES = register("player_workstations/furnaces");
 	public static final TagKey<Item> STRINGS = register("strings");
 	/**
 	 * For rod-like materials to be used in recipes.
