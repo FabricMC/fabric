@@ -151,6 +151,10 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(RegistryKeys.BLOCK, "workbenches", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.VILLAGER_JOB_SITES),
 			createMapEntry(RegistryKeys.BLOCK, "workstation", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.VILLAGER_JOB_SITES),
 			createMapEntry(RegistryKeys.BLOCK, "workstations", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.VILLAGER_JOB_SITES),
+			createMapEntry(RegistryKeys.BLOCK, "crafting_table", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES),
+			createMapEntry(RegistryKeys.BLOCK, "crafting_tables", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES),
+			createMapEntry(RegistryKeys.BLOCK, "furnace", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES),
+			createMapEntry(RegistryKeys.BLOCK, "furnaces", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES),
 
 			createMapEntry(RegistryKeys.ITEM, "axes", ItemTags.AXES),
 			createMapEntry(RegistryKeys.ITEM, "pickaxes", ItemTags.PICKAXES),

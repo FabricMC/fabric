@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.tag.convention.v2;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
