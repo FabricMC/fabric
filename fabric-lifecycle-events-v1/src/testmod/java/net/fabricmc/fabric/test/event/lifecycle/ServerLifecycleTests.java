@@ -55,12 +55,12 @@ public final class ServerLifecycleTests implements ModInitializer {
 			LOGGER.info("SyncDataPackContents received for {}", joined ? "join" : "reload");
 		});
 
-		ServerLifecycleEvents.BEFORE_SAVE.register(server -> {
-			LOGGER.info("Starting Save!");
+		ServerLifecycleEvents.BEFORE_SAVE.register((server, flush, force) -> {
+			LOGGER.info("Starting Save with settings: Flush:{} Force:{}", flush, force);
 		});
 
-		ServerLifecycleEvents.AFTER_SAVE.register(server -> {
-			LOGGER.info("Save Finished!");
+		ServerLifecycleEvents.AFTER_SAVE.register((server, flush, force) -> {
+			LOGGER.info("Save Finished with settings: Flush:{} Force:{}", flush, force);
 		});
 	}
 }
