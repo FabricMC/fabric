@@ -30,6 +30,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Hand;
 
+import net.fabricmc.fabric.impl.item.FabricItemInternals;
+
 /**
  * General-purpose Fabric-provided extensions for {@link Item} subclasses.
  *
@@ -135,5 +137,33 @@ public interface FabricItem {
 	 */
 	default @Nullable FoodComponent getFoodComponent(ItemStack stack) {
 		return ((Item) this).getFoodComponent();
+	}
+
+	/**
+	 * Fabric-provided extensions for {@link Item.Settings}.
+	 * This interface is automatically implemented on all item settings via Mixin and interface injection.
+	 */
+	interface Settings {
+		/**
+		 * Sets the equipment slot provider of the item.
+		 *
+		 * @param equipmentSlotProvider the equipment slot provider
+		 * @return this builder
+		 */
+		default Item.Settings equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
+			FabricItemInternals.computeExtraData((Item.Settings) this).equipmentSlot(equipmentSlotProvider);
+			return (Item.Settings) this;
+		}
+
+		/**
+		 * Sets the custom damage handler of the item.
+		 * Note that this is only called on an ItemStack if {@link ItemStack#isDamageable()} returns true.
+		 *
+		 * @see CustomDamageHandler
+		 */
+		default Item.Settings customDamage(CustomDamageHandler handler) {
+			FabricItemInternals.computeExtraData((Item.Settings) this).customDamage(handler);
+			return (Item.Settings) this;
+		}
 	}
 }

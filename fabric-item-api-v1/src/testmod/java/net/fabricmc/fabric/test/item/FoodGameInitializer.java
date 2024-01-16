@@ -26,11 +26,10 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 
 public final class FoodGameInitializer implements ModInitializer {
-	public static final Item DAMAGE = Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "damage_food"), new DamageFood(new FabricItemSettings().maxDamage(20)));
-	public static final Item NAME = Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "name_food"), new NameFood(new FabricItemSettings()));
+	public static final Item DAMAGE = Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "damage_food"), new DamageFood(new Item.Settings().maxDamage(20)));
+	public static final Item NAME = Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "name_food"), new NameFood(new Item.Settings()));
 
 	@Override
 	public void onInitialize() {
