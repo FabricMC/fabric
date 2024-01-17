@@ -45,7 +45,7 @@ public class GameOptionsWriteVisitorMixin {
 			ResourcePackProfile profile = manager.getProfile(pack);
 
 			// Nonexistent pack profiles should be handled in the same way as vanilla
-			if (profile == null || !((FabricResourcePackProfile) profile).isHidden()) copy.add(pack);
+			if (profile == null || !((FabricResourcePackProfile) profile).fabric_isHidden()) copy.add(pack);
 		}
 
 		return copy;

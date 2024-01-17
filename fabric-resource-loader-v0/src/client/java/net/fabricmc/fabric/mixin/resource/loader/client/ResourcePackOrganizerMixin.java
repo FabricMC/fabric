@@ -49,13 +49,13 @@ public class ResourcePackOrganizerMixin {
 	 */
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void removeHiddenPacksInit(Runnable updateCallback, Function iconIdSupplier, ResourcePackManager resourcePackManager, Consumer applier, CallbackInfo ci) {
-		this.enabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).isHidden());
-		this.disabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).isHidden());
+		this.enabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
+		this.disabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
 	}
 
 	@Inject(method = "refresh", at = @At("TAIL"))
 	private void removeHiddenPacksRefresh(CallbackInfo ci) {
-		this.enabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).isHidden());
-		this.disabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).isHidden());
+		this.enabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
+		this.disabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
 	}
 }

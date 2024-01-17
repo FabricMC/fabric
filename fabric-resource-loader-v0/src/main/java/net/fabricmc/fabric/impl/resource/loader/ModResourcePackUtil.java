@@ -88,10 +88,9 @@ public final class ModResourcePackUtil {
 
 	public static void refreshAutoEnabledPacks(List<ResourcePackProfile> enabledProfiles, Map<String, ResourcePackProfile> allProfiles) {
 		LOGGER.debug("[Fabric] Starting internal pack sorting with: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
-		enabledProfiles.removeIf(profile -> ((FabricResourcePackProfile) profile).isHidden());
+		enabledProfiles.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
 		LOGGER.debug("[Fabric] Removed all internal packs, result: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
 		ListIterator<ResourcePackProfile> it = enabledProfiles.listIterator();
-		// LinkedHashSet for debug log sort, will switch to normal HashSet once finished
 		Set<String> seen = new LinkedHashSet<>();
 
 		while (it.hasNext()) {
@@ -101,7 +100,7 @@ public final class ModResourcePackUtil {
 			for (ResourcePackProfile p : allProfiles.values()) {
 				FabricResourcePackProfile fp = (FabricResourcePackProfile) p;
 
-				if (fp.isHidden() && fp.parentsEnabled(seen) && seen.add(p.getName())) {
+				if (fp.fabric_isHidden() && fp.fabric_parentsEnabled(seen) && seen.add(p.getName())) {
 					it.add(p);
 					LOGGER.debug("[Fabric] cur @ {}, auto-enabled {}, currently enabled: {}", profile.getName(), p.getName(), seen);
 				}

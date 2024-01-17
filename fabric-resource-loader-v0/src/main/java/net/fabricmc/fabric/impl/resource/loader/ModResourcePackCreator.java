@@ -132,7 +132,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			);
 
 			if (profile != null) {
-				((FabricResourcePackProfile) profile).setParentsPredicate(parents);
+				((FabricResourcePackProfile) profile).fabric_setParentsPredicate(parents);
 				consumer.accept(profile);
 			}
 		}

@@ -27,7 +27,7 @@ public interface FabricResourcePackProfile {
 	/**
 	 * Returns whether the pack is internal and hidden from end users.
 	 */
-	default boolean isHidden() {
+	default boolean fabric_isHidden() {
 		return false;
 	}
 
@@ -38,10 +38,10 @@ public interface FabricResourcePackProfile {
 	 *
 	 * @return whether every parent is enabled.
 	 */
-	default boolean parentsEnabled(Set<String> enabled) {
+	default boolean fabric_parentsEnabled(Set<String> enabled) {
 		return true;
 	}
 
-	default void setParentsPredicate(Predicate<Set<String>> predicate) {
+	default void fabric_setParentsPredicate(Predicate<Set<String>> predicate) {
 	}
 }

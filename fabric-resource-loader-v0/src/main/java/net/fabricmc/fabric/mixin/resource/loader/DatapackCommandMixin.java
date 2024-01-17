@@ -53,16 +53,16 @@ public class DatapackCommandMixin {
 
 	@Redirect(method = "method_13136", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackManager;getEnabledNames()Ljava/util/Collection;"))
 	private static Collection<String> filterEnabledPackSuggestions(ResourcePackManager dataPackManager) {
-		return dataPackManager.getEnabledProfiles().stream().filter(profile -> !((FabricResourcePackProfile) profile).isHidden()).map(ResourcePackProfile::getName).toList();
+		return dataPackManager.getEnabledProfiles().stream().filter(profile -> !((FabricResourcePackProfile) profile).fabric_isHidden()).map(ResourcePackProfile::getName).toList();
 	}
 
 	@WrapOperation(method = "method_13120", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0))
 	private static Stream<ResourcePackProfile> filterDisabledPackSuggestions(Stream<ResourcePackProfile> instance, Predicate<? super ResourcePackProfile> predicate, Operation<Stream<ResourcePackProfile>> original) {
-		return original.call(instance, predicate).filter(profile -> !((FabricResourcePackProfile) profile).isHidden());
+		return original.call(instance, predicate).filter(profile -> !((FabricResourcePackProfile) profile).fabric_isHidden());
 	}
 
 	@Inject(method = "getPackContainer", at = @At(value = "INVOKE", target = "Ljava/util/Collection;contains(Ljava/lang/Object;)Z", shift = At.Shift.BEFORE))
 	private static void errorOnInternalPack(CommandContext<ServerCommandSource> context, String name, boolean enable, CallbackInfoReturnable<ResourcePackProfile> cir, @Local ResourcePackProfile profile) throws CommandSyntaxException {
-		if (((FabricResourcePackProfile) profile).isHidden()) throw INTERNAL_PACK_EXCEPTION.create(profile.getName());
+		if (((FabricResourcePackProfile) profile).fabric_isHidden()) throw INTERNAL_PACK_EXCEPTION.create(profile.getName());
 	}
 }

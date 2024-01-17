@@ -57,17 +57,17 @@ abstract class ResourcePackProfileMixin implements FabricResourcePackProfile {
 	}
 
 	@Override
-	public boolean isHidden() {
+	public boolean fabric_isHidden() {
 		return parentsPredicate != DEFAULT_PARENT_PREDICATE;
 	}
 
 	@Override
-	public boolean parentsEnabled(Set<String> enabled) {
+	public boolean fabric_parentsEnabled(Set<String> enabled) {
 		return parentsPredicate.test(enabled);
 	}
 
 	@Override
-	public void setParentsPredicate(Predicate<Set<String>> predicate) {
+	public void fabric_setParentsPredicate(Predicate<Set<String>> predicate) {
 		this.parentsPredicate = predicate;
 	}
 }

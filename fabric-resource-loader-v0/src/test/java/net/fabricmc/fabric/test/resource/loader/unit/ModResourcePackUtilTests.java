@@ -214,7 +214,7 @@ public class ModResourcePackUtilTests {
 				ModResourcePackCreator.RESOURCE_PACK_SOURCE
 		);
 
-		if (parents != null) ((FabricResourcePackProfile) profile).setParentsPredicate(parents);
+		if (parents != null) ((FabricResourcePackProfile) profile).fabric_setParentsPredicate(parents);
 
 		profiles.put(id, profile);
 		return profile;
