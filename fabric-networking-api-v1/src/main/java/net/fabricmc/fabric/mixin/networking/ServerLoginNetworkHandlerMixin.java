@@ -50,6 +50,8 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddon(CallbackInfo ci) {
 		this.addon = new ServerLoginNetworkAddon((ServerLoginNetworkHandler) (Object) this);
+		// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
+		this.addon.lateInit();
 	}
 
 	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;tickVerify(Lcom/mojang/authlib/GameProfile;)V"))
