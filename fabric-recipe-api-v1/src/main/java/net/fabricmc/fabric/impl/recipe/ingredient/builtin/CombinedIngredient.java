@@ -23,6 +23,8 @@ import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
 
+import net.minecraft.class_9129;
+import net.minecraft.class_9139;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
@@ -83,24 +85,30 @@ abstract class CombinedIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public I read(PacketByteBuf buf) {
-			int size = buf.readVarInt();
-			List<Ingredient> ingredients = new ArrayList<>(size);
-
-			for (int i = 0; i < size; i++) {
-				ingredients.add(Ingredient.fromPacket(buf));
-			}
-
-			return factory.apply(Collections.unmodifiableList(ingredients));
+		public class_9139<class_9129, I> getPacketCodec() {
+			// TODO 1.20.5
+			throw new UnsupportedOperationException("");
 		}
 
-		@Override
-		public void write(PacketByteBuf buf, I ingredient) {
-			buf.writeVarInt(ingredient.ingredients.size());
-
-			for (Ingredient value : ingredient.ingredients) {
-				value.write(buf);
-			}
-		}
+//		@Override
+//		public I read(PacketByteBuf buf) {
+//			int size = buf.readVarInt();
+//			List<Ingredient> ingredients = new ArrayList<>(size);
+//
+//			for (int i = 0; i < size; i++) {
+//				ingredients.add(Ingredient.fromPacket(buf));
+//			}
+//
+//			return factory.apply(Collections.unmodifiableList(ingredients));
+//		}
+//
+//		@Override
+//		public void write(PacketByteBuf buf, I ingredient) {
+//			buf.writeVarInt(ingredient.ingredients.size());
+//
+//			for (Ingredient value : ingredient.ingredients) {
+//				value.write(buf);
+//			}
+//		}
 	}
 }

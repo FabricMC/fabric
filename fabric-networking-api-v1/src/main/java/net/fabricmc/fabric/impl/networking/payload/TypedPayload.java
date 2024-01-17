@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.networking.payload;
 
+import net.minecraft.network.packet.CustomPayload;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -30,20 +32,26 @@ public record TypedPayload(FabricPacket packet) implements ResolvedPayload {
 	public ResolvedPayload resolve(@Nullable PacketType<?> type) {
 		if (type == null) {
 			PacketByteBuf buf = PacketByteBufs.create();
-			write(buf);
+//			write(buf);
 			return new UntypedPayload(packet.getType().getId(), buf);
 		} else {
 			return this;
 		}
 	}
 
-	@Override
-	public void write(PacketByteBuf buf) {
-		packet.write(buf);
-	}
+//	@Override
+//	public void write(PacketByteBuf buf) {
+//		packet.write(buf);
+//	}
+//
+//	@Override
+//	public Identifier id() {
+//		return packet.getType().getId();
+//	}
 
 	@Override
-	public Identifier id() {
-		return packet.getType().getId();
+	public class_9154<? extends CustomPayload> method_56479() {
+		// TODO 1.20.5
+		throw new UnsupportedOperationException();
 	}
 }

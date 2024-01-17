@@ -43,7 +43,9 @@ public class NetworkStateInternalPacketHandlerMixin {
 			return buf -> {
 				try {
 					NetworkingImpl.FACTORY_RETAIN.set(true);
-					return new CustomPayloadC2SPacket(buf);
+					// TODO 1.20.5
+					return null;
+//					return new CustomPayloadC2SPacket(buf);
 				} finally {
 					NetworkingImpl.FACTORY_RETAIN.set(false);
 				}
@@ -52,7 +54,9 @@ public class NetworkStateInternalPacketHandlerMixin {
 			return buf -> {
 				try {
 					NetworkingImpl.FACTORY_RETAIN.set(true);
-					return new CustomPayloadS2CPacket(buf);
+					// TODO 1.20.5
+					return null;
+//					return new CustomPayloadS2CPacket(buf);
 				} finally {
 					NetworkingImpl.FACTORY_RETAIN.set(false);
 				}

@@ -51,26 +51,27 @@ public class IngredientMixin implements FabricIngredient {
 		));
 	}
 
-	@Inject(
-			at = @At("HEAD"),
-			method = "fromPacket",
-			cancellable = true
-	)
-	private static void injectFromPacket(PacketByteBuf buf, CallbackInfoReturnable<Ingredient> cir) {
-		int index = buf.readerIndex();
-
-		if (buf.readVarInt() == CustomIngredientImpl.PACKET_MARKER) {
-			Identifier type = buf.readIdentifier();
-			CustomIngredientSerializer<?> serializer = CustomIngredientSerializer.get(type);
-
-			if (serializer == null) {
-				throw new IllegalArgumentException("Cannot deserialize custom ingredient of unknown type " + type);
-			}
-
-			cir.setReturnValue(serializer.read(buf).toVanilla());
-		} else {
-			// Reset index for vanilla's normal deserialization logic.
-			buf.readerIndex(index);
-		}
-	}
+	// TODO 1.20.5 mega pain
+//	@Inject(
+//			at = @At("HEAD"),
+//			method = "fromPacket",
+//			cancellable = true
+//	)
+//	private static void injectFromPacket(PacketByteBuf buf, CallbackInfoReturnable<Ingredient> cir) {
+//		int index = buf.readerIndex();
+//
+//		if (buf.readVarInt() == CustomIngredientImpl.PACKET_MARKER) {
+//			Identifier type = buf.readIdentifier();
+//			CustomIngredientSerializer<?> serializer = CustomIngredientSerializer.get(type);
+//
+//			if (serializer == null) {
+//				throw new IllegalArgumentException("Cannot deserialize custom ingredient of unknown type " + type);
+//			}
+//
+//			cir.setReturnValue(serializer.read(buf).toVanilla());
+//		} else {
+//			// Reset index for vanilla's normal deserialization logic.
+//			buf.readerIndex(index);
+//		}
+//	}
 }

@@ -16,11 +16,7 @@
 
 package net.fabricmc.fabric.test.networking.unit;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -323,7 +319,9 @@ public class CommonPacketTests {
 		verify(packetSender, times(1)).sendPacket(responseCaptor.capture());
 
 		PacketByteBuf buf = PacketByteBufs.create();
-		responseCaptor.getValue().write(buf);
+		// TODO 1.20.5
+		fail("Fix me");
+//		responseCaptor.getValue().write(buf);
 
 		return buf;
 	}

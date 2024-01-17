@@ -103,23 +103,24 @@ public class CustomIngredientImpl extends Ingredient {
 		return stack != null && customIngredient.test(stack);
 	}
 
-	@Override
-	public void write(PacketByteBuf buf) {
-		// Can be null if we're not writing a packet from the PacketEncoder; in that case, always write the full ingredient.
-		// Chances are this is a mod's doing and the client has the Ingredient API with the relevant ingredients.
-		Set<Identifier> supportedIngredients = CustomIngredientSync.CURRENT_SUPPORTED_INGREDIENTS.get();
-
-		if (supportedIngredients != null && !supportedIngredients.contains(customIngredient.getSerializer().getIdentifier())) {
-			// The client doesn't support this custom ingredient, so we send the matching stacks as a regular ingredient.
-			// Conveniently, this is exactly what the super call does.
-			super.write(buf);
-		} else {
-			// The client supports this custom ingredient, so we send it as a custom ingredient.
-			buf.writeVarInt(PACKET_MARKER);
-			buf.writeIdentifier(customIngredient.getSerializer().getIdentifier());
-			customIngredient.getSerializer().write(buf, coerceIngredient());
-		}
-	}
+	// TODO 1.20.5
+//	@Override
+//	public void write(PacketByteBuf buf) {
+//		// Can be null if we're not writing a packet from the PacketEncoder; in that case, always write the full ingredient.
+//		// Chances are this is a mod's doing and the client has the Ingredient API with the relevant ingredients.
+//		Set<Identifier> supportedIngredients = CustomIngredientSync.CURRENT_SUPPORTED_INGREDIENTS.get();
+//
+//		if (supportedIngredients != null && !supportedIngredients.contains(customIngredient.getSerializer().getIdentifier())) {
+//			// The client doesn't support this custom ingredient, so we send the matching stacks as a regular ingredient.
+//			// Conveniently, this is exactly what the super call does.
+//			super.write(buf);
+//		} else {
+//			// The client supports this custom ingredient, so we send it as a custom ingredient.
+//			buf.writeVarInt(PACKET_MARKER);
+//			buf.writeIdentifier(customIngredient.getSerializer().getIdentifier());
+//			customIngredient.getSerializer().write(buf, coerceIngredient());
+//		}
+//	}
 
 	@Override
 	public boolean isEmpty() {

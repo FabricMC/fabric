@@ -22,6 +22,8 @@ import java.util.List;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.class_9129;
+import net.minecraft.class_9139;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
@@ -96,16 +98,22 @@ public class DifferenceIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public DifferenceIngredient read(PacketByteBuf buf) {
-			Ingredient base = Ingredient.fromPacket(buf);
-			Ingredient subtracted = Ingredient.fromPacket(buf);
-			return new DifferenceIngredient(base, subtracted);
+		public class_9139<class_9129, DifferenceIngredient> getPacketCodec() {
+			// TODO 1.20.5
+			throw new UnsupportedOperationException();
 		}
-
-		@Override
-		public void write(PacketByteBuf buf, DifferenceIngredient ingredient) {
-			ingredient.base.write(buf);
-			ingredient.subtracted.write(buf);
-		}
+//
+//		@Override
+//		public DifferenceIngredient read(PacketByteBuf buf) {
+//			Ingredient base = Ingredient.fromPacket(buf);
+//			Ingredient subtracted = Ingredient.fromPacket(buf);
+//			return new DifferenceIngredient(base, subtracted);
+//		}
+//
+//		@Override
+//		public void write(PacketByteBuf buf, DifferenceIngredient ingredient) {
+//			ingredient.base.write(buf);
+//			ingredient.subtracted.write(buf);
+//		}
 	}
 }

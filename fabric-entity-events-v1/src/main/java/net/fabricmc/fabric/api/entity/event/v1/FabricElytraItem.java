@@ -56,7 +56,7 @@ public interface FabricElytraItem {
 
 		if (!entity.getWorld().isClient && nextRoll % 10 == 0) {
 			if ((nextRoll / 10) % 2 == 0) {
-				chestStack.damage(1, entity, p -> p.sendEquipmentBreakStatus(EquipmentSlot.CHEST));
+				chestStack.damage(1, entity, EquipmentSlot.CHEST);
 			}
 
 			entity.emitGameEvent(GameEvent.ELYTRA_GLIDE);

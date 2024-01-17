@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.particle.v1;
 
 import com.mojang.serialization.Codec;
 
+import net.minecraft.class_9129;
+import net.minecraft.class_9139;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
@@ -78,6 +80,12 @@ public final class FabricParticleTypes {
 			@Override
 			public Codec<T> getCodec() {
 				//TODO fix me
+				return null;
+			}
+
+			@Override
+			public class_9139<? super class_9129, T> method_56179() {
+				// TODO 1.20.5 fix me
 				return null;
 			}
 		};

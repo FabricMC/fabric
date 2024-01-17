@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.networking.payload;
 
+import net.minecraft.network.packet.CustomPayload;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -48,7 +50,8 @@ public record RetainedPayload(Identifier id, PacketByteBuf buf) implements Resol
 	}
 
 	@Override
-	public void write(PacketByteBuf buf) {
-		throw new UnsupportedOperationException("RetainedPayload shouldn't be used to send");
+	public class_9154<? extends CustomPayload> method_56479() {
+		// TODO 1.20.5
+		throw new UnsupportedOperationException();
 	}
 }

@@ -89,7 +89,8 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 					PacketByteBuf buf = PacketByteBufs.create();
 					buf.writeIdentifier(TEST_CHANNEL);
 					buf.writeText(Text.literal("bufctor"));
-					ctx.getSource().getPlayer().networkHandler.sendPacket(new CustomPayloadS2CPacket(buf));
+					// TODO 1.20.5
+//					ctx.getSource().getPlayer().networkHandler.sendPacket(new CustomPayloadS2CPacket(buf));
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("repeat").executes(ctx -> {
@@ -104,11 +105,11 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 					buf1.writeText(Text.literal("bundled #1"));
 					PacketByteBuf buf2 = PacketByteBufs.create();
 					buf2.writeText(Text.literal("bundled #2"));
-
-					BundleS2CPacket packet = new BundleS2CPacket((List<Packet<ClientPlayPacketListener>>) (Object) List.of(
-							ServerPlayNetworking.createS2CPacket(TEST_CHANNEL, buf1),
-							ServerPlayNetworking.createS2CPacket(TEST_CHANNEL, buf2)));
-					ctx.getSource().getPlayer().networkHandler.sendPacket(packet);
+					// TODO 1.20.5
+//					BundleS2CPacket packet = new BundleS2CPacket((List<Packet<ClientPlayPacketListener>>) (Object) List.of(
+//							ServerPlayNetworking.createS2CPacket(TEST_CHANNEL, buf1),
+//							ServerPlayNetworking.createS2CPacket(TEST_CHANNEL, buf2)));
+//					ctx.getSource().getPlayer().networkHandler.sendPacket(packet);
 					return Command.SINGLE_SUCCESS;
 				})));
 	}

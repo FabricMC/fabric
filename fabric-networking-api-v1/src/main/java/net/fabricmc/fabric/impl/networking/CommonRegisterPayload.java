@@ -37,15 +37,21 @@ public record CommonRegisterPayload(int version, String phase, Set<Identifier> c
 		);
 	}
 
-	@Override
-	public void write(PacketByteBuf buf) {
-		buf.writeVarInt(version);
-		buf.writeString(phase);
-		buf.writeCollection(channels, PacketByteBuf::writeIdentifier);
-	}
+//	@Override
+//	public void write(PacketByteBuf buf) {
+//		buf.writeVarInt(version);
+//		buf.writeString(phase);
+//		buf.writeCollection(channels, PacketByteBuf::writeIdentifier);
+//	}
+//
+//	@Override
+//	public Identifier id() {
+//		return PACKET_ID;
+//	}
 
 	@Override
-	public Identifier id() {
-		return PACKET_ID;
+	public class_9154<? extends CustomPayload> method_56479() {
+		// TODO 1.20.5
+		throw new UnsupportedOperationException();
 	}
 }

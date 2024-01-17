@@ -25,6 +25,10 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.class_9129;
+import net.minecraft.class_9139;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.ItemStack;
@@ -144,18 +148,24 @@ public class NbtIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public NbtIngredient read(PacketByteBuf buf) {
-			Ingredient base = Ingredient.fromPacket(buf);
-			NbtCompound nbt = buf.readNbt();
-			boolean strict = buf.readBoolean();
-			return new NbtIngredient(base, nbt, strict);
+		public class_9139<class_9129, NbtIngredient> getPacketCodec() {
+			// TODO 1.20.5
+			throw new UnsupportedOperationException("");
 		}
 
-		@Override
-		public void write(PacketByteBuf buf, NbtIngredient ingredient) {
-			ingredient.base.write(buf);
-			buf.writeNbt(ingredient.nbt);
-			buf.writeBoolean(ingredient.strict);
-		}
+//		@Override
+//		public NbtIngredient read(PacketByteBuf buf) {
+//			Ingredient base = Ingredient.fromPacket(buf);
+//			NbtCompound nbt = buf.readNbt();
+//			boolean strict = buf.readBoolean();
+//			return new NbtIngredient(base, nbt, strict);
+//		}
+//
+//		@Override
+//		public void write(PacketByteBuf buf, NbtIngredient ingredient) {
+//			ingredient.base.write(buf);
+//			buf.writeNbt(ingredient.nbt);
+//			buf.writeBoolean(ingredient.strict);
+//		}
 	}
 }

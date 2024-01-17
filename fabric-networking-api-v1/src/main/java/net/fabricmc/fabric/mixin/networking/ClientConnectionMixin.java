@@ -88,12 +88,13 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 		}
 	}
 
-	@Inject(method = "setPacketListener", at = @At("HEAD"))
-	private void unwatchAddon(PacketListener packetListener, CallbackInfo ci) {
-		if (this.packetListener instanceof NetworkHandlerExtensions oldListener) {
-			oldListener.getAddon().endSession();
-		}
-	}
+	// TODO 1.20.5
+//	@Inject(method = "setPacketListener", at = @At("HEAD"))
+//	private void unwatchAddon(PacketListener packetListener, CallbackInfo ci) {
+//		if (this.packetListener instanceof NetworkHandlerExtensions oldListener) {
+//			oldListener.getAddon().endSession();
+//		}
+//	}
 
 	@Inject(method = "channelInactive", at = @At("HEAD"))
 	private void disconnectAddon(ChannelHandlerContext channelHandlerContext, CallbackInfo ci) {

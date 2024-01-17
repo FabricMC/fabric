@@ -27,13 +27,19 @@ public record CommonVersionPayload(int[] versions) implements CustomPayload {
 		this(buf.readIntArray());
 	}
 
-	@Override
-	public void write(PacketByteBuf buf) {
-		buf.writeIntArray(versions);
-	}
+//	@Override
+//	public void write(PacketByteBuf buf) {
+//		buf.writeIntArray(versions);
+//	}
+//
+//	@Override
+//	public Identifier id() {
+//		return PACKET_ID;
+//	}
 
 	@Override
-	public Identifier id() {
-		return PACKET_ID;
+	public class_9154<? extends CustomPayload> method_56479() {
+		// TODO 1.20.5
+		throw new UnsupportedOperationException();
 	}
 }

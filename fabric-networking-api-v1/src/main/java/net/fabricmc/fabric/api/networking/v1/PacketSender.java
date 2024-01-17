@@ -76,8 +76,10 @@ public interface PacketSender {
 	 */
 	default void sendPacket(CustomPayload payload) {
 		PacketByteBuf buf = PacketByteBufs.create();
-		payload.write(buf);
-		sendPacket(payload.id(), buf);
+//		payload.write(buf);
+		// TODO 1.20.5
+		assert false;
+		sendPacket(payload.method_56479().id(), buf);
 	}
 
 	/**
@@ -106,8 +108,10 @@ public interface PacketSender {
 	 */
 	default void sendPacket(CustomPayload payload, @Nullable GenericFutureListener<? extends Future<? super Void>> callback) {
 		PacketByteBuf buf = PacketByteBufs.create();
-		payload.write(buf);
-		sendPacket(payload.id(), buf, callback);
+//		payload.write(buf);
+		// TODO 1.20.5
+		assert false;
+		sendPacket(payload.method_56479().id(), buf, callback);
 	}
 
 	/**
@@ -136,8 +140,10 @@ public interface PacketSender {
 	 */
 	default void sendPacket(CustomPayload payload, @Nullable PacketCallbacks callback) {
 		PacketByteBuf buf = PacketByteBufs.create();
-		payload.write(buf);
-		sendPacket(payload.id(), buf, callback);
+//		payload.write(buf);
+		// TODO 1.20.5
+		assert false;
+		sendPacket(payload.method_56479().id(), buf, callback);
 	}
 
 	/**

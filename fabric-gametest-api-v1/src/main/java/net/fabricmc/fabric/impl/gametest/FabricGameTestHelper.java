@@ -80,7 +80,7 @@ public final class FabricGameTestHelper {
 
 		LOGGER.info("Starting test server");
 		MinecraftServer server = TestServer.startServer(thread -> {
-			return TestServer.create(thread, session, resourcePackManager, getBatches(), BlockPos.ORIGIN);
+			return TestServer.create(thread, session, resourcePackManager, getTestFunctions(), BlockPos.ORIGIN);
 		});
 	}
 
@@ -126,10 +126,6 @@ public final class FabricGameTestHelper {
 				throw new RuntimeException(e.getCause());
 			}
 		}
-	}
-
-	private static Collection<GameTestBatch> getBatches() {
-		return TestUtil.createBatches(getTestFunctions());
 	}
 
 	private static Collection<TestFunction> getTestFunctions() {

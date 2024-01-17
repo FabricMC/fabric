@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.networking.payload;
 
+import net.minecraft.network.packet.CustomPayload;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -42,13 +44,19 @@ public record UntypedPayload(Identifier id, PacketByteBuf buffer) implements Res
 		}
 	}
 
-	@Override
-	public void write(PacketByteBuf buf) {
-		buf.writeBytes(buffer.copy());
-	}
+//	@Override
+//	public void write(PacketByteBuf buf) {
+//		buf.writeBytes(buffer.copy());
+//	}
 
 	@Override
 	public PacketByteBuf buffer() {
 		return PacketByteBufs.copy(buffer);
+	}
+
+	@Override
+	public class_9154<? extends CustomPayload> method_56479() {
+		// TODO 1.20.5
+		throw new UnsupportedOperationException();
 	}
 }
