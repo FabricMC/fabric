@@ -32,13 +32,11 @@ import net.minecraft.resource.ResourceFinder;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.TestCommand;
-import net.minecraft.test.GameTestBatch;
 import net.minecraft.test.TestContext;
 import net.minecraft.test.TestFailureLogger;
 import net.minecraft.test.TestFunction;
 import net.minecraft.test.TestFunctions;
 import net.minecraft.test.TestServer;
-import net.minecraft.test.TestUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.level.storage.LevelStorage;
 

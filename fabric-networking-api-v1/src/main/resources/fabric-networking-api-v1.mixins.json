@@ -7,6 +7,7 @@
     "CommandManagerMixin",
     "CustomPayloadC2SPacketMixin",
     "CustomPayloadS2CPacketMixin",
+    "CustomPayloadPacketCodecMixin",
     "EntityTrackerEntryMixin",
     "LoginQueryRequestS2CPacketMixin",
     "LoginQueryResponseC2SPacketMixin",

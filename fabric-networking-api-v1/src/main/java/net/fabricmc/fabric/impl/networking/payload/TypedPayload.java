@@ -50,7 +50,7 @@ public record TypedPayload(FabricPacket packet) implements ResolvedPayload {
 //	}
 
 	@Override
-	public Type<? extends CustomPayload> getKey() {
+	public Id<? extends CustomPayload> getId() {
 		// TODO 1.20.5
 		throw new UnsupportedOperationException();
 	}

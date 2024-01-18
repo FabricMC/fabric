@@ -54,7 +54,7 @@ public abstract class ClientCommonNetworkHandlerMixin implements NetworkHandlerE
 
 			if (!handled && payload instanceof RetainedPayload retained && retained.buf().refCnt() > 0) {
 				// Duplicate the vanilla log message, as we cancel further processing.
-				LOGGER.warn("Unknown custom packet payload: {}", payload.getKey().id());
+				LOGGER.warn("Unknown custom packet payload: {}", payload.getId().id());
 
 				retained.buf().skipBytes(retained.buf().readableBytes());
 				retained.buf().release();

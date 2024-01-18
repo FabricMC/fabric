@@ -16,33 +16,52 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import java.util.List;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+
+import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.RegistryByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
-import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
+import net.fabricmc.fabric.api.networking.v1.FabricCustomPayloadPacketCodec;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 @Mixin(CustomPayloadS2CPacket.class)
 public class CustomPayloadS2CPacketMixin {
-	@Shadow
-	@Final
-	private static int MAX_PAYLOAD_SIZE;
-
-	@Inject(
-			method = "readPayload",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/common/CustomPayloadS2CPacket;readUnknownPayload(Lnet/minecraft/util/Identifier;Lnet/minecraft/network/PacketByteBuf;)Lnet/minecraft/network/packet/UnknownCustomPayload;"),
-			cancellable = true
+	@WrapOperation(
+			method = "<clinit>",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/network/packet/CustomPayload;createCodec(Lnet/minecraft/network/packet/CustomPayload$CodecFactory;Ljava/util/List;)Lnet/minecraft/network/codec/PacketCodec;",
+					ordinal = 0
+			)
 	)
-	private static void readPayload(Identifier id, PacketByteBuf buf, CallbackInfoReturnable<CustomPayload> cir) {
-		cir.setReturnValue(PayloadHelper.readCustom(id, buf, MAX_PAYLOAD_SIZE, NetworkingImpl.FACTORY_RETAIN.get()));
+	private static PacketCodec<RegistryByteBuf, CustomPayload> wrapPlayCodec(CustomPayload.CodecFactory<RegistryByteBuf> unknownCodecFactory, List<CustomPayload.Type<RegistryByteBuf, ?>> types, Operation<PacketCodec<RegistryByteBuf, CustomPayload>> original) {
+		PacketCodec<RegistryByteBuf, CustomPayload> codec = original.call(unknownCodecFactory, types);
+		FabricCustomPayloadPacketCodec<RegistryByteBuf> fabricCodec = (FabricCustomPayloadPacketCodec<RegistryByteBuf>) codec;
+		fabricCodec.fabric_setPacketCodecProvider((packetByteBuf, identifier) -> PayloadTypeRegistry.play(NetworkSide.CLIENTBOUND).get(identifier));
+		return codec;
+	}
+
+	@WrapOperation(
+			method = "<clinit>",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/network/packet/CustomPayload;createCodec(Lnet/minecraft/network/packet/CustomPayload$CodecFactory;Ljava/util/List;)Lnet/minecraft/network/codec/PacketCodec;",
+					ordinal = 1
+			)
+	)
+	private static PacketCodec<PacketByteBuf, CustomPayload> wrapConfigCodec(CustomPayload.CodecFactory<PacketByteBuf> unknownCodecFactory, List<CustomPayload.Type<PacketByteBuf, ?>> types, Operation<PacketCodec<PacketByteBuf, CustomPayload>> original) {
+		PacketCodec<PacketByteBuf, CustomPayload> codec = original.call(unknownCodecFactory, types);
+		FabricCustomPayloadPacketCodec<PacketByteBuf> fabricCodec = (FabricCustomPayloadPacketCodec<PacketByteBuf>) codec;
+		fabricCodec.fabric_setPacketCodecProvider((packetByteBuf, identifier) -> PayloadTypeRegistry.configuration(NetworkSide.CLIENTBOUND).get(identifier));
+		return codec;
 	}
 }
