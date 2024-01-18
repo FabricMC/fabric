@@ -74,7 +74,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 
 	// always supposed to handle async!
 	public boolean handle(ResolvablePayload resolvable) {
-		Identifier channelName = resolvable.method_56479().id();
+		Identifier channelName = resolvable.getKey().id();;
 		this.logger.debug("Handling inbound packet from channel with name \"{}\"", channelName);
 
 		// Handle reserved packets

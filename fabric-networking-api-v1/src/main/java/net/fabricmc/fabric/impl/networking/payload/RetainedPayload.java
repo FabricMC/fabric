@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.networking.payload;
 
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 
 import org.jetbrains.annotations.Nullable;
@@ -50,7 +51,7 @@ public record RetainedPayload(Identifier id, PacketByteBuf buf) implements Resol
 	}
 
 	@Override
-	public class_9154<? extends CustomPayload> method_56479() {
+	public Type<? extends CustomPayload> getKey() {
 		// TODO 1.20.5
 		throw new UnsupportedOperationException();
 	}

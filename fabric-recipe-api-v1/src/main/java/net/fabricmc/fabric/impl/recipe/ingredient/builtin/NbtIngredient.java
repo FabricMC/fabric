@@ -26,8 +26,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.class_9129;
-import net.minecraft.class_9139;
+import net.minecraft.network.codec.PacketCodec;
+
+import net.minecraft.network.codec.RegistryByteBuf;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -148,7 +149,7 @@ public class NbtIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public class_9139<class_9129, NbtIngredient> getPacketCodec() {
+		public PacketCodec<RegistryByteBuf, NbtIngredient> getPacketCodec() {
 			// TODO 1.20.5
 			throw new UnsupportedOperationException("");
 		}

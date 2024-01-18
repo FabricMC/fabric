@@ -17,13 +17,10 @@
 package net.fabricmc.fabric.api.recipe.v1.ingredient;
 
 import com.mojang.serialization.Codec;
-
-import net.minecraft.class_9129;
-import net.minecraft.class_9139;
-
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.RegistryByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 
@@ -69,5 +66,5 @@ public interface CustomIngredientSerializer<T extends CustomIngredient> {
 	 */
 	Codec<T> getCodec(boolean allowEmpty);
 
-	class_9139<class_9129, T> getPacketCodec();
+	PacketCodec<RegistryByteBuf, T> getPacketCodec();
 }

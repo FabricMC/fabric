@@ -79,7 +79,7 @@ public interface PacketSender {
 //		payload.write(buf);
 		// TODO 1.20.5
 		assert false;
-		sendPacket(payload.method_56479().id(), buf);
+		sendPacket(payload.getKey().id(), buf);
 	}
 
 	/**
@@ -111,7 +111,7 @@ public interface PacketSender {
 //		payload.write(buf);
 		// TODO 1.20.5
 		assert false;
-		sendPacket(payload.method_56479().id(), buf, callback);
+		sendPacket(payload.getKey().id(), buf, callback);
 	}
 
 	/**
@@ -143,7 +143,7 @@ public interface PacketSender {
 //		payload.write(buf);
 		// TODO 1.20.5
 		assert false;
-		sendPacket(payload.method_56479().id(), buf, callback);
+		sendPacket(payload.getKey().id(), buf, callback);
 	}
 
 	/**

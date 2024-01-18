@@ -22,10 +22,10 @@ import java.util.List;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.class_9129;
-import net.minecraft.class_9139;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.RegistryByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 
@@ -98,7 +98,7 @@ public class DifferenceIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public class_9139<class_9129, DifferenceIngredient> getPacketCodec() {
+		public PacketCodec<RegistryByteBuf, DifferenceIngredient> getPacketCodec() {
 			// TODO 1.20.5
 			throw new UnsupportedOperationException();
 		}

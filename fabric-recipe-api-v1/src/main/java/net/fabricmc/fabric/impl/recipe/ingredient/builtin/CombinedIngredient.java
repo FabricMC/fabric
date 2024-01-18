@@ -23,9 +23,10 @@ import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.class_9129;
-import net.minecraft.class_9139;
+
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.RegistryByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 
@@ -85,7 +86,7 @@ abstract class CombinedIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public class_9139<class_9129, I> getPacketCodec() {
+		public PacketCodec<RegistryByteBuf, I> getPacketCodec() {
 			// TODO 1.20.5
 			throw new UnsupportedOperationException("");
 		}
