@@ -19,6 +19,11 @@
     "fabricloader": ">=0.15.1",
     "fabric-api-base": "*"
   },
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.impl.client.rendering.tooltip.MultiTooltipComponentRegister"
+    ]
+  },
   "description": "Hooks and registries for rendering-related things.",
   "mixins": [
     "fabric-rendering-v1.mixins.json"
