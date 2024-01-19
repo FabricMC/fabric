@@ -1,0 +1,11 @@
+version = getSubprojectVersion(project)
+
+moduleDependencies(project, [
+	'fabric-api-base',
+	':fabric-entity-events-v1',
+	':fabric-object-builder-api-v1'
+])
+
+testDependencies(project, [
+	':fabric-lifecycle-events-v1'
+])
