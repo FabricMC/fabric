@@ -27,6 +27,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
 import io.netty.util.concurrent.GenericFutureListener;
+
+import net.minecraft.network.packet.CustomPayload;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
@@ -40,7 +43,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
@@ -161,13 +163,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	}
 
 	@Override
-	public Packet<?> createPacket(Identifier channelName, PacketByteBuf buf) {
-		int queryId = this.queryIdFactory.nextId();
-		return new LoginQueryRequestS2CPacket(queryId, new PacketByteBufLoginQueryRequestPayload(channelName, buf));
-	}
-
-	@Override
-	public Packet<?> createPacket(FabricPacket packet) {
+	public Packet<?> createPacket(CustomPayload packet) {
 		int queryId = this.queryIdFactory.nextId();
 		return new LoginQueryRequestS2CPacket(queryId, new FabricPacketLoginQueryRequestPayload(packet));
 	}

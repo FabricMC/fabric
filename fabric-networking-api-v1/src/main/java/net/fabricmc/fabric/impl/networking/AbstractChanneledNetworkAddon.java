@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.networking;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,27 +24,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import io.netty.util.AsciiString;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-
-import net.minecraft.network.packet.CustomPayload;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkState;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.PacketCallbacks;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.InvalidIdentifierException;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
-import net.fabricmc.fabric.impl.networking.payload.ResolvedPayload;
-import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
 
 /**
  * A network addon which is aware of the channels the other side may receive.
@@ -76,30 +66,31 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	// always supposed to handle async!
-	public boolean handle(CustomPayload resolvable) {
-		Identifier channelName = resolvable.getId().id();
+	public boolean handle(CustomPayload payload) {
+		final Identifier channelName = payload.getId().id();
 		this.logger.debug("Handling inbound packet from channel with name \"{}\"", channelName);
 
 		// Handle reserved packets
-		if (NetworkingImpl.REGISTER_CHANNEL.equals(channelName)) {
-			this.receiveRegistration(true, resolvable);
-			return true;
+		if (payload instanceof RegistrationPayload registrationPayload) {
+			if (NetworkingImpl.REGISTER_CHANNEL.equals(channelName)) {
+				this.receiveRegistration(true, registrationPayload);
+				return true;
+			}
+
+			if (NetworkingImpl.UNREGISTER_CHANNEL.equals(channelName)) {
+				this.receiveRegistration(false, registrationPayload);
+				return true;
+			}
 		}
 
-		if (NetworkingImpl.UNREGISTER_CHANNEL.equals(channelName)) {
-			this.receiveRegistration(false, resolvable);
-			return true;
-		}
-
-		@Nullable ResolvablePayload.Handler<H> handler = this.getHandler(channelName);
+		@Nullable H handler = this.getHandler(channelName);
 
 		if (handler == null) {
 			return false;
 		}
 
 		try {
-			ResolvedPayload resolved = resolvable.resolve(handler.type());
-			this.receive(handler.internal(), resolved);
+			this.receive(handler, payload);
 		} catch (Throwable ex) {
 			this.logger.error("Encountered exception while handling in channel with name \"{}\"", channelName, ex);
 			throw ex;
@@ -111,60 +102,28 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	protected abstract void receive(H handler, CustomPayload payload);
 
 	protected void sendInitialChannelRegistrationPacket() {
-		final PacketByteBuf buf = this.createRegistrationPacket(this.getReceivableChannels());
+		final RegistrationPayload payload = createRegistrationPayload(RegistrationPayload.REGISTER, this.getReceivableChannels());
 
-		if (buf != null) {
-			this.sendPacket(NetworkingImpl.REGISTER_CHANNEL, buf);
+		if (payload != null) {
+			this.sendPacket(payload);
 		}
 	}
 
 	@Nullable
-	protected PacketByteBuf createRegistrationPacket(Collection<Identifier> channels) {
+	protected RegistrationPayload createRegistrationPayload(CustomPayload.Id<RegistrationPayload> id, Collection<Identifier> channels) {
 		if (channels.isEmpty()) {
 			return null;
 		}
 
-		PacketByteBuf buf = PacketByteBufs.create();
-		boolean first = true;
-
-		for (Identifier channel : channels) {
-			if (first) {
-				first = false;
-			} else {
-				buf.writeByte(0);
-			}
-
-			buf.writeBytes(channel.toString().getBytes(StandardCharsets.US_ASCII));
-		}
-
-		return buf;
+		return new RegistrationPayload(id, new ArrayList<>(channels));
 	}
 
 	// wrap in try with res (buf)
-	protected void receiveRegistration(boolean register, CustomPayload resolvable) {
-		UntypedPayload payload = (UntypedPayload) resolvable.resolve(null);
-		PacketByteBuf buf = payload.buffer();
-
-		List<Identifier> ids = new ArrayList<>();
-		StringBuilder active = new StringBuilder();
-
-		while (buf.isReadable()) {
-			byte b = buf.readByte();
-
-			if (b != 0) {
-				active.append(AsciiString.b2c(b));
-			} else {
-				this.addId(ids, active);
-				active = new StringBuilder();
-			}
-		}
-
-		this.addId(ids, active);
-
+	protected void receiveRegistration(boolean register, RegistrationPayload payload) {
 		if (register) {
-			register(ids);
+			register(payload.channels());
 		} else {
-			unregister(ids);
+			unregister(payload.channels());
 		}
 	}
 
@@ -198,16 +157,6 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	protected abstract void invokeRegisterEvent(List<Identifier> ids);
 
 	protected abstract void invokeUnregisterEvent(List<Identifier> ids);
-
-	private void addId(List<Identifier> ids, StringBuilder sb) {
-		String literal = sb.toString();
-
-		try {
-			ids.add(new Identifier(literal));
-		} catch (InvalidIdentifierException ex) {
-			this.logger.warn("Received invalid channel identifier \"{}\" from connection {}", literal, this.connection);
-		}
-	}
 
 	public Set<Identifier> getSendableChannels() {
 		return Collections.unmodifiableSet(this.sendableChannels);

@@ -80,7 +80,7 @@ public final class ServerPlayNetworking {
 	 * @see ServerPlayNetworking#registerReceiver(ServerPlayNetworkHandler, PacketType, PlayPayloadHandler)
 	 */
 	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Type<RegistryByteBuf, T> type, PlayPayloadHandler<T> handler) {
-		return ServerNetworkingImpl.PLAY.registerGlobalReceiver(type.id().id(), wrapTyped(type, handler));
+		return ServerNetworkingImpl.PLAY.registerGlobalReceiver(type.id().id(), handler);
 	}
 
 	/**
@@ -97,7 +97,7 @@ public final class ServerPlayNetworking {
 	 */
 	@Nullable
 	public static <T extends CustomPayload> ServerPlayNetworking.PlayPayloadHandler<T> unregisterGlobalReceiver(CustomPayload.Type<RegistryByteBuf, T> type) {
-		return ServerNetworkingImpl.PLAY.unregisterGlobalReceiver(type.id().id());
+		return (PlayPayloadHandler<T>) ServerNetworkingImpl.PLAY.unregisterGlobalReceiver(type.id().id());
 	}
 
 	/**
@@ -128,7 +128,7 @@ public final class ServerPlayNetworking {
 	 * @see ServerPlayConnectionEvents#INIT
 	 */
 	public static <T extends CustomPayload> boolean registerReceiver(ServerPlayNetworkHandler networkHandler, CustomPayload.Id<T> type, PlayPayloadHandler<T> handler) {
-		return ServerNetworkingImpl.getAddon(networkHandler).registerChannel(type.getId(), wrapTyped(type, handler));
+		return ServerNetworkingImpl.getAddon(networkHandler).registerChannel(type.id(), handler);
 	}
 
 	/**
@@ -142,7 +142,7 @@ public final class ServerPlayNetworking {
 	 */
 	@Nullable
 	public static <T extends CustomPayload> ServerPlayNetworking.PlayPayloadHandler<T> unregisterReceiver(ServerPlayNetworkHandler networkHandler, CustomPayload.Id<T> type) {
-		return unwrapTyped(ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(type.getId()));
+		return (PlayPayloadHandler<T>) ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(type.id());
 	}
 
 	/**
@@ -250,20 +250,6 @@ public final class ServerPlayNetworking {
 	/**
 	 * Creates a packet which may be sent to a connected client.
 	 *
-	 * @param channelName the channel name
-	 * @param buf the packet byte buf which represents the payload of the packet
-	 * @return a new packet
-	 */
-	public static Packet<ClientCommonPacketListener> createS2CPacket(Identifier channelName, PacketByteBuf buf) {
-		Objects.requireNonNull(channelName, "Channel cannot be null");
-		Objects.requireNonNull(buf, "Buf cannot be null");
-
-		return ServerNetworkingImpl.createS2CPacket(channelName, buf);
-	}
-
-	/**
-	 * Creates a packet which may be sent to a connected client.
-	 *
 	 * @param packet the fabric packet
 	 * @return a new packet
 	 */
@@ -293,21 +279,6 @@ public final class ServerPlayNetworking {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(handler);
-	}
-
-	/**
-	 * Sends a packet to a player.
-	 *
-	 * @param player the player to send the packet to
-	 * @param channelName the channel of the packet
-	 * @param buf the payload of the packet.
-	 */
-	public static void send(ServerPlayerEntity player, Identifier channelName, PacketByteBuf buf) {
-		Objects.requireNonNull(player, "Server player entity cannot be null");
-		Objects.requireNonNull(channelName, "Channel name cannot be null");
-		Objects.requireNonNull(buf, "Packet byte buf cannot be null");
-
-		player.networkHandler.sendPacket(createS2CPacket(channelName, buf));
 	}
 
 	/**
