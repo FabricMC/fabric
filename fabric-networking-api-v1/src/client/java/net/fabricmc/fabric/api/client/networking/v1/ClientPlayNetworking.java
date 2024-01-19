@@ -33,7 +33,6 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
-import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
 
 /**
  * Offers access to play stage client-side networking functionalities.
@@ -65,7 +64,7 @@ public final class ClientPlayNetworking {
 	 * @see ClientPlayNetworking#registerReceiver(PacketType, PlayPacketHandler)
 	 */
 	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Id<T> type, PlayPacketHandler<T> handler) {
-		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(type.id(), wrapTyped(type, handler));
+		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(type.id(), handler);
 	}
 
 	/**
@@ -82,7 +81,7 @@ public final class ClientPlayNetworking {
 	 */
 	@Nullable
 	public static <T extends CustomPayload> ClientPlayNetworking.PlayPacketHandler<T> unregisterGlobalReceiver(CustomPayload.Id<T> type) {
-		return ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(type.id());
+		return (PlayPacketHandler<T>) ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(type.id());
 	}
 
 	/**
@@ -114,7 +113,7 @@ public final class ClientPlayNetworking {
 		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
 
 		if (addon != null) {
-			return addon.registerChannel(type.id(), wrapTyped(type, handler));
+			return addon.registerChannel(type.id(), handler);
 		}
 
 		throw new IllegalStateException("Cannot register receiver while not in game!");
@@ -135,7 +134,7 @@ public final class ClientPlayNetworking {
 		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
 
 		if (addon != null) {
-			return unwrapTyped(addon.unregisterChannel(type.id()));
+			return (PlayPacketHandler<T>) addon.unregisterChannel(type.id());
 		}
 
 		throw new IllegalStateException("Cannot unregister receiver while not in game!");

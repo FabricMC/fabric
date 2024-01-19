@@ -12,7 +12,7 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
 public interface PayloadTypeRegistry<B extends PacketByteBuf> {
-	<T extends CustomPayload> CustomPayload.Type<B, T> register(CustomPayload.Id<T> id, PacketCodec<B, T> codec);
+	<T extends CustomPayload> CustomPayload.Type<? super B, T> register(CustomPayload.Id<T> id, PacketCodec<? super B, T> codec);
 
 	@Nullable
 	CustomPayload.Type<B, ? extends CustomPayload> get(Identifier id);

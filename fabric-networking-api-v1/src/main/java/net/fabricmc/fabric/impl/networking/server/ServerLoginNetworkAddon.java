@@ -49,8 +49,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
 import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
-import net.fabricmc.fabric.impl.networking.payload.FabricPacketLoginQueryRequestPayload;
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
@@ -164,8 +162,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 
 	@Override
 	public Packet<?> createPacket(CustomPayload packet) {
-		int queryId = this.queryIdFactory.nextId();
-		return new LoginQueryRequestS2CPacket(queryId, new FabricPacketLoginQueryRequestPayload(packet));
+		throw new UnsupportedOperationException("Cannot send CustomPayload during login");
 	}
 
 	@Override

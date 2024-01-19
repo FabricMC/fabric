@@ -18,8 +18,6 @@ package net.fabricmc.fabric.impl.networking.client;
 
 import java.util.Objects;
 
-import net.minecraft.network.packet.CustomPayload;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
@@ -29,18 +27,16 @@ import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkState;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ServerCommonPacketListener;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.impl.networking.CommonPacketsImpl;
 import net.fabricmc.fabric.impl.networking.CommonRegisterPayload;
@@ -48,10 +44,6 @@ import net.fabricmc.fabric.impl.networking.CommonVersionPayload;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
-import net.fabricmc.fabric.impl.networking.payload.ResolvedPayload;
-import net.fabricmc.fabric.impl.networking.payload.TypedPayload;
-import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ConnectScreenAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAccessor;
 
@@ -148,16 +140,14 @@ public final class ClientNetworkingImpl {
 		});
 
 		// Version packet
-		ClientConfigurationNetworking.registerGlobalReceiver(CommonVersionPayload.PACKET_ID, (client, handler, buf, responseSender) -> {
-			var payload = new CommonVersionPayload(buf);
+		ClientConfigurationNetworking.registerGlobalReceiver(CommonVersionPayload.ID, (payload, responseSender) -> {
 			int negotiatedVersion = handleVersionPacket(payload, responseSender);
-			ClientNetworkingImpl.getAddon(handler).onCommonVersionPacket(negotiatedVersion);
+			ClientNetworkingImpl.getClientConfigurationAddon().onCommonVersionPacket(negotiatedVersion);
 		});
 
 		// Register packet
-		ClientConfigurationNetworking.registerGlobalReceiver(CommonRegisterPayload.PACKET_ID, (client, handler, buf, responseSender) -> {
-			var payload = new CommonRegisterPayload(buf);
-			ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getAddon(handler);
+		ClientConfigurationNetworking.registerGlobalReceiver(CommonRegisterPayload.ID, (payload, responseSender) -> {
+			ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
 
 			if (CommonRegisterPayload.PLAY_PHASE.equals(payload.phase())) {
 				if (payload.version() != addon.getNegotiatedVersion()) {

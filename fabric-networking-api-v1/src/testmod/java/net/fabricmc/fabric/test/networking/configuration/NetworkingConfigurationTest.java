@@ -19,14 +19,14 @@ package net.fabricmc.fabric.test.networking.configuration;
 import java.util.function.Consumer;
 
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
-import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
@@ -39,7 +39,7 @@ public class NetworkingConfigurationTest implements ModInitializer {
 	public void onInitialize() {
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
 			// You must check to see if the client can handle your config task
-			if (ServerConfigurationNetworking.canSend(handler, ConfigurationPacket.PACKET_TYPE)) {
+			if (ServerConfigurationNetworking.canSend(handler, ConfigurationPacket.ID)) {
 				handler.addTask(new TestConfigurationTask("Example data"));
 			} else {
 				// You can opt to disconnect the client if it cannot handle the configuration task
@@ -47,7 +47,7 @@ public class NetworkingConfigurationTest implements ModInitializer {
 			}
 		});
 
-		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationCompletePacket.PACKET_TYPE, (packet, networkHandler, responseSender) -> {
+		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationCompletePacket.ID, (packet, networkHandler, responseSender) -> {
 			networkHandler.completeTask(TestConfigurationTask.KEY);
 		});
 	}
@@ -67,38 +67,37 @@ public class NetworkingConfigurationTest implements ModInitializer {
 		}
 	}
 
-	public record ConfigurationPacket(String data) implements FabricPacket {
-		public static final PacketType<ConfigurationPacket> PACKET_TYPE = PacketType.create(new Identifier(NetworkingTestmods.ID, "configure"), ConfigurationPacket::new);
+	public record ConfigurationPacket(String data) implements CustomPayload {
+		public static final CustomPayload.Id<ConfigurationPacket> ID = new Id<>(new Identifier(NetworkingTestmods.ID, "configure"));
+		public static final PacketCodec<PacketByteBuf, ConfigurationPacket> CODEC = CustomPayload.codecOf(ConfigurationPacket::write, ConfigurationPacket::new);
 
 		public ConfigurationPacket(PacketByteBuf buf) {
 			this(buf.readString());
 		}
 
-		@Override
 		public void write(PacketByteBuf buf) {
-			buf.writeString(data);
 		}
 
 		@Override
-		public PacketType<?> getType() {
-			return PACKET_TYPE;
+		public Id<? extends CustomPayload> getId() {
+			return ID;
 		}
 	}
 
-	public record ConfigurationCompletePacket() implements FabricPacket {
-		public static final PacketType<ConfigurationCompletePacket> PACKET_TYPE = PacketType.create(new Identifier(NetworkingTestmods.ID, "configure_complete"), ConfigurationCompletePacket::new);
+	public record ConfigurationCompletePacket() implements CustomPayload {
+		public static final CustomPayload.Id<ConfigurationCompletePacket> ID = new Id<>(new Identifier(NetworkingTestmods.ID, "configure_complete"));
+		public static final PacketCodec<PacketByteBuf, ConfigurationCompletePacket> CODEC = CustomPayload.codecOf(ConfigurationCompletePacket::write, ConfigurationCompletePacket::new);
 
 		public ConfigurationCompletePacket(PacketByteBuf buf) {
 			this();
 		}
 
-		@Override
 		public void write(PacketByteBuf buf) {
 		}
 
 		@Override
-		public PacketType<?> getType() {
-			return PACKET_TYPE;
+		public Id<? extends CustomPayload> getId() {
+			return ID;
 		}
 	}
 }

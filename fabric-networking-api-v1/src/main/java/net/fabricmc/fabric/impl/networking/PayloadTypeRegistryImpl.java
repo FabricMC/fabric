@@ -33,11 +33,11 @@ public class PayloadTypeRegistryImpl<B extends PacketByteBuf> implements Payload
 	}
 
 	@Override
-	public <T extends CustomPayload> CustomPayload.Type<B, T> register(CustomPayload.Id<T> id, PacketCodec<B, T> codec) {
+	public <T extends CustomPayload> CustomPayload.Type<? super B, T> register(CustomPayload.Id<T> id, PacketCodec<? super B, T> codec) {
 		Objects.requireNonNull(id, "id");
 		Objects.requireNonNull(codec, "codec");
 
-		final var payloadType = new CustomPayload.Type<>(id, codec);
+		final CustomPayload.Type<B, T> payloadType = new CustomPayload.Type<>(id, (PacketCodec<B, T>) codec);
 
 		if (packetTypes.containsKey(id.id())) {
 			throw new IllegalArgumentException("Packet type " + id + " is already registered!");

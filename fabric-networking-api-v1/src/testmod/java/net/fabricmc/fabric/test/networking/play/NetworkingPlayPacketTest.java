@@ -20,7 +20,6 @@ import static com.mojang.brigadier.arguments.StringArgumentType.string;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-import java.util.List;
 import java.util.UUID;
 
 import com.mojang.brigadier.Command;
@@ -28,10 +27,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
-import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.RegistryByteBuf;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -40,9 +38,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
@@ -136,21 +132,21 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		});
 	}
 
-	public record OverlayPacket(Text message) implements FabricPacket {
-		public static final PacketType<OverlayPacket> PACKET_TYPE = PacketType.create(TEST_CHANNEL, OverlayPacket::new);
+	public record OverlayPacket(Text message) implements CustomPayload {
+		public static final CustomPayload.Id<OverlayPacket> ID = new Id<>(TEST_CHANNEL);
+		public static final PacketCodec<RegistryByteBuf, OverlayPacket> CODEC = CustomPayload.codecOf(OverlayPacket::write, OverlayPacket::new);
 
 		public OverlayPacket(PacketByteBuf buf) {
 			this(buf.readText());
 		}
 
-		@Override
 		public void write(PacketByteBuf buf) {
 			buf.writeText(this.message);
 		}
 
 		@Override
-		public PacketType<?> getType() {
-			return PACKET_TYPE;
+		public Id<? extends CustomPayload> getId() {
+			return null;
 		}
 	}
 }

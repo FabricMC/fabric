@@ -20,6 +20,11 @@ import java.util.Collections;
 import java.util.List;
 
 import com.mojang.logging.LogUtils;
+
+import net.fabricmc.fabric.impl.networking.RegistrationPayload;
+
+import net.minecraft.network.packet.CustomPayload;
+
 import org.slf4j.Logger;
 
 import net.minecraft.client.MinecraftClient;
@@ -32,14 +37,11 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.payload.ResolvedPayload;
 
-public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientPlayNetworkAddon.Handler> {
+public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientPlayNetworking.PlayPacketHandler<?>> {
 	private final ClientPlayNetworkHandler handler;
 	private final MinecraftClient client;
 	private boolean sentInitialRegisterPacket;
@@ -73,8 +75,8 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	protected void receive(Handler handler, ResolvedPayload payload) {
-		handler.receive(this.client, this.handler, payload, this);
+	protected void receive(ClientPlayNetworking.PlayPacketHandler<?> handler, CustomPayload payload) {
+		((ClientPlayNetworking.PlayPacketHandler) handler).receive(payload, this.client.player, this);
 	}
 
 	// impl details
@@ -85,12 +87,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	public Packet<?> createPacket(Identifier channelName, PacketByteBuf buf) {
-		return ClientPlayNetworking.createC2SPacket(channelName, buf);
-	}
-
-	@Override
-	public Packet<?> createPacket(FabricPacket packet) {
+	public Packet<?> createPacket(CustomPayload packet) {
 		return ClientPlayNetworking.createC2SPacket(packet);
 	}
 
@@ -108,10 +105,10 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	protected void handleRegistration(Identifier channelName) {
 		// If we can already send packets, immediately send the register packet for this channel
 		if (this.sentInitialRegisterPacket) {
-			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channelName));
+			final RegistrationPayload payload = this.createRegistrationPayload(RegistrationPayload.REGISTER, Collections.singleton(channelName));
 
-			if (buf != null) {
-				this.sendPacket(NetworkingImpl.REGISTER_CHANNEL, buf);
+			if (payload != null) {
+				this.sendPacket(payload);
 			}
 		}
 	}
@@ -120,10 +117,10 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	protected void handleUnregistration(Identifier channelName) {
 		// If we can already send packets, immediately send the unregister packet for this channel
 		if (this.sentInitialRegisterPacket) {
-			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channelName));
+			final RegistrationPayload payload = this.createRegistrationPayload(RegistrationPayload.UNREGISTER, Collections.singleton(channelName));
 
-			if (buf != null) {
-				this.sendPacket(NetworkingImpl.UNREGISTER_CHANNEL, buf);
+			if (payload != null) {
+				this.sendPacket(payload);
 			}
 		}
 	}
@@ -136,9 +133,5 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected boolean isReservedChannel(Identifier channelName) {
 		return NetworkingImpl.isReservedCommonChannel(channelName);
-	}
-
-	public interface Handler {
-		void receive(MinecraftClient client, ClientPlayNetworkHandler handler, ResolvedPayload payload, PacketSender responseSender);
 	}
 }

@@ -57,8 +57,8 @@ public final class ClientConfigurationNetworking {
 	 * @see ClientConfigurationNetworking#unregisterGlobalReceiver(PacketType)
 	 * @see ClientConfigurationNetworking#registerReceiver(PacketType, ConfigurationPayloadHandler)
 	 */
-	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Type<PacketByteBuf, T> type, ConfigurationPayloadHandler<T> handler) {
-		return ClientNetworkingImpl.CONFIGURATION.registerGlobalReceiver(type.getId(), wrapTyped(type, handler));
+	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Id<T> type, ConfigurationPayloadHandler<T> handler) {
+		return ClientNetworkingImpl.CONFIGURATION.registerGlobalReceiver(type.id(), handler);
 	}
 
 	/**
@@ -75,7 +75,7 @@ public final class ClientConfigurationNetworking {
 	 */
 	@Nullable
 	public static <T extends CustomPayload> ClientConfigurationNetworking.ConfigurationPayloadHandler<T> unregisterGlobalReceiver(CustomPayload.Type<PacketByteBuf, T> type) {
-		return unwrapTyped(ClientNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(type.id().id()));
+		return (ConfigurationPayloadHandler<T>) ClientNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(type.id().id());
 	}
 
 	/**
@@ -107,7 +107,7 @@ public final class ClientConfigurationNetworking {
 		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
 
 		if (addon != null) {
-			return addon.registerChannel(type.id().id(), wrapTyped(type, handler));
+			return addon.registerChannel(type.id().id(), handler);
 		}
 
 		throw new IllegalStateException("Cannot register receiver while not configuring!");
@@ -128,7 +128,7 @@ public final class ClientConfigurationNetworking {
 		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
 
 		if (addon != null) {
-			return unwrapTyped(addon.unregisterChannel(type.getId()));
+			return (ConfigurationPayloadHandler<T>) addon.unregisterChannel(type.id());
 		}
 
 		throw new IllegalStateException("Cannot unregister receiver while not configuring!");
@@ -253,10 +253,10 @@ public final class ClientConfigurationNetworking {
 		 * }</pre>
 		 *
 		 *
-		 * @param packet the packet
+		 * @param payload the packet payload
 		 * @param responseSender the packet sender
 		 * @see CustomPayload
 		 */
-		void receive(T packet, PacketSender responseSender);
+		void receive(T payload, PacketSender responseSender);
 	}
 }

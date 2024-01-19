@@ -19,27 +19,29 @@ package net.fabricmc.fabric.impl.networking.client;
 import java.util.Collections;
 import java.util.List;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
+
+import net.fabricmc.fabric.impl.networking.RegistrationPayload;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.C2SConfigurationChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
-import net.fabricmc.fabric.impl.networking.payload.ResolvedPayload;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkHandlerAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientConfigurationNetworkHandlerAccessor;
 
-public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ClientConfigurationNetworkAddon.Handler> {
+public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ClientConfigurationNetworking.ConfigurationPayloadHandler<?>> {
 	private final ClientConfigurationNetworkHandler handler;
 	private final MinecraftClient client;
 	private boolean sentInitialRegisterPacket;
@@ -63,8 +65,8 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	@Override
-	protected void receiveRegistration(boolean register, ResolvablePayload resolvable) {
-		super.receiveRegistration(register, resolvable);
+	protected void receiveRegistration(boolean register, RegistrationPayload payload) {
+		super.receiveRegistration(register, payload);
 
 		if (register && !this.sentInitialRegisterPacket) {
 			this.sendInitialChannelRegistrationPacket();
@@ -73,8 +75,8 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	@Override
-	protected void receive(Handler handler, ResolvedPayload payload) {
-		handler.receive(this.client, this.handler, payload, this);
+	protected void receive(ClientConfigurationNetworking.ConfigurationPayloadHandler<?> handler, CustomPayload payload) {
+		((ClientConfigurationNetworking.ConfigurationPayloadHandler) handler).receive(payload, this);
 	}
 
 	// impl details
@@ -85,12 +87,7 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	@Override
-	public Packet<?> createPacket(Identifier channelName, PacketByteBuf buf) {
-		return ClientPlayNetworking.createC2SPacket(channelName, buf);
-	}
-
-	@Override
-	public Packet<?> createPacket(FabricPacket packet) {
+	public Packet<?> createPacket(CustomPayload packet) {
 		return ClientPlayNetworking.createC2SPacket(packet);
 	}
 
@@ -108,10 +105,10 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	protected void handleRegistration(Identifier channelName) {
 		// If we can already send packets, immediately send the register packet for this channel
 		if (this.sentInitialRegisterPacket) {
-			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channelName));
+			final RegistrationPayload payload = this.createRegistrationPayload(RegistrationPayload.REGISTER, Collections.singleton(channelName));
 
-			if (buf != null) {
-				this.sendPacket(NetworkingImpl.REGISTER_CHANNEL, buf);
+			if (payload != null) {
+				this.sendPacket(payload);
 			}
 		}
 	}
@@ -120,10 +117,10 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	protected void handleUnregistration(Identifier channelName) {
 		// If we can already send packets, immediately send the unregister packet for this channel
 		if (this.sentInitialRegisterPacket) {
-			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channelName));
+			final RegistrationPayload payload = this.createRegistrationPayload(RegistrationPayload.UNREGISTER, Collections.singleton(channelName));
 
-			if (buf != null) {
-				this.sendPacket(NetworkingImpl.UNREGISTER_CHANNEL, buf);
+			if (payload != null) {
+				this.sendPacket(payload);
 			}
 		}
 	}
@@ -145,9 +142,5 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	public ChannelInfoHolder getChannelInfoHolder() {
 		return (ChannelInfoHolder) ((ClientCommonNetworkHandlerAccessor) handler).getConnection();
-	}
-
-	public interface Handler {
-		void receive(MinecraftClient client, ClientConfigurationNetworkHandler handler, ResolvedPayload payload, PacketSender responseSender);
 	}
 }

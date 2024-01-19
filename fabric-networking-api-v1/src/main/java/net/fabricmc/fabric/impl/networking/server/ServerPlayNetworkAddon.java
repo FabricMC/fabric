@@ -67,7 +67,8 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void receive(ServerPlayNetworking.PlayPayloadHandler<?> handler, CustomPayload payload) {
-		handler.receive(payload, this.handler.player, this);
+		// TODO 1.20.5 fix me
+		((ServerPlayNetworking.PlayPayloadHandler)handler).receive(payload, this.handler.player, this);
 	}
 
 	// impl details

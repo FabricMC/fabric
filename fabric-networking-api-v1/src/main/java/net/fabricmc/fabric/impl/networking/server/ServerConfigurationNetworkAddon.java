@@ -105,7 +105,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	protected void receive(ServerConfigurationNetworking.ConfigurationPacketHandler<?> handler, CustomPayload payload) {
-		handler.receive(payload, this.handler, this);
+		((ServerConfigurationNetworking.ConfigurationPacketHandler)handler).receive(payload, this.handler, this);
 	}
 
 	// impl details
