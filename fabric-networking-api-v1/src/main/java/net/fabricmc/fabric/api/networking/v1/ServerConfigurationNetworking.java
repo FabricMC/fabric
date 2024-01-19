@@ -19,6 +19,8 @@ package net.fabricmc.fabric.api.networking.v1;
 import java.util.Objects;
 import java.util.Set;
 
+import net.minecraft.network.packet.CustomPayload;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -29,10 +31,6 @@ import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ThreadExecutor;
 
-import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
-import net.fabricmc.fabric.impl.networking.payload.TypedPayload;
-import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
-import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
@@ -350,72 +348,16 @@ public final class ServerConfigurationNetworking {
 	private ServerConfigurationNetworking() {
 	}
 
-	private static ResolvablePayload.Handler<ServerConfigurationNetworkAddon.Handler> wrapUntyped(ConfigurationChannelHandler actualHandler) {
-		return new ResolvablePayload.Handler<>(null, actualHandler, (server, handler, payload, responseSender) -> {
-			actualHandler.receive(server, handler, ((UntypedPayload) payload).buffer(), responseSender);
-		});
-	}
-
-	@SuppressWarnings("unchecked")
-	private static <T extends FabricPacket> ResolvablePayload.Handler<ServerConfigurationNetworkAddon.Handler> wrapTyped(PacketType<T> type, ConfigurationPacketHandler<T> actualHandler) {
-		return new ResolvablePayload.Handler<>(type, actualHandler, (server, handler, payload, responseSender) -> {
-			T packet = (T) ((TypedPayload) payload).packet();
-			actualHandler.receive(packet, handler, responseSender);
-		});
-	}
-
-	@Nullable
-	private static ConfigurationChannelHandler unwrapUntyped(@Nullable ResolvablePayload.Handler<ServerConfigurationNetworkAddon.Handler> handler) {
-		if (handler == null) return null;
-		if (handler.actual() instanceof ConfigurationChannelHandler actual) return actual;
-		return null;
-	}
-
-	@Nullable
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	private static <T extends FabricPacket> ConfigurationPacketHandler<T> unwrapTyped(@Nullable ResolvablePayload.Handler<ServerConfigurationNetworkAddon.Handler> handler) {
-		if (handler == null) return null;
-		if (handler.actual() instanceof ConfigurationPacketHandler actual) return actual;
-		return null;
-	}
-
-	@FunctionalInterface
-	public interface ConfigurationChannelHandler {
-		/**
-		 * Handles an incoming packet.
-		 *
-		 * <p>This method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
-		 * Modification to the game should be {@linkplain ThreadExecutor#submit(Runnable) scheduled} using the server instance from {@link ServerConfigurationNetworking#getServer(ServerConfigurationNetworkHandler)}.
-		 *
-		 * <p>An example usage of this is:
-		 * <pre>{@code
-		 * ServerConfigurationNetworking.registerReceiver(new Identifier("mymod", "boom"), (server, handler, buf, responseSender) -> {
-		 * 	boolean fire = buf.readBoolean();
-		 *
-		 * 	// All operations on the server must be executed on the server thread
-		 * 	server.execute(() -> {
-		 *
-		 * 	});
-		 * });
-		 * }</pre>
-		 * @param server the server
-		 * @param handler the network handler that received this packet, representing the client who sent the packet
-		 * @param buf the payload of the packet
-		 * @param responseSender the packet sender
-		 */
-		void receive(MinecraftServer server, ServerConfigurationNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender);
-	}
-
 	/**
-	 * A thread-safe packet handler utilizing {@link FabricPacket}.
+	 * A thread-safe packet handler utilizing {@link CustomPayload}.
 	 * @param <T> the type of the packet
 	 */
 	@FunctionalInterface
-	public interface ConfigurationPacketHandler<T extends FabricPacket> {
+	public interface ConfigurationPacketHandler<T extends CustomPayload> {
 		/**
 		 * Handles an incoming packet.
 		 *
-		 * <p>Unlike {@link ServerPlayNetworking.PlayPacketHandler} this method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
+		 * <p>Unlike {@link ServerPlayNetworking.PlayPayloadHandler} this method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
 		 * Modification to the game should be {@linkplain ThreadExecutor#submit(Runnable) scheduled} using the Minecraft server instance from {@link ServerConfigurationNetworking#getServer(ServerConfigurationNetworkHandler)}.
 		 *
 		 * <p>An example usage of this:
@@ -427,11 +369,11 @@ public final class ServerConfigurationNetworking {
 		 * }</pre>
 		 *
 		 *
-		 * @param packet the packet
+		 * @param payload the packet payload
 		 * @param networkHandler the network handler
 		 * @param responseSender the packet sender
-		 * @see FabricPacket
+		 * @see CustomPayload
 		 */
-		void receive(T packet, ServerConfigurationNetworkHandler networkHandler, PacketSender responseSender);
+		void receive(T payload, ServerConfigurationNetworkHandler networkHandler, PacketSender responseSender);
 	}
 }

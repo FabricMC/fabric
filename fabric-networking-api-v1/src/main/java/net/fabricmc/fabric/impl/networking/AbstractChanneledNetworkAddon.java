@@ -28,6 +28,9 @@ import java.util.Set;
 import io.netty.util.AsciiString;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+
+import net.minecraft.network.packet.CustomPayload;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
@@ -49,14 +52,14 @@ import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
  *
  * @param <H> the channel handler type
  */
-public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon<ResolvablePayload.Handler<H>> implements PacketSender, CommonPacketHandler {
+public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon<H> implements PacketSender, CommonPacketHandler {
 	protected final ClientConnection connection;
-	protected final GlobalReceiverRegistry<ResolvablePayload.Handler<H>> receiver;
+	protected final GlobalReceiverRegistry<H> receiver;
 	protected final Set<Identifier> sendableChannels;
 
 	protected int commonVersion = -1;
 
-	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<ResolvablePayload.Handler<H>> receiver, ClientConnection connection, String description) {
+	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, String description) {
 		super(receiver, description);
 		this.connection = connection;
 		this.receiver = receiver;
@@ -73,7 +76,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	// always supposed to handle async!
-	public boolean handle(ResolvablePayload resolvable) {
+	public boolean handle(CustomPayload resolvable) {
 		Identifier channelName = resolvable.getId().id();
 		this.logger.debug("Handling inbound packet from channel with name \"{}\"", channelName);
 
@@ -105,7 +108,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		return true;
 	}
 
-	protected abstract void receive(H handler, ResolvedPayload payload);
+	protected abstract void receive(H handler, CustomPayload payload);
 
 	protected void sendInitialChannelRegistrationPacket() {
 		final PacketByteBuf buf = this.createRegistrationPacket(this.getReceivableChannels());
@@ -138,7 +141,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	// wrap in try with res (buf)
-	protected void receiveRegistration(boolean register, ResolvablePayload resolvable) {
+	protected void receiveRegistration(boolean register, CustomPayload resolvable) {
 		UntypedPayload payload = (UntypedPayload) resolvable.resolve(null);
 		PacketByteBuf buf = payload.buffer();
 

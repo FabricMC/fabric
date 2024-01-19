@@ -37,17 +37,17 @@ public record CommonRegisterPayload(int version, String phase, Set<Identifier> c
 		);
 	}
 
-//	@Override
-//	public void write(PacketByteBuf buf) {
-//		buf.writeVarInt(version);
-//		buf.writeString(phase);
-//		buf.writeCollection(channels, PacketByteBuf::writeIdentifier);
-//	}
-//
-//	@Override
-//	public Identifier id() {
-//		return PACKET_ID;
-//	}
+	@Override
+	public void write(PacketByteBuf buf) {
+		buf.writeVarInt(version);
+		buf.writeString(phase);
+		buf.writeCollection(channels, PacketByteBuf::writeIdentifier);
+	}
+
+	@Override
+	public Identifier id() {
+		return PACKET_ID;
+	}
 
 	@Override
 	public Id<? extends CustomPayload> getId() {

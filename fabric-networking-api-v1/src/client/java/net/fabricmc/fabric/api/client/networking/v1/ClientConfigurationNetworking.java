@@ -19,25 +19,16 @@ package net.fabricmc.fabric.api.client.networking.v1;
 import java.util.Objects;
 import java.util.Set;
 
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.CustomPayload;
+
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientConfigurationNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.listener.ServerCommonPacketListener;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.thread.ThreadExecutor;
 
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
-import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
-import net.fabricmc.fabric.impl.networking.payload.TypedPayload;
-import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
-import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkHandlerAccessor;
 
 /**
  * Offers access to configuration stage client-side networking functionalities.
@@ -54,29 +45,6 @@ import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkH
  */
 public final class ClientConfigurationNetworking {
 	/**
-	 * Registers a handler to a channel.
-	 * A global receiver is registered to all connections, in the present and future.
-	 *
-	 * <p>The handler runs on the network thread. After reading the buffer there, access to game state
-	 * must be performed in the render thread by calling {@link ThreadExecutor#execute(Runnable)}.
-	 *
-	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterGlobalReceiver(Identifier)} to unregister the existing handler.
-	 *
-	 * <p>For new code, {@link #registerGlobalReceiver(PacketType, ConfigurationPacketHandler)}
-	 * is preferred, as it is designed in a way that prevents thread safety issues.
-	 *
-	 * @param channelName the id of the channel
-	 * @param channelHandler the handler
-	 * @return false if a handler is already registered to the channel
-	 * @see ClientConfigurationNetworking#unregisterGlobalReceiver(Identifier)
-	 * @see ClientConfigurationNetworking#registerReceiver(Identifier, ConfigurationChannelHandler)
-	 */
-	public static boolean registerGlobalReceiver(Identifier channelName, ConfigurationChannelHandler channelHandler) {
-		return ClientNetworkingImpl.CONFIGURATION.registerGlobalReceiver(channelName, wrapUntyped(channelHandler));
-	}
-
-	/**
 	 * Registers a handler for a packet type.
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
@@ -87,26 +55,10 @@ public final class ClientConfigurationNetworking {
 	 * @param handler the handler
 	 * @return false if a handler is already registered to the channel
 	 * @see ClientConfigurationNetworking#unregisterGlobalReceiver(PacketType)
-	 * @see ClientConfigurationNetworking#registerReceiver(PacketType, ConfigurationPacketHandler)
+	 * @see ClientConfigurationNetworking#registerReceiver(PacketType, ConfigurationPayloadHandler)
 	 */
-	public static <T extends FabricPacket> boolean registerGlobalReceiver(PacketType<T> type, ConfigurationPacketHandler<T> handler) {
+	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Type<PacketByteBuf, T> type, ConfigurationPayloadHandler<T> handler) {
 		return ClientNetworkingImpl.CONFIGURATION.registerGlobalReceiver(type.getId(), wrapTyped(type, handler));
-	}
-
-	/**
-	 * Removes the handler of a channel.
-	 * A global receiver is registered to all connections, in the present and future.
-	 *
-	 * <p>The {@code channel} is guaranteed not to have a handler after this call.
-	 *
-	 * @param channelName the id of the channel
-	 * @return the previous handler, or {@code null} if no handler was bound to the channel
-	 * @see ClientConfigurationNetworking#registerGlobalReceiver(Identifier, ConfigurationChannelHandler)
-	 * @see ClientConfigurationNetworking#unregisterReceiver(Identifier)
-	 */
-	@Nullable
-	public static ClientConfigurationNetworking.ConfigurationChannelHandler unregisterGlobalReceiver(Identifier channelName) {
-		return unwrapUntyped(ClientNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(channelName));
 	}
 
 	/**
@@ -117,13 +69,13 @@ public final class ClientConfigurationNetworking {
 	 *
 	 * @param type the packet type
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerGlobalReceiver(PacketType, ConfigurationPacketHandler)}
-	 * @see ClientConfigurationNetworking#registerGlobalReceiver(PacketType, ConfigurationPacketHandler)
+	 * or it was not registered using {@link #registerGlobalReceiver(PacketType, ConfigurationPayloadHandler)}
+	 * @see ClientConfigurationNetworking#registerGlobalReceiver(PacketType, ConfigurationPayloadHandler)
 	 * @see ClientConfigurationNetworking#unregisterReceiver(PacketType)
 	 */
 	@Nullable
-	public static <T extends FabricPacket> ClientConfigurationNetworking.ConfigurationPacketHandler<T> unregisterGlobalReceiver(PacketType<T> type) {
-		return unwrapTyped(ClientNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(type.getId()));
+	public static <T extends CustomPayload> ClientConfigurationNetworking.ConfigurationPayloadHandler<T> unregisterGlobalReceiver(CustomPayload.Type<PacketByteBuf, T> type) {
+		return unwrapTyped(ClientNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(type.id().id()));
 	}
 
 	/**
@@ -134,33 +86,6 @@ public final class ClientConfigurationNetworking {
 	 */
 	public static Set<Identifier> getGlobalReceivers() {
 		return ClientNetworkingImpl.CONFIGURATION.getChannels();
-	}
-
-	/**
-	 * Registers a handler to a channel.
-	 *
-	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(Identifier)} to unregister the existing handler.
-	 *
-	 * <p>For example, if you only register a receiver using this method when a {@linkplain ClientLoginNetworking#registerGlobalReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)}
-	 * login query has been received, you should use {@link ClientPlayConnectionEvents#INIT} to register the channel handler.
-	 *
-	 * <p>For new code, {@link #registerReceiver(PacketType, ConfigurationPacketHandler)}
-	 * is preferred, as it is designed in a way that prevents thread safety issues.
-	 *
-	 * @param channelName the id of the channel
-	 * @return false if a handler is already registered to the channel
-	 * @throws IllegalStateException if the client is not connected to a server
-	 * @see ClientPlayConnectionEvents#INIT
-	 */
-	public static boolean registerReceiver(Identifier channelName, ConfigurationChannelHandler channelHandler) {
-		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
-
-		if (addon != null) {
-			return addon.registerChannel(channelName, wrapUntyped(channelHandler));
-		}
-
-		throw new IllegalStateException("Cannot register receiver while not configuring!");
 	}
 
 	/**
@@ -178,34 +103,14 @@ public final class ClientConfigurationNetworking {
 	 * @throws IllegalStateException if the client is not connected to a server
 	 * @see ClientPlayConnectionEvents#INIT
 	 */
-	public static <T extends FabricPacket> boolean registerReceiver(PacketType<T> type, ConfigurationPacketHandler<T> handler) {
+	public static <T extends CustomPayload> boolean registerReceiver(CustomPayload.Type<PacketByteBuf, T> type, ConfigurationPayloadHandler<T> handler) {
 		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
 
 		if (addon != null) {
-			return addon.registerChannel(type.getId(), wrapTyped(type, handler));
+			return addon.registerChannel(type.id().id(), wrapTyped(type, handler));
 		}
 
 		throw new IllegalStateException("Cannot register receiver while not configuring!");
-	}
-
-	/**
-	 * Removes the handler of a channel.
-	 *
-	 * <p>The {@code channelName} is guaranteed not to have a handler after this call.
-	 *
-	 * @param channelName the id of the channel
-	 * @return the previous handler, or {@code null} if no handler was bound to the channel
-	 * @throws IllegalStateException if the client is not connected to a server
-	 */
-	@Nullable
-	public static ClientConfigurationNetworking.ConfigurationChannelHandler unregisterReceiver(Identifier channelName) throws IllegalStateException {
-		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
-
-		if (addon != null) {
-			return unwrapUntyped(addon.unregisterChannel(channelName));
-		}
-
-		throw new IllegalStateException("Cannot unregister receiver while not configuring!");
 	}
 
 	/**
@@ -215,11 +120,11 @@ public final class ClientConfigurationNetworking {
 	 *
 	 * @param type the packet type
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerReceiver(PacketType, ConfigurationPacketHandler)}
+	 * or it was not registered using {@link #registerReceiver(PacketType, ConfigurationPayloadHandler)}
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
 	@Nullable
-	public static <T extends FabricPacket> ClientConfigurationNetworking.ConfigurationPacketHandler<T> unregisterReceiver(PacketType<T> type) {
+	public static <T extends CustomPayload> ClientConfigurationNetworking.ConfigurationPayloadHandler<T> unregisterReceiver(CustomPayload.Id<T> type) {
 		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
 
 		if (addon != null) {
@@ -285,23 +190,10 @@ public final class ClientConfigurationNetworking {
 	 * @param type the packet type
 	 * @return {@code true} if the connected server has declared the ability to receive a packet on the specified channel
 	 */
-	public static boolean canSend(PacketType<?> type) {
-		return canSend(type.getId());
+	public static boolean canSend(CustomPayload.Id<?> type) {
+		return canSend(type.id());
 	}
 
-	/**
-	 * Creates a packet which may be sent to the connected server.
-	 *
-	 * @param channelName the channel name
-	 * @param buf the packet byte buf which represents the payload of the packet
-	 * @return a new packet
-	 */
-	public static Packet<ServerCommonPacketListener> createC2SPacket(Identifier channelName, PacketByteBuf buf) {
-		Objects.requireNonNull(channelName, "Channel name cannot be null");
-		Objects.requireNonNull(buf, "Buf cannot be null");
-
-		return ClientNetworkingImpl.createC2SPacket(channelName, buf);
-	}
 
 	/**
 	 * Gets the packet sender which sends packets to the connected server.
@@ -322,30 +214,12 @@ public final class ClientConfigurationNetworking {
 	/**
 	 * Sends a packet to the connected server.
 	 *
-	 * @param channelName the channel of the packet
-	 * @param buf the payload of the packet
-	 * @throws IllegalStateException if the client is not connected to a server
-	 */
-	public static void send(Identifier channelName, PacketByteBuf buf) throws IllegalStateException {
-		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
-
-		if (addon != null) {
-			addon.sendPacket(createC2SPacket(channelName, buf));
-			return;
-		}
-
-		throw new IllegalStateException("Cannot send packet while not configuring!");
-	}
-
-	/**
-	 * Sends a packet to the connected server.
-	 *
 	 * @param packet the packet
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
-	public static <T extends FabricPacket> void send(T packet) {
+	public static <T extends CustomPayload> void send(T packet) {
 		Objects.requireNonNull(packet, "Packet cannot be null");
-		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
+		Objects.requireNonNull(packet.getId(), "Packet#getType cannot return null");
 
 		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
 
@@ -360,81 +234,12 @@ public final class ClientConfigurationNetworking {
 	private ClientConfigurationNetworking() {
 	}
 
-	private static ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> wrapUntyped(ConfigurationChannelHandler actualHandler) {
-		return new ResolvablePayload.Handler<>(null, actualHandler, (client, handler, payload, responseSender) -> {
-			actualHandler.receive(client, handler, ((UntypedPayload) payload).buffer(), responseSender);
-		});
-	}
-
-	@SuppressWarnings("unchecked")
-	private static <T extends FabricPacket> ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> wrapTyped(PacketType<T> type, ConfigurationPacketHandler<T> actualHandler) {
-		return new ResolvablePayload.Handler<>(type, actualHandler, (client, handler, payload, responseSender) -> {
-			T packet = (T) ((TypedPayload) payload).packet();
-
-			if (client.isOnThread()) {
-				// Do not submit to the render thread if we're already running there.
-				// Normally, packets are handled on the network IO thread - though it is
-				// not guaranteed (for example, with 1.19.4 S2C packet bundling)
-				// Since we're handling it right now, connection check is redundant.
-				actualHandler.receive(packet, responseSender);
-			} else {
-				client.execute(() -> {
-					if (((ClientCommonNetworkHandlerAccessor) handler).getConnection().isOpen()) {
-						actualHandler.receive(packet, responseSender);
-					}
-				});
-			}
-		});
-	}
-
-	@Nullable
-	private static ConfigurationChannelHandler unwrapUntyped(@Nullable ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> handler) {
-		if (handler == null) return null;
-		if (handler.actual() instanceof ConfigurationChannelHandler actual) return actual;
-		return null;
-	}
-
-	@Nullable
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	private static <T extends FabricPacket> ConfigurationPacketHandler<T> unwrapTyped(@Nullable ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> handler) {
-		if (handler == null) return null;
-		if (handler.actual() instanceof ConfigurationPacketHandler actual) return actual;
-		return null;
-	}
-
-	@FunctionalInterface
-	public interface ConfigurationChannelHandler {
-		/**
-		 * Handles an incoming packet.
-		 *
-		 * <p>This method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
-		 * Modification to the game should be {@linkplain net.minecraft.util.thread.ThreadExecutor#submit(Runnable) scheduled} using the provided Minecraft client instance.
-		 *
-		 * <p>An example usage of this is to display an overlay message:
-		 * <pre>{@code
-		 * ClientConfigurationNetworking.registerReceiver(new Identifier("mymod", "overlay"), (client, handler, buf, responseSender) -> {
-		 * 	String message = buf.readString(32767);
-		 *
-		 * 	// All operations on the server or world must be executed on the server thread
-		 * 	client.execute(() -> {
-		 * 		client.inGameHud.setOverlayMessage(message, true);
-		 * 	});
-		 * });
-		 * }</pre>
-		 *  @param client the client
-		 * @param handler the network handler that received this packet
-		 * @param buf the payload of the packet
-		 * @param responseSender the packet sender
-		 */
-		void receive(MinecraftClient client, ClientConfigurationNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender);
-	}
-
 	/**
-	 * A thread-safe packet handler utilizing {@link FabricPacket}.
+	 * A thread-safe packet handler utilizing {@link CustomPayload}.
 	 * @param <T> the type of the packet
 	 */
 	@FunctionalInterface
-	public interface ConfigurationPacketHandler<T extends FabricPacket> {
+	public interface ConfigurationPayloadHandler<T extends CustomPayload> {
 		/**
 		 * Handles the incoming packet. This is called on the render thread, and can safely
 		 * call client methods.
@@ -450,7 +255,7 @@ public final class ClientConfigurationNetworking {
 		 *
 		 * @param packet the packet
 		 * @param responseSender the packet sender
-		 * @see FabricPacket
+		 * @see CustomPayload
 		 */
 		void receive(T packet, PacketSender responseSender);
 	}

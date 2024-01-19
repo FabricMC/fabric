@@ -59,4 +59,12 @@ public class PayloadTypeRegistryImpl<B extends PacketByteBuf> implements Payload
 		//noinspection unchecked
 		return (CustomPayload.Type<B, T>) packetTypes.get(id.id());
 	}
+
+	public NetworkState getState() {
+		return state;
+	}
+
+	public NetworkSide getSide() {
+		return side;
+	}
 }

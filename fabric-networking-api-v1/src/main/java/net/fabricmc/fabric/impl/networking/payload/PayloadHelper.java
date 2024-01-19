@@ -35,18 +35,6 @@ public class PayloadHelper {
 		return newBuf;
 	}
 
-	public static ResolvablePayload readCustom(Identifier id, PacketByteBuf buf, int maxSize, boolean retain) {
-		assertSize(buf, maxSize);
-
-		if (retain) {
-			RetainedPayload payload = new RetainedPayload(id, PacketByteBufs.retainedSlice(buf));
-			buf.skipBytes(buf.readableBytes());
-			return payload;
-		} else {
-			return new UntypedPayload(id, read(buf, maxSize));
-		}
-	}
-
 	private static void assertSize(PacketByteBuf buf, int maxSize) {
 		int size = buf.readableBytes();
 

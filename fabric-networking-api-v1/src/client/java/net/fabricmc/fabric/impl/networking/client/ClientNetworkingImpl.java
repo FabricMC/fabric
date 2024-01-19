@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.networking.client;
 
 import java.util.Objects;
 
+import net.minecraft.network.packet.CustomPayload;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
@@ -55,8 +57,8 @@ import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAcces
 
 public final class ClientNetworkingImpl {
 	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>(NetworkState.LOGIN);
-	public static final GlobalReceiverRegistry<ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler>> CONFIGURATION = new GlobalReceiverRegistry<>(NetworkState.CONFIGURATION);
-	public static final GlobalReceiverRegistry<ResolvablePayload.Handler<ClientPlayNetworkAddon.Handler>> PLAY = new GlobalReceiverRegistry<>(NetworkState.PLAY);
+	public static final GlobalReceiverRegistry<ClientConfigurationNetworking.ConfigurationPayloadHandler<?>> CONFIGURATION = new GlobalReceiverRegistry<>(NetworkState.CONFIGURATION);
+	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayPacketHandler<?>> PLAY = new GlobalReceiverRegistry<>(NetworkState.PLAY);
 
 	private static ClientPlayNetworkAddon currentPlayAddon;
 	private static ClientConfigurationNetworkAddon currentConfigurationAddon;
@@ -73,16 +75,9 @@ public final class ClientNetworkingImpl {
 		return (ClientLoginNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();
 	}
 
-	public static Packet<ServerCommonPacketListener> createC2SPacket(Identifier channelName, PacketByteBuf buf) {
-		return new CustomPayloadC2SPacket(new UntypedPayload(channelName, buf));
-	}
-
-	public static Packet<ServerCommonPacketListener> createC2SPacket(FabricPacket packet) {
-		Objects.requireNonNull(packet, "Packet cannot be null");
-		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
-
-		ResolvedPayload payload = new TypedPayload(packet);
-		if (NetworkingImpl.FORCE_PACKET_SERIALIZATION) payload = payload.resolve(null);
+	public static Packet<ServerCommonPacketListener> createC2SPacket(CustomPayload payload) {
+		Objects.requireNonNull(payload, "Packet cannot be null");
+		Objects.requireNonNull(payload.getId(), "Packet#getType cannot return null");
 
 		return new CustomPayloadC2SPacket(payload);
 	}

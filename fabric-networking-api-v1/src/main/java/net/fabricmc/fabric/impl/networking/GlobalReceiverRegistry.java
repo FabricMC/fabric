@@ -25,6 +25,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import net.minecraft.network.packet.CustomPayload;
+
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,16 +40,11 @@ public final class GlobalReceiverRegistry<H> {
 	private final NetworkState state;
 
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
-	private final Map<Identifier, H> handlers;
+	private final Map<Identifier, H> handlers = new HashMap<>();
 	private final Set<AbstractNetworkAddon<H>> trackedAddons = new HashSet<>();
 
 	public GlobalReceiverRegistry(NetworkState state) {
-		this(state, new HashMap<>()); // sync map should be fine as there is little read write competitions
-	}
-
-	public GlobalReceiverRegistry(NetworkState state, Map<Identifier, H> map) {
 		this.state = state;
-		this.handlers = map;
 	}
 
 	@Nullable

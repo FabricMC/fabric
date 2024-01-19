@@ -49,7 +49,7 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 	}
 
 	@Override
-	public void receive(NetworkingPlayPacketTest.OverlayPacket packet, ClientPlayerEntity player, PacketSender sender) {
-		MinecraftClient.getInstance().inGameHud.setOverlayMessage(packet.message(), true);
+	public void receive(NetworkingPlayPacketTest.OverlayPacket payload, ClientPlayerEntity player, PacketSender sender) {
+		MinecraftClient.getInstance().inGameHud.setOverlayMessage(payload.message(), true);
 	}
 }
