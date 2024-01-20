@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.recipe.ingredient;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,15 +24,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.RegistryByteBuf;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
-import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.FabricIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
+import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientPacketCodec;
 
 @Mixin(Ingredient.class)
 public class IngredientMixin implements FabricIngredient {
@@ -51,27 +52,14 @@ public class IngredientMixin implements FabricIngredient {
 		));
 	}
 
-	// TODO 1.20.5 mega pain
-//	@Inject(
-//			at = @At("HEAD"),
-//			method = "fromPacket",
-//			cancellable = true
-//	)
-//	private static void injectFromPacket(PacketByteBuf buf, CallbackInfoReturnable<Ingredient> cir) {
-//		int index = buf.readerIndex();
-//
-//		if (buf.readVarInt() == CustomIngredientImpl.PACKET_MARKER) {
-//			Identifier type = buf.readIdentifier();
-//			CustomIngredientSerializer<?> serializer = CustomIngredientSerializer.get(type);
-//
-//			if (serializer == null) {
-//				throw new IllegalArgumentException("Cannot deserialize custom ingredient of unknown type " + type);
-//			}
-//
-//			cir.setReturnValue(serializer.read(buf).toVanilla());
-//		} else {
-//			// Reset index for vanilla's normal deserialization logic.
-//			buf.readerIndex(index);
-//		}
-//	}
+	@ModifyExpressionValue(
+			method = "<clinit>",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/network/codec/PacketCodec;xmap(Ljava/util/function/Function;Ljava/util/function/Function;)Lnet/minecraft/network/codec/PacketCodec;"
+			)
+	)
+	private static PacketCodec<RegistryByteBuf, Ingredient> useCustomIngredientPacketCodec(PacketCodec<RegistryByteBuf, Ingredient> original) {
+		return new CustomIngredientPacketCodec(original);
+	}
 }
