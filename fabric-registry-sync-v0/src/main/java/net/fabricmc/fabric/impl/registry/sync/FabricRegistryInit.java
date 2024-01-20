@@ -16,6 +16,13 @@
 
 package net.fabricmc.fabric.impl.registry.sync;
 
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+
+import net.minecraft.network.NetworkSide;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.RegistryByteBuf;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
@@ -30,8 +37,9 @@ public class FabricRegistryInit implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		PayloadTypeRegistry.configuration(NetworkSide.SERVERBOUND).register(SyncCompletePayload.ID, SyncCompletePayload.CODEC);
 		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register(RegistrySyncManager::configureClient);
-		ServerConfigurationNetworking.registerGlobalReceiver(SYNC_COMPLETE_ID, (server, handler, buf, responseSender) -> {
+		ServerConfigurationNetworking.registerGlobalReceiver(SyncCompletePayload.ID, (payload, handler, responseSender) -> {
 			handler.completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
 		});
 
@@ -193,5 +201,15 @@ public class FabricRegistryInit implements ModInitializer {
 		// Synced in TagManager::toPacket/fromPacket -> TagGroup::serialize/deserialize
 		RegistryAttributeHolder.get(Registries.GAME_EVENT)
 				.addAttribute(RegistryAttribute.SYNCED);
+	}
+
+	private record SyncCompletePayload() implements CustomPayload {
+		public static final CustomPayload.Id<SyncCompletePayload> ID = new CustomPayload.Id<>(SYNC_COMPLETE_ID);
+		public static final PacketCodec<PacketByteBuf, SyncCompletePayload> CODEC = CustomPayload.codecOf((value, buf) -> {}, buf -> new SyncCompletePayload());
+
+		@Override
+		public Id<? extends CustomPayload> getId() {
+			return ID;
+		}
 	}
 }

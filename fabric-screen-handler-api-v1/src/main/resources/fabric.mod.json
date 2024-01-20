@@ -21,6 +21,7 @@
     "fabric-networking-api-v1": "*"
   },
   "entrypoints": {
+    "main": ["net.fabricmc.fabric.impl.screenhandler.Networking"],
     "client": ["net.fabricmc.fabric.impl.screenhandler.client.ClientNetworking"]
   },
   "description": "Hooks and extensions for creating screen handlers.",

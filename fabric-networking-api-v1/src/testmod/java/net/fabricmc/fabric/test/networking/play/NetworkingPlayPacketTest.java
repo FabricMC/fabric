@@ -26,6 +26,9 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+
+import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.RegistryByteBuf;
@@ -59,8 +62,8 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		for (int i = 0; i < 20; i++) {
 			buf.writeUuid(UUID.randomUUID());
 		}
-
-		ServerPlayNetworking.getSender(player).sendPacket(UNKNOWN_TEST_CHANNEL, buf);
+		// TODO 1.20.5
+//		ServerPlayNetworking.getSender(player).sendPacket(UNKNOWN_TEST_CHANNEL, buf);
 	}
 
 	public static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -92,8 +95,9 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 				.then(literal("repeat").executes(ctx -> {
 					PacketByteBuf buf = PacketByteBufs.create();
 					buf.writeText(Text.literal("repeat"));
-					ServerPlayNetworking.send(ctx.getSource().getPlayer(), TEST_CHANNEL, buf);
-					ServerPlayNetworking.send(ctx.getSource().getPlayer(), TEST_CHANNEL, buf);
+					// TODO 1.20.5
+//					ServerPlayNetworking.send(ctx.getSource().getPlayer(), TEST_CHANNEL, buf);
+//					ServerPlayNetworking.send(ctx.getSource().getPlayer(), TEST_CHANNEL, buf);
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("bundled").executes(ctx -> {
@@ -114,6 +118,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 	public void onInitialize() {
 		NetworkingTestmods.LOGGER.info("Hello from networking user!");
 
+		PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).register(OverlayPacket.ID, OverlayPacket.CODEC);
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			NetworkingPlayPacketTest.registerCommand(dispatcher);
 		});
@@ -146,7 +151,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 
 		@Override
 		public Id<? extends CustomPayload> getId() {
-			return null;
+			return ID;
 		}
 	}
 }

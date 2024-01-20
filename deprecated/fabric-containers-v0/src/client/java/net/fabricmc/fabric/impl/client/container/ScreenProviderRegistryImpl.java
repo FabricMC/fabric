@@ -19,6 +19,9 @@ package net.fabricmc.fabric.impl.client.container;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.network.codec.RegistryByteBuf;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,13 +66,15 @@ public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
 	}
 
 	public static void init() {
-		ClientPlayNetworking.registerGlobalReceiver(ContainerProviderImpl.OPEN_CONTAINER, (client, handler, buf, responseSender) -> {
-			Identifier identifier = buf.readIdentifier();
-			int syncId = buf.readUnsignedByte();
+		ClientPlayNetworking.registerGlobalReceiver(ContainerProviderImpl.ContainerOpenPayload.ID, (payload, player, responseSender) -> {
+			Identifier identifier = payload.identifier();
+			int syncId = payload.syncId();
+			RegistryByteBuf buf = payload.registryByteBuf();
 
 			// Retain the buf since we must open the screen handler with it's extra modded data on the client thread
 			buf.retain();
 
+			MinecraftClient client = MinecraftClient.getInstance();
 			client.execute(() -> {
 				try {
 					ContainerFactory<HandledScreen> factory = FACTORIES.get(identifier);
@@ -79,7 +84,7 @@ public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
 						return;
 					}
 
-					ClientPlayerEntity player = client.player;
+//					ClientPlayerEntity player = client.player;
 					HandledScreen<?> gui = factory.create(syncId, identifier, player, buf);
 
 					player.currentScreenHandler = gui.getScreenHandler();

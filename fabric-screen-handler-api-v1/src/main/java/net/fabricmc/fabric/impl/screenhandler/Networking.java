@@ -19,10 +19,21 @@ package net.fabricmc.fabric.impl.screenhandler;
 import java.util.Objects;
 
 import io.netty.buffer.Unpooled;
+
+import net.fabricmc.api.ModInitializer;
+
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+
+import net.minecraft.network.NetworkSide;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.RegistryByteBuf;
+import net.minecraft.network.packet.CustomPayload;
+
+import net.minecraft.text.Text;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.Registries;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -31,7 +42,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 
-public final class Networking {
+public final class Networking implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-screen-handler-api-v1/server");
 
 	// [Packet format]
@@ -61,12 +72,34 @@ public final class Networking {
 			return;
 		}
 
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeIdentifier(typeId);
-		buf.writeVarInt(syncId);
-		buf.writeText(factory.getDisplayName());
+		RegistryByteBuf buf = new RegistryByteBuf(Unpooled.buffer(), player.server.getRegistryManager());
 		factory.writeScreenOpeningData(player, buf);
 
-		ServerPlayNetworking.send(player, OPEN_ID, buf);
+		ServerPlayNetworking.send(player, new OpenScreenPayload(typeId, syncId, factory.getDisplayName(), buf));
+	}
+
+	@Override
+	public void onInitialize() {
+		PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).register(OpenScreenPayload.ID, OpenScreenPayload.CODEC);
+	}
+
+	public record OpenScreenPayload(Identifier identifier, int syncId, Text title, RegistryByteBuf registryByteBuf) implements CustomPayload {
+		public static final PacketCodec<RegistryByteBuf, OpenScreenPayload> CODEC = CustomPayload.codecOf(OpenScreenPayload::write, OpenScreenPayload::new);
+		public static final CustomPayload.Id<OpenScreenPayload> ID = new Id<>(OPEN_ID);
+
+		private OpenScreenPayload(RegistryByteBuf buf) {
+			this(buf.readIdentifier(), buf.readByte(), buf.readText(), buf);
+		}
+
+		private void write(RegistryByteBuf buf) {
+			buf.writeIdentifier(this.identifier);
+			buf.writeByte(this.syncId);
+			registryByteBuf.getBytes(registryByteBuf.readerIndex(), buf);
+		}
+
+		@Override
+		public Id<? extends CustomPayload> getId() {
+			return ID;
+		}
 	}
 }

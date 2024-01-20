@@ -23,7 +23,6 @@ import net.minecraft.network.packet.CustomPayload;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientCommonPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.MinecraftServer;
