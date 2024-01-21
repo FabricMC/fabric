@@ -16,21 +16,19 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
 import io.netty.channel.ChannelHandler;
-import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.NetworkSide;
 import net.minecraft.network.handler.PacketEncoder;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
@@ -53,29 +51,24 @@ public class CustomIngredientSync implements ModInitializer {
 	public static final int PROTOCOL_VERSION_1 = 1;
 	public static final ThreadLocal<Set<Identifier>> CURRENT_SUPPORTED_INGREDIENTS = new ThreadLocal<>();
 
-	@Nullable
-	public static PacketByteBuf createResponsePacket(int serverProtocolVersion) {
+	public static CustomIngredientPayloadC2S createResponsePayload(int serverProtocolVersion) {
 		if (serverProtocolVersion < PROTOCOL_VERSION_1) {
 			// Not supposed to happen - notify the server that we didn't understand the query.
 			return null;
 		}
 
 		// Always send protocol 1 - the server should support it even if it supports more recent protocols.
-		PacketByteBuf buf = PacketByteBufs.create();
-		buf.writeVarInt(PROTOCOL_VERSION_1);
-		buf.writeCollection(CustomIngredientImpl.REGISTERED_SERIALIZERS.keySet(), PacketByteBuf::writeIdentifier);
-		return buf;
+		return new CustomIngredientPayloadC2S(PROTOCOL_VERSION_1, CustomIngredientImpl.REGISTERED_SERIALIZERS.keySet());
 	}
 
-	public static Set<Identifier> decodeResponsePacket(PacketByteBuf buf) {
-		int protocolVersion = buf.readVarInt();
-
+	public static Set<Identifier> decodeResponsePayload(CustomIngredientPayloadC2S payload) {
+		int protocolVersion = payload.protocolVersion();
 		switch (protocolVersion) {
 		case PROTOCOL_VERSION_1 -> {
-			Set<Identifier> identifiers = buf.readCollection(HashSet::new, PacketByteBuf::readIdentifier);
+			Set<Identifier> serializers = payload.registeredSerializers();
 			// Remove unknown keys to save memory
-			identifiers.removeIf(id -> !CustomIngredientImpl.REGISTERED_SERIALIZERS.containsKey(id));
-			return identifiers;
+			serializers.removeIf(id -> !CustomIngredientImpl.REGISTERED_SERIALIZERS.containsKey(id));
+			return serializers;
 		}
 		default -> {
 			throw new IllegalArgumentException("Unknown ingredient sync protocol version: " + protocolVersion);
@@ -91,8 +84,8 @@ public class CustomIngredientSync implements ModInitializer {
 			}
 		});
 
-		ServerConfigurationNetworking.registerGlobalReceiver(PACKET_ID, (server, handler, buf, responseSender) -> {
-			Set<Identifier> supportedCustomIngredients = decodeResponsePacket(buf);
+		ServerConfigurationNetworking.registerGlobalReceiver(CustomIngredientPayloadC2S.PACKET_ID, (payload, handler, responseSender) -> {
+			Set<Identifier> supportedCustomIngredients = decodeResponsePayload(payload);
 			ChannelHandler packetEncoder = ((ServerCommonNetworkHandlerAccessor) handler).getConnection().channel.pipeline().get("encoder");
 
 			if (packetEncoder != null) { // Null in singleplayer
@@ -101,6 +94,11 @@ public class CustomIngredientSync implements ModInitializer {
 
 			handler.completeTask(IngredientSyncTask.KEY);
 		});
+
+		PayloadTypeRegistry.configuration(NetworkSide.SERVERBOUND)
+				.register(CustomIngredientPayloadC2S.PACKET_ID, CustomIngredientPayloadC2S.PACKET_CODEC);
+		PayloadTypeRegistry.configuration(NetworkSide.CLIENTBOUND)
+				.register(CustomIngredientPayloadS2C.PACKET_ID, CustomIngredientPayloadS2C.PACKET_CODEC);
 	}
 
 	private record IngredientSyncTask() implements ServerPlayerConfigurationTask {
@@ -110,9 +108,7 @@ public class CustomIngredientSync implements ModInitializer {
 		public void sendPacket(Consumer<Packet<?>> sender) {
 			// Send packet with 1 so the client can send us back the list of supported tags.
 			// 1 is sent in case we need a different protocol later for some reason.
-			PacketByteBuf buf = PacketByteBufs.create();
-			buf.writeVarInt(PROTOCOL_VERSION_1); // max supported server protocol version
-			sender.accept(ServerConfigurationNetworking.createS2CPacket(PACKET_ID, buf));
+			sender.accept(ServerConfigurationNetworking.createS2CPacket(new CustomIngredientPayloadS2C(PROTOCOL_VERSION_1)));
 		}
 
 		@Override

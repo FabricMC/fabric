@@ -16,16 +16,13 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
 
-
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.codec.RegistryByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
@@ -64,15 +61,16 @@ abstract class CombinedIngredient implements CustomIngredient {
 
 	static class Serializer<I extends CombinedIngredient> implements CustomIngredientSerializer<I> {
 		private final Identifier identifier;
-		private final Function<List<Ingredient>, I> factory;
 		private final Codec<I> allowEmptyCodec;
 		private final Codec<I> disallowEmptyCodec;
+		private final PacketCodec<RegistryByteBuf, I> packetCodec;
 
 		Serializer(Identifier identifier, Function<List<Ingredient>, I> factory, Codec<I> allowEmptyCodec, Codec<I> disallowEmptyCodec) {
 			this.identifier = identifier;
-			this.factory = factory;
 			this.allowEmptyCodec = allowEmptyCodec;
 			this.disallowEmptyCodec = disallowEmptyCodec;
+			this.packetCodec = Ingredient.PACKET_CODEC.mapResult(PacketCodecs.listMapper())
+					.xmap(factory, I::getIngredients);
 		}
 
 		@Override
@@ -87,29 +85,7 @@ abstract class CombinedIngredient implements CustomIngredient {
 
 		@Override
 		public PacketCodec<RegistryByteBuf, I> getPacketCodec() {
-			// TODO 1.20.5
-			throw new UnsupportedOperationException("");
+			return this.packetCodec;
 		}
-
-//		@Override
-//		public I read(PacketByteBuf buf) {
-//			int size = buf.readVarInt();
-//			List<Ingredient> ingredients = new ArrayList<>(size);
-//
-//			for (int i = 0; i < size; i++) {
-//				ingredients.add(Ingredient.fromPacket(buf));
-//			}
-//
-//			return factory.apply(Collections.unmodifiableList(ingredients));
-//		}
-//
-//		@Override
-//		public void write(PacketByteBuf buf, I ingredient) {
-//			buf.writeVarInt(ingredient.ingredients.size());
-//
-//			for (Ingredient value : ingredient.ingredients) {
-//				value.write(buf);
-//			}
-//		}
 	}
 }
