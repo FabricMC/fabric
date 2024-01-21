@@ -217,14 +217,14 @@ public final class ClientConfigurationNetworking {
 	 * @param packet the packet
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
-	public static <T extends CustomPayload> void send(T packet) {
-		Objects.requireNonNull(packet, "Packet cannot be null");
-		Objects.requireNonNull(packet.getId(), "Packet#getType cannot return null");
+	public static void send(CustomPayload payload) {
+		Objects.requireNonNull(payload, "Packet cannot be null");
+		Objects.requireNonNull(payload.getId(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
 
 		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
 
 		if (addon != null) {
-			addon.sendPacket(packet);
+			addon.sendPacket(payload);
 			return;
 		}
 

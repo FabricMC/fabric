@@ -23,6 +23,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 
 import net.minecraft.network.NetworkState;
+import net.minecraft.network.NetworkStateType;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.CustomPayload;
@@ -52,7 +53,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 		this.server = server;
 
 		// Must register pending channels via lateinit
-		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkState.CONFIGURATION);
+		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkStateType.CONFIGURATION);
 	}
 
 	@Override

@@ -5,29 +5,29 @@ import java.util.Map;
 import java.util.Objects;
 
 import net.minecraft.network.NetworkSide;
-import net.minecraft.network.NetworkState;
+import net.minecraft.network.NetworkStateType;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.RegistryByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 public class PayloadTypeRegistryImpl<B extends PacketByteBuf> implements PayloadTypeRegistry<B> {
-	public static PayloadTypeRegistry<PacketByteBuf> CONFIGURATION_C2S = new PayloadTypeRegistryImpl<>(NetworkState.CONFIGURATION, NetworkSide.SERVERBOUND);
-	public static PayloadTypeRegistry<PacketByteBuf> CONFIGURATION_S2C = new PayloadTypeRegistryImpl<>(NetworkState.CONFIGURATION, NetworkSide.CLIENTBOUND);
-	public static PayloadTypeRegistry<RegistryByteBuf> PLAY_C2S = new PayloadTypeRegistryImpl<>(NetworkState.PLAY, NetworkSide.SERVERBOUND);
-	public static PayloadTypeRegistry<RegistryByteBuf> PLAY_S2C = new PayloadTypeRegistryImpl<>(NetworkState.PLAY, NetworkSide.CLIENTBOUND);
+	public static PayloadTypeRegistry<PacketByteBuf> CONFIGURATION_C2S = new PayloadTypeRegistryImpl<>(NetworkStateType.CONFIGURATION, NetworkSide.SERVERBOUND);
+	public static PayloadTypeRegistry<PacketByteBuf> CONFIGURATION_S2C = new PayloadTypeRegistryImpl<>(NetworkStateType.CONFIGURATION, NetworkSide.CLIENTBOUND);
+	public static PayloadTypeRegistry<RegistryByteBuf> PLAY_C2S = new PayloadTypeRegistryImpl<>(NetworkStateType.PLAY, NetworkSide.SERVERBOUND);
+	public static PayloadTypeRegistry<RegistryByteBuf> PLAY_S2C = new PayloadTypeRegistryImpl<>(NetworkStateType.PLAY, NetworkSide.CLIENTBOUND);
 
 	private final Map<Identifier, CustomPayload.Type<B, ? extends CustomPayload>> packetTypes = new HashMap<>();
-	private final NetworkState state;
+	private final NetworkStateType state;
 	private final NetworkSide side;
 
-	private PayloadTypeRegistryImpl(NetworkState state, NetworkSide side) {
+	private PayloadTypeRegistryImpl(NetworkStateType state, NetworkSide side) {
 		this.state = state;
 		this.side = side;
 	}
@@ -60,7 +60,7 @@ public class PayloadTypeRegistryImpl<B extends PacketByteBuf> implements Payload
 		return (CustomPayload.Type<B, T>) packetTypes.get(id.id());
 	}
 
-	public NetworkState getState() {
+	public NetworkStateType getState() {
 		return state;
 	}
 

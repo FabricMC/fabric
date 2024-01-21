@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.networking.client;
 
 import java.util.Objects;
 
+import net.minecraft.network.NetworkStateType;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
@@ -48,9 +50,9 @@ import net.fabricmc.fabric.mixin.networking.client.accessor.ConnectScreenAccesso
 import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAccessor;
 
 public final class ClientNetworkingImpl {
-	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>(NetworkState.LOGIN);
-	public static final GlobalReceiverRegistry<ClientConfigurationNetworking.ConfigurationPayloadHandler<?>> CONFIGURATION = new GlobalReceiverRegistry<>(NetworkState.CONFIGURATION);
-	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayPacketHandler<?>> PLAY = new GlobalReceiverRegistry<>(NetworkState.PLAY);
+	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>(NetworkStateType.LOGIN);
+	public static final GlobalReceiverRegistry<ClientConfigurationNetworking.ConfigurationPayloadHandler<?>> CONFIGURATION = new GlobalReceiverRegistry<>(NetworkStateType.CONFIGURATION);
+	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayPacketHandler<?>> PLAY = new GlobalReceiverRegistry<>(NetworkStateType.PLAY);
 
 	private static ClientPlayNetworkAddon currentPlayAddon;
 	private static ClientConfigurationNetworkAddon currentConfigurationAddon;
@@ -68,8 +70,8 @@ public final class ClientNetworkingImpl {
 	}
 
 	public static Packet<ServerCommonPacketListener> createC2SPacket(CustomPayload payload) {
-		Objects.requireNonNull(payload, "Packet cannot be null");
-		Objects.requireNonNull(payload.getId(), "Packet#getType cannot return null");
+		Objects.requireNonNull(payload, "Payload cannot be null");
+		Objects.requireNonNull(payload.getId(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
 
 		return new CustomPayloadC2SPacket(payload);
 	}
@@ -154,7 +156,7 @@ public final class ClientNetworkingImpl {
 					throw new IllegalStateException("Negotiated common packet version: %d but received packet with version: %d".formatted(addon.getNegotiatedVersion(), payload.version()));
 				}
 
-				addon.getChannelInfoHolder().getPendingChannelsNames(NetworkState.PLAY).addAll(payload.channels());
+				addon.getChannelInfoHolder().getPendingChannelsNames(NetworkStateType.PLAY).addAll(payload.channels());
 				NetworkingImpl.LOGGER.debug("Received accepted channels from the server");
 				responseSender.sendPacket(new CommonRegisterPayload(addon.getNegotiatedVersion(), CommonRegisterPayload.PLAY_PHASE, ClientPlayNetworking.getGlobalReceivers()));
 			} else {

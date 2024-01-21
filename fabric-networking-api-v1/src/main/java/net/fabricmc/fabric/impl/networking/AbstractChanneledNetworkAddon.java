@@ -27,6 +27,7 @@ import java.util.Set;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
+import net.minecraft.network.NetworkStateType;
 import net.minecraft.text.Text;
 
 import org.jetbrains.annotations.Nullable;
@@ -59,7 +60,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		this.sendableChannels = Collections.synchronizedSet(new HashSet<>());
 	}
 
-	protected void registerPendingChannels(ChannelInfoHolder holder, NetworkState state) {
+	protected void registerPendingChannels(ChannelInfoHolder holder, NetworkStateType state) {
 		final Collection<Identifier> pending = holder.getPendingChannelsNames(state);
 
 		if (!pending.isEmpty()) {

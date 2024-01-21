@@ -20,6 +20,8 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 import net.minecraft.network.NetworkSide;
 
+import net.minecraft.network.handler.PacketCodecDispatcher;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

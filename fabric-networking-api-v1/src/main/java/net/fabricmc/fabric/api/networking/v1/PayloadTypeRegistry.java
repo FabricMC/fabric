@@ -1,15 +1,15 @@
 package net.fabricmc.fabric.api.networking.v1;
 
-import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.RegistryByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 
 public interface PayloadTypeRegistry<B extends PacketByteBuf> {
 	<T extends CustomPayload> CustomPayload.Type<? super B, T> register(CustomPayload.Id<T> id, PacketCodec<? super B, T> codec);

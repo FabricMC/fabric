@@ -186,11 +186,11 @@ public final class ServerConfigurationNetworking {
 	 * @param packet the fabric packet
 	 * @return a new packet
 	 */
-	public static <T extends CustomPayload> Packet<ClientCommonPacketListener> createS2CPacket(T packet) {
-		Objects.requireNonNull(packet, "Packet cannot be null");
-		Objects.requireNonNull(packet.getId(), "Packet#getType cannot return null");
+	public static Packet<ClientCommonPacketListener> createS2CPacket(CustomPayload payload) {
+		Objects.requireNonNull(payload, "Payload cannot be null");
+		Objects.requireNonNull(payload.getId(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
 
-		return ServerNetworkingImpl.createS2CPacket(packet);
+		return ServerNetworkingImpl.createS2CPacket(payload);
 	}
 
 	/**
@@ -211,12 +211,12 @@ public final class ServerConfigurationNetworking {
 	 * @param handler the network handler to send the packet to
 	 * @param packet the packet
 	 */
-	public static <T extends CustomPayload> void send(ServerConfigurationNetworkHandler handler, T packet) {
+	public static void send(ServerConfigurationNetworkHandler handler, CustomPayload payload) {
 		Objects.requireNonNull(handler, "Server configuration handler cannot be null");
-		Objects.requireNonNull(packet, "Packet cannot be null");
-		Objects.requireNonNull(packet.getId(), "Packet#getType cannot return null");
+		Objects.requireNonNull(payload, "Payload cannot be null");
+		Objects.requireNonNull(payload.getId(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
 
-		handler.sendPacket(createS2CPacket(packet));
+		handler.sendPacket(createS2CPacket(payload));
 	}
 
 	// Helper methods

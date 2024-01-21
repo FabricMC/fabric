@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.networking.v1;
 import java.util.Objects;
 import java.util.Set;
 
-import net.minecraft.network.codec.RegistryByteBuf;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 
 import org.jetbrains.annotations.Nullable;
@@ -287,12 +287,12 @@ public final class ServerPlayNetworking {
 	 * @param player the player to send the packet to
 	 * @param packet the packet
 	 */
-	public static <T extends CustomPayload> void send(ServerPlayerEntity player, T packet) {
+	public static void send(ServerPlayerEntity player, CustomPayload payload) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
-		Objects.requireNonNull(packet, "Packet cannot be null");
-		Objects.requireNonNull(packet.getId(), "Packet#getType cannot return null");
+		Objects.requireNonNull(payload, "Payload cannot be null");
+		Objects.requireNonNull(payload.getId(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
 
-		player.networkHandler.sendPacket(createS2CPacket(packet));
+		player.networkHandler.sendPacket(createS2CPacket(payload));
 	}
 
 	// Helper methods

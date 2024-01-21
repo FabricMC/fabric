@@ -227,16 +227,16 @@ public final class ClientPlayNetworking {
 	/**
 	 * Sends a payload to the connected server.
 	 *
-	 * @param packet the payload
+	 * @param payload the payload
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
-	public static <T extends CustomPayload> void send(T packet) {
-		Objects.requireNonNull(packet, "Packet cannot be null");
-		Objects.requireNonNull(packet.getId(), "Packet#getType cannot return null");
+	public static void send(CustomPayload payload) {
+		Objects.requireNonNull(payload, "Payload cannot be null");
+		Objects.requireNonNull(payload.getId(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
 
 		// You cant send without a client player, so this is fine
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			MinecraftClient.getInstance().getNetworkHandler().sendPacket(createC2SPacket(packet));
+			MinecraftClient.getInstance().getNetworkHandler().sendPacket(createC2SPacket(payload));
 			return;
 		}
 

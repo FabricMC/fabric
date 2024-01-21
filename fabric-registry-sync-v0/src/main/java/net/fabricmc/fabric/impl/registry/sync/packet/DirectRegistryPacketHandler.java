@@ -28,15 +28,10 @@ import java.util.stream.Collectors;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-
-import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
-
-import net.minecraft.network.packet.CustomPayload;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -261,10 +256,11 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler<DirectReg
 	}
 
 	public record Payload(byte[] data) implements RegistrySyncPayload {
-		public static CustomPayload.Id<Payload> ID = new Id<>(new Identifier(""));
+		public static CustomPayload.Id<Payload> ID = new Id<>(new Identifier("fabric", "registry/sync/direct"));
+
 		@Override
 		public Id<? extends CustomPayload> getId() {
-			return null;
+			return ID;
 		}
 	}
 }

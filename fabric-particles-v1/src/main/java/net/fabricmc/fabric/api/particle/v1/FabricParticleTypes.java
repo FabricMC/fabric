@@ -21,7 +21,7 @@ import java.util.function.Function;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.RegistryByteBuf;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;

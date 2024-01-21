@@ -23,6 +23,7 @@ import com.mojang.logging.LogUtils;
 
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 
+import net.minecraft.network.NetworkStateType;
 import net.minecraft.network.packet.CustomPayload;
 
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		this.client = client;
 
 		// Must register pending channels via lateinit
-		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkState.PLAY);
+		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkStateType.PLAY);
 	}
 
 	@Override

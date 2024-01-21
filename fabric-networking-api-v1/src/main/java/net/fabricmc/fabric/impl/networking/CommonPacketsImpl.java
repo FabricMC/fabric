@@ -23,6 +23,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.NetworkState;
+import net.minecraft.network.NetworkStateType;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
 
@@ -60,7 +61,7 @@ public class CommonPacketsImpl {
 				}
 
 				// Play phase hasnt started yet, add them to the pending names.
-				addon.getChannelInfoHolder().getPendingChannelsNames(NetworkState.PLAY).addAll(payload.channels());
+				addon.getChannelInfoHolder().getPendingChannelsNames(NetworkStateType.PLAY).addAll(payload.channels());
 				NetworkingImpl.LOGGER.debug("Received accepted channels from the client for play phase");
 			} else {
 				addon.onCommonRegisterPacket(payload);
