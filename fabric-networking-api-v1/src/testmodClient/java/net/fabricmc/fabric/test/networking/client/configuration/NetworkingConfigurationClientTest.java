@@ -23,7 +23,7 @@ import net.fabricmc.fabric.test.networking.configuration.NetworkingConfiguration
 public class NetworkingConfigurationClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ClientConfigurationNetworking.registerGlobalReceiver(NetworkingConfigurationTest.ConfigurationPacket.PACKET_TYPE, (packet, responseSender) -> {
+		ClientConfigurationNetworking.registerGlobalReceiver(NetworkingConfigurationTest.ConfigurationPacket.ID, (packet, responseSender) -> {
 			// Handle stuff here
 
 			// Respond back to the server that the task is complete

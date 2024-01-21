@@ -44,7 +44,7 @@ public final class ServerLoginConnectionEvents {
 	 * using {@link ServerLoginNetworking#registerReceiver(ServerLoginNetworkHandler, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
 	 * since this event is fired just before the first login query response is processed.
 	 *
-	 * <p>You may send login queries to the connected client using the provided {@link PacketSender}.
+	 * <p>You may send login queries to the connected client using the provided {@link LoginPacketSender}.
 	 */
 	public static final Event<QueryStart> QUERY_START = EventFactory.createArrayBacked(QueryStart.class, callbacks -> (handler, server, sender, synchronizer) -> {
 		for (QueryStart callback : callbacks) {
@@ -79,7 +79,7 @@ public final class ServerLoginConnectionEvents {
 	 */
 	@FunctionalInterface
 	public interface QueryStart {
-		void onLoginStart(ServerLoginNetworkHandler handler, MinecraftServer server, PacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer);
+		void onLoginStart(ServerLoginNetworkHandler handler, MinecraftServer server, LoginPacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer);
 	}
 
 	/**

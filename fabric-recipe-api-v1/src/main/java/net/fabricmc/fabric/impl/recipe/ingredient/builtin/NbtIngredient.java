@@ -126,7 +126,7 @@ public class NbtIngredient implements CustomIngredient {
 		private static final Codec<NbtIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
 		private static final PacketCodec<RegistryByteBuf, NbtIngredient> PACKET_CODEC = PacketCodec.tuple(
 				Ingredient.PACKET_CODEC, NbtIngredient::getBase,
-				PacketCodecs.NBT_COMPUND, NbtIngredient::getNbt,
+				PacketCodecs.NBT_COMPOUND, NbtIngredient::getNbt,
 				PacketCodecs.BOOL, NbtIngredient::isStrict,
 				NbtIngredient::new
 		);

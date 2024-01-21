@@ -126,7 +126,7 @@ public final class NetworkingChannelTest implements ModInitializer {
 			throw new SimpleCommandExceptionType(Text.literal("Cannot unregister channel the server player entity cannot recieve packets on")).create();
 		}
 
-		ServerPlayNetworking.unregisterReceiver(player.networkHandler, channel);
+		ServerPlayNetworking.unregisterReceiver(player.networkHandler, new CustomPayload.Id<>(channel));
 		context.getSource().sendFeedback(() -> Text.literal(String.format("Unregistered channel %s for %s", getIdentifier(context, "channel"), player.getDisplayName())), false);
 
 		return 1;

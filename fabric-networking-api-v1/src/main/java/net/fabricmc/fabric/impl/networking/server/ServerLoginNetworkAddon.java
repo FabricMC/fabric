@@ -28,6 +28,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import io.netty.util.concurrent.GenericFutureListener;
 
+import net.fabricmc.fabric.api.networking.v1.LoginPacketSender;
+
+import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
+
 import net.minecraft.network.packet.CustomPayload;
 
 import net.minecraft.text.Text;
@@ -54,7 +58,7 @@ import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
-public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLoginNetworking.LoginQueryResponseHandler> implements PacketSender {
+public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLoginNetworking.LoginQueryResponseHandler> implements LoginPacketSender {
 	private final ClientConnection connection;
 	private final ServerLoginNetworkHandler handler;
 	private final MinecraftServer server;
@@ -165,6 +169,12 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	@Override
 	public Packet<?> createPacket(CustomPayload packet) {
 		throw new UnsupportedOperationException("Cannot send CustomPayload during login");
+	}
+
+	@Override
+	public Packet<?> createPacket(Identifier channelName, PacketByteBuf buf) {
+		int queryId = this.queryIdFactory.nextId();
+		return new LoginQueryRequestS2CPacket(queryId, new PacketByteBufLoginQueryRequestPayload(channelName, buf));
 	}
 
 	@Override
