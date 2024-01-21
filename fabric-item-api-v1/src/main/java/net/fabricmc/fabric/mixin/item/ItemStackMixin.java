@@ -20,6 +20,8 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -47,13 +49,19 @@ public abstract class ItemStackMixin implements FabricItemStack {
 	@Shadow public abstract Item getItem();
 
 	@WrapOperation(method = "damage(ILnet/minecraft/entity/LivingEntity;Lnet/minecraft/entity/EquipmentSlot;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;damage(ILnet/minecraft/util/math/random/Random;Lnet/minecraft/server/network/ServerPlayerEntity;Ljava/lang/Runnable;)V"))
-	private void hookDamage(ItemStack instance, int amount, Random random, ServerPlayerEntity serverPlayerEntity, Runnable runnable, Operation<Void> original) {
+	private void hookDamage(ItemStack instance, int amount, Random random, ServerPlayerEntity serverPlayerEntity, Runnable runnable, Operation<Void> original, @Local(argsOnly = true) EquipmentSlot slot) {
 		CustomDamageHandler handler = ((ItemExtensions) getItem()).fabric_getCustomDamageHandler();
 
 		if (handler != null) {
-			// TODO 1.20.5, what to do about break callback
-			assert false;
-			amount = handler.damage((ItemStack) (Object) this, amount, serverPlayerEntity, null);
+			// Track whether an item has been broken by custom handler
+			MutableBoolean mut = new MutableBoolean(false);
+			amount = handler.damage((ItemStack) (Object) this, amount, serverPlayerEntity, slot, () -> {
+				mut.setTrue();
+				runnable.run();
+			});
+
+			// If item is broken, there's no reason to call the original.
+			if (mut.booleanValue()) return;
 		}
 
 		original.call(instance, amount, random, serverPlayerEntity, runnable);

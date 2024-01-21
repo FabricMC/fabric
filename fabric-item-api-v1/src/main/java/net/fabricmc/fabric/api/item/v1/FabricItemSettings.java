@@ -49,6 +49,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @deprecated replace with {@link FabricItem.Settings#customDamage(CustomDamageHandler)}
 	 * @see CustomDamageHandler
 	 */
+	@Deprecated
 	public FabricItemSettings customDamage(CustomDamageHandler handler) {
 		FabricItemInternals.computeExtraData(this).customDamage(handler);
 		return this;
