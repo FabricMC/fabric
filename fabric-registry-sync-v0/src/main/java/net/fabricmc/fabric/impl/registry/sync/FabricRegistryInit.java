@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.impl.registry.sync;
 
-import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
-
 import net.minecraft.network.NetworkSide;
 import net.minecraft.registry.Registries;
 
@@ -27,6 +25,7 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
 
 public class FabricRegistryInit implements ModInitializer {
 	@Override

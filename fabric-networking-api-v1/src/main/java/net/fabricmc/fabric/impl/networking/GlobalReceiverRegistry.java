@@ -29,19 +29,19 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.network.NetworkStateType;
+import net.minecraft.network.NetworkPhase;
 import net.minecraft.util.Identifier;
 
 public final class GlobalReceiverRegistry<H> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalReceiverRegistry.class);
 
-	private final NetworkStateType state;
+	private final NetworkPhase state;
 
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Map<Identifier, H> handlers = new HashMap<>();
 	private final Set<AbstractNetworkAddon<H>> trackedAddons = new HashSet<>();
 
-	public GlobalReceiverRegistry(NetworkStateType state) {
+	public GlobalReceiverRegistry(NetworkPhase state) {
 		this.state = state;
 	}
 
@@ -195,7 +195,7 @@ public final class GlobalReceiverRegistry<H> {
 		}
 	}
 
-	public NetworkStateType getState() {
+	public NetworkPhase getState() {
 		return state;
 	}
 }

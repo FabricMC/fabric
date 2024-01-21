@@ -29,7 +29,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.NetworkStateType;
+import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
@@ -57,7 +57,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		this.sendableChannels = Collections.synchronizedSet(new HashSet<>());
 	}
 
-	protected void registerPendingChannels(ChannelInfoHolder holder, NetworkStateType state) {
+	protected void registerPendingChannels(ChannelInfoHolder holder, NetworkPhase state) {
 		final Collection<Identifier> pending = holder.getPendingChannelsNames(state);
 
 		if (!pending.isEmpty()) {
