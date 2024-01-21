@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.test.screenhandler.item;
 
+import java.util.Optional;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -54,8 +55,8 @@ public class PositionedBagItem extends BagItem {
 		return ActionResult.SUCCESS;
 	}
 
-	private ExtendedScreenHandlerFactory createScreenHandlerFactory(ItemStack stack, BlockPos pos) {
-		return new ExtendedScreenHandlerFactory() {
+	private ExtendedScreenHandlerFactory<PositionedBagScreenHandler.BagData> createScreenHandlerFactory(ItemStack stack, BlockPos pos) {
+		return new ExtendedScreenHandlerFactory<>() {
 			@Override
 			public ScreenHandler createMenu(int syncId, PlayerInventory inventory, PlayerEntity player) {
 				return new PositionedBagScreenHandler(syncId, inventory, new BagInventory(stack), pos);
@@ -67,9 +68,8 @@ public class PositionedBagItem extends BagItem {
 			}
 
 			@Override
-			public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-				buf.writeBoolean(pos != null);
-				buf.writeBlockPos(pos != null ? pos : BlockPos.ORIGIN);
+			public PositionedBagScreenHandler.BagData getScreenOpeningData(ServerPlayerEntity player) {
+				return new PositionedBagScreenHandler.BagData(Optional.of(pos));
 			}
 		};
 	}

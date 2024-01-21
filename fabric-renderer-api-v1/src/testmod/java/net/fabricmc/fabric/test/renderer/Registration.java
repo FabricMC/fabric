@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.renderer;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
@@ -24,16 +25,15 @@ import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
 public final class Registration {
-	public static final FrameBlock FRAME_BLOCK = register("frame", new FrameBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).nonOpaque()));
-	public static final FrameBlock FRAME_MULTIPART_BLOCK = register("frame_multipart", new FrameBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).nonOpaque()));
-	public static final FrameBlock FRAME_VARIANT_BLOCK = register("frame_variant", new FrameBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).nonOpaque()));
-	public static final Block PILLAR_BLOCK = register("pillar", new Block(FabricBlockSettings.create()));
-	public static final Block OCTAGONAL_COLUMN_BLOCK = register("octagonal_column", new Block(FabricBlockSettings.create().nonOpaque().strength(1.8F)));
-	public static final Block RIVERSTONE_BLOCK = register("riverstone", new Block(FabricBlockSettings.copyOf(Blocks.STONE)));
+	public static final FrameBlock FRAME_BLOCK = register("frame", new FrameBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque()));
+	public static final FrameBlock FRAME_MULTIPART_BLOCK = register("frame_multipart", new FrameBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque()));
+	public static final FrameBlock FRAME_VARIANT_BLOCK = register("frame_variant", new FrameBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque()));
+	public static final Block PILLAR_BLOCK = register("pillar", new Block(AbstractBlock.Settings.create()));
+	public static final Block OCTAGONAL_COLUMN_BLOCK = register("octagonal_column", new Block(AbstractBlock.Settings.create().nonOpaque().strength(1.8F)));
+	public static final Block RIVERSTONE_BLOCK = register("riverstone", new Block(AbstractBlock.Settings.copy(Blocks.STONE)));
 
 	public static final FrameBlock[] FRAME_BLOCKS = new FrameBlock[] {
 			FRAME_BLOCK,

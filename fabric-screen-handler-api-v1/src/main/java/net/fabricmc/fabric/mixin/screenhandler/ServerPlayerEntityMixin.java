@@ -71,7 +71,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 		if (factory instanceof ExtendedScreenHandlerFactory || (factory instanceof SimpleNamedScreenHandlerFactory simpleFactory && simpleFactory.baseFactory instanceof ExtendedScreenHandlerFactory)) {
 			// Set the screen handler, so the factory method can access it through the player.
 			currentScreenHandler = handler;
-		} else if (handler.getType() instanceof ExtendedScreenHandlerType<?>) {
+		} else if (handler.getType() instanceof ExtendedScreenHandlerType<?, ?>) {
 			Identifier id = Registries.SCREEN_HANDLER.getId(handler.getType());
 			throw new IllegalArgumentException("[Fabric] Extended screen handler " + id + " must be opened with an ExtendedScreenHandlerFactory!");
 		}
@@ -79,14 +79,14 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
 	@Redirect(method = "openHandledScreen(Lnet/minecraft/screen/NamedScreenHandlerFactory;)Ljava/util/OptionalInt;", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V"))
 	private void fabric_replaceVanillaScreenPacket(ServerPlayNetworkHandler networkHandler, Packet<?> packet, NamedScreenHandlerFactory factory) {
-		if (factory instanceof SimpleNamedScreenHandlerFactory simpleFactory && simpleFactory.baseFactory instanceof ExtendedScreenHandlerFactory extendedFactory) {
+		if (factory instanceof SimpleNamedScreenHandlerFactory simpleFactory && simpleFactory.baseFactory instanceof ExtendedScreenHandlerFactory<?> extendedFactory) {
 			factory = extendedFactory;
 		}
 
-		if (factory instanceof ExtendedScreenHandlerFactory extendedFactory) {
+		if (factory instanceof ExtendedScreenHandlerFactory<?> extendedFactory) {
 			ScreenHandler handler = Objects.requireNonNull(currentScreenHandler);
 
-			if (handler.getType() instanceof ExtendedScreenHandlerType<?>) {
+			if (handler.getType() instanceof ExtendedScreenHandlerType<?, ?>) {
 				Networking.sendOpenPacket((ServerPlayerEntity) (Object) this, extendedFactory, handler, screenHandlerSyncId);
 			} else {
 				Identifier id = Registries.SCREEN_HANDLER.getId(handler.getType());

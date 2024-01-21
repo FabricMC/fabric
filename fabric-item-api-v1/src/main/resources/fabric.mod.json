@@ -31,6 +31,7 @@
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
       "net/minecraft/class_1792": ["net/fabricmc/fabric/api/item/v1/FabricItem"],
+      "net/minecraft/class_1792\u0024class_1793": ["net/fabricmc/fabric/api/item/v1/FabricItem\u0024Settings"],
       "net/minecraft/class_1799": ["net/fabricmc/fabric/api/item/v1/FabricItemStack"]
     }
   }

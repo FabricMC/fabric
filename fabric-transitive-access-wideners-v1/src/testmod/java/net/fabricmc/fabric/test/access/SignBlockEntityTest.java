@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.access;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SignBlock;
@@ -32,18 +33,17 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
 public final class SignBlockEntityTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-transitive-access-wideners-v1-testmod";
-	public static final SignBlock TEST_SIGN = new SignBlock(WoodType.OAK, FabricBlockSettings.copy(Blocks.OAK_SIGN)) {
+	public static final SignBlock TEST_SIGN = new SignBlock(WoodType.OAK, AbstractBlock.Settings.copy(Blocks.OAK_SIGN)) {
 		@Override
 		public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 			return new TestSign(pos, state);
 		}
 	};
-	public static final WallSignBlock TEST_WALL_SIGN = new WallSignBlock(WoodType.OAK, FabricBlockSettings.copy(Blocks.OAK_SIGN)) {
+	public static final WallSignBlock TEST_WALL_SIGN = new WallSignBlock(WoodType.OAK, AbstractBlock.Settings.copy(Blocks.OAK_SIGN)) {
 		@Override
 		public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 			return new TestSign(pos, state);
