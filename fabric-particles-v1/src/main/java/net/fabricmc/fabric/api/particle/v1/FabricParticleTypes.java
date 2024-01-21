@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.particle.v1;
 
+import java.util.function.Function;
+
 import com.mojang.serialization.Codec;
 
 import net.minecraft.network.codec.PacketCodec;
@@ -61,32 +63,69 @@ public final class FabricParticleTypes {
 	}
 
 	/**
-	 * Creates a new particle type with a custom factory for packet/data serialization.
+	 * Creates a new particle type with a custom factory and codecs for packet/data serialization.
 	 *
-	 * @param factory	 A factory for serializing packet data and string command parameters into a particle effect.
+	 * @param factory	 A factory for serializing string command parameters into a particle effect.
+	 * @param codec The codec for serialization.
+	 * @param packetCodec The packet codec for network serialization.
 	 */
-	public static <T extends ParticleEffect> ParticleType<T> complex(ParticleEffect.Factory<T> factory) {
-		return complex(false, factory);
+	public static <T extends ParticleEffect> ParticleType<T> complex(ParticleEffect.Factory<T> factory, final Function<ParticleType<T>, Codec<T>> codecGetter, final Codec<T> codec, final PacketCodec<? super RegistryByteBuf, T> packetCodec) {
+		return complex(false, factory, codec, packetCodec);
 	}
 
 	/**
-	 * Creates a new particle type with a custom factory for packet/data serialization.
+	 * Creates a new particle type with a custom factory and codecs for packet/data serialization.
 	 *
 	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
-	 * @param factory	 A factory for serializing packet data and string command parameters into a particle effect.
+	 * @param factory	 A factory for serializing string command parameters into a particle effect.
+	 * @param codec The codec for serialization.
+	 * @param packetCodec The packet codec for network serialization.
 	 */
-	public static <T extends ParticleEffect> ParticleType<T> complex(boolean alwaysSpawn, ParticleEffect.Factory<T> factory) {
+	public static <T extends ParticleEffect> ParticleType<T> complex(boolean alwaysSpawn, ParticleEffect.Factory<T> factory, final Codec<T> codec, final PacketCodec<? super RegistryByteBuf, T> packetCodec) {
 		return new ParticleType<T>(alwaysSpawn, factory) {
 			@Override
 			public Codec<T> getCodec() {
-				//TODO fix me
-				return null;
+				return codec;
 			}
 
 			@Override
 			public PacketCodec<? super RegistryByteBuf, T> getPacketCodec() {
-				// TODO 1.20.5 fix me
-				return null;
+				return packetCodec;
+			}
+		};
+	}
+
+	/**
+	 * Creates a new particle type with a custom factory and codecs for packet/data serialization.
+	 * This method is useful when two different {@link ParticleType}s share the same {@link ParticleEffect} implementation.
+	 *
+	 * @param factory	 A factory for serializing string command parameters into a particle effect.
+	 * @param codecGetter A function that, given the newly created type, returns the codec for serialization.
+	 * @param packetCodecGetter A function that, given the newly created type, returns the packet codec for network serialization.
+	 */
+	public static <T extends ParticleEffect> ParticleType<T> complex(ParticleEffect.Factory<T> factory, final Function<ParticleType<T>, Codec<T>> codecGetter, final Function<ParticleType<T>, PacketCodec<? super RegistryByteBuf, T>> packetCodecGetter) {
+		return complex(false, factory, codecGetter, packetCodecGetter);
+	}
+
+	/**
+	 * Creates a new particle type with a custom factory and codecs for packet/data serialization.
+	 * This method is useful when two different {@link ParticleType}s share the same {@link ParticleEffect} implementation.
+	 *
+	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
+	 * @param factory	 A factory for serializing string command parameters into a particle effect.
+	 * @param codecGetter A function that, given the newly created type, returns the codec for serialization.
+	 * @param packetCodecGetter A function that, given the newly created type, returns the packet codec for network serialization.
+	 */
+	public static <T extends ParticleEffect> ParticleType<T> complex(boolean alwaysSpawn, ParticleEffect.Factory<T> factory, final Function<ParticleType<T>, Codec<T>> codecGetter, final Function<ParticleType<T>, PacketCodec<? super RegistryByteBuf, T>> packetCodecGetter) {
+		return new ParticleType<T>(alwaysSpawn, factory) {
+			@Override
+			public Codec<T> getCodec() {
+				return codecGetter.apply(this);
+			}
+
+			@Override
+			public PacketCodec<? super RegistryByteBuf, T> getPacketCodec() {
+				return packetCodecGetter.apply(this);
 			}
 		};
 	}
