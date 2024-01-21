@@ -19,11 +19,10 @@ package net.fabricmc.fabric.api.client.networking.v1;
 import java.util.Objects;
 import java.util.Set;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.CustomPayload;
-
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -193,7 +192,6 @@ public final class ClientConfigurationNetworking {
 	public static boolean canSend(CustomPayload.Id<?> type) {
 		return canSend(type.id());
 	}
-
 
 	/**
 	 * Gets the packet sender which sends packets to the connected server.

@@ -22,12 +22,10 @@ import java.util.zip.Deflater;
 
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-
-import net.minecraft.network.packet.CustomPayload;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -93,6 +91,5 @@ public abstract class RegistryPacketHandler<T extends RegistryPacketHandler.Regi
 	}
 
 	public interface RegistrySyncPayload extends CustomPayload {
-
 	}
 }

@@ -21,9 +21,9 @@ import java.util.Optional;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;

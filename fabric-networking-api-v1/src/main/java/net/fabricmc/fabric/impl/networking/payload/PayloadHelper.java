@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.networking.payload;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 

@@ -36,6 +36,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
+import net.minecraft.network.NetworkState;
 import net.minecraft.network.NetworkStateType;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.listener.PacketListener;
@@ -88,13 +89,12 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 		}
 	}
 
-	// TODO 1.20.5
-//	@Inject(method = "setPacketListener", at = @At("HEAD"))
-//	private void unwatchAddon(PacketListener packetListener, CallbackInfo ci) {
-//		if (this.packetListener instanceof NetworkHandlerExtensions oldListener) {
-//			oldListener.getAddon().endSession();
-//		}
-//	}
+	@Inject(method = "setPacketListener", at = @At("HEAD"))
+	private void unwatchAddon(NetworkState<?> state, PacketListener listener, CallbackInfo ci) {
+		if (this.packetListener instanceof NetworkHandlerExtensions oldListener) {
+			oldListener.getAddon().endSession();
+		}
+	}
 
 	@Inject(method = "channelInactive", at = @At("HEAD"))
 	private void disconnectAddon(ChannelHandlerContext channelHandlerContext, CallbackInfo ci) {

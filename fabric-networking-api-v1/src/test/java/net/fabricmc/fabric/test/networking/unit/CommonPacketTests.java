@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.networking.unit;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -25,10 +25,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -37,22 +34,18 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
-import net.minecraft.network.NetworkState;
+import net.minecraft.network.NetworkStateType;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.CommonPacketHandler;
 import net.fabricmc.fabric.impl.networking.CommonPacketsImpl;
-import net.fabricmc.fabric.impl.networking.CommonRegisterPayload;
-import net.fabricmc.fabric.impl.networking.CommonVersionPayload;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
@@ -93,7 +86,8 @@ public class CommonPacketTests {
 		when(ServerNetworkingImpl.getAddon(serverNetworkHandler)).thenReturn(serverAddon);
 		when(serverAddon.getChannelInfoHolder()).thenReturn(channelInfoHolder);
 	}
-/*
+
+	/* TODO 1.20.5
 	// Test handling the version packet on the client
 	@Test
 	void handleVersionPacketClient() {
@@ -322,7 +316,7 @@ public class CommonPacketTests {
 		PacketByteBuf buf = PacketByteBufs.create();
 		// TODO 1.20.5
 		fail("Fix me");
-//		responseCaptor.getValue().write(buf);
+		//responseCaptor.getValue().write(buf);
 
 		return buf;
 	}
@@ -334,10 +328,10 @@ public class CommonPacketTests {
 	}
 
 	private static class MockChannelInfoHolder implements ChannelInfoHolder {
-		private final Map<NetworkState, Collection<Identifier>> playChannels = new ConcurrentHashMap<>();
+		private final Map<NetworkStateType, Collection<Identifier>> playChannels = new ConcurrentHashMap<>();
 
 		@Override
-		public Collection<Identifier> getPendingChannelsNames(NetworkState state) {
+		public Collection<Identifier> getPendingChannelsNames(NetworkStateType state) {
 			return this.playChannels.computeIfAbsent(state, (key) -> Collections.newSetFromMap(new ConcurrentHashMap<>()));
 		}
 	}

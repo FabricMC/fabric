@@ -26,12 +26,10 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -42,6 +40,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
@@ -62,8 +61,9 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		for (int i = 0; i < 20; i++) {
 			buf.writeUuid(UUID.randomUUID());
 		}
+
 		// TODO 1.20.5
-//		ServerPlayNetworking.getSender(player).sendPacket(UNKNOWN_TEST_CHANNEL, buf);
+		// ServerPlayNetworking.getSender(player).sendPacket(UNKNOWN_TEST_CHANNEL, buf);
 	}
 
 	public static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -89,15 +89,15 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 					buf.writeIdentifier(TEST_CHANNEL);
 					buf.writeText(Text.literal("bufctor"));
 					// TODO 1.20.5
-//					ctx.getSource().getPlayer().networkHandler.sendPacket(new CustomPayloadS2CPacket(buf));
+					// ctx.getSource().getPlayer().networkHandler.sendPacket(new CustomPayloadS2CPacket(buf));
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("repeat").executes(ctx -> {
 					PacketByteBuf buf = PacketByteBufs.create();
 					buf.writeText(Text.literal("repeat"));
 					// TODO 1.20.5
-//					ServerPlayNetworking.send(ctx.getSource().getPlayer(), TEST_CHANNEL, buf);
-//					ServerPlayNetworking.send(ctx.getSource().getPlayer(), TEST_CHANNEL, buf);
+					// ServerPlayNetworking.send(ctx.getSource().getPlayer(), TEST_CHANNEL, buf);
+					// ServerPlayNetworking.send(ctx.getSource().getPlayer(), TEST_CHANNEL, buf);
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("bundled").executes(ctx -> {
@@ -106,10 +106,10 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 					PacketByteBuf buf2 = PacketByteBufs.create();
 					buf2.writeText(Text.literal("bundled #2"));
 					// TODO 1.20.5
-//					BundleS2CPacket packet = new BundleS2CPacket((List<Packet<ClientPlayPacketListener>>) (Object) List.of(
-//							ServerPlayNetworking.createS2CPacket(TEST_CHANNEL, buf1),
-//							ServerPlayNetworking.createS2CPacket(TEST_CHANNEL, buf2)));
-//					ctx.getSource().getPlayer().networkHandler.sendPacket(packet);
+					// BundleS2CPacket packet = new BundleS2CPacket((List<Packet<ClientPlayPacketListener>>) (Object) List.of(
+					//		ServerPlayNetworking.createS2CPacket(TEST_CHANNEL, buf1),
+					// 		ServerPlayNetworking.createS2CPacket(TEST_CHANNEL, buf2)));
+					// ctx.getSource().getPlayer().networkHandler.sendPacket(packet);
 					return Command.SINGLE_SUCCESS;
 				})));
 	}

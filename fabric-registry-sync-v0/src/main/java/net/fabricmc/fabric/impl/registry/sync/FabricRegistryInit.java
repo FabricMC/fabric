@@ -194,6 +194,4 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(Registries.GAME_EVENT)
 				.addAttribute(RegistryAttribute.SYNCED);
 	}
-
-
 }

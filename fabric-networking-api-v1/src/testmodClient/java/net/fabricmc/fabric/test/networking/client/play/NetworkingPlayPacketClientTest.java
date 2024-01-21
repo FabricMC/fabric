@@ -27,7 +27,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 import net.fabricmc.fabric.test.networking.play.NetworkingPlayPacketTest;
@@ -43,7 +42,7 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 				ClientCommandManager.literal("clientnetworktestcommand")
 						.then(ClientCommandManager.literal("unknown").executes(context -> {
 							// TODO 1.20.5
-//							ClientPlayNetworking.send(UNKNOWN_TEST_CHANNEL, PacketByteBufs.create());
+							// ClientPlayNetworking.send(UNKNOWN_TEST_CHANNEL, PacketByteBufs.create());
 							return Command.SINGLE_SUCCESS;
 						}
 		))));

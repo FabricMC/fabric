@@ -18,23 +18,18 @@ package net.fabricmc.fabric.impl.client.registry.sync;
 
 import java.util.concurrent.CompletionException;
 
-import net.fabricmc.fabric.impl.registry.sync.SyncCompletePayload;
-
-import net.minecraft.client.MinecraftClient;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.impl.registry.sync.FabricRegistryInit;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
+import net.fabricmc.fabric.impl.registry.sync.SyncCompletePayload;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
-import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkHandlerAccessor;
 
 public class FabricRegistryClientInit implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricRegistryClientInit.class);

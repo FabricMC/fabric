@@ -33,8 +33,6 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.network.NetworkSide;
@@ -47,6 +45,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public final class NetworkingChannelTest implements ModInitializer {
@@ -107,8 +106,8 @@ public final class NetworkingChannelTest implements ModInitializer {
 		}
 
 		CustomPayload.Type<RegistryByteBuf, ? extends CustomPayload> payloadType = PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).get(channel);
-		if (payloadType != null) {
 
+		if (payloadType != null) {
 			ServerPlayNetworking.registerReceiver(executor.networkHandler, payloadType.id(), (payload, player, sender) -> {
 				System.out.printf("Received packet on channel %s%n", payloadType.id().id());
 			});

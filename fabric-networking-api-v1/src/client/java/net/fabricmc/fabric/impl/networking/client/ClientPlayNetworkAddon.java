@@ -20,18 +20,12 @@ import java.util.Collections;
 import java.util.List;
 
 import com.mojang.logging.LogUtils;
-
-import net.fabricmc.fabric.impl.networking.RegistrationPayload;
-
-import net.minecraft.network.NetworkStateType;
-import net.minecraft.network.packet.CustomPayload;
-
 import org.slf4j.Logger;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.NetworkState;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.NetworkStateType;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
@@ -41,6 +35,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
+import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 
 public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientPlayNetworking.PlayPacketHandler<?>> {
 	private final ClientPlayNetworkHandler handler;

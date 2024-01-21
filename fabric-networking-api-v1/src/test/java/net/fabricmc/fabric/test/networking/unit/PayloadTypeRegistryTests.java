@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.test.networking.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,9 +26,9 @@ import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketEncoder;
-import net.minecraft.network.codec.RegistryByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
@@ -58,9 +74,9 @@ public class PayloadTypeRegistryTests {
 		RegistryByteBuf buf = new RegistryByteBuf(PacketByteBufs.create(), null);
 
 		var packetToSend = new CustomPayloadS2CPacket(new S2CPlayPayload("Hello"));
-		CustomPayloadS2CPacket.field_48620.encode(buf, packetToSend);
+		CustomPayloadS2CPacket.PLAY_CODEC.encode(buf, packetToSend);
 
-		CustomPayloadS2CPacket decodedPacket = CustomPayloadS2CPacket.field_48620.decode(buf);
+		CustomPayloadS2CPacket decodedPacket = CustomPayloadS2CPacket.PLAY_CODEC.decode(buf);
 
 		if (decodedPacket.payload() instanceof S2CPlayPayload payload) {
 			assertEquals("Hello", payload.value());
@@ -90,9 +106,9 @@ public class PayloadTypeRegistryTests {
 		PacketByteBuf buf = PacketByteBufs.create();
 
 		var packetToSend = new CustomPayloadS2CPacket(new S2CConfigPayload("Hello"));
-		CustomPayloadS2CPacket.field_48621.encode(buf, packetToSend);
+		CustomPayloadS2CPacket.CONFIGURATION_CODEC.encode(buf, packetToSend);
 
-		CustomPayloadS2CPacket decodedPacket = CustomPayloadS2CPacket.field_48621.decode(buf);
+		CustomPayloadS2CPacket decodedPacket = CustomPayloadS2CPacket.CONFIGURATION_CODEC.decode(buf);
 
 		if (decodedPacket.payload() instanceof S2CConfigPayload payload) {
 			assertEquals("Hello", payload.value());

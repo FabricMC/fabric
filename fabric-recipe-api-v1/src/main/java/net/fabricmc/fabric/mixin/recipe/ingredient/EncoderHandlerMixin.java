@@ -46,7 +46,7 @@ public class EncoderHandlerMixin implements SupportedIngredientsPacketEncoder {
 	@Inject(
 			at = @At(
 					value = "INVOKE",
-					target = "net/minecraft/network/packet/Packet.write(Lnet/minecraft/network/PacketByteBuf;)V"
+					target = "Lnet/minecraft/network/codec/PacketCodec;encode(Ljava/lang/Object;Ljava/lang/Object;)V"
 			),
 			method = "encode(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;Lio/netty/buffer/ByteBuf;)V"
 	)
@@ -59,7 +59,7 @@ public class EncoderHandlerMixin implements SupportedIngredientsPacketEncoder {
 					// Normal target after writing
 					@At(
 							value = "INVOKE",
-							target = "net/minecraft/network/packet/Packet.write(Lnet/minecraft/network/PacketByteBuf;)V",
+							target = "Lnet/minecraft/network/codec/PacketCodec;encode(Ljava/lang/Object;Ljava/lang/Object;)V",
 							shift = At.Shift.AFTER,
 							by = 1
 					),

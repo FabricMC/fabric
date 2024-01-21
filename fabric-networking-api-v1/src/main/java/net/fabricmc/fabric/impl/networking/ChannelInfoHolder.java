@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.networking;
 
 import java.util.Collection;
 
-import net.minecraft.network.NetworkState;
 import net.minecraft.network.NetworkStateType;
 import net.minecraft.util.Identifier;
 

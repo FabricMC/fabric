@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.networking.server;
 
 import java.util.Objects;
 
-import net.minecraft.network.NetworkState;
 import net.minecraft.network.NetworkStateType;
 import net.minecraft.network.listener.ClientCommonPacketListener;
 import net.minecraft.network.packet.CustomPayload;

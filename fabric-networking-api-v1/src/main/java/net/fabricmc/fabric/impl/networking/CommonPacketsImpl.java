@@ -19,14 +19,12 @@ package net.fabricmc.fabric.impl.networking;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-
 import net.minecraft.network.NetworkSide;
-import net.minecraft.network.NetworkState;
 import net.minecraft.network.NetworkStateType;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
 
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;

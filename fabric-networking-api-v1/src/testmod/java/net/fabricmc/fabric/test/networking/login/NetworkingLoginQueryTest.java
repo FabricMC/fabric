@@ -19,14 +19,13 @@ package net.fabricmc.fabric.test.networking.login;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.FutureTask;
 
-import net.fabricmc.fabric.api.networking.v1.LoginPacketSender;
-
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.LoginPacketSender;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;

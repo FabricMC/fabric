@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.networking.client;
 
-import net.minecraft.network.packet.CustomPayload;
-
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.network.ClientCommonNetworkHandler;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
