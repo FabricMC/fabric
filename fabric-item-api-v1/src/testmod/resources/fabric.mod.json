@@ -16,7 +16,9 @@
       "net.fabricmc.fabric.test.item.ItemUpdateAnimationTest",
       "net.fabricmc.fabric.test.item.ModifyItemAttributeModifiersCallbackTest",
       "net.fabricmc.fabric.test.item.ArmorKnockbackResistanceTest",
-      "net.fabricmc.fabric.test.item.gametest.ShearsGameTest"
+      "net.fabricmc.fabric.test.item.gametest.ShearsGameTest",
+      "net.fabricmc.fabric.test.item.ArmorKnockbackResistanceTest",
+      "net.fabricmc.fabric.test.item.FoodGameInitializer"
     ],
     "client": [
       "net.fabricmc.fabric.test.item.client.TooltipTests"
@@ -29,6 +31,8 @@
     ],
     "fabric-datagen": [
       "net.fabricmc.fabric.test.item.CustomItemPredicateTest"
+      "net.fabricmc.fabric.test.item.gametest.RecipeGameTest",
+      "net.fabricmc.fabric.test.item.gametest.FoodGameTest"
     ]
   },
   "mixins": [
