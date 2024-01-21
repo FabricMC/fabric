@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 import io.netty.channel.ChannelHandler;
 
 import net.minecraft.network.NetworkSide;
-import net.minecraft.network.handler.PacketEncoder;
+import net.minecraft.network.handler.EncoderHandler;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.util.Identifier;
@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
-import net.fabricmc.fabric.mixin.recipe.ingredient.PacketEncoderMixin;
+import net.fabricmc.fabric.mixin.recipe.ingredient.EncoderHandlerMixin;
 
 /**
  * To reasonably support server-side only custom ingredients, we only send custom ingredients to clients that support them.
@@ -41,8 +41,8 @@ import net.fabricmc.fabric.mixin.recipe.ingredient.PacketEncoderMixin;
  *
  * <p><ul>
  *     <li>Each client sends a packet with the set of custom ingredients it supports.</li>
- *     <li>We store that set inside the {@link PacketEncoder} using {@link PacketEncoderMixin}.</li>
- *     <li>When serializing a custom ingredient, we get access to the current {@link PacketEncoder},
+ *     <li>We store that set inside the {@link EncoderHandler} using {@link EncoderHandlerMixin}.</li>
+ *     <li>When serializing a custom ingredient, we get access to the current {@link EncoderHandler},
  *     and based on that we decide whether to send the custom ingredient, or a vanilla ingredient with the matching stacks.</li>
  * </ul>
  */

@@ -23,7 +23,7 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.codec.RegistryByteBuf;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 
@@ -69,7 +69,7 @@ abstract class CombinedIngredient implements CustomIngredient {
 			this.identifier = identifier;
 			this.allowEmptyCodec = allowEmptyCodec;
 			this.disallowEmptyCodec = disallowEmptyCodec;
-			this.packetCodec = Ingredient.PACKET_CODEC.mapResult(PacketCodecs.listMapper())
+			this.packetCodec = Ingredient.PACKET_CODEC.collect(PacketCodecs.toList())
 					.xmap(factory, I::getIngredients);
 		}
 

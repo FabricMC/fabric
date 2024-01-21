@@ -20,7 +20,7 @@ import java.util.Objects;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.RegistryByteBuf;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;

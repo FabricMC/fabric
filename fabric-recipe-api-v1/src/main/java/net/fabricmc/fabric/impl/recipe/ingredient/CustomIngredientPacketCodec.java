@@ -3,7 +3,7 @@ package net.fabricmc.fabric.impl.recipe.ingredient;
 import java.util.Set;
 
 import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.RegistryByteBuf;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 

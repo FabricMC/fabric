@@ -26,15 +26,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.network.handler.PacketEncoder;
+import net.minecraft.network.handler.EncoderHandler;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientSync;
 import net.fabricmc.fabric.impl.recipe.ingredient.SupportedIngredientsPacketEncoder;
 
-@Mixin(PacketEncoder.class)
-public class PacketEncoderMixin implements SupportedIngredientsPacketEncoder {
+@Mixin(EncoderHandler.class)
+public class EncoderHandlerMixin implements SupportedIngredientsPacketEncoder {
 	@Unique
 	private Set<Identifier> fabric_supportedCustomIngredients = Set.of();
 

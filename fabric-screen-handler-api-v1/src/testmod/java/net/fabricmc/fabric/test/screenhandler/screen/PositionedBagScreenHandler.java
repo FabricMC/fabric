@@ -23,7 +23,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.codec.RegistryByteBuf;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;
@@ -46,6 +46,6 @@ public class PositionedBagScreenHandler extends BagScreenHandler implements Posi
 	}
 
 	public record BagData(Optional<BlockPos> pos) {
-		public static final PacketCodec<RegistryByteBuf, BagData> PACKET_CODEC = BlockPos.PACKET_CODEC.mapResult(PacketCodecs::optional).xmap(BagData::new, BagData::pos).cast();
+		public static final PacketCodec<RegistryByteBuf, BagData> PACKET_CODEC = BlockPos.PACKET_CODEC.collect(PacketCodecs::optional).xmap(BagData::new, BagData::pos).cast();
 	}
 }
