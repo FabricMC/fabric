@@ -26,6 +26,9 @@
     "fabric-containers-v0.accurate.mixins.json"
   ],
   "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.container.ContainerProviderImpl::init"
+    ],
     "client": [
       "net.fabricmc.fabric.impl.client.container.ScreenProviderRegistryImpl::init"
     ]

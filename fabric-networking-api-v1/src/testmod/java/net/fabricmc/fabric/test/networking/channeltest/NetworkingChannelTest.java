@@ -33,8 +33,13 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.EntitySelector;
+import net.minecraft.network.NetworkSide;
+import net.minecraft.network.codec.RegistryByteBuf;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -101,13 +106,17 @@ public final class NetworkingChannelTest implements ModInitializer {
 			throw new SimpleCommandExceptionType(Text.literal(String.format("Cannot register channel %s twice for server player", channel))).create();
 		}
 
-		ServerPlayNetworking.registerReceiver(executor.networkHandler, channel, (server, player, handler, buf, sender) -> {
-			System.out.printf("Received packet on channel %s%n", channel);
-		});
+		CustomPayload.Type<RegistryByteBuf, ? extends CustomPayload> payloadType = PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).get(channel);
+		if (payloadType != null) {
 
-		context.getSource().sendFeedback(() -> Text.literal(String.format("Registered channel %s for %s", channel, executor.getDisplayName())), false);
-
-		return 1;
+			ServerPlayNetworking.registerReceiver(executor.networkHandler, payloadType.id(), (payload, player, sender) -> {
+				System.out.printf("Received packet on channel %s%n", payloadType.id().id());
+			});
+			context.getSource().sendFeedback(() -> Text.literal(String.format("Registered channel %s for %s", channel, executor.getDisplayName())), false);
+			return 1;
+		} else {
+			throw new SimpleCommandExceptionType(Text.literal("Unknown channel id")).create();
+		}
 	}
 
 	private static int unregisterChannel(CommandContext<ServerCommandSource> context, ServerPlayerEntity player) throws CommandSyntaxException {

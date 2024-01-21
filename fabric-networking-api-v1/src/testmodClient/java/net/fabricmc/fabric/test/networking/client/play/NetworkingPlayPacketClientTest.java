@@ -37,12 +37,13 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 
 	@Override
 	public void onInitializeClient() {
-		ClientPlayConnectionEvents.INIT.register((handler, client) -> ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.OverlayPacket.PACKET_TYPE, this));
+		ClientPlayConnectionEvents.INIT.register((handler, client) -> ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.OverlayPacket.ID, this));
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
 				ClientCommandManager.literal("clientnetworktestcommand")
 						.then(ClientCommandManager.literal("unknown").executes(context -> {
-							ClientPlayNetworking.send(UNKNOWN_TEST_CHANNEL, PacketByteBufs.create());
+							// TODO 1.20.5
+//							ClientPlayNetworking.send(UNKNOWN_TEST_CHANNEL, PacketByteBufs.create());
 							return Command.SINGLE_SUCCESS;
 						}
 		))));

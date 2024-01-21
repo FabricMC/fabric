@@ -20,6 +20,7 @@ import java.util.function.Consumer;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.RegistryByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
@@ -48,7 +49,7 @@ public interface ContainerProviderRegistry {
 	 * @param player     the player that should open the container
 	 * @param writer     a PacketByteBuf where data can be written to, this data is then accessible by the container factory when creating the container or the gui
 	 */
-	void openContainer(Identifier identifier, ServerPlayerEntity player, Consumer<PacketByteBuf> writer);
+	void openContainer(Identifier identifier, ServerPlayerEntity player, Consumer<RegistryByteBuf> writer);
 
 	/**
 	 * Open a modded container. This should be called on the server side - it has no effect on the client side.
@@ -57,5 +58,5 @@ public interface ContainerProviderRegistry {
 	 * @param player     the player that should open the container
 	 * @param writer     a PacketByteBuf where data can be written to, this data is then accessible by the container factory when creating the container or the gui
 	 */
-	void openContainer(Identifier identifier, PlayerEntity player, Consumer<PacketByteBuf> writer);
+	void openContainer(Identifier identifier, PlayerEntity player, Consumer<RegistryByteBuf> writer);
 }

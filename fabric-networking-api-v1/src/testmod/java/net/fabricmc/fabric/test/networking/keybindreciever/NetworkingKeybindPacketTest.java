@@ -16,7 +16,13 @@
 
 package net.fabricmc.fabric.test.networking.keybindreciever;
 
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+
+import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.RegistryByteBuf;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -35,12 +41,24 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 public final class NetworkingKeybindPacketTest implements ModInitializer {
 	public static final Identifier KEYBINDING_PACKET_ID = NetworkingTestmods.id("keybind_press_test");
 
-	private static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		server.execute(() -> player.sendMessage(Text.literal("So you pressed ").append(Text.keybind("fabric-networking-api-v1-testmod-keybind").styled(style -> style.withFormatting(Formatting.BLUE))), false));
+	private static void receive(KeybindPayload payload, ServerPlayerEntity player, PacketSender responseSender) {
+		player.server.execute(() -> player.sendMessage(Text.literal("So you pressed ").append(Text.keybind("fabric-networking-api-v1-testmod-keybind").styled(style -> style.withFormatting(Formatting.BLUE))), false));
 	}
 
 	@Override
 	public void onInitialize() {
-		ServerPlayConnectionEvents.INIT.register((handler, server) -> ServerPlayNetworking.registerReceiver(handler, KEYBINDING_PACKET_ID, NetworkingKeybindPacketTest::receive));
+		PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).register(KeybindPayload.ID, KeybindPayload.CODEC);
+		ServerPlayConnectionEvents.INIT.register((handler, server) -> ServerPlayNetworking.registerReceiver(handler, KeybindPayload.ID, NetworkingKeybindPacketTest::receive));
 	}
+
+	private record KeybindPayload() implements CustomPayload {
+		public static final CustomPayload.Id<KeybindPayload> ID = new CustomPayload.Id<>(KEYBINDING_PACKET_ID);
+		public static final PacketCodec<RegistryByteBuf, KeybindPayload> CODEC = CustomPayload.codecOf((value, buf) -> {}, buf -> new KeybindPayload());
+
+		@Override
+		public Id<? extends CustomPayload> getId() {
+			return ID;
+		}
+	}
+
 }

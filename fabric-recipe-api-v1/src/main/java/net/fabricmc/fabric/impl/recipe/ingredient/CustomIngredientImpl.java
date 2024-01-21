@@ -19,7 +19,6 @@ package net.fabricmc.fabric.impl.recipe.ingredient;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
@@ -28,7 +27,6 @@ import com.mojang.serialization.DataResult;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 
@@ -43,14 +41,13 @@ public class CustomIngredientImpl extends Ingredient {
 	// Static helpers used by the API
 
 	public static final String TYPE_KEY = "fabric:type";
-	public static final int PACKET_MARKER = -1;
 
 	static final Map<Identifier, CustomIngredientSerializer<?>> REGISTERED_SERIALIZERS = new ConcurrentHashMap<>();
 
 	public static final Codec<CustomIngredientSerializer<?>> CODEC = Identifier.CODEC.flatXmap(identifier ->
 					Optional.ofNullable(REGISTERED_SERIALIZERS.get(identifier))
-					.map(DataResult::success)
-					.orElseGet(() -> DataResult.error(() -> "Unknown custom ingredient serializer: " + identifier)),
+							.map(DataResult::success)
+							.orElseGet(() -> DataResult.error(() -> "Unknown custom ingredient serializer: " + identifier)),
 			serializer -> DataResult.success(serializer.getIdentifier())
 	);
 
@@ -103,34 +100,11 @@ public class CustomIngredientImpl extends Ingredient {
 		return stack != null && customIngredient.test(stack);
 	}
 
-	// TODO 1.20.5
-//	@Override
-//	public void write(PacketByteBuf buf) {
-//		// Can be null if we're not writing a packet from the PacketEncoder; in that case, always write the full ingredient.
-//		// Chances are this is a mod's doing and the client has the Ingredient API with the relevant ingredients.
-//		Set<Identifier> supportedIngredients = CustomIngredientSync.CURRENT_SUPPORTED_INGREDIENTS.get();
-//
-//		if (supportedIngredients != null && !supportedIngredients.contains(customIngredient.getSerializer().getIdentifier())) {
-//			// The client doesn't support this custom ingredient, so we send the matching stacks as a regular ingredient.
-//			// Conveniently, this is exactly what the super call does.
-//			super.write(buf);
-//		} else {
-//			// The client supports this custom ingredient, so we send it as a custom ingredient.
-//			buf.writeVarInt(PACKET_MARKER);
-//			buf.writeIdentifier(customIngredient.getSerializer().getIdentifier());
-//			customIngredient.getSerializer().write(buf, coerceIngredient());
-//		}
-//	}
-
 	@Override
 	public boolean isEmpty() {
 		// We don't want to resolve the matching stacks,
 		// as this might cause the ingredient to use outdated tags when it's done too early.
 		// So we just return false when the matching stacks haven't been resolved yet (i.e. when the field is null).
 		return matchingStacks != null && matchingStacks.length == 0;
-	}
-
-	private <T> T coerceIngredient() {
-		return (T) customIngredient;
 	}
 }
