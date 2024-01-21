@@ -25,19 +25,18 @@ import net.minecraft.util.Rarity;
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 
 /**
- * Fabric's version of Item.Settings. Adds additional methods and hooks
- * not found in the original class.
- *
- * <p>To use it, simply replace {@code new Item.Settings()} with
- * {@code new FabricItemSettings()}.
+ * @deprecated replace with {@link Item.Settings}
  */
+@Deprecated
 public class FabricItemSettings extends Item.Settings {
 	/**
 	 * Sets the equipment slot provider of the item.
 	 *
 	 * @param equipmentSlotProvider the equipment slot provider
 	 * @return this builder
+	 * @deprecated replace with {@link FabricItem.Settings#equipmentSlot(EquipmentSlotProvider)}
 	 */
+	@Deprecated
 	public FabricItemSettings equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
 		FabricItemInternals.computeExtraData(this).equipmentSlot(equipmentSlotProvider);
 		return this;
@@ -47,6 +46,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * Sets the custom damage handler of the item.
 	 * Note that this is only called on an ItemStack if {@link ItemStack#isDamageable()} returns true.
 	 *
+	 * @deprecated replace with {@link FabricItem.Settings#customDamage(CustomDamageHandler)}
 	 * @see CustomDamageHandler
 	 */
 	public FabricItemSettings customDamage(CustomDamageHandler handler) {

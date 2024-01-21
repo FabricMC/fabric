@@ -12,6 +12,7 @@
     "FoxEntityMixin",
     "HungerManagerMixin",
     "ItemMixin",
+    "ItemSettingsMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
     "RecipeMixin",

@@ -35,7 +35,7 @@ public class FabricItemSettingsTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Registers an item with a custom equipment slot.
-		Item testItem = new Item(new FabricItemSettings().equipmentSlot(stack -> EquipmentSlot.CHEST));
+		Item testItem = new Item(new Item.Settings().equipmentSlot(stack -> EquipmentSlot.CHEST));
 		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "test_item"), testItem);
 
 		final List<String> missingMethods = new ArrayList<>();
