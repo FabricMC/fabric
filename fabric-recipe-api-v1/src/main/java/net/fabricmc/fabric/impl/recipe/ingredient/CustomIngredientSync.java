@@ -84,7 +84,7 @@ public class CustomIngredientSync implements ModInitializer {
 			}
 		});
 
-		ServerConfigurationNetworking.registerGlobalReceiver(CustomIngredientPayloadC2S.PACKET_ID, (payload, handler, responseSender) -> {
+		ServerConfigurationNetworking.registerGlobalReceiver(CustomIngredientPayloadC2S.ID, (payload, handler, responseSender) -> {
 			Set<Identifier> supportedCustomIngredients = decodeResponsePayload(payload);
 			ChannelHandler packetEncoder = ((ServerCommonNetworkHandlerAccessor) handler).getConnection().channel.pipeline().get("encoder");
 
@@ -96,9 +96,9 @@ public class CustomIngredientSync implements ModInitializer {
 		});
 
 		PayloadTypeRegistry.configuration(NetworkSide.SERVERBOUND)
-				.register(CustomIngredientPayloadC2S.PACKET_ID, CustomIngredientPayloadC2S.PACKET_CODEC);
+				.register(CustomIngredientPayloadC2S.ID, CustomIngredientPayloadC2S.CODEC);
 		PayloadTypeRegistry.configuration(NetworkSide.CLIENTBOUND)
-				.register(CustomIngredientPayloadS2C.PACKET_ID, CustomIngredientPayloadS2C.PACKET_CODEC);
+				.register(CustomIngredientPayloadS2C.ID, CustomIngredientPayloadS2C.CODEC);
 	}
 
 	private record IngredientSyncTask() implements ServerPlayerConfigurationTask {

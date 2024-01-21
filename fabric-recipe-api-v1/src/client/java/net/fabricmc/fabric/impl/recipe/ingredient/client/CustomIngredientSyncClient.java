@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.recipe.ingredient.client;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
-import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientPayloadC2S;
+import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientPayloadS2C;
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientSync;
 
 /**
@@ -27,7 +27,7 @@ import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientSync;
 public class CustomIngredientSyncClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ClientConfigurationNetworking.registerGlobalReceiver(CustomIngredientPayloadC2S.PACKET_ID, (payload, responseSender) -> {
+		ClientConfigurationNetworking.registerGlobalReceiver(CustomIngredientPayloadS2C.ID, (payload, responseSender) -> {
 			responseSender.sendPacket(CustomIngredientSync.createResponsePayload(payload.protocolVersion()));
 		});
 	}

@@ -28,6 +28,9 @@ import java.util.stream.Collectors;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+
+import net.minecraft.network.codec.PacketCodec;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -244,6 +247,10 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler<DirectReg
 	}
 
 	private DirectRegistryPacketHandler.Payload createPayload(PacketByteBuf buf) {
+		if (buf.readableBytes() == 0) {
+			return new Payload(new byte[0]);
+		}
+
 		return new Payload(buf.readByteArray());
 	}
 
@@ -257,6 +264,15 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler<DirectReg
 
 	public record Payload(byte[] data) implements RegistrySyncPayload {
 		public static CustomPayload.Id<Payload> ID = new Id<>(new Identifier("fabric", "registry/sync/direct"));
+		public static PacketCodec<PacketByteBuf, Payload> CODEC = CustomPayload.codecOf(Payload::write, Payload::new);
+
+		Payload(PacketByteBuf buf) {
+			this(buf.readByteArray());
+		}
+
+		private void write(PacketByteBuf buf) {
+			buf.writeByteArray(data);
+		}
 
 		@Override
 		public Id<? extends CustomPayload> getId() {
