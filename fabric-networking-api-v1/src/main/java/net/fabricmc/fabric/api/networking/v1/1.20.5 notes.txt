@@ -1,5 +1,0 @@
-//TODO 1.20.5
-
-Throw if you register to receive a payload that has not been registered
-Check casts in ServerConfigurationNetworking.unregisterReceiver they will explode
-A lot of params and errors need updating, e.g: "Packet#getType cannot return null"

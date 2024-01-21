@@ -40,8 +40,7 @@ public final class ClientNetworking implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(Networking.OpenScreenPayload.ID, (payload, player, responseSender) -> {
-			// TODO 1.20.5 thread-safety should not be necessary once the API provides it
-			MinecraftClient.getInstance().execute(() -> this.openScreen(payload));
+			this.openScreen(payload);
 		});
 	}
 
