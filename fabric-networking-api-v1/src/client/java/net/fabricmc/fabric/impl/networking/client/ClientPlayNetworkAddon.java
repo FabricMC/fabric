@@ -72,7 +72,9 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void receive(ClientPlayNetworking.PlayPacketHandler<?> handler, CustomPayload payload) {
-		((ClientPlayNetworking.PlayPacketHandler) handler).receive(payload, this.client.player, this);
+		this.client.execute(() -> {
+			((ClientPlayNetworking.PlayPacketHandler) handler).receive(payload, client.player, ClientPlayNetworkAddon.this);
+		});
 	}
 
 	// impl details
