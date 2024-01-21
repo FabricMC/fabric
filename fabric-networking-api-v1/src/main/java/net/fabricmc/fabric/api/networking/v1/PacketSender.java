@@ -19,6 +19,9 @@ package net.fabricmc.fabric.api.networking.v1;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+
+import net.minecraft.text.Text;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -91,4 +94,6 @@ public interface PacketSender {
 	default void sendPacket(CustomPayload payload, @Nullable PacketCallbacks callback) {
 		sendPacket(createPacket(payload), callback);
 	}
+
+	void disconnect(Text disconnectReason);
 }

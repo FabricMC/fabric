@@ -30,6 +30,8 @@ import io.netty.util.concurrent.GenericFutureListener;
 
 import net.minecraft.network.packet.CustomPayload;
 
+import net.minecraft.text.Text;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
@@ -175,6 +177,13 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 		Objects.requireNonNull(packet, "Packet cannot be null");
 
 		this.connection.send(packet, callback);
+	}
+
+	@Override
+	public void disconnect(Text disconnectReason) {
+		Objects.requireNonNull(disconnectReason, "Disconnect reason cannot be null");
+
+		this.connection.disconnect(disconnectReason);
 	}
 
 	public void registerOutgoingPacket(LoginQueryRequestS2CPacket packet) {

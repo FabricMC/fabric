@@ -26,6 +26,9 @@ import java.util.Set;
 
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+
+import net.minecraft.text.Text;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
@@ -147,6 +150,13 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		Objects.requireNonNull(packet, "Packet cannot be null");
 
 		this.connection.send(packet, callback);
+	}
+
+	@Override
+	public void disconnect(Text disconnectReason) {
+		Objects.requireNonNull(disconnectReason, "Disconnect reason cannot be null");
+
+		this.connection.disconnect(disconnectReason);
 	}
 
 	/**

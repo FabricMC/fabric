@@ -18,6 +18,10 @@ package net.fabricmc.fabric.impl.client.registry.sync;
 
 import java.util.concurrent.CompletionException;
 
+import net.fabricmc.fabric.impl.registry.sync.SyncCompletePayload;
+
+import net.minecraft.client.MinecraftClient;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,18 +44,20 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 		registerSyncPacketReceiver(RegistrySyncManager.DIRECT_PACKET_HANDLER);
 	}
 
-	private void registerSyncPacketReceiver(RegistryPacketHandler packetHandler) {
-		ClientConfigurationNetworking.registerGlobalReceiver(packetHandler.getPacketId(), (client, handler, buf, responseSender) -> {
-			RegistrySyncManager.receivePacket(client, packetHandler, buf, RegistrySyncManager.DEBUG || !client.isInSingleplayer())
+	private <T extends RegistryPacketHandler.RegistrySyncPayload> void registerSyncPacketReceiver(RegistryPacketHandler<T> packetHandler) {
+		ClientConfigurationNetworking.registerGlobalReceiver(packetHandler.getPacketId(), (payload, responseSender) -> {
+			MinecraftClient client = MinecraftClient.getInstance();
+
+			RegistrySyncManager.receivePacket(client, packetHandler, payload, RegistrySyncManager.DEBUG || !client.isInSingleplayer())
 					.whenComplete((complete, throwable) -> {
 						if (throwable != null) {
 							LOGGER.error("Registry remapping failed!", throwable);
-							client.execute(() -> ((ClientCommonNetworkHandlerAccessor) handler).getConnection().disconnect(getText(throwable)));
+							client.execute(() -> responseSender.disconnect(getText(throwable)));
 							return;
 						}
 
 						if (complete) {
-							handler.sendPacket(ClientConfigurationNetworking.createC2SPacket(FabricRegistryInit.SYNC_COMPLETE_ID, PacketByteBufs.create()));
+							responseSender.sendPacket(new SyncCompletePayload());
 						}
 					});
 		});

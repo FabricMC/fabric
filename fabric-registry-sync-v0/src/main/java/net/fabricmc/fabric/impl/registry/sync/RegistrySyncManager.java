@@ -37,13 +37,13 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -66,7 +66,7 @@ import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 public final class RegistrySyncManager {
 	public static final boolean DEBUG = Boolean.getBoolean("fabric.registry.debug");
 
-	public static final RegistryPacketHandler DIRECT_PACKET_HANDLER = new DirectRegistryPacketHandler();
+	public static final DirectRegistryPacketHandler DIRECT_PACKET_HANDLER = new DirectRegistryPacketHandler();
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("FabricRegistrySync");
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = Boolean.getBoolean("fabric.registry.debug.writeContentsAsCsv");
@@ -105,7 +105,7 @@ public final class RegistrySyncManager {
 
 		@Override
 		public void sendPacket(Consumer<Packet<?>> sender) {
-			DIRECT_PACKET_HANDLER.sendPacket(handler::sendPacket, map);
+			DIRECT_PACKET_HANDLER.sendPacket(payload -> handler.sendPacket(ServerConfigurationNetworking.createS2CPacket(payload)), map);
 		}
 
 		@Override
@@ -114,8 +114,8 @@ public final class RegistrySyncManager {
 		}
 	}
 
-	public static CompletableFuture<Boolean> receivePacket(ThreadExecutor<?> executor, RegistryPacketHandler handler, PacketByteBuf buf, boolean accept) {
-		handler.receivePacket(buf);
+	public static <T extends RegistryPacketHandler.RegistrySyncPayload> CompletableFuture<Boolean> receivePacket(ThreadExecutor<?> executor, RegistryPacketHandler<T> handler, T payload, boolean accept) {
+		handler.receivePayload(payload);
 
 		if (!handler.isPacketFinished()) {
 			return CompletableFuture.completedFuture(false);

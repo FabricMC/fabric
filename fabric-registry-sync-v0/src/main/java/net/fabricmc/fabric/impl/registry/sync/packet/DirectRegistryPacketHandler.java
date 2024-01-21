@@ -28,6 +28,11 @@ import java.util.stream.Collectors;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+
+import net.minecraft.network.packet.CustomPayload;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -51,13 +56,12 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
  *
  * <p>This method also split into multiple packets if it exceeds the limit, defaults to 1 MB.
  */
-public class DirectRegistryPacketHandler extends RegistryPacketHandler {
+public class DirectRegistryPacketHandler extends RegistryPacketHandler<DirectRegistryPacketHandler.Payload> {
 	/**
 	 * @see net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket#MAX_PAYLOAD_SIZE
 	 */
 	@SuppressWarnings("JavadocReference")
 	private static final int MAX_PAYLOAD_SIZE = Integer.getInteger("fabric.registry.direct.maxPayloadSize", 0x100000);
-	private static final Identifier ID = new Identifier("fabric", "registry/sync/direct");
 
 	@Nullable
 	private PacketByteBuf combinedBuf;
@@ -69,12 +73,12 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 	private int totalPacketReceived = 0;
 
 	@Override
-	public Identifier getPacketId() {
-		return ID;
+	public CustomPayload.Id<DirectRegistryPacketHandler.Payload> getPacketId() {
+		return Payload.ID;
 	}
 
 	@Override
-	public void sendPacket(Consumer<Packet<?>> sender, Map<Identifier, Object2IntMap<Identifier>> registryMap) {
+	public void sendPacket(Consumer<DirectRegistryPacketHandler.Payload> sender, Map<Identifier, Object2IntMap<Identifier>> registryMap) {
 		PacketByteBuf buf = PacketByteBufs.create();
 
 		// Group registry ids with same namespace.
@@ -153,16 +157,16 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 		while (sliceIndex < readableBytes) {
 			int sliceSize = Math.min(readableBytes - sliceIndex, MAX_PAYLOAD_SIZE);
 			PacketByteBuf slicedBuf = PacketByteBufs.slice(buf, sliceIndex, sliceSize);
-			sendPacket(sender, slicedBuf);
+			sender.accept(createPayload(slicedBuf));
 			sliceIndex += sliceSize;
 		}
 
 		// Send an empty buffer to mark the end of the split.
-		sendPacket(sender, PacketByteBufs.empty());
+		sender.accept(createPayload(PacketByteBufs.empty()));
 	}
 
 	@Override
-	public void receivePacket(PacketByteBuf slicedBuf) {
+	public void receivePayload(Payload payload) {
 		Preconditions.checkState(!isPacketFinished);
 		totalPacketReceived++;
 
@@ -170,8 +174,10 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 			combinedBuf = PacketByteBufs.create();
 		}
 
-		if (slicedBuf.readableBytes() != 0) {
-			combinedBuf.writeBytes(slicedBuf);
+		byte[] data = payload.data();
+
+		if (data.length != 0) {
+			combinedBuf.writeBytes(data);
 			return;
 		}
 
@@ -242,11 +248,23 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler {
 		return map;
 	}
 
+	private DirectRegistryPacketHandler.Payload createPayload(PacketByteBuf buf) {
+		return new Payload(buf.readByteArray());
+	}
+
 	private static String optimizeNamespace(String namespace) {
 		return namespace.equals(Identifier.DEFAULT_NAMESPACE) ? "" : namespace;
 	}
 
 	private static String unoptimizeNamespace(String namespace) {
 		return namespace.isEmpty() ? Identifier.DEFAULT_NAMESPACE : namespace;
+	}
+
+	public record Payload(byte[] data) implements RegistrySyncPayload {
+		public static CustomPayload.Id<Payload> ID = new Id<>(new Identifier(""));
+		@Override
+		public Id<? extends CustomPayload> getId() {
+			return null;
+		}
 	}
 }

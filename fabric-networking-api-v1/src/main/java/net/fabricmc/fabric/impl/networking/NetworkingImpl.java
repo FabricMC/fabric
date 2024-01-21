@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.impl.networking;
 
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+
+import net.minecraft.network.NetworkSide;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,5 +41,16 @@ public final class NetworkingImpl {
 
 	public static boolean isReservedCommonChannel(Identifier channelName) {
 		return channelName.equals(REGISTER_CHANNEL) || channelName.equals(UNREGISTER_CHANNEL);
+	}
+
+	public static void init() {
+		PayloadTypeRegistry.configuration(NetworkSide.CLIENTBOUND).register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.configuration(NetworkSide.CLIENTBOUND).register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
+		PayloadTypeRegistry.configuration(NetworkSide.SERVERBOUND).register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.configuration(NetworkSide.SERVERBOUND).register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
+		PayloadTypeRegistry.play(NetworkSide.CLIENTBOUND).register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.play(NetworkSide.CLIENTBOUND).register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
+		PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
 	}
 }

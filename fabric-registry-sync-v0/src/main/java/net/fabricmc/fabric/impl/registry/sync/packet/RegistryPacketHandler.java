@@ -22,25 +22,26 @@ import java.util.zip.Deflater;
 
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+
+import net.minecraft.network.packet.CustomPayload;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 
-public abstract class RegistryPacketHandler {
+public abstract class RegistryPacketHandler<T extends RegistryPacketHandler.RegistrySyncPayload> {
 	private int rawBufSize = 0;
 	private int deflatedBufSize = 0;
 
-	public abstract Identifier getPacketId();
+	public abstract CustomPayload.Id<T> getPacketId();
 
-	public abstract void sendPacket(Consumer<Packet<?>> sender, Map<Identifier, Object2IntMap<Identifier>> registryMap);
+	public abstract void sendPacket(Consumer<T> sender, Map<Identifier, Object2IntMap<Identifier>> registryMap);
 
-	public abstract void receivePacket(PacketByteBuf buf);
+	public abstract void receivePayload(T payload);
 
 	public abstract int getTotalPacketReceived();
 
@@ -48,10 +49,6 @@ public abstract class RegistryPacketHandler {
 
 	@Nullable
 	public abstract Map<Identifier, Object2IntMap<Identifier>> getSyncedRegistryMap();
-
-	protected final void sendPacket(Consumer<Packet<?>> sender, PacketByteBuf buf) {
-		sender.accept(ServerConfigurationNetworking.createS2CPacket(getPacketId(), buf));
-	}
 
 	protected final void computeBufSize(PacketByteBuf buf) {
 		if (!RegistrySyncManager.DEBUG) {
@@ -93,5 +90,9 @@ public abstract class RegistryPacketHandler {
 
 	public final int getDeflatedBufSize() {
 		return deflatedBufSize;
+	}
+
+	public interface RegistrySyncPayload extends CustomPayload {
+
 	}
 }
