@@ -93,8 +93,8 @@ public final class ServerPlayNetworking {
 	 * @see ServerPlayNetworking#unregisterReceiver(ServerPlayNetworkHandler, PacketType)
 	 */
 	@Nullable
-	public static <T extends CustomPayload> ServerPlayNetworking.PlayPayloadHandler<T> unregisterGlobalReceiver(CustomPayload.Type<RegistryByteBuf, T> type) {
-		return (PlayPayloadHandler<T>) ServerNetworkingImpl.PLAY.unregisterGlobalReceiver(type.id().id());
+	public static ServerPlayNetworking.PlayPayloadHandler<?> unregisterGlobalReceiver(Identifier id) {
+		return ServerNetworkingImpl.PLAY.unregisterGlobalReceiver(id);
 	}
 
 	/**
@@ -138,8 +138,8 @@ public final class ServerPlayNetworking {
 	 * or it was not registered using {@link #registerReceiver(ServerPlayNetworkHandler, PacketType, PlayPayloadHandler)}
 	 */
 	@Nullable
-	public static <T extends CustomPayload> ServerPlayNetworking.PlayPayloadHandler<T> unregisterReceiver(ServerPlayNetworkHandler networkHandler, CustomPayload.Id<T> type) {
-		return (PlayPayloadHandler<T>) ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(type.id());
+	public static ServerPlayNetworking.PlayPayloadHandler<?> unregisterReceiver(ServerPlayNetworkHandler networkHandler, Identifier id) {
+		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(id);
 	}
 
 	/**
@@ -282,7 +282,7 @@ public final class ServerPlayNetworking {
 	 * Sends a packet to a player.
 	 *
 	 * @param player the player to send the packet to
-	 * @param packet the packet
+	 * @param payload the payload to send
 	 */
 	public static void send(ServerPlayerEntity player, CustomPayload payload) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");

@@ -73,8 +73,8 @@ public final class ClientConfigurationNetworking {
 	 * @see ClientConfigurationNetworking#unregisterReceiver(PacketType)
 	 */
 	@Nullable
-	public static <T extends CustomPayload> ClientConfigurationNetworking.ConfigurationPayloadHandler<T> unregisterGlobalReceiver(CustomPayload.Type<PacketByteBuf, T> type) {
-		return (ConfigurationPayloadHandler<T>) ClientNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(type.id().id());
+	public static ClientConfigurationNetworking.ConfigurationPayloadHandler<?> unregisterGlobalReceiver(CustomPayload.Type<PacketByteBuf, ?> type) {
+		return ClientNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(type.id().id());
 	}
 
 	/**
@@ -117,17 +117,17 @@ public final class ClientConfigurationNetworking {
 	 *
 	 * <p>The {@code type} is guaranteed not to have an associated handler after this call.
 	 *
-	 * @param type the packet type
+	 * @param id the payload id to unregister
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
 	 * or it was not registered using {@link #registerReceiver(PacketType, ConfigurationPayloadHandler)}
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
 	@Nullable
-	public static <T extends CustomPayload> ClientConfigurationNetworking.ConfigurationPayloadHandler<T> unregisterReceiver(CustomPayload.Id<T> type) {
+	public static ClientConfigurationNetworking.ConfigurationPayloadHandler<?> unregisterReceiver(Identifier id) {
 		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
 
 		if (addon != null) {
-			return (ConfigurationPayloadHandler<T>) addon.unregisterChannel(type.id());
+			return addon.unregisterChannel(id);
 		}
 
 		throw new IllegalStateException("Cannot unregister receiver while not configuring!");
@@ -212,11 +212,11 @@ public final class ClientConfigurationNetworking {
 	/**
 	 * Sends a packet to the connected server.
 	 *
-	 * @param packet the packet
+	 * @param payload to be sent
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
 	public static void send(CustomPayload payload) {
-		Objects.requireNonNull(payload, "Packet cannot be null");
+		Objects.requireNonNull(payload, "Payload cannot be null");
 		Objects.requireNonNull(payload.getId(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
 
 		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();

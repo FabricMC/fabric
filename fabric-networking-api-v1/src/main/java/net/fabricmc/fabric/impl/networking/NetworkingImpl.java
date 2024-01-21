@@ -19,7 +19,6 @@ package net.fabricmc.fabric.impl.networking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.network.NetworkSide;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -43,13 +42,13 @@ public final class NetworkingImpl {
 	}
 
 	public static void init() {
-		PayloadTypeRegistry.configuration(NetworkSide.CLIENTBOUND).register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
-		PayloadTypeRegistry.configuration(NetworkSide.CLIENTBOUND).register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
-		PayloadTypeRegistry.configuration(NetworkSide.SERVERBOUND).register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
-		PayloadTypeRegistry.configuration(NetworkSide.SERVERBOUND).register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
-		PayloadTypeRegistry.play(NetworkSide.CLIENTBOUND).register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
-		PayloadTypeRegistry.play(NetworkSide.CLIENTBOUND).register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
-		PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
-		PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
+		PayloadTypeRegistry.configurationS2C().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.configurationS2C().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
+		PayloadTypeRegistry.configurationC2S().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.configurationC2S().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
+		PayloadTypeRegistry.playS2C().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.playS2C().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
+		PayloadTypeRegistry.playC2S().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.playC2S().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
 	}
 }

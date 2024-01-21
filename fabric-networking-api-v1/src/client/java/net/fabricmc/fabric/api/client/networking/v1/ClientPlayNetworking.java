@@ -79,8 +79,8 @@ public final class ClientPlayNetworking {
 	 * @see ClientPlayNetworking#unregisterReceiver(PacketType)
 	 */
 	@Nullable
-	public static <T extends CustomPayload> ClientPlayNetworking.PlayPacketHandler<T> unregisterGlobalReceiver(CustomPayload.Id<T> type) {
-		return (PlayPacketHandler<T>) ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(type.id());
+	public static ClientPlayNetworking.PlayPacketHandler<?> unregisterGlobalReceiver(Identifier id) {
+		return ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(id);
 	}
 
 	/**
@@ -129,11 +129,11 @@ public final class ClientPlayNetworking {
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
 	@Nullable
-	public static <T extends CustomPayload> ClientPlayNetworking.PlayPacketHandler<T> unregisterReceiver(CustomPayload.Id<T> type) {
+	public static ClientPlayNetworking.PlayPacketHandler<?> unregisterReceiver(Identifier id) {
 		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
 
 		if (addon != null) {
-			return (PlayPacketHandler<T>) addon.unregisterChannel(type.id());
+			return addon.unregisterChannel(id);
 		}
 
 		throw new IllegalStateException("Cannot unregister receiver while not in game!");

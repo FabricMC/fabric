@@ -23,7 +23,6 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.network.NetworkSide;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
@@ -80,7 +79,7 @@ public final class Networking implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.play(NetworkSide.CLIENTBOUND).register(OpenScreenPayload.ID, OpenScreenPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(OpenScreenPayload.ID, OpenScreenPayload.CODEC);
 		RegistryEntryAddedCallback.event(Registries.SCREEN_HANDLER).register((rawId, id, type) -> {
 			if (type instanceof ExtendedScreenHandlerType<?, ?> extended) {
 				CODEC_BY_ID.put(id, extended.getPacketCodec());

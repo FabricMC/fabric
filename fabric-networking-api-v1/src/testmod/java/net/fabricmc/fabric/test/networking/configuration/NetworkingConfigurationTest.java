@@ -18,7 +18,6 @@ package net.fabricmc.fabric.test.networking.configuration;
 
 import java.util.function.Consumer;
 
-import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
@@ -39,8 +38,8 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 public class NetworkingConfigurationTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.configuration(NetworkSide.CLIENTBOUND).register(ConfigurationPacket.ID, ConfigurationPacket.CODEC);
-		PayloadTypeRegistry.configuration(NetworkSide.SERVERBOUND).register(ConfigurationCompletePacket.ID, ConfigurationCompletePacket.CODEC);
+		PayloadTypeRegistry.configurationS2C().register(ConfigurationPacket.ID, ConfigurationPacket.CODEC);
+		PayloadTypeRegistry.configurationC2S().register(ConfigurationCompletePacket.ID, ConfigurationCompletePacket.CODEC);
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
 			// You must check to see if the client can handle your config task

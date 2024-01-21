@@ -27,6 +27,7 @@ import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkPhase;
+import net.minecraft.network.NetworkSide;
 import net.minecraft.network.listener.ServerCommonPacketListener;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
@@ -44,13 +45,14 @@ import net.fabricmc.fabric.impl.networking.CommonVersionPayload;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
+import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ConnectScreenAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAccessor;
 
 public final class ClientNetworkingImpl {
-	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>(NetworkPhase.LOGIN);
-	public static final GlobalReceiverRegistry<ClientConfigurationNetworking.ConfigurationPayloadHandler<?>> CONFIGURATION = new GlobalReceiverRegistry<>(NetworkPhase.CONFIGURATION);
-	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayPacketHandler<?>> PLAY = new GlobalReceiverRegistry<>(NetworkPhase.PLAY);
+	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>(NetworkSide.CLIENTBOUND, NetworkPhase.LOGIN, null);
+	public static final GlobalReceiverRegistry<ClientConfigurationNetworking.ConfigurationPayloadHandler<?>> CONFIGURATION = new GlobalReceiverRegistry<>(NetworkSide.CLIENTBOUND, NetworkPhase.CONFIGURATION, PayloadTypeRegistryImpl.CONFIGURATION_S2C);
+	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayPacketHandler<?>> PLAY = new GlobalReceiverRegistry<>(NetworkSide.CLIENTBOUND, NetworkPhase.PLAY, PayloadTypeRegistryImpl.PLAY_S2C);
 
 	private static ClientPlayNetworkAddon currentPlayAddon;
 	private static ClientConfigurationNetworkAddon currentConfigurationAddon;

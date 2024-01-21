@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.networking.keybindreciever;
 
-import net.minecraft.network.NetworkSide;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -36,7 +35,7 @@ public final class NetworkingKeybindPacketTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).register(KeybindPayload.ID, KeybindPayload.CODEC);
+		PayloadTypeRegistry.playC2S().register(KeybindPayload.ID, KeybindPayload.CODEC);
 		ServerPlayConnectionEvents.INIT.register((handler, server) -> ServerPlayNetworking.registerReceiver(handler, KeybindPayload.ID, NetworkingKeybindPacketTest::receive));
 	}
 }

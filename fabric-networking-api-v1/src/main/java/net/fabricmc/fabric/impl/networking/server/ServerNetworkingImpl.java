@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.networking.server;
 import java.util.Objects;
 
 import net.minecraft.network.NetworkPhase;
+import net.minecraft.network.NetworkSide;
 import net.minecraft.network.listener.ClientCommonPacketListener;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
@@ -32,11 +33,12 @@ import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 
 public final class ServerNetworkingImpl {
-	public static final GlobalReceiverRegistry<ServerLoginNetworking.LoginQueryResponseHandler> LOGIN = new GlobalReceiverRegistry<>(NetworkPhase.LOGIN);
-	public static final GlobalReceiverRegistry<ServerConfigurationNetworking.ConfigurationPacketHandler<?>> CONFIGURATION = new GlobalReceiverRegistry<>(NetworkPhase.CONFIGURATION);
-	public static final GlobalReceiverRegistry<ServerPlayNetworking.PlayPayloadHandler<?>> PLAY = new GlobalReceiverRegistry<>(NetworkPhase.PLAY);
+	public static final GlobalReceiverRegistry<ServerLoginNetworking.LoginQueryResponseHandler> LOGIN = new GlobalReceiverRegistry<>(NetworkSide.SERVERBOUND, NetworkPhase.LOGIN, null);
+	public static final GlobalReceiverRegistry<ServerConfigurationNetworking.ConfigurationPacketHandler<?>> CONFIGURATION = new GlobalReceiverRegistry<>(NetworkSide.SERVERBOUND, NetworkPhase.CONFIGURATION, PayloadTypeRegistryImpl.CONFIGURATION_C2S);
+	public static final GlobalReceiverRegistry<ServerPlayNetworking.PlayPayloadHandler<?>> PLAY = new GlobalReceiverRegistry<>(NetworkSide.SERVERBOUND, NetworkPhase.PLAY, PayloadTypeRegistryImpl.PLAY_C2S);
 
 	public static ServerPlayNetworkAddon getAddon(ServerPlayNetworkHandler handler) {
 		return (ServerPlayNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();

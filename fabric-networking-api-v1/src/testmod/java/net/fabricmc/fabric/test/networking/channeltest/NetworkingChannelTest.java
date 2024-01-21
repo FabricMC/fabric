@@ -35,7 +35,6 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.EntitySelector;
-import net.minecraft.network.NetworkSide;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.command.ServerCommandSource;
@@ -45,8 +44,8 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 
 public final class NetworkingChannelTest implements ModInitializer {
 	@Override
@@ -105,7 +104,7 @@ public final class NetworkingChannelTest implements ModInitializer {
 			throw new SimpleCommandExceptionType(Text.literal(String.format("Cannot register channel %s twice for server player", channel))).create();
 		}
 
-		CustomPayload.Type<RegistryByteBuf, ? extends CustomPayload> payloadType = PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).get(channel);
+		CustomPayload.Type<RegistryByteBuf, ? extends CustomPayload> payloadType = PayloadTypeRegistryImpl.PLAY_C2S.get(channel);
 
 		if (payloadType != null) {
 			ServerPlayNetworking.registerReceiver(executor.networkHandler, payloadType.id(), (payload, player, sender) -> {
@@ -125,7 +124,7 @@ public final class NetworkingChannelTest implements ModInitializer {
 			throw new SimpleCommandExceptionType(Text.literal("Cannot unregister channel the server player entity cannot recieve packets on")).create();
 		}
 
-		ServerPlayNetworking.unregisterReceiver(player.networkHandler, new CustomPayload.Id<>(channel));
+		ServerPlayNetworking.unregisterReceiver(player.networkHandler, channel);
 		context.getSource().sendFeedback(() -> Text.literal(String.format("Unregistered channel %s for %s", getIdentifier(context, "channel"), player.getDisplayName())), false);
 
 		return 1;

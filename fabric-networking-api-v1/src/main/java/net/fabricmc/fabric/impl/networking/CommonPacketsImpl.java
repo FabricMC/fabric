@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 import net.minecraft.network.NetworkPhase;
-import net.minecraft.network.NetworkSide;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
 
@@ -35,14 +34,14 @@ public class CommonPacketsImpl {
 	public static final int[] SUPPORTED_COMMON_PACKET_VERSIONS = new int[]{ PACKET_VERSION_1 };
 
 	public static void init() {
-		PayloadTypeRegistry.configuration(NetworkSide.SERVERBOUND).register(CommonVersionPayload.ID, CommonVersionPayload.CODEC);
-		PayloadTypeRegistry.configuration(NetworkSide.CLIENTBOUND).register(CommonVersionPayload.ID, CommonVersionPayload.CODEC);
-		PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).register(CommonVersionPayload.ID, CommonVersionPayload.CODEC);
-		PayloadTypeRegistry.play(NetworkSide.CLIENTBOUND).register(CommonVersionPayload.ID, CommonVersionPayload.CODEC);
-		PayloadTypeRegistry.configuration(NetworkSide.SERVERBOUND).register(CommonRegisterPayload.ID, CommonRegisterPayload.CODEC);
-		PayloadTypeRegistry.configuration(NetworkSide.CLIENTBOUND).register(CommonRegisterPayload.ID, CommonRegisterPayload.CODEC);
-		PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).register(CommonRegisterPayload.ID, CommonRegisterPayload.CODEC);
-		PayloadTypeRegistry.play(NetworkSide.CLIENTBOUND).register(CommonRegisterPayload.ID, CommonRegisterPayload.CODEC);
+		PayloadTypeRegistry.configurationC2S().register(CommonVersionPayload.ID, CommonVersionPayload.CODEC);
+		PayloadTypeRegistry.configurationS2C().register(CommonVersionPayload.ID, CommonVersionPayload.CODEC);
+		PayloadTypeRegistry.playC2S().register(CommonVersionPayload.ID, CommonVersionPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(CommonVersionPayload.ID, CommonVersionPayload.CODEC);
+		PayloadTypeRegistry.configurationC2S().register(CommonRegisterPayload.ID, CommonRegisterPayload.CODEC);
+		PayloadTypeRegistry.configurationS2C().register(CommonRegisterPayload.ID, CommonRegisterPayload.CODEC);
+		PayloadTypeRegistry.playC2S().register(CommonRegisterPayload.ID, CommonRegisterPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(CommonRegisterPayload.ID, CommonRegisterPayload.CODEC);
 
 		ServerConfigurationNetworking.registerGlobalReceiver(CommonVersionPayload.ID, (payload, handler, responseSender) -> {
 			ServerConfigurationNetworkAddon addon = ServerNetworkingImpl.getAddon(handler);

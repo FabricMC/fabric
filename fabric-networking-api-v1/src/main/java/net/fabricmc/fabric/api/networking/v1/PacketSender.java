@@ -17,8 +17,6 @@
 package net.fabricmc.fabric.api.networking.v1;
 
 import io.netty.channel.ChannelFutureListener;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,24 +53,6 @@ public interface PacketSender {
 	 */
 	default void sendPacket(CustomPayload payload) {
 		sendPacket(createPacket(payload));
-	}
-
-	/**
-	 * Sends a packet.
-	 *
-	 * @param packet the packet
-	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
-	 */
-	void sendPacket(Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> callback);
-
-	/**
-	 * Sends a packet.
-	 *
-	 * @param payload the payload
-	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
-	 */
-	default void sendPacket(CustomPayload payload, @Nullable GenericFutureListener<? extends Future<? super Void>> callback) {
-		sendPacket(createPacket(payload), callback);
 	}
 
 	/**

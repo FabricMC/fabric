@@ -16,37 +16,29 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 
 public interface PayloadTypeRegistry<B extends PacketByteBuf> {
 	<T extends CustomPayload> CustomPayload.Type<? super B, T> register(CustomPayload.Id<T> id, PacketCodec<? super B, T> codec);
 
-	@Nullable
-	CustomPayload.Type<B, ? extends CustomPayload> get(Identifier id);
-
-	@Nullable
-	<T extends CustomPayload> CustomPayload.Type<B, T> get(CustomPayload.Id<T> id);
-
-	static PayloadTypeRegistry<PacketByteBuf> configuration(NetworkSide side) {
-		return switch (side) {
-		case SERVERBOUND -> PayloadTypeRegistryImpl.CONFIGURATION_C2S;
-		case CLIENTBOUND -> PayloadTypeRegistryImpl.CONFIGURATION_S2C;
-		};
+	static PayloadTypeRegistry<PacketByteBuf> configurationC2S() {
+		return PayloadTypeRegistryImpl.CONFIGURATION_C2S;
 	}
 
-	static PayloadTypeRegistry<RegistryByteBuf> play(NetworkSide side) {
-		return switch (side) {
-		case SERVERBOUND -> PayloadTypeRegistryImpl.PLAY_C2S;
-		case CLIENTBOUND -> PayloadTypeRegistryImpl.PLAY_S2C;
-		};
+	static PayloadTypeRegistry<PacketByteBuf> configurationS2C() {
+		return PayloadTypeRegistryImpl.CONFIGURATION_S2C;
+	}
+
+	static PayloadTypeRegistry<RegistryByteBuf> playC2S() {
+		return PayloadTypeRegistryImpl.PLAY_C2S;
+	}
+
+	static PayloadTypeRegistry<RegistryByteBuf> playS2C() {
+		return PayloadTypeRegistryImpl.PLAY_S2C;
 	}
 }

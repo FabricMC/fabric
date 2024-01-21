@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.registry.sync;
 
-import net.minecraft.network.NetworkSide;
 import net.minecraft.registry.Registries;
 
 import net.fabricmc.api.ModInitializer;
@@ -30,8 +29,8 @@ import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler
 public class FabricRegistryInit implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.configuration(NetworkSide.SERVERBOUND).register(SyncCompletePayload.ID, SyncCompletePayload.CODEC);
-		PayloadTypeRegistry.configuration(NetworkSide.CLIENTBOUND).register(DirectRegistryPacketHandler.Payload.ID, DirectRegistryPacketHandler.Payload.CODEC);
+		PayloadTypeRegistry.configurationC2S().register(SyncCompletePayload.ID, SyncCompletePayload.CODEC);
+		PayloadTypeRegistry.configurationS2C().register(DirectRegistryPacketHandler.Payload.ID, DirectRegistryPacketHandler.Payload.CODEC);
 
 		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register(RegistrySyncManager::configureClient);
 		ServerConfigurationNetworking.registerGlobalReceiver(SyncCompletePayload.ID, (payload, handler, responseSender) -> {

@@ -50,14 +50,12 @@ public abstract class CustomPayloadPacketCodecMixin<B extends PacketByteBuf> imp
 			"decode(Lnet/minecraft/network/PacketByteBuf;)Lnet/minecraft/network/packet/CustomPayload;"
 	}, at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/CustomPayload$1;getCodec(Lnet/minecraft/util/Identifier;)Lnet/minecraft/network/codec/PacketCodec;"))
 	private PacketCodec<B, ? extends CustomPayload> wrapGetCodec(@Coerce PacketCodec<B, CustomPayload> instance, Identifier identifier, Operation<PacketCodec<B, CustomPayload>> original, B packetByteBuf) {
-		if (customPayloadTypeProvider == null) {
-			throw new IllegalStateException("Payload codec provider is not set!");
-		}
+		if (customPayloadTypeProvider != null) {
+			CustomPayload.Type<B, ? extends CustomPayload> payloadType = customPayloadTypeProvider.get(packetByteBuf, identifier);
 
-		CustomPayload.Type<B, ? extends CustomPayload> payloadType = customPayloadTypeProvider.get(packetByteBuf, identifier);
-
-		if (payloadType != null) {
-			return payloadType.codec();
+			if (payloadType != null) {
+				return payloadType.codec();
+			}
 		}
 
 		return original.call(instance, identifier);

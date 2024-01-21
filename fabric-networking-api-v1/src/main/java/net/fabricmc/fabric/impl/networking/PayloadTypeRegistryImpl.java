@@ -33,10 +33,10 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 public class PayloadTypeRegistryImpl<B extends PacketByteBuf> implements PayloadTypeRegistry<B> {
-	public static PayloadTypeRegistry<PacketByteBuf> CONFIGURATION_C2S = new PayloadTypeRegistryImpl<>(NetworkPhase.CONFIGURATION, NetworkSide.SERVERBOUND);
-	public static PayloadTypeRegistry<PacketByteBuf> CONFIGURATION_S2C = new PayloadTypeRegistryImpl<>(NetworkPhase.CONFIGURATION, NetworkSide.CLIENTBOUND);
-	public static PayloadTypeRegistry<RegistryByteBuf> PLAY_C2S = new PayloadTypeRegistryImpl<>(NetworkPhase.PLAY, NetworkSide.SERVERBOUND);
-	public static PayloadTypeRegistry<RegistryByteBuf> PLAY_S2C = new PayloadTypeRegistryImpl<>(NetworkPhase.PLAY, NetworkSide.CLIENTBOUND);
+	public static final PayloadTypeRegistryImpl<PacketByteBuf> CONFIGURATION_C2S = new PayloadTypeRegistryImpl<>(NetworkPhase.CONFIGURATION, NetworkSide.SERVERBOUND);
+	public static final PayloadTypeRegistryImpl<PacketByteBuf> CONFIGURATION_S2C = new PayloadTypeRegistryImpl<>(NetworkPhase.CONFIGURATION, NetworkSide.CLIENTBOUND);
+	public static final PayloadTypeRegistryImpl<RegistryByteBuf> PLAY_C2S = new PayloadTypeRegistryImpl<>(NetworkPhase.PLAY, NetworkSide.SERVERBOUND);
+	public static final PayloadTypeRegistryImpl<RegistryByteBuf> PLAY_S2C = new PayloadTypeRegistryImpl<>(NetworkPhase.PLAY, NetworkSide.CLIENTBOUND);
 
 	private final Map<Identifier, CustomPayload.Type<B, ? extends CustomPayload>> packetTypes = new HashMap<>();
 	private final NetworkPhase state;
@@ -62,20 +62,18 @@ public class PayloadTypeRegistryImpl<B extends PacketByteBuf> implements Payload
 		return payloadType;
 	}
 
-	@Override
 	@Nullable
 	public CustomPayload.Type<B, ? extends CustomPayload> get(Identifier id) {
 		return packetTypes.get(id);
 	}
 
-	@Override
 	@Nullable
 	public <T extends CustomPayload> CustomPayload.Type<B, T> get(CustomPayload.Id<T> id) {
 		//noinspection unchecked
 		return (CustomPayload.Type<B, T>) packetTypes.get(id.id());
 	}
 
-	public NetworkPhase getState() {
+	public NetworkPhase getPhase() {
 		return state;
 	}
 

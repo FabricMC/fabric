@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
@@ -139,11 +137,6 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	@Override
-	public void sendPacket(Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> callback) {
-		sendPacket(packet, GenericFutureListenerHolder.create(callback));
-	}
-
-	@Override
 	public void sendPacket(Packet<?> packet, PacketCallbacks callback) {
 		Objects.requireNonNull(packet, "Packet cannot be null");
 
@@ -191,7 +184,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		if (currentPhase == null) {
 			// We don't support receiving the register packet during this phase. See getPhase() for supported phases.
 			// The normal case where the play channels are sent during configuration is handled in the client/common configuration packet handlers.
-			logger.warn("Received common register packet for phase {} in network state: {}", payload.phase(), receiver.getState());
+			logger.warn("Received common register packet for phase {} in network state: {}", payload.phase(), receiver.getPhase());
 			return;
 		}
 
@@ -219,7 +212,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 
 	@Nullable
 	private String getPhase() {
-		return switch (receiver.getState()) {
+		return switch (receiver.getPhase()) {
 		case PLAY -> CommonRegisterPayload.PLAY_PHASE;
 		case CONFIGURATION -> CommonRegisterPayload.CONFIGURATION_PHASE;
 		default -> null; // We don't support receiving this packet on any other phase

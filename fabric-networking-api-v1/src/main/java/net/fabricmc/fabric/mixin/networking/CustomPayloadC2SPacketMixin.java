@@ -23,7 +23,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -31,7 +30,7 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 
 import net.fabricmc.fabric.api.networking.v1.FabricCustomPayloadPacketCodec;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 
 @Mixin(CustomPayloadC2SPacket.class)
 public class CustomPayloadC2SPacketMixin {
@@ -48,10 +47,10 @@ public class CustomPayloadC2SPacketMixin {
 		fabricCodec.fabric_setPacketCodecProvider((packetByteBuf, identifier) -> {
 			// CustomPayloadC2SPacket does not have a separate codec for play/configuration. We know if the packetByteBuf is a PacketByteBuf we are in the play phase.
 			if (packetByteBuf instanceof RegistryByteBuf) {
-				return (CustomPayload.Type<PacketByteBuf, ? extends CustomPayload>) (Object) PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).get(identifier);
+				return (CustomPayload.Type<PacketByteBuf, ? extends CustomPayload>) (Object) PayloadTypeRegistryImpl.PLAY_C2S.get(identifier);
 			}
 
-			return PayloadTypeRegistry.configuration(NetworkSide.SERVERBOUND).get(identifier);
+			return PayloadTypeRegistryImpl.CONFIGURATION_C2S.get(identifier);
 		});
 		return codec;
 	}

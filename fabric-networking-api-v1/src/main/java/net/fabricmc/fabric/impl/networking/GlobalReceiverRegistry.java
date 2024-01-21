@@ -30,19 +30,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.network.NetworkPhase;
+import net.minecraft.network.NetworkSide;
 import net.minecraft.util.Identifier;
 
 public final class GlobalReceiverRegistry<H> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalReceiverRegistry.class);
 
-	private final NetworkPhase state;
+	private final NetworkSide side;
+	private final NetworkPhase phase;
+	@Nullable
+	private final PayloadTypeRegistryImpl<?> payloadTypeRegistry;
 
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Map<Identifier, H> handlers = new HashMap<>();
 	private final Set<AbstractNetworkAddon<H>> trackedAddons = new HashSet<>();
 
-	public GlobalReceiverRegistry(NetworkPhase state) {
-		this.state = state;
+	public GlobalReceiverRegistry(NetworkSide side, NetworkPhase phase, @Nullable PayloadTypeRegistryImpl<?> payloadTypeRegistry) {
+		this.side = side;
+		this.phase = phase;
+		this.payloadTypeRegistry = payloadTypeRegistry;
+
+		if (payloadTypeRegistry != null) {
+			assert phase == payloadTypeRegistry.getPhase();
+			assert side == payloadTypeRegistry.getSide();
+		}
 	}
 
 	@Nullable
@@ -63,6 +74,12 @@ public final class GlobalReceiverRegistry<H> {
 
 		if (NetworkingImpl.isReservedCommonChannel(channelName)) {
 			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel with name \"%s\"", channelName));
+		}
+
+		if (payloadTypeRegistry != null) {
+			if (payloadTypeRegistry.get(channelName) == null) {
+				throw new IllegalArgumentException(String.format("Cannot register handler as no payload type has been registered with name \"%s\" for %s %s", channelName, side, phase));
+			}
 		}
 
 		Lock lock = this.lock.writeLock();
@@ -161,7 +178,7 @@ public final class GlobalReceiverRegistry<H> {
 	 */
 	private void logTrackedAddonSize() {
 		if (LOGGER.isTraceEnabled() && this.trackedAddons.size() > 1) {
-			LOGGER.trace("{} receiver registry tracks {} addon instances", state.getId(), trackedAddons.size());
+			LOGGER.trace("{} receiver registry tracks {} addon instances", phase.getId(), trackedAddons.size());
 		}
 	}
 
@@ -195,7 +212,7 @@ public final class GlobalReceiverRegistry<H> {
 		}
 	}
 
-	public NetworkPhase getState() {
-		return state;
+	public NetworkPhase getPhase() {
+		return phase;
 	}
 }

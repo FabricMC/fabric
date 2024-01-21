@@ -26,8 +26,8 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
-import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
@@ -50,9 +50,9 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 	private static boolean spamUnknownPackets = false;
 
 	public static void sendToTestChannel(ServerPlayerEntity player, String stuff) {
-		ServerPlayNetworking.getSender(player).sendPacket(new OverlayPacket(Text.literal(stuff)), future -> {
+		ServerPlayNetworking.getSender(player).sendPacket(new OverlayPacket(Text.literal(stuff)), PacketCallbacks.always(() -> {
 			NetworkingTestmods.LOGGER.info("Sent custom payload packet in {}", TEST_CHANNEL);
-		});
+		}));
 	}
 
 	private static void sendToUnknownChannel(ServerPlayerEntity player) {
@@ -118,7 +118,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 	public void onInitialize() {
 		NetworkingTestmods.LOGGER.info("Hello from networking user!");
 
-		PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).register(OverlayPacket.ID, OverlayPacket.CODEC);
+		PayloadTypeRegistry.playC2S().register(OverlayPacket.ID, OverlayPacket.CODEC);
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			NetworkingPlayPacketTest.registerCommand(dispatcher);
 		});

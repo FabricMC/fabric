@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 
 import io.netty.channel.ChannelHandler;
 
-import net.minecraft.network.NetworkSide;
 import net.minecraft.network.handler.EncoderHandler;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
@@ -78,6 +77,11 @@ public class CustomIngredientSync implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		PayloadTypeRegistry.configurationC2S()
+				.register(CustomIngredientPayloadC2S.ID, CustomIngredientPayloadC2S.CODEC);
+		PayloadTypeRegistry.configurationS2C()
+				.register(CustomIngredientPayloadS2C.ID, CustomIngredientPayloadS2C.CODEC);
+
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
 			if (ServerConfigurationNetworking.canSend(handler, PACKET_ID)) {
 				handler.addTask(new IngredientSyncTask());
@@ -94,11 +98,6 @@ public class CustomIngredientSync implements ModInitializer {
 
 			handler.completeTask(IngredientSyncTask.KEY);
 		});
-
-		PayloadTypeRegistry.configuration(NetworkSide.SERVERBOUND)
-				.register(CustomIngredientPayloadC2S.ID, CustomIngredientPayloadC2S.CODEC);
-		PayloadTypeRegistry.configuration(NetworkSide.CLIENTBOUND)
-				.register(CustomIngredientPayloadS2C.ID, CustomIngredientPayloadS2C.CODEC);
 	}
 
 	private record IngredientSyncTask() implements ServerPlayerConfigurationTask {

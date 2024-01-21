@@ -78,8 +78,8 @@ public final class ServerConfigurationNetworking {
 	 * @see ServerConfigurationNetworking#unregisterReceiver(ServerConfigurationNetworkHandler, PacketType)
 	 */
 	@Nullable
-	public static <T extends CustomPayload> ServerConfigurationNetworking.ConfigurationPacketHandler<T> unregisterGlobalReceiver(CustomPayload.Id<T> type) {
-		return (ConfigurationPacketHandler<T>) ServerNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(type.id());
+	public static ServerConfigurationNetworking.ConfigurationPacketHandler<?> unregisterGlobalReceiver(Identifier id) {
+		return ServerNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(id);
 	}
 
 	/**
@@ -123,8 +123,8 @@ public final class ServerConfigurationNetworking {
 	 * or it was not registered using {@link #registerReceiver(ServerConfigurationNetworkHandler, PacketType, ConfigurationPacketHandler)}
 	 */
 	@Nullable
-	public static <T extends CustomPayload> ServerConfigurationNetworking.ConfigurationPacketHandler<T> unregisterReceiver(ServerConfigurationNetworkHandler networkHandler, CustomPayload.Id<T> type) {
-		return (ConfigurationPacketHandler<T>) ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(type.id());
+	public static ServerConfigurationNetworking.ConfigurationPacketHandler<?> unregisterReceiver(ServerConfigurationNetworkHandler networkHandler, Identifier id) {
+		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(id);
 	}
 
 	/**
@@ -182,7 +182,7 @@ public final class ServerConfigurationNetworking {
 	/**
 	 * Creates a packet which may be sent to a connected client.
 	 *
-	 * @param packet the fabric packet
+	 * @param payload the payload
 	 * @return a new packet
 	 */
 	public static Packet<ClientCommonPacketListener> createS2CPacket(CustomPayload payload) {
@@ -208,7 +208,7 @@ public final class ServerConfigurationNetworking {
 	 * Sends a packet to a configuring player.
 	 *
 	 * @param handler the network handler to send the packet to
-	 * @param packet the packet
+	 * @param payload to be sent
 	 */
 	public static void send(ServerConfigurationNetworkHandler handler, CustomPayload payload) {
 		Objects.requireNonNull(handler, "Server configuration handler cannot be null");

@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -42,11 +41,11 @@ public class PayloadTypeRegistryTests {
 		SharedConstants.createGameVersion();
 		Bootstrap.initialize();
 
-		PayloadTypeRegistry.play(NetworkSide.SERVERBOUND).register(C2SPlayPayload.ID, C2SPlayPayload.CODEC);
-		PayloadTypeRegistry.play(NetworkSide.CLIENTBOUND).register(S2CPlayPayload.ID, S2CPlayPayload.CODEC);
+		PayloadTypeRegistry.playC2S().register(C2SPlayPayload.ID, C2SPlayPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(S2CPlayPayload.ID, S2CPlayPayload.CODEC);
 
-		PayloadTypeRegistry.configuration(NetworkSide.SERVERBOUND).register(C2SConfigPayload.ID, C2SConfigPayload.CODEC);
-		PayloadTypeRegistry.configuration(NetworkSide.CLIENTBOUND).register(S2CConfigPayload.ID, S2CConfigPayload.CODEC);
+		PayloadTypeRegistry.configurationC2S().register(C2SConfigPayload.ID, C2SConfigPayload.CODEC);
+		PayloadTypeRegistry.configurationS2C().register(S2CConfigPayload.ID, S2CConfigPayload.CODEC);
 	}
 
 	@Test
