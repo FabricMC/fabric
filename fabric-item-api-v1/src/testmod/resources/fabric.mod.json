@@ -11,6 +11,7 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.item.CustomDamageTest",
+      "net.fabricmc.fabric.test.item.CustomItemPredicateTest",
       "net.fabricmc.fabric.test.item.FabricItemSettingsTests",
       "net.fabricmc.fabric.test.item.ItemUpdateAnimationTest",
       "net.fabricmc.fabric.test.item.ModifyItemAttributeModifiersCallbackTest",
@@ -25,6 +26,9 @@
       "net.fabricmc.fabric.test.item.gametest.FurnaceGameTest",
       "net.fabricmc.fabric.test.item.gametest.RecipeGameTest",
       "net.fabricmc.fabric.test.item.gametest.ShearsGameTest"
+    ],
+    "fabric-datagen": [
+      "net.fabricmc.fabric.test.item.CustomItemPredicateTest"
     ]
   },
   "mixins": [

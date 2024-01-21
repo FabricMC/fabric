@@ -46,7 +46,7 @@ public class PersistentStateManagerTest implements ModInitializer {
 		private static final PersistentState.Type<TestState> TYPE = new Type<>(TestState::new, TestState::fromTag, null);
 
 		public static TestState getOrCreate(ServerWorld world) {
-			return world.getPersistentStateManager().getOrCreate(TestState.TYPE, ObjectBuilderTestConstants.id("test_state").toString());
+			return world.getPersistentStateManager().getOrCreate(TestState.TYPE, ObjectBuilderTestConstants.id("test_state").toString().replace(":", "_"));
 		}
 
 		private String value = "";
