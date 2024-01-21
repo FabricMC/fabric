@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.content.registry;
 
-import java.util.IdentityHashMap;
 import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
@@ -31,7 +30,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 
 // TODO: Clamp values to 32767 (+ add hook for mods which extend the limit to disable the check?)
@@ -39,23 +37,13 @@ public final class FuelRegistryImpl implements FuelRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FuelRegistryImpl.class);
 	private final Object2IntMap<ItemConvertible> itemCookTimes = new Object2IntLinkedOpenHashMap<>();
 	private final Object2IntMap<TagKey<Item>> tagCookTimes = new Object2IntLinkedOpenHashMap<>();
-	private volatile Map<Item, Integer> fuelTimeCache = null; // thread safe via copy-on-write mechanism
 
 	public FuelRegistryImpl() {
-		// Reset cache after tags change since it depends on tags.
-		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
-			resetCache();
-		});
 	}
 
 	public Map<Item, Integer> getFuelTimes() {
-		Map<Item, Integer> ret = fuelTimeCache;
-
-		if (ret == null) {
-			fuelTimeCache = ret = new IdentityHashMap<>(AbstractFurnaceBlockEntity.createFuelTimeMap()); // IdentityHashMap is faster than vanilla's LinkedHashMap and suitable for Item keys
-		}
-
-		return ret;
+		// Cached by vanilla now
+		return AbstractFurnaceBlockEntity.createFuelTimeMap();
 	}
 
 	@Override
@@ -138,6 +126,7 @@ public final class FuelRegistryImpl implements FuelRegistry {
 	}
 
 	public void resetCache() {
-		fuelTimeCache = null;
+		// Note: tag reload is already handled by vanilla, see DataPackContents#refresh
+		AbstractFurnaceBlockEntity.clearFuelTimes();
 	}
 }
