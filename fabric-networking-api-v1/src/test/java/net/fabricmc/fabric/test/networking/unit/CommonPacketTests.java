@@ -243,7 +243,7 @@ public class CommonPacketTests {
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
-		assertIterableEquals(List.of(new Identifier("fabric", "test")), channelInfoHolder.getPendingChannelsNames(NetworkPhase.PLAY));
+		assertIterableEquals(List.of(new Identifier("fabric", "test")), channelInfoHolder.fabric_getPendingChannelsNames(NetworkPhase.PLAY));
 
 		// Check the response we are sending back to the server
 		PacketByteBuf response = readResponse(packetSender, REGISTER_PAYLOAD_TYPE);
@@ -302,7 +302,7 @@ public class CommonPacketTests {
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
-		assertIterableEquals(List.of(new Identifier("fabric", "test")), channelInfoHolder.getPendingChannelsNames(NetworkPhase.PLAY));
+		assertIterableEquals(List.of(new Identifier("fabric", "test")), channelInfoHolder.fabric_getPendingChannelsNames(NetworkPhase.PLAY));
 	}
 
 	// Test handing the configuration registry packet on the server configuration handler
@@ -383,7 +383,7 @@ public class CommonPacketTests {
 		private final Map<NetworkPhase, Collection<Identifier>> playChannels = new ConcurrentHashMap<>();
 
 		@Override
-		public Collection<Identifier> getPendingChannelsNames(NetworkPhase state) {
+		public Collection<Identifier> fabric_getPendingChannelsNames(NetworkPhase state) {
 			return this.playChannels.computeIfAbsent(state, (key) -> Collections.newSetFromMap(new ConcurrentHashMap<>()));
 		}
 	}

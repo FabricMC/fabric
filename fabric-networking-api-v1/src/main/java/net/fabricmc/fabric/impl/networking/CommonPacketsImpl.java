@@ -58,7 +58,7 @@ public class CommonPacketsImpl {
 				}
 
 				// Play phase hasnt started yet, add them to the pending names.
-				addon.getChannelInfoHolder().getPendingChannelsNames(NetworkPhase.PLAY).addAll(payload.channels());
+				addon.getChannelInfoHolder().fabric_getPendingChannelsNames(NetworkPhase.PLAY).addAll(payload.channels());
 				NetworkingImpl.LOGGER.debug("Received accepted channels from the client for play phase");
 			} else {
 				addon.onCommonRegisterPacket(payload);

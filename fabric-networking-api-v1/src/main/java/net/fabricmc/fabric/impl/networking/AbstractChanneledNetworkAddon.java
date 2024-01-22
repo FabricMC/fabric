@@ -56,7 +56,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	protected void registerPendingChannels(ChannelInfoHolder holder, NetworkPhase state) {
-		final Collection<Identifier> pending = holder.getPendingChannelsNames(state);
+		final Collection<Identifier> pending = holder.fabric_getPendingChannelsNames(state);
 
 		if (!pending.isEmpty()) {
 			register(new ArrayList<>(pending));
