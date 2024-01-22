@@ -25,7 +25,6 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.listener.ClientCommonPacketListener;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
@@ -36,6 +35,9 @@ import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
  * Offers access to play stage server-side networking functionalities.
  *
  * <p>Server-side networking functionalities include receiving serverbound packets, sending clientbound packets, and events related to server-side network handlers.
+ * Packets <strong>received</strong> by this class must be registered to {@link PayloadTypeRegistry#playC2S()} on both ends.
+ * Packets <strong>sent</strong> by this class must be registered to {@link PayloadTypeRegistry#playS2C()} on both ends.
+ * Packets must be registered before registering any receivers.
  *
  * <p>This class should be only used for the logical server.
  *
@@ -68,6 +70,7 @@ public final class ServerPlayNetworking {
 	 * @param type the packet type
 	 * @param handler the handler
 	 * @return {@code false} if a handler is already registered to the channel
+	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#playC2S() registered} yet
 	 * @see ServerPlayNetworking#unregisterGlobalReceiver(Identifier)
 	 */
 	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Type<RegistryByteBuf, T> type, PlayPayloadHandler<T> handler) {
@@ -116,6 +119,7 @@ public final class ServerPlayNetworking {
 	 * @param type the packet type
 	 * @param handler the handler
 	 * @return {@code false} if a handler is already registered to the channel name
+	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#playC2S() registered} yet
 	 * @see ServerPlayConnectionEvents#INIT
 	 */
 	public static <T extends CustomPayload> boolean registerReceiver(ServerPlayNetworkHandler networkHandler, CustomPayload.Id<T> type, PlayPayloadHandler<T> handler) {
@@ -275,6 +279,8 @@ public final class ServerPlayNetworking {
 	/**
 	 * Sends a packet to a player.
 	 *
+	 * <p>Any packets sent must be {@linkplain PayloadTypeRegistry#playS2C() registered}.</p>
+	 *
 	 * @param player the player to send the packet to
 	 * @param payload the payload to send
 	 */
@@ -284,19 +290,6 @@ public final class ServerPlayNetworking {
 		Objects.requireNonNull(payload.getId(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
 
 		player.networkHandler.sendPacket(createS2CPacket(payload));
-	}
-
-	// Helper methods
-
-	/**
-	 * Returns the <i>Minecraft</i> Server of a server play network handler.
-	 *
-	 * @param handler the server play network handler
-	 */
-	public static MinecraftServer getServer(ServerPlayNetworkHandler handler) {
-		Objects.requireNonNull(handler, "Network handler cannot be null");
-
-		return handler.player.server;
 	}
 
 	private ServerPlayNetworking() {

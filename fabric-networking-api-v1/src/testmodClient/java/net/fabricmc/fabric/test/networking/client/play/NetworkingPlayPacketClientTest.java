@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 import net.fabricmc.fabric.test.networking.play.NetworkingPlayPacketTest;
 
-public final class NetworkingPlayPacketClientTest implements ClientModInitializer, ClientPlayNetworking.PlayPacketHandler<NetworkingPlayPacketTest.OverlayPacket> {
+public final class NetworkingPlayPacketClientTest implements ClientModInitializer, ClientPlayNetworking.PlayPayloadHandler<NetworkingPlayPacketTest.OverlayPacket> {
 	@Override
 	public void onInitializeClient() {
 		// Register the payload only on the client.

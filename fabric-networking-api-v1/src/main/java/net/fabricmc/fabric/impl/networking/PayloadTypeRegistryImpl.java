@@ -52,7 +52,7 @@ public class PayloadTypeRegistryImpl<B extends PacketByteBuf> implements Payload
 		Objects.requireNonNull(id, "id");
 		Objects.requireNonNull(codec, "codec");
 
-		final CustomPayload.Type<B, T> payloadType = new CustomPayload.Type<>(id, (PacketCodec<B, T>) codec);
+		final CustomPayload.Type<B, T> payloadType = new CustomPayload.Type<>(id, codec.cast());
 
 		if (packetTypes.containsKey(id.id())) {
 			throw new IllegalArgumentException("Packet type " + id + " is already registered!");

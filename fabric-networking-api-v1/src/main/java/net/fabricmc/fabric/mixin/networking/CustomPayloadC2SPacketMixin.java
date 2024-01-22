@@ -29,7 +29,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 
-import net.fabricmc.fabric.api.networking.v1.FabricCustomPayloadPacketCodec;
+import net.fabricmc.fabric.impl.networking.FabricCustomPayloadPacketCodec;
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 
 @Mixin(CustomPayloadC2SPacket.class)

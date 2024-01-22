@@ -89,15 +89,12 @@ public class NetworkingConfigurationTest implements ModInitializer {
 		}
 	}
 
-	public record ConfigurationCompletePacket() implements CustomPayload {
+	public static class ConfigurationCompletePacket implements CustomPayload {
+		public static final ConfigurationCompletePacket INSTANCE = new ConfigurationCompletePacket();
 		public static final CustomPayload.Id<ConfigurationCompletePacket> ID = new Id<>(new Identifier(NetworkingTestmods.ID, "configure_complete"));
-		public static final PacketCodec<PacketByteBuf, ConfigurationCompletePacket> CODEC = CustomPayload.codecOf(ConfigurationCompletePacket::write, ConfigurationCompletePacket::new);
+		public static final PacketCodec<PacketByteBuf, ConfigurationCompletePacket> CODEC = PacketCodec.unit(INSTANCE);
 
-		public ConfigurationCompletePacket(PacketByteBuf buf) {
-			this();
-		}
-
-		public void write(PacketByteBuf buf) {
+		private ConfigurationCompletePacket() {
 		}
 
 		@Override

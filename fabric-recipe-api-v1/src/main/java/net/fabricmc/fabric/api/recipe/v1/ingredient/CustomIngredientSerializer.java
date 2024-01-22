@@ -66,5 +66,10 @@ public interface CustomIngredientSerializer<T extends CustomIngredient> {
 	 */
 	Codec<T> getCodec(boolean allowEmpty);
 
+	/**
+	 * {@return the packet codec for serializing this ingredient}.
+	 *
+	 * @see Ingredient#PACKET_CODEC
+	 */
 	PacketCodec<RegistryByteBuf, T> getPacketCodec();
 }

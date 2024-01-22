@@ -44,7 +44,7 @@
  * </dl>
  *
  * <p>In addition, this API includes helpers for {@linkplain
- * net.fabricmc.fabric.api.networking.v1.PacketByteBufs buffer creations} and {@linkplain
+ * net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry registering custom packet payloads} and {@linkplain
  * net.fabricmc.fabric.api.networking.v1.PlayerLookup player lookups}.
  */
 

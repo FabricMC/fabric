@@ -24,8 +24,10 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.thread.ThreadExecutor;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
@@ -36,6 +38,11 @@ import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
  *
  * <p>Client-side networking functionalities include receiving clientbound packets,
  * sending serverbound packets, and events related to client-side network handlers.
+ * Packets <strong>received</strong> by this class must be registered to {@link
+ * PayloadTypeRegistry#configurationS2C()} on both ends.
+ * Packets <strong>sent</strong> by this class must be registered to {@link
+ * PayloadTypeRegistry#configurationC2S()} on both ends.
+ * Packets must be registered before registering any receivers.
  *
  * <p>This class should be only used on the physical client and for the logical client.
  *
@@ -55,6 +62,7 @@ public final class ClientConfigurationNetworking {
 	 * @param type the packet type
 	 * @param handler the handler
 	 * @return false if a handler is already registered to the channel
+	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#configurationS2C() registered} yet
 	 * @see ClientConfigurationNetworking#unregisterGlobalReceiver(CustomPayload.Type)
 	 * @see ClientConfigurationNetworking#registerReceiver(CustomPayload.Type, ConfigurationPayloadHandler)
 	 */
@@ -101,6 +109,7 @@ public final class ClientConfigurationNetworking {
 	 * @param type the packet type
 	 * @param handler the handler
 	 * @return {@code false} if a handler is already registered for the type
+	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#configurationS2C() registered} yet
 	 * @throws IllegalStateException if the client is not connected to a server
 	 * @see ClientPlayConnectionEvents#INIT
 	 */
@@ -214,6 +223,8 @@ public final class ClientConfigurationNetworking {
 	/**
 	 * Sends a packet to the connected server.
 	 *
+	 * <p>Any packets sent must be {@linkplain PayloadTypeRegistry#configurationC2S() registered}.</p>
+	 *
 	 * @param payload to be sent
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
@@ -235,23 +246,23 @@ public final class ClientConfigurationNetworking {
 	}
 
 	/**
-	 * A thread-safe packet handler utilizing {@link CustomPayload}.
+	 * A packet handler utilizing {@link CustomPayload}.
 	 * @param <T> the type of the packet
 	 */
 	@FunctionalInterface
 	public interface ConfigurationPayloadHandler<T extends CustomPayload> {
 		/**
-		 * Handles the incoming packet. This is called on the render thread, and can safely
-		 * call client methods.
+		 * Handles the incoming packet.
+		 *
+		 * <p>Unlike {@link ClientPlayNetworking.PlayPayloadHandler} this method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
+		 * Modification to the game should be {@linkplain ThreadExecutor#submit(Runnable) scheduled}.
 		 *
 		 * <p>An example usage of this is to display an overlay message:
 		 * <pre>{@code
 		 * // See FabricPacket for creating the packet
-		 * ClientConfigurationNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (player, packet, responseSender) -> {
-		 * 	MinecraftClient.getInstance().inGameHud.setOverlayMessage(packet.message(), true);
+		 * ClientConfigurationNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (packet, responseSender) -> {
 		 * });
 		 * }</pre>
-		 *
 		 *
 		 * @param payload the packet payload
 		 * @param responseSender the packet sender
