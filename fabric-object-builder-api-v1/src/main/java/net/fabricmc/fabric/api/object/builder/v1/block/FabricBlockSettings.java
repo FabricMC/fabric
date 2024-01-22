@@ -110,6 +110,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	/**
 	 * @deprecated replace with {@link AbstractBlock.Settings#copy(AbstractBlock)}
 	 */
+	@Deprecated
 	public static FabricBlockSettings copyOf(AbstractBlock block) {
 		return new FabricBlockSettings(((AbstractBlockAccessor) block).getSettings());
 	}
