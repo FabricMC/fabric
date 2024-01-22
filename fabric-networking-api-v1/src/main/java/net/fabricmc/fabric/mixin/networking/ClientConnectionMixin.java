@@ -19,9 +19,21 @@ package net.fabricmc.fabric.mixin.networking;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.netty.channel.ChannelHandlerContext;
+
+import net.fabricmc.fabric.api.networking.v1.ServerCookieStore;
+import net.fabricmc.fabric.api.networking.v1.ServerTransferable;
+
+import net.fabricmc.fabric.impl.networking.ServerTransferMeta;
+
+import net.minecraft.network.packet.s2c.common.CookieRequestS2CPacket;
+import net.minecraft.network.packet.s2c.common.ServerTransferS2CPacket;
+
+import net.minecraft.network.packet.s2c.common.StoreCookieS2CPacket;
+
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -47,7 +59,7 @@ import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
 
 @Mixin(ClientConnection.class)
-abstract class ClientConnectionMixin implements ChannelInfoHolder {
+abstract class ClientConnectionMixin implements ChannelInfoHolder, ServerTransferMeta, ServerTransferable, ServerCookieStore {
 	@Shadow
 	private PacketListener packetListener;
 
@@ -57,8 +69,15 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 	@Shadow
 	public abstract void send(Packet<?> packet, @Nullable PacketCallbacks arg);
 
+	@Shadow
+	public abstract void send(Packet<?> packet);
+
 	@Unique
 	private Map<NetworkPhase, Collection<Identifier>> playChannels;
+	@Unique
+	private final ConcurrentHashMap<Identifier, CompletableFuture<byte[]>> pendingCookieRequests = new ConcurrentHashMap<>();
+	@Unique
+	private boolean wasTransferred = false;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddedFields(NetworkSide side, CallbackInfo ci) {
@@ -109,5 +128,40 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 	@Override
 	public Collection<Identifier> fabric_getPendingChannelsNames(NetworkPhase state) {
 		return this.playChannels.computeIfAbsent(state, (key) -> Collections.newSetFromMap(new ConcurrentHashMap<>()));
+	}
+
+	@Override
+	public void fabric_setTransferred() {
+		this.wasTransferred = true;
+	}
+
+	@Override
+	public void fabric_invokeCookieCallback(Identifier cookieId, byte[] cookie) {
+		CompletableFuture<byte[]> future = pendingCookieRequests.remove(cookieId);
+		if (future == null) return;
+		future.complete(cookie);
+	}
+
+	@Override
+	public void transferToServer(String host, int port) {
+		send(new ServerTransferS2CPacket(host, port));
+	}
+
+	@Override
+	public boolean wasTransferred() {
+		return wasTransferred;
+	}
+
+	@Override
+	public void setCookie(Identifier cookieId, byte[] cookie) {
+		send(new StoreCookieS2CPacket(cookieId, cookie));
+	}
+
+	@Override
+	public CompletableFuture<byte[]> getCookie(Identifier cookieId) {
+		send(new CookieRequestS2CPacket(cookieId));
+		CompletableFuture<byte[]> future = new CompletableFuture<>();
+		pendingCookieRequests.put(cookieId, future);
+		return future;
 	}
 }
