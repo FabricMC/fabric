@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.networking.payload;
+package net.fabricmc.fabric.impl.networking;
 
-public sealed interface ResolvedPayload extends ResolvablePayload permits TypedPayload, UntypedPayload {
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.util.Identifier;
+
+public interface CustomPayloadTypeProvider<B extends PacketByteBuf> {
+	CustomPayload.Type<B, ? extends CustomPayload> get(B packetByteBuf, Identifier identifier);
 }

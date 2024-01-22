@@ -21,16 +21,15 @@ import java.util.concurrent.CompletionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.impl.registry.sync.FabricRegistryInit;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
+import net.fabricmc.fabric.impl.registry.sync.SyncCompletePayload;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
-import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkHandlerAccessor;
 
 public class FabricRegistryClientInit implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricRegistryClientInit.class);
@@ -40,18 +39,20 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 		registerSyncPacketReceiver(RegistrySyncManager.DIRECT_PACKET_HANDLER);
 	}
 
-	private void registerSyncPacketReceiver(RegistryPacketHandler packetHandler) {
-		ClientConfigurationNetworking.registerGlobalReceiver(packetHandler.getPacketId(), (client, handler, buf, responseSender) -> {
-			RegistrySyncManager.receivePacket(client, packetHandler, buf, RegistrySyncManager.DEBUG || !client.isInSingleplayer())
+	private <T extends RegistryPacketHandler.RegistrySyncPayload> void registerSyncPacketReceiver(RegistryPacketHandler<T> packetHandler) {
+		ClientConfigurationNetworking.registerGlobalReceiver(packetHandler.getPacketId(), (payload, context) -> {
+			MinecraftClient client = MinecraftClient.getInstance();
+
+			RegistrySyncManager.receivePacket(client, packetHandler, payload, RegistrySyncManager.DEBUG || !client.isInSingleplayer())
 					.whenComplete((complete, throwable) -> {
 						if (throwable != null) {
 							LOGGER.error("Registry remapping failed!", throwable);
-							client.execute(() -> ((ClientCommonNetworkHandlerAccessor) handler).getConnection().disconnect(getText(throwable)));
+							client.execute(() -> context.responseSender().disconnect(getText(throwable)));
 							return;
 						}
 
 						if (complete) {
-							handler.sendPacket(ClientConfigurationNetworking.createC2SPacket(FabricRegistryInit.SYNC_COMPLETE_ID, PacketByteBufs.create()));
+							context.responseSender().sendPacket(SyncCompletePayload.INSTANCE);
 						}
 					});
 		});

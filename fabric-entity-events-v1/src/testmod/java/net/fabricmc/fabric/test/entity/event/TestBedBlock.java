@@ -46,7 +46,7 @@ public class TestBedBlock extends Block {
 	}
 
 	@Override
-	public ActionResult method_55766(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
 		if (state.get(OCCUPIED)) {
 			player.sendMessage(Text.translatable("block.minecraft.bed.occupied"), true);
 			return ActionResult.CONSUME;

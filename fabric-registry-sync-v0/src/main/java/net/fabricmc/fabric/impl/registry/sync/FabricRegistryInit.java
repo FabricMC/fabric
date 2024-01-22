@@ -17,22 +17,24 @@
 package net.fabricmc.fabric.impl.registry.sync;
 
 import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
 
 public class FabricRegistryInit implements ModInitializer {
-	public static final Identifier SYNC_COMPLETE_ID = new Identifier("fabric", "registry/sync/complete");
-
 	@Override
 	public void onInitialize() {
+		PayloadTypeRegistry.configurationC2S().register(SyncCompletePayload.ID, SyncCompletePayload.CODEC);
+		PayloadTypeRegistry.configurationS2C().register(DirectRegistryPacketHandler.Payload.ID, DirectRegistryPacketHandler.Payload.CODEC);
+
 		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register(RegistrySyncManager::configureClient);
-		ServerConfigurationNetworking.registerGlobalReceiver(SYNC_COMPLETE_ID, (server, handler, buf, responseSender) -> {
-			handler.completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
+		ServerConfigurationNetworking.registerGlobalReceiver(SyncCompletePayload.ID, (payload, context) -> {
+			context.networkHandler().completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
 		});
 
 		// Synced in PlaySoundS2CPacket.

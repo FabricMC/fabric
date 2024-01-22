@@ -26,15 +26,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.network.handler.PacketEncoder;
+import net.minecraft.network.handler.EncoderHandler;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientSync;
 import net.fabricmc.fabric.impl.recipe.ingredient.SupportedIngredientsPacketEncoder;
 
-@Mixin(PacketEncoder.class)
-public class PacketEncoderMixin implements SupportedIngredientsPacketEncoder {
+@Mixin(EncoderHandler.class)
+public class EncoderHandlerMixin implements SupportedIngredientsPacketEncoder {
 	@Unique
 	private Set<Identifier> fabric_supportedCustomIngredients = Set.of();
 
@@ -46,7 +46,7 @@ public class PacketEncoderMixin implements SupportedIngredientsPacketEncoder {
 	@Inject(
 			at = @At(
 					value = "INVOKE",
-					target = "net/minecraft/network/packet/Packet.write(Lnet/minecraft/network/PacketByteBuf;)V"
+					target = "Lnet/minecraft/network/codec/PacketCodec;encode(Ljava/lang/Object;Ljava/lang/Object;)V"
 			),
 			method = "encode(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;Lio/netty/buffer/ByteBuf;)V"
 	)
@@ -59,7 +59,7 @@ public class PacketEncoderMixin implements SupportedIngredientsPacketEncoder {
 					// Normal target after writing
 					@At(
 							value = "INVOKE",
-							target = "net/minecraft/network/packet/Packet.write(Lnet/minecraft/network/PacketByteBuf;)V",
+							target = "Lnet/minecraft/network/codec/PacketCodec;encode(Ljava/lang/Object;Ljava/lang/Object;)V",
 							shift = At.Shift.AFTER,
 							by = 1
 					),

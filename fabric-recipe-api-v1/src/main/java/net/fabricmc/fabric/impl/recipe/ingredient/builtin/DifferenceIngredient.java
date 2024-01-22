@@ -23,7 +23,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 
@@ -75,6 +76,11 @@ public class DifferenceIngredient implements CustomIngredient {
 		private static final Identifier ID = new Identifier("fabric", "difference");
 		private static final Codec<DifferenceIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
 		private static final Codec<DifferenceIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
+		private static final PacketCodec<RegistryByteBuf, DifferenceIngredient> PACKET_CODEC = PacketCodec.tuple(
+				Ingredient.PACKET_CODEC, DifferenceIngredient::getBase,
+				Ingredient.PACKET_CODEC, DifferenceIngredient::getSubtracted,
+				DifferenceIngredient::new
+		);
 
 		private static Codec<DifferenceIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
 			return RecordCodecBuilder.create(instance ->
@@ -96,16 +102,8 @@ public class DifferenceIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public DifferenceIngredient read(PacketByteBuf buf) {
-			Ingredient base = Ingredient.fromPacket(buf);
-			Ingredient subtracted = Ingredient.fromPacket(buf);
-			return new DifferenceIngredient(base, subtracted);
-		}
-
-		@Override
-		public void write(PacketByteBuf buf, DifferenceIngredient ingredient) {
-			ingredient.base.write(buf);
-			ingredient.subtracted.write(buf);
+		public PacketCodec<RegistryByteBuf, DifferenceIngredient> getPacketCodec() {
+			return PACKET_CODEC;
 		}
 	}
 }

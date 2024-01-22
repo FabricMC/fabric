@@ -19,7 +19,8 @@ package net.fabricmc.fabric.api.screenhandler.v1;
 import java.util.Objects;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
@@ -37,9 +38,18 @@ import net.minecraft.screen.ScreenHandlerType;
  * <h2>Example</h2>
  * <pre>
  * {@code
+ * // Data class
+ * public record OvenData(String label) {
+ *     public static final PacketCodec<RegistryByteBuf, OvenData> PACKET_CODEC = PacketCodec.tuple(
+ *     	PacketCodecs.STRING,
+ *     	OvenData::label,
+ *     	OvenData::new
+ *     );
+ * }
+ *
  * // Creating and registering the type
  * public static final ExtendedScreenHandlerType<OvenScreenHandler> OVEN =
- * 	new ExtendedScreenHandlerType((syncId, inventory, buf) -> ...);
+ * 	new ExtendedScreenHandlerType((syncId, inventory, data) -> ..., OvenData.PACKET_CODEC);
  * Registry.register(Registry.SCREEN_HANDLER, new Identifier(...), OVEN);
  *
  * // Note: remember to also register the screen using vanilla's HandledScreens!
@@ -60,23 +70,26 @@ import net.minecraft.screen.ScreenHandlerType;
  * </pre>
  *
  * @param <T> the type of screen handler created by this type
+ * @param <D> the type of the data
  */
-public class ExtendedScreenHandlerType<T extends ScreenHandler> extends ScreenHandlerType<T> {
-	private final ExtendedFactory<T> factory;
+public class ExtendedScreenHandlerType<T extends ScreenHandler, D> extends ScreenHandlerType<T> {
+	private final ExtendedFactory<T, D> factory;
+	private final PacketCodec<RegistryByteBuf, D> packetCodec;
 
 	/**
 	 * Constructs an extended screen handler type.
 	 *
-	 * @param factory the screen handler factory used for {@link #create(int, PlayerInventory, PacketByteBuf)}
+	 * @param factory the screen handler factory used for {@link #create(int, PlayerInventory, Object)}
 	 */
-	public ExtendedScreenHandlerType(ExtendedFactory<T> factory) {
+	public ExtendedScreenHandlerType(ExtendedFactory<T, D> factory, PacketCodec<RegistryByteBuf, D> packetCodec) {
 		super(null, FeatureFlags.VANILLA_FEATURES);
 		this.factory = Objects.requireNonNull(factory, "screen handler factory cannot be null");
+		this.packetCodec = Objects.requireNonNull(packetCodec, "packet codec cannot be null");
 	}
 
 	/**
-	 * @throws UnsupportedOperationException always; use {@link #create(int, PlayerInventory, PacketByteBuf)}
-	 * @deprecated Use {@link #create(int, PlayerInventory, PacketByteBuf)} instead.
+	 * @throws UnsupportedOperationException always; use {@link #create(int, PlayerInventory, Object)}
+	 * @deprecated Use {@link #create(int, PlayerInventory, Object)} instead.
 	 */
 	@Deprecated
 	@Override
@@ -89,11 +102,18 @@ public class ExtendedScreenHandlerType<T extends ScreenHandler> extends ScreenHa
 	 *
 	 * @param syncId    the sync ID
 	 * @param inventory the player inventory
-	 * @param buf       the buffer containing the synced opening data
+	 * @param data      the synced opening data
 	 * @return the created screen handler
 	 */
-	public T create(int syncId, PlayerInventory inventory, PacketByteBuf buf) {
-		return factory.create(syncId, inventory, buf);
+	public T create(int syncId, PlayerInventory inventory, D data) {
+		return factory.create(syncId, inventory, data);
+	}
+
+	/**
+	 * @return the packet codec for serializing the data of this screen handler
+	 */
+	public PacketCodec<RegistryByteBuf, D> getPacketCodec() {
+		return packetCodec;
 	}
 
 	/**
@@ -103,18 +123,19 @@ public class ExtendedScreenHandlerType<T extends ScreenHandler> extends ScreenHa
 	 * server too.
 	 *
 	 * @param <T> the type of screen handlers created
-	 * @see #create(int, PlayerInventory, PacketByteBuf)
+	 * @param <D> the type of the data
+	 * @see #create(int, PlayerInventory, Object)
 	 */
 	@FunctionalInterface
-	public interface ExtendedFactory<T extends ScreenHandler> {
+	public interface ExtendedFactory<T extends ScreenHandler, D> {
 		/**
 		 * Creates a new screen handler with additional screen opening data.
 		 *
 		 * @param syncId    the synchronization ID
 		 * @param inventory the player inventory
-		 * @param buf       the packet buffer
+		 * @param data      the synced data
 		 * @return the created screen handler
 		 */
-		T create(int syncId, PlayerInventory inventory, PacketByteBuf buf);
+		T create(int syncId, PlayerInventory inventory, D data);
 	}
 }

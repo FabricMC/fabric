@@ -21,13 +21,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.c2s.common.CommonPongC2SPacket;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
-import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
-import net.fabricmc.fabric.impl.networking.payload.RetainedPayload;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
 
@@ -35,23 +34,20 @@ import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
 public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerExtensions {
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	private void handleCustomPayloadReceivedAsync(CustomPayloadC2SPacket packet, CallbackInfo ci) {
-		if (packet.payload() instanceof ResolvablePayload payload) {
-			boolean handled;
+		final CustomPayload payload = packet.payload();
 
-			if (getAddon() instanceof ServerPlayNetworkAddon addon) {
-				handled = addon.handle(payload);
-			} else if (getAddon() instanceof ServerConfigurationNetworkAddon addon) {
-				handled = addon.handle(payload);
-			} else {
-				throw new IllegalStateException("Unknown addon");
-			}
+		boolean handled;
 
-			if (handled) {
-				ci.cancel();
-			} else if (payload instanceof RetainedPayload retained) {
-				retained.buf().skipBytes(retained.buf().readableBytes());
-				retained.buf().release();
-			}
+		if (getAddon() instanceof ServerPlayNetworkAddon addon) {
+			handled = addon.handle(payload);
+		} else if (getAddon() instanceof ServerConfigurationNetworkAddon addon) {
+			handled = addon.handle(payload);
+		} else {
+			throw new IllegalStateException("Unknown addon");
+		}
+
+		if (handled) {
+			ci.cancel();
 		}
 	}
 

@@ -26,33 +26,31 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
-import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.PacketCallbacks;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
 import net.minecraft.network.packet.s2c.login.LoginCompressionS2CPacket;
 import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.LoginPacketSender;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
-import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
-import net.fabricmc.fabric.impl.networking.payload.FabricPacketLoginQueryRequestPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
-public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLoginNetworking.LoginQueryResponseHandler> implements PacketSender {
+public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLoginNetworking.LoginQueryResponseHandler> implements LoginPacketSender {
 	private final ClientConnection connection;
 	private final ServerLoginNetworkHandler handler;
 	private final MinecraftServer server;
@@ -161,20 +159,14 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	}
 
 	@Override
+	public Packet<?> createPacket(CustomPayload packet) {
+		throw new UnsupportedOperationException("Cannot send CustomPayload during login");
+	}
+
+	@Override
 	public Packet<?> createPacket(Identifier channelName, PacketByteBuf buf) {
 		int queryId = this.queryIdFactory.nextId();
 		return new LoginQueryRequestS2CPacket(queryId, new PacketByteBufLoginQueryRequestPayload(channelName, buf));
-	}
-
-	@Override
-	public Packet<?> createPacket(FabricPacket packet) {
-		int queryId = this.queryIdFactory.nextId();
-		return new LoginQueryRequestS2CPacket(queryId, new FabricPacketLoginQueryRequestPayload(packet));
-	}
-
-	@Override
-	public void sendPacket(Packet<?> packet, @Nullable GenericFutureListener<? extends io.netty.util.concurrent.Future<? super Void>> callback) {
-		sendPacket(packet, GenericFutureListenerHolder.create(callback));
 	}
 
 	@Override
@@ -182,6 +174,13 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 		Objects.requireNonNull(packet, "Packet cannot be null");
 
 		this.connection.send(packet, callback);
+	}
+
+	@Override
+	public void disconnect(Text disconnectReason) {
+		Objects.requireNonNull(disconnectReason, "Disconnect reason cannot be null");
+
+		this.connection.disconnect(disconnectReason);
 	}
 
 	public void registerOutgoingPacket(LoginQueryRequestS2CPacket packet) {

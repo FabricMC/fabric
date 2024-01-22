@@ -14,22 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.networking.payload;
+package net.fabricmc.fabric.impl.networking;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.s2c.login.LoginQueryRequestPayload;
-import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
-
-public record FabricPacketLoginQueryRequestPayload(FabricPacket fabricPacket) implements LoginQueryRequestPayload {
-	@Override
-	public void write(PacketByteBuf buf) {
-		fabricPacket.write(buf);
-	}
-
-	@Override
-	public Identifier id() {
-		return fabricPacket.getType().getId();
-	}
+public interface FabricCustomPayloadPacketCodec<B extends PacketByteBuf> {
+	void fabric_setPacketCodecProvider(CustomPayloadTypeProvider<B> customPayloadTypeProvider);
 }

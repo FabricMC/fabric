@@ -20,7 +20,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -31,7 +30,7 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;
 import net.fabricmc.fabric.test.screenhandler.screen.BoxScreenHandler;
 
-public class BoxBlockEntity extends LootableContainerBlockEntity implements ExtendedScreenHandlerFactory {
+public class BoxBlockEntity extends LootableContainerBlockEntity implements ExtendedScreenHandlerFactory<BlockPos> {
 	private DefaultedList<ItemStack> items = DefaultedList.ofSize(size(), ItemStack.EMPTY);
 
 	public BoxBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -64,7 +63,7 @@ public class BoxBlockEntity extends LootableContainerBlockEntity implements Exte
 	}
 
 	@Override
-	public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-		buf.writeBlockPos(pos);
+	public BlockPos getScreenOpeningData(ServerPlayerEntity player) {
+		return pos;
 	}
 }

@@ -30,7 +30,6 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 
@@ -44,7 +43,7 @@ public class CustomDamageTest implements ModInitializer {
 		FabricBrewingRecipeRegistry.registerPotionRecipe(Potions.WATER, Ingredient.ofItems(WEIRD_PICK), Potions.AWKWARD);
 	}
 
-	public static final CustomDamageHandler WEIRD_DAMAGE_HANDLER = (stack, amount, entity, breakCallback) -> {
+	public static final CustomDamageHandler WEIRD_DAMAGE_HANDLER = (stack, amount, entity, slot, breakCallback) -> {
 		// If sneaking, apply all damage to vanilla. Otherwise, increment a tag on the stack by one and don't apply any damage
 		if (entity.isSneaking()) {
 			return amount;
@@ -57,7 +56,7 @@ public class CustomDamageTest implements ModInitializer {
 
 	public static class WeirdPick extends PickaxeItem {
 		protected WeirdPick() {
-			super(ToolMaterials.GOLD, 1, -2.8F, new FabricItemSettings().customDamage(WEIRD_DAMAGE_HANDLER));
+			super(ToolMaterials.GOLD, 1, -2.8F, new Item.Settings().customDamage(WEIRD_DAMAGE_HANDLER));
 		}
 
 		@Override

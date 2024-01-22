@@ -16,10 +16,14 @@
 
 package net.fabricmc.fabric.test.screenhandler.screen;
 
+import java.util.Optional;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;
@@ -27,14 +31,8 @@ import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;
 public class PositionedBagScreenHandler extends BagScreenHandler implements PositionedScreenHandler {
 	private final BlockPos pos;
 
-	public PositionedBagScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
-		this(syncId, playerInventory, new SimpleInventory(9), readOptionalPos(buf));
-	}
-
-	private static BlockPos readOptionalPos(PacketByteBuf buf) {
-		boolean hasPos = buf.readBoolean();
-		BlockPos pos = buf.readBlockPos();
-		return hasPos ? pos : null;
+	public PositionedBagScreenHandler(int syncId, PlayerInventory playerInventory, BagData data) {
+		this(syncId, playerInventory, new SimpleInventory(9), data.pos().orElse(null));
 	}
 
 	public PositionedBagScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, BlockPos pos) {
@@ -45,5 +43,9 @@ public class PositionedBagScreenHandler extends BagScreenHandler implements Posi
 	@Override
 	public BlockPos getPos() {
 		return pos;
+	}
+
+	public record BagData(Optional<BlockPos> pos) {
+		public static final PacketCodec<RegistryByteBuf, BagData> PACKET_CODEC = BlockPos.PACKET_CODEC.collect(PacketCodecs::optional).xmap(BagData::new, BagData::pos).cast();
 	}
 }
