@@ -76,7 +76,8 @@ public class AttachmentTestMod implements ModInitializer {
 				if (!"chunk_data".equals(wrapperProtoChunk.getAttached(PERSISTENT))) throw new AssertionError("Attachement is not accessible through WrapperProtoChunk");
 
 				Chunk farChunk = overworld.getChunkManager().getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z, ChunkStatus.EMPTY, true);
-				if (farChunk instanceof WrapperProtoChunk){
+
+				if (farChunk instanceof WrapperProtoChunk) {
 					LOGGER.warn("Far chunk alread generated, can't test persistence in ProtoChunk.");
 				} else {
 					if (!"protochunk_data".equals(farChunk.getAttached(PERSISTENT))) throw new AssertionError("ProtoChunk attachement did not persist");
