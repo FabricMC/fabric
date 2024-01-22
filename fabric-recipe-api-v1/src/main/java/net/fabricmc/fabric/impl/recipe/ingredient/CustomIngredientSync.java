@@ -88,15 +88,15 @@ public class CustomIngredientSync implements ModInitializer {
 			}
 		});
 
-		ServerConfigurationNetworking.registerGlobalReceiver(CustomIngredientPayloadC2S.ID, (payload, handler, responseSender) -> {
+		ServerConfigurationNetworking.registerGlobalReceiver(CustomIngredientPayloadC2S.ID, (payload, context) -> {
 			Set<Identifier> supportedCustomIngredients = decodeResponsePayload(payload);
-			ChannelHandler packetEncoder = ((ServerCommonNetworkHandlerAccessor) handler).getConnection().channel.pipeline().get("encoder");
+			ChannelHandler packetEncoder = ((ServerCommonNetworkHandlerAccessor) context.networkHandler()).getConnection().channel.pipeline().get("encoder");
 
 			if (packetEncoder != null) { // Null in singleplayer
 				((SupportedIngredientsPacketEncoder) packetEncoder).fabric_setSupportedCustomIngredients(supportedCustomIngredients);
 			}
 
-			handler.completeTask(IngredientSyncTask.KEY);
+			context.networkHandler().completeTask(IngredientSyncTask.KEY);
 		});
 	}
 

@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
@@ -32,6 +33,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
@@ -40,6 +42,7 @@ import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientPlayNetworking.PlayPayloadHandler<?>> {
 	private final ClientPlayNetworkHandler handler;
 	private final MinecraftClient client;
+	private final ClientPlayNetworking.Context context;
 	private boolean sentInitialRegisterPacket;
 
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -48,6 +51,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		super(ClientNetworkingImpl.PLAY, handler.getConnection(), "ClientPlayNetworkAddon for " + handler.getProfile().getName());
 		this.handler = handler;
 		this.client = client;
+		this.context = new ContextImpl(client, client.player, this);
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkPhase.PLAY);
@@ -73,7 +77,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected void receive(ClientPlayNetworking.PlayPayloadHandler<?> handler, CustomPayload payload) {
 		this.client.execute(() -> {
-			((ClientPlayNetworking.PlayPayloadHandler) handler).receive(payload, client.player, ClientPlayNetworkAddon.this);
+			((ClientPlayNetworking.PlayPayloadHandler) handler).receive(payload, context);
 		});
 	}
 
@@ -131,5 +135,8 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected boolean isReservedChannel(Identifier channelName) {
 		return NetworkingImpl.isReservedCommonChannel(channelName);
+	}
+
+	private record ContextImpl(MinecraftClient client, ClientPlayerEntity player, PacketSender responseSender) implements ClientPlayNetworking.Context {
 	}
 }

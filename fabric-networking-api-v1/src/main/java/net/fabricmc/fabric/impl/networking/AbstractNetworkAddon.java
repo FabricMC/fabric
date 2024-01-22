@@ -102,6 +102,8 @@ public abstract class AbstractNetworkAddon<H> {
 		Objects.requireNonNull(handler, "Packet handler cannot be null");
 		assertNotReserved(channelName);
 
+		receiver.assertPayloadType(channelName);
+
 		Lock lock = this.lock.writeLock();
 		lock.lock();
 

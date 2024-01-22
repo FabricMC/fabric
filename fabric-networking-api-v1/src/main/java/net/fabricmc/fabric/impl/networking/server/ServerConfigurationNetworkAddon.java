@@ -28,6 +28,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.S2CConfigurationChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
@@ -41,12 +42,14 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerA
 public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ServerConfigurationNetworking.ConfigurationPacketHandler<?>> {
 	private final ServerConfigurationNetworkHandler handler;
 	private final MinecraftServer server;
+	private final ServerConfigurationNetworking.Context context;
 	private RegisterState registerState = RegisterState.NOT_SENT;
 
 	public ServerConfigurationNetworkAddon(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
 		super(ServerNetworkingImpl.CONFIGURATION, ((ServerCommonNetworkHandlerAccessor) handler).getConnection(), "ServerConfigurationNetworkAddon for " + handler.getDebugProfile().getName());
 		this.handler = handler;
 		this.server = server;
+		this.context = new ContextImpl(handler, this);
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkPhase.CONFIGURATION);
@@ -102,7 +105,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	protected void receive(ServerConfigurationNetworking.ConfigurationPacketHandler<?> handler, CustomPayload payload) {
-		((ServerConfigurationNetworking.ConfigurationPacketHandler) handler).receive(payload, this.handler, this);
+		((ServerConfigurationNetworking.ConfigurationPacketHandler) handler).receive(payload, this.context);
 	}
 
 	// impl details
@@ -175,5 +178,8 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	public ChannelInfoHolder getChannelInfoHolder() {
 		return (ChannelInfoHolder) ((ServerCommonNetworkHandlerAccessor) handler).getConnection();
+	}
+
+	private record ContextImpl(ServerConfigurationNetworkHandler networkHandler, PacketSender responseSender) implements ServerConfigurationNetworking.Context {
 	}
 }

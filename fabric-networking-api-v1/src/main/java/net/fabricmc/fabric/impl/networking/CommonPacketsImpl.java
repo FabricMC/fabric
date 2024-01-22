@@ -43,14 +43,14 @@ public class CommonPacketsImpl {
 		PayloadTypeRegistry.playC2S().register(CommonRegisterPayload.ID, CommonRegisterPayload.CODEC);
 		PayloadTypeRegistry.playS2C().register(CommonRegisterPayload.ID, CommonRegisterPayload.CODEC);
 
-		ServerConfigurationNetworking.registerGlobalReceiver(CommonVersionPayload.ID, (payload, handler, responseSender) -> {
-			ServerConfigurationNetworkAddon addon = ServerNetworkingImpl.getAddon(handler);
+		ServerConfigurationNetworking.registerGlobalReceiver(CommonVersionPayload.ID, (payload, context) -> {
+			ServerConfigurationNetworkAddon addon = ServerNetworkingImpl.getAddon(context.networkHandler());
 			addon.onCommonVersionPacket(getNegotiatedVersion(payload));
-			handler.completeTask(CommonVersionConfigurationTask.KEY);
+			context.networkHandler().completeTask(CommonVersionConfigurationTask.KEY);
 		});
 
-		ServerConfigurationNetworking.registerGlobalReceiver(CommonRegisterPayload.ID, (payload, handler, responseSender) -> {
-			ServerConfigurationNetworkAddon addon = ServerNetworkingImpl.getAddon(handler);
+		ServerConfigurationNetworking.registerGlobalReceiver(CommonRegisterPayload.ID, (payload, context) -> {
+			ServerConfigurationNetworkAddon addon = ServerNetworkingImpl.getAddon(context.networkHandler());
 
 			if (CommonRegisterPayload.PLAY_PHASE.equals(payload.phase())) {
 				if (payload.version() != addon.getNegotiatedVersion()) {
@@ -64,7 +64,7 @@ public class CommonPacketsImpl {
 				addon.onCommonRegisterPacket(payload);
 			}
 
-			handler.completeTask(CommonRegisterConfigurationTask.KEY);
+			context.networkHandler().completeTask(CommonRegisterConfigurationTask.KEY);
 		});
 
 		// Create a configuration task to send and receive the common packets

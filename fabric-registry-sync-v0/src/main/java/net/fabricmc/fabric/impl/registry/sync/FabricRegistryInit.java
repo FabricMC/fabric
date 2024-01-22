@@ -33,8 +33,8 @@ public class FabricRegistryInit implements ModInitializer {
 		PayloadTypeRegistry.configurationS2C().register(DirectRegistryPacketHandler.Payload.ID, DirectRegistryPacketHandler.Payload.CODEC);
 
 		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register(RegistrySyncManager::configureClient);
-		ServerConfigurationNetworking.registerGlobalReceiver(SyncCompletePayload.ID, (payload, handler, responseSender) -> {
-			handler.completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
+		ServerConfigurationNetworking.registerGlobalReceiver(SyncCompletePayload.ID, (payload, context) -> {
+			context.networkHandler().completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
 		});
 
 		// Synced in PlaySoundS2CPacket.

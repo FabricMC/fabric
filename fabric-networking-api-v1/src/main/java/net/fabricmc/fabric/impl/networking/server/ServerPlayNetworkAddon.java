@@ -25,8 +25,10 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.S2CPlayChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -39,11 +41,13 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	private final ServerPlayNetworkHandler handler;
 	private final MinecraftServer server;
 	private boolean sentInitialRegisterPacket;
+	private final ServerPlayNetworking.Context context;
 
 	public ServerPlayNetworkAddon(ServerPlayNetworkHandler handler, ClientConnection connection, MinecraftServer server) {
 		super(ServerNetworkingImpl.PLAY, connection, "ServerPlayNetworkAddon for " + handler.player.getDisplayName());
 		this.handler = handler;
 		this.server = server;
+		this.context = new ContextImpl(handler.player, this);
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkPhase.PLAY);
@@ -64,7 +68,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected void receive(ServerPlayNetworking.PlayPayloadHandler<?> payloadHandler, CustomPayload payload) {
 		this.server.execute(() -> {
-			((ServerPlayNetworking.PlayPayloadHandler) payloadHandler).receive(payload, ServerPlayNetworkAddon.this.handler.player, ServerPlayNetworkAddon.this);
+			((ServerPlayNetworking.PlayPayloadHandler) payloadHandler).receive(payload, ServerPlayNetworkAddon.this.context);
 		});
 	}
 
@@ -122,5 +126,8 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected boolean isReservedChannel(Identifier channelName) {
 		return NetworkingImpl.isReservedCommonChannel(channelName);
+	}
+
+	private record ContextImpl(ServerPlayerEntity player, PacketSender responseSender) implements ServerPlayNetworking.Context {
 	}
 }

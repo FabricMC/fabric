@@ -76,11 +76,7 @@ public final class GlobalReceiverRegistry<H> {
 			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel with name \"%s\"", channelName));
 		}
 
-		if (payloadTypeRegistry != null) {
-			if (payloadTypeRegistry.get(channelName) == null) {
-				throw new IllegalArgumentException(String.format("Cannot register handler as no payload type has been registered with name \"%s\" for %s %s", channelName, side, phase));
-			}
-		}
+		assertPayloadType(channelName);
 
 		Lock lock = this.lock.writeLock();
 		lock.lock();
@@ -209,6 +205,16 @@ public final class GlobalReceiverRegistry<H> {
 			}
 		} finally {
 			lock.unlock();
+		}
+	}
+
+	public void assertPayloadType(Identifier channelName) {
+		if (payloadTypeRegistry == null) {
+			return;
+		}
+
+		if (payloadTypeRegistry.get(channelName) == null) {
+			throw new IllegalArgumentException(String.format("Cannot register handler as no payload type has been registered with name \"%s\" for %s %s", channelName, side, phase));
 		}
 	}
 

@@ -30,6 +30,7 @@ import net.fabricmc.fabric.api.client.networking.v1.C2SConfigurationChannelEvent
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
@@ -40,12 +41,14 @@ import net.fabricmc.fabric.mixin.networking.client.accessor.ClientConfigurationN
 public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ClientConfigurationNetworking.ConfigurationPayloadHandler<?>> {
 	private final ClientConfigurationNetworkHandler handler;
 	private final MinecraftClient client;
+	private final ContextImpl context;
 	private boolean sentInitialRegisterPacket;
 
 	public ClientConfigurationNetworkAddon(ClientConfigurationNetworkHandler handler, MinecraftClient client) {
 		super(ClientNetworkingImpl.CONFIGURATION, ((ClientCommonNetworkHandlerAccessor) handler).getConnection(), "ClientPlayNetworkAddon for " + ((ClientConfigurationNetworkHandlerAccessor) handler).getProfile().getName());
 		this.handler = handler;
 		this.client = client;
+		this.context = new ContextImpl(this);
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkPhase.CONFIGURATION);
@@ -72,7 +75,7 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	protected void receive(ClientConfigurationNetworking.ConfigurationPayloadHandler<?> handler, CustomPayload payload) {
-		((ClientConfigurationNetworking.ConfigurationPayloadHandler) handler).receive(payload, this);
+		((ClientConfigurationNetworking.ConfigurationPayloadHandler) handler).receive(payload, this.context);
 	}
 
 	// impl details
@@ -138,5 +141,8 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	public ChannelInfoHolder getChannelInfoHolder() {
 		return (ChannelInfoHolder) ((ClientCommonNetworkHandlerAccessor) handler).getConnection();
+	}
+
+	private record ContextImpl(PacketSender responseSender) implements ClientConfigurationNetworking.Context {
 	}
 }

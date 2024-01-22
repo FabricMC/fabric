@@ -18,8 +18,6 @@ package net.fabricmc.fabric.test.networking.client.play;
 
 import com.mojang.brigadier.Command;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -30,18 +28,17 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 import net.fabricmc.fabric.test.networking.play.NetworkingPlayPacketTest;
 
-public final class NetworkingPlayPacketClientTest implements ClientModInitializer, ClientPlayNetworking.PlayPayloadHandler<NetworkingPlayPacketTest.OverlayPacket> {
+public final class NetworkingPlayPacketClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// Register the payload only on the client.
 		PayloadTypeRegistry.playC2S().register(UnknownPayload.ID, UnknownPayload.CODEC);
 
-		ClientPlayConnectionEvents.INIT.register((handler, client) -> ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.OverlayPacket.ID, this));
+		ClientPlayConnectionEvents.INIT.register((handler, client) -> ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.OverlayPacket.ID, (payload, context) -> context.client().inGameHud.setOverlayMessage(payload.message(), true)));
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
 				ClientCommandManager.literal("clientnetworktestcommand")
@@ -50,11 +47,6 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 							return Command.SINGLE_SUCCESS;
 						}
 		))));
-	}
-
-	@Override
-	public void receive(NetworkingPlayPacketTest.OverlayPacket payload, ClientPlayerEntity player, PacketSender sender) {
-		MinecraftClient.getInstance().inGameHud.setOverlayMessage(payload.message(), true);
 	}
 
 	private record UnknownPayload(String data) implements CustomPayload {

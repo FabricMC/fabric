@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.networking.v1;
 import java.util.Objects;
 import java.util.Set;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.listener.ClientCommonPacketListener;
@@ -259,10 +260,22 @@ public final class ServerConfigurationNetworking {
 		 *
 		 *
 		 * @param payload the packet payload
-		 * @param networkHandler the network handler
-		 * @param responseSender the packet sender
+		 * @param context the configuration networking context
 		 * @see CustomPayload
 		 */
-		void receive(T payload, ServerConfigurationNetworkHandler networkHandler, PacketSender responseSender);
+		void receive(T payload, Context context);
+	}
+
+	@ApiStatus.NonExtendable
+	public interface Context {
+		/**
+		 * @return The ServerConfigurationNetworkHandler instance
+		 */
+		ServerConfigurationNetworkHandler networkHandler();
+
+		/**
+		 * @return The packet sender
+		 */
+		PacketSender responseSender();
 	}
 }

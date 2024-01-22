@@ -78,6 +78,9 @@ public class CommonPacketTests {
 	private ServerConfigurationNetworkHandler serverNetworkHandler;
 	private ServerConfigurationNetworkAddon serverAddon;
 
+	private ClientConfigurationNetworking.Context clientContext;
+	private ServerConfigurationNetworking.Context serverContext;
+
 	@BeforeAll
 	static void beforeAll() {
 		CommonPacketsImpl.init();
@@ -87,7 +90,7 @@ public class CommonPacketTests {
 		PayloadTypeRegistry.playS2C().register(TestPayload.ID, TestPayload.CODEC);
 
 		// Listen for the payload on the client
-		ClientPlayNetworking.registerGlobalReceiver(TestPayload.ID, (payload, player, responseSender) -> {
+		ClientPlayNetworking.registerGlobalReceiver(TestPayload.ID, (payload, context) -> {
 			System.out.println(payload.data());
 		});
 	}
@@ -126,6 +129,19 @@ public class CommonPacketTests {
 		when(serverAddon.getChannelInfoHolder()).thenReturn(channelInfoHolder);
 
 		ClientNetworkingImpl.setClientConfigurationAddon(clientAddon);
+
+		clientContext = () -> packetSender;
+		serverContext = new ServerConfigurationNetworking.Context() {
+			@Override
+			public ServerConfigurationNetworkHandler networkHandler() {
+				return serverNetworkHandler;
+			}
+
+			@Override
+			public PacketSender responseSender() {
+				return packetSender;
+			}
+		};
 	}
 
 	// Test handling the version packet on the client
@@ -139,7 +155,7 @@ public class CommonPacketTests {
 		buf.writeIntArray(new int[]{1, 2, 3});
 
 		CommonVersionPayload payload = CommonVersionPayload.CODEC.decode(buf);
-		packetHandler.receive(payload, packetSender);
+		packetHandler.receive(payload, clientContext);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
@@ -164,7 +180,7 @@ public class CommonPacketTests {
 
 		assertThrows(UnsupportedOperationException.class, () -> {
 			CommonVersionPayload payload = CommonVersionPayload.CODEC.decode(buf);
-			packetHandler.receive(payload, packetSender);
+			packetHandler.receive(payload, clientContext);
 		});
 
 		// Assert the entire packet was read
@@ -182,7 +198,7 @@ public class CommonPacketTests {
 		buf.writeIntArray(new int[]{1, 2, 3});
 
 		CommonVersionPayload payload = CommonVersionPayload.CODEC.decode(buf);
-		packetHandler.receive(payload, serverNetworkHandler, packetSender);
+		packetHandler.receive(payload, serverContext);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
@@ -201,7 +217,7 @@ public class CommonPacketTests {
 
 		assertThrows(UnsupportedOperationException.class, () -> {
 			CommonVersionPayload payload = CommonVersionPayload.CODEC.decode(buf);
-			packetHandler.receive(payload, serverNetworkHandler, packetSender);
+			packetHandler.receive(payload, serverContext);
 		});
 
 		// Assert the entire packet was read
@@ -223,7 +239,7 @@ public class CommonPacketTests {
 		buf.writeCollection(List.of(new Identifier("fabric", "test")), PacketByteBuf::writeIdentifier);
 
 		CommonRegisterPayload payload = CommonRegisterPayload.CODEC.decode(buf);
-		packetHandler.receive(payload, packetSender);
+		packetHandler.receive(payload, clientContext);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
@@ -253,7 +269,7 @@ public class CommonPacketTests {
 		buf.writeCollection(List.of(new Identifier("fabric", "test")), PacketByteBuf::writeIdentifier);
 
 		CommonRegisterPayload payload = CommonRegisterPayload.CODEC.decode(buf);
-		packetHandler.receive(payload, packetSender);
+		packetHandler.receive(payload, clientContext);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
@@ -282,7 +298,7 @@ public class CommonPacketTests {
 		buf.writeCollection(List.of(new Identifier("fabric", "test")), PacketByteBuf::writeIdentifier);
 
 		CommonRegisterPayload payload = CommonRegisterPayload.CODEC.decode(buf);
-		packetHandler.receive(payload, serverNetworkHandler, packetSender);
+		packetHandler.receive(payload, serverContext);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());
@@ -304,7 +320,7 @@ public class CommonPacketTests {
 		buf.writeCollection(List.of(new Identifier("fabric", "test")), PacketByteBuf::writeIdentifier);
 
 		CommonRegisterPayload payload = CommonRegisterPayload.CODEC.decode(buf);
-		packetHandler.receive(payload, serverNetworkHandler, packetSender);
+		packetHandler.receive(payload, serverContext);
 
 		// Assert the entire packet was read
 		assertEquals(0, buf.readableBytes());

@@ -39,7 +39,7 @@ public final class ClientNetworking implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientPlayNetworking.registerGlobalReceiver(Networking.OpenScreenPayload.ID, (payload, player, responseSender) -> {
+		ClientPlayNetworking.registerGlobalReceiver(Networking.OpenScreenPayload.ID, (payload, context) -> {
 			this.openScreen(payload);
 		});
 	}

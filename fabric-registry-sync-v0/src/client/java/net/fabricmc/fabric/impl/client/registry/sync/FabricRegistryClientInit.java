@@ -40,19 +40,19 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 	}
 
 	private <T extends RegistryPacketHandler.RegistrySyncPayload> void registerSyncPacketReceiver(RegistryPacketHandler<T> packetHandler) {
-		ClientConfigurationNetworking.registerGlobalReceiver(packetHandler.getPacketId(), (payload, responseSender) -> {
+		ClientConfigurationNetworking.registerGlobalReceiver(packetHandler.getPacketId(), (payload, context) -> {
 			MinecraftClient client = MinecraftClient.getInstance();
 
 			RegistrySyncManager.receivePacket(client, packetHandler, payload, RegistrySyncManager.DEBUG || !client.isInSingleplayer())
 					.whenComplete((complete, throwable) -> {
 						if (throwable != null) {
 							LOGGER.error("Registry remapping failed!", throwable);
-							client.execute(() -> responseSender.disconnect(getText(throwable)));
+							client.execute(() -> context.responseSender().disconnect(getText(throwable)));
 							return;
 						}
 
 						if (complete) {
-							responseSender.sendPacket(SyncCompletePayload.INSTANCE);
+							context.responseSender().sendPacket(SyncCompletePayload.INSTANCE);
 						}
 					});
 		});

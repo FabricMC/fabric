@@ -51,8 +51,8 @@ public class NetworkingConfigurationTest implements ModInitializer {
 			}
 		});
 
-		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationCompletePacket.ID, (packet, networkHandler, responseSender) -> {
-			networkHandler.completeTask(TestConfigurationTask.KEY);
+		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationCompletePacket.ID, (packet, context) -> {
+			context.networkHandler().completeTask(TestConfigurationTask.KEY);
 		});
 	}
 

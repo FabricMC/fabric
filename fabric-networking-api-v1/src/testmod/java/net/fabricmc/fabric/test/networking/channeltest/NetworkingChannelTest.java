@@ -107,7 +107,7 @@ public final class NetworkingChannelTest implements ModInitializer {
 		CustomPayload.Type<RegistryByteBuf, ? extends CustomPayload> payloadType = PayloadTypeRegistryImpl.PLAY_C2S.get(channel);
 
 		if (payloadType != null) {
-			ServerPlayNetworking.registerReceiver(executor.networkHandler, payloadType.id(), (payload, player, sender) -> {
+			ServerPlayNetworking.registerReceiver(executor.networkHandler, payloadType.id(), (payload, ctx) -> {
 				System.out.printf("Received packet on channel %s%n", payloadType.id().id());
 			});
 			context.getSource().sendFeedback(() -> Text.literal(String.format("Registered channel %s for %s", channel, executor.getDisplayName())), false);

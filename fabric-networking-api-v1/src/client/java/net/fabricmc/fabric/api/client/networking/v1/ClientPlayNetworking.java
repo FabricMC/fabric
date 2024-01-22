@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.client.networking.v1;
 import java.util.Objects;
 import java.util.Set;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
@@ -274,10 +275,27 @@ public final class ClientPlayNetworking {
 		 * <p>The network handler can be accessed via {@link ClientPlayerEntity#networkHandler}.
 		 *
 		 * @param payload the packet payload
-		 * @param player the player that received the payload
-		 * @param responseSender the payload sender
+		 * @param context the play networking context
 		 * @see CustomPayload
 		 */
-		void receive(T payload, ClientPlayerEntity player, PacketSender responseSender);
+		void receive(T payload, Context context);
+	}
+
+	@ApiStatus.NonExtendable
+	public interface Context {
+		/**
+		 * @return The MinecraftClient instance
+		 */
+		MinecraftClient client();
+
+		/**
+		 * @return The player that received the payload
+		 */
+		ClientPlayerEntity player();
+
+		/**
+		 * @return The packet sender
+		 */
+		PacketSender responseSender();
 	}
 }

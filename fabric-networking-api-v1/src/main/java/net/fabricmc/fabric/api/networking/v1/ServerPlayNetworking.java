@@ -19,9 +19,9 @@ package net.fabricmc.fabric.api.networking.v1;
 import java.util.Objects;
 import java.util.Set;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.listener.ClientCommonPacketListener;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
@@ -43,7 +43,7 @@ import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
  *
  * <h2>Packet object-based API</h2>
  *
- * <p>This class provides a registration method, utilizing packet objects, {@link #registerGlobalReceiver(CustomPayload.Type, PlayPayloadHandler)}.
+ * <p>This class provides a registration method, utilizing packet objects, {@link #registerGlobalReceiver(CustomPayload.Id, PlayPayloadHandler)}.
  * This handler executes the callback in the server thread, ensuring thread safety.
  *
  * <p>This payload object-based API involves three classes:
@@ -73,8 +73,8 @@ public final class ServerPlayNetworking {
 	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#playC2S() registered} yet
 	 * @see ServerPlayNetworking#unregisterGlobalReceiver(Identifier)
 	 */
-	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Type<RegistryByteBuf, T> type, PlayPayloadHandler<T> handler) {
-		return ServerNetworkingImpl.PLAY.registerGlobalReceiver(type.id().id(), handler);
+	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Id<T> type, PlayPayloadHandler<T> handler) {
+		return ServerNetworkingImpl.PLAY.registerGlobalReceiver(type.id(), handler);
 	}
 
 	/**
@@ -85,8 +85,8 @@ public final class ServerPlayNetworking {
 	 *
 	 * @param id the payload id
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerGlobalReceiver(CustomPayload.Type, PlayPayloadHandler)}
-	 * @see ServerPlayNetworking#registerGlobalReceiver(CustomPayload.Type, PlayPayloadHandler)
+	 * or it was not registered using {@link #registerGlobalReceiver(CustomPayload.Id, PlayPayloadHandler)}
+	 * @see ServerPlayNetworking#registerGlobalReceiver(CustomPayload.Id, PlayPayloadHandler)
 	 * @see ServerPlayNetworking#unregisterReceiver(ServerPlayNetworkHandler, Identifier)
 	 */
 	@Nullable
@@ -106,7 +106,7 @@ public final class ServerPlayNetworking {
 
 	/**
 	 * Registers a handler for a payload type.
-	 * This method differs from {@link ServerPlayNetworking#registerGlobalReceiver(CustomPayload.Type, PlayPayloadHandler)} since
+	 * This method differs from {@link ServerPlayNetworking#registerGlobalReceiver(CustomPayload.Id, PlayPayloadHandler)} since
 	 * the channel handler will only be applied to the player represented by the {@link ServerPlayNetworkHandler}.
 	 *
 	 * <p>For example, if you only register a receiver using this method when a {@linkplain ServerLoginNetworking#registerGlobalReceiver(Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
@@ -317,10 +317,22 @@ public final class ServerPlayNetworking {
 		 * and {@link ServerPlayerEntity#networkHandler}, respectively.
 		 *
 		 * @param payload the packet payload
-		 * @param player the player that received the packet
-		 * @param responseSender the packet sender
+		 * @param context the play networking context
 		 * @see CustomPayload
 		 */
-		void receive(T payload, ServerPlayerEntity player, PacketSender responseSender);
+		void receive(T payload, Context context);
+	}
+
+	@ApiStatus.NonExtendable
+	public interface Context {
+		/**
+		 * @return The player that received the packet
+		 */
+		ServerPlayerEntity player();
+
+		/**
+		 * @return The packet sender
+		 */
+		PacketSender responseSender();
 	}
 }

@@ -142,13 +142,13 @@ public final class ClientNetworkingImpl {
 		});
 
 		// Version packet
-		ClientConfigurationNetworking.registerGlobalReceiver(CommonVersionPayload.ID, (payload, responseSender) -> {
-			int negotiatedVersion = handleVersionPacket(payload, responseSender);
+		ClientConfigurationNetworking.registerGlobalReceiver(CommonVersionPayload.ID, (payload, context) -> {
+			int negotiatedVersion = handleVersionPacket(payload, context.responseSender());
 			ClientNetworkingImpl.getClientConfigurationAddon().onCommonVersionPacket(negotiatedVersion);
 		});
 
 		// Register packet
-		ClientConfigurationNetworking.registerGlobalReceiver(CommonRegisterPayload.ID, (payload, responseSender) -> {
+		ClientConfigurationNetworking.registerGlobalReceiver(CommonRegisterPayload.ID, (payload, context) -> {
 			ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
 
 			if (CommonRegisterPayload.PLAY_PHASE.equals(payload.phase())) {
@@ -158,10 +158,10 @@ public final class ClientNetworkingImpl {
 
 				addon.getChannelInfoHolder().getPendingChannelsNames(NetworkPhase.PLAY).addAll(payload.channels());
 				NetworkingImpl.LOGGER.debug("Received accepted channels from the server");
-				responseSender.sendPacket(new CommonRegisterPayload(addon.getNegotiatedVersion(), CommonRegisterPayload.PLAY_PHASE, ClientPlayNetworking.getGlobalReceivers()));
+				context.responseSender().sendPacket(new CommonRegisterPayload(addon.getNegotiatedVersion(), CommonRegisterPayload.PLAY_PHASE, ClientPlayNetworking.getGlobalReceivers()));
 			} else {
 				addon.onCommonRegisterPacket(payload);
-				responseSender.sendPacket(addon.createRegisterPayload());
+				context.responseSender().sendPacket(addon.createRegisterPayload());
 			}
 		});
 	}
