@@ -41,19 +41,14 @@ import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
  *
  * <h2>Packet object-based API</h2>
  *
- * <p>This class provides a classic registration method, {@link #registerGlobalReceiver(Identifier, PlayChannelHandler)},
- * and a newer method utilizing packet objects, {@link #registerGlobalReceiver(PacketType, PlayPayloadHandler)}.
- * For most mods, using the newer method will improve the readability of the code by separating packet
- * reading/writing code to a separate class. Additionally, the newer method executes the callback in the
- * server thread, ensuring thread safety. For this reason using the newer method is highly recommended.
- * The two methods are network-compatible with each other, so long as the buffer contents are read and written
- * in the same order.
+ * <p>This class provides a registration method, utilizing packet objects, {@link #registerGlobalReceiver(CustomPayload.Type, PlayPayloadHandler)}.
+ * This handler executes the callback in the server thread, ensuring thread safety.
  *
- * <p>The newer, packet object-based API involves three classes:
+ * <p>This payload object-based API involves three classes:
  *
  * <ul>
- *     <li>A class implementing {@link FabricPacket} that is "sent" over the network</li>
- *     <li>{@link PacketType} instance, which represents the packet's type (and its channel)</li>
+ *     <li>A class implementing {@link CustomPayload} that is "sent" over the network</li>
+ *     <li>{@link CustomPayload.Type} instance, which represents the packet's type (and its codec)</li>
  *     <li>{@link PlayPayloadHandler}, which handles the packet (usually implemented as a functional interface)</li>
  * </ul>
  *
@@ -64,33 +59,32 @@ import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
  */
 public final class ServerPlayNetworking {
 	/**
-	 * Registers a handler for a packet type.
+	 * Registers a handler for a payload type.
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>If a handler is already registered for the {@code type}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(ServerPlayNetworkHandler, PacketType)} to unregister the existing handler.
+	 * Use {@link #unregisterGlobalReceiver(Identifier)} to unregister the existing handler.
 	 *
 	 * @param type the packet type
 	 * @param handler the handler
 	 * @return {@code false} if a handler is already registered to the channel
-	 * @see ServerPlayNetworking#unregisterGlobalReceiver(PacketType)
-	 * @see ServerPlayNetworking#registerReceiver(ServerPlayNetworkHandler, PacketType, PlayPayloadHandler)
+	 * @see ServerPlayNetworking#unregisterGlobalReceiver(Identifier)
 	 */
 	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Type<RegistryByteBuf, T> type, PlayPayloadHandler<T> handler) {
 		return ServerNetworkingImpl.PLAY.registerGlobalReceiver(type.id().id(), handler);
 	}
 
 	/**
-	 * Removes the handler for a packet type.
+	 * Removes the handler for a payload type.
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
-	 * <p>The {@code type} is guaranteed not to have an associated handler after this call.
+	 * <p>The {@code id} is guaranteed not to have an associated handler after this call.
 	 *
-	 * @param type the packet type
+	 * @param id the payload id
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerGlobalReceiver(PacketType, PlayPayloadHandler)}
-	 * @see ServerPlayNetworking#registerGlobalReceiver(PacketType, PlayPayloadHandler)
-	 * @see ServerPlayNetworking#unregisterReceiver(ServerPlayNetworkHandler, PacketType)
+	 * or it was not registered using {@link #registerGlobalReceiver(CustomPayload.Type, PlayPayloadHandler)}
+	 * @see ServerPlayNetworking#registerGlobalReceiver(CustomPayload.Type, PlayPayloadHandler)
+	 * @see ServerPlayNetworking#unregisterReceiver(ServerPlayNetworkHandler, Identifier)
 	 */
 	@Nullable
 	public static ServerPlayNetworking.PlayPayloadHandler<?> unregisterGlobalReceiver(Identifier id) {
@@ -108,15 +102,15 @@ public final class ServerPlayNetworking {
 	}
 
 	/**
-	 * Registers a handler for a packet type.
-	 * This method differs from {@link ServerPlayNetworking#registerGlobalReceiver(PacketType, PlayPayloadHandler)} since
+	 * Registers a handler for a payload type.
+	 * This method differs from {@link ServerPlayNetworking#registerGlobalReceiver(CustomPayload.Type, PlayPayloadHandler)} since
 	 * the channel handler will only be applied to the player represented by the {@link ServerPlayNetworkHandler}.
 	 *
 	 * <p>For example, if you only register a receiver using this method when a {@linkplain ServerLoginNetworking#registerGlobalReceiver(Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
 	 * login response has been received, you should use {@link ServerPlayConnectionEvents#INIT} to register the channel handler.
 	 *
 	 * <p>If a handler is already registered for the {@code type}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(ServerPlayNetworkHandler, PacketType)} to unregister the existing handler.
+	 * Use {@link #unregisterReceiver(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.
 	 *
 	 * @param networkHandler the network handler
 	 * @param type the packet type
@@ -131,11 +125,11 @@ public final class ServerPlayNetworking {
 	/**
 	 * Removes the handler for a packet type.
 	 *
-	 * <p>The {@code type} is guaranteed not to have an associated handler after this call.
+	 * <p>The {@code id} is guaranteed not to have an associated handler after this call.
 	 *
-	 * @param type the type of the packet
+	 * @param id the id of the payload
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerReceiver(ServerPlayNetworkHandler, PacketType, PlayPayloadHandler)}
+	 * or it was not registered using {@link #registerReceiver(ServerPlayNetworkHandler, CustomPayload.Id, PlayPayloadHandler)}
 	 */
 	@Nullable
 	public static ServerPlayNetworking.PlayPayloadHandler<?> unregisterReceiver(ServerPlayNetworkHandler networkHandler, Identifier id) {
@@ -247,7 +241,7 @@ public final class ServerPlayNetworking {
 	/**
 	 * Creates a packet which may be sent to a connected client.
 	 *
-	 * @param packet the fabric packet
+	 * @param packet the packet
 	 * @return a new packet
 	 */
 	public static <T extends CustomPayload> Packet<ClientCommonPacketListener> createS2CPacket(T packet) {
@@ -320,9 +314,9 @@ public final class ServerPlayNetworking {
 		 *
 		 * <p>An example usage of this is to create an explosion where the player is looking:
 		 * <pre>{@code
-		 * // See FabricPacket for creating the packet
-		 * ServerPlayNetworking.registerReceiver(BOOM_PACKET_TYPE, (player, packet, responseSender) -> {
-		 * 	ModPacketHandler.createExplosion(player, packet.fire());
+		 * // use PayloadTypeRegistry for registering the payload
+		 * ServerPlayNetworking.registerReceiver(BoomPayload.ID, (payload, player, responseSender) -> {
+		 * 	ModPacketHandler.createExplosion(player, payload.fire());
 		 * });
 		 * }</pre>
 		 *

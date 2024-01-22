@@ -39,8 +39,7 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerA
  *
  * <p>This class should be only used for the logical server.
  *
- * <p>See {@link ServerPlayNetworking} for information on how to use the packet
- * object-based API.
+ * <p>See {@link ServerPlayNetworking} for information on sending and receiving play phase packets.
  *
  * <p>See the documentation on each class for more information.
  *
@@ -49,33 +48,33 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerA
  */
 public final class ServerConfigurationNetworking {
 	/**
-	 * Registers a handler for a packet type.
+	 * Registers a handler for a payload type.
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>If a handler is already registered for the {@code type}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(ServerConfigurationNetworkHandler, PacketType)} to unregister the existing handler.
+	 * Use {@link #unregisterReceiver(ServerConfigurationNetworkHandler, Identifier)} to unregister the existing handler.
 	 *
 	 * @param type the packet type
 	 * @param handler the handler
 	 * @return {@code false} if a handler is already registered to the channel
-	 * @see ServerConfigurationNetworking#unregisterGlobalReceiver(PacketType)
-	 * @see ServerConfigurationNetworking#registerReceiver(ServerConfigurationNetworkHandler, PacketType, ConfigurationPacketHandler)
+	 * @see ServerConfigurationNetworking#unregisterGlobalReceiver(Identifier)
+	 * @see ServerConfigurationNetworking#registerReceiver(ServerConfigurationNetworkHandler, CustomPayload.Id, ConfigurationPacketHandler)
 	 */
 	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Id<T> type, ConfigurationPacketHandler<T> handler) {
 		return ServerNetworkingImpl.CONFIGURATION.registerGlobalReceiver(type.id(), handler);
 	}
 
 	/**
-	 * Removes the handler for a packet type.
+	 * Removes the handler for a payload type.
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>The {@code type} is guaranteed not to have an associated handler after this call.
 	 *
-	 * @param type the packet type
+	 * @param id the packet payload id
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerGlobalReceiver(PacketType, ConfigurationPacketHandler)}
-	 * @see ServerConfigurationNetworking#registerGlobalReceiver(PacketType, ConfigurationPacketHandler)
-	 * @see ServerConfigurationNetworking#unregisterReceiver(ServerConfigurationNetworkHandler, PacketType)
+	 * or it was not registered using {@link #registerGlobalReceiver(CustomPayload.Id, ConfigurationPacketHandler)}
+	 * @see ServerConfigurationNetworking#registerGlobalReceiver(CustomPayload.Id, ConfigurationPacketHandler)
+	 * @see ServerConfigurationNetworking#unregisterReceiver(ServerConfigurationNetworkHandler, Identifier)
 	 */
 	@Nullable
 	public static ServerConfigurationNetworking.ConfigurationPacketHandler<?> unregisterGlobalReceiver(Identifier id) {
@@ -93,15 +92,13 @@ public final class ServerConfigurationNetworking {
 	}
 
 	/**
-	 * Registers a handler for a packet type.
-	 * This method differs from {@link ServerConfigurationNetworking#registerGlobalReceiver(PacketType, ConfigurationPacketHandler)} since
+	 * Registers a handler for a payload type.
+	 * This method differs from {@link ServerConfigurationNetworking#registerGlobalReceiver(CustomPayload.Id, ConfigurationPacketHandler)} since
 	 * the channel handler will only be applied to the client represented by the {@link ServerConfigurationNetworkHandler}.
 	 *
-	 * <p>For example, if you only register a receiver using this method when a {@linkplain ServerLoginNetworking#registerGlobalReceiver(Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
-	 * login response has been received, you should use {@link ServerPlayConnectionEvents#INIT} to register the channel handler.
 	 *
 	 * <p>If a handler is already registered for the {@code type}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(ServerConfigurationNetworkHandler, PacketType)} to unregister the existing handler.
+	 * Use {@link #unregisterReceiver(ServerConfigurationNetworkHandler, Identifier)} to unregister the existing handler.
 	 *
 	 * @param networkHandler the network handler
 	 * @param type the packet type
@@ -114,13 +111,13 @@ public final class ServerConfigurationNetworking {
 	}
 
 	/**
-	 * Removes the handler for a packet type.
+	 * Removes the handler for a payload type.
 	 *
 	 * <p>The {@code type} is guaranteed not to have an associated handler after this call.
 	 *
-	 * @param type the type of the packet
+	 * @param id the id of the payload
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerReceiver(ServerConfigurationNetworkHandler, PacketType, ConfigurationPacketHandler)}
+	 * or it was not registered using {@link #registerReceiver(ServerConfigurationNetworkHandler, CustomPayload.Id, ConfigurationPacketHandler)}
 	 */
 	@Nullable
 	public static ServerConfigurationNetworking.ConfigurationPacketHandler<?> unregisterReceiver(ServerConfigurationNetworkHandler networkHandler, Identifier id) {
@@ -169,14 +166,14 @@ public final class ServerConfigurationNetworking {
 	 * Checks if the connected client declared the ability to receive a specific type of packet.
 	 *
 	 * @param handler the network handler
-	 * @param type the packet type
+	 * @param id the payload id
 	 * @return {@code true} if the connected client has declared the ability to receive a specific type of packet
 	 */
-	public static boolean canSend(ServerConfigurationNetworkHandler handler, CustomPayload.Id<?> type) {
+	public static boolean canSend(ServerConfigurationNetworkHandler handler, CustomPayload.Id<?> id) {
 		Objects.requireNonNull(handler, "Server configuration network handler cannot be null");
-		Objects.requireNonNull(type, "Packet type cannot be null");
+		Objects.requireNonNull(id, "Payload id cannot be null");
 
-		return ServerNetworkingImpl.getAddon(handler).getSendableChannels().contains(type.id());
+		return ServerNetworkingImpl.getAddon(handler).getSendableChannels().contains(id.id());
 	}
 
 	/**

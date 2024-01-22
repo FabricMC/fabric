@@ -54,13 +54,13 @@ public final class ClientPlayNetworking {
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>If a handler is already registered for the {@code type}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterGlobalReceiver(PacketType)} to unregister the existing handler.
+	 * Use {@link #unregisterGlobalReceiver(Identifier)} to unregister the existing handler.
 	 *
 	 * @param type the payload type
 	 * @param handler the handler
 	 * @return false if a handler is already registered to the channel
-	 * @see ClientPlayNetworking#unregisterGlobalReceiver(PacketType)
-	 * @see ClientPlayNetworking#registerReceiver(PacketType, PlayPacketHandler)
+	 * @see ClientPlayNetworking#unregisterGlobalReceiver(Identifier)
+	 * @see ClientPlayNetworking#registerReceiver(CustomPayload.Id, PlayPacketHandler)
 	 */
 	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Id<T> type, PlayPacketHandler<T> handler) {
 		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(type.id(), handler);
@@ -72,11 +72,11 @@ public final class ClientPlayNetworking {
 	 *
 	 * <p>The {@code type} is guaranteed not to have an associated handler after this call.
 	 *
-	 * @param type the payload type
+	 * @param id the payload id
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerGlobalReceiver(PacketType, PlayPacketHandler)}
-	 * @see ClientPlayNetworking#registerGlobalReceiver(PacketType, PlayPacketHandler)
-	 * @see ClientPlayNetworking#unregisterReceiver(PacketType)
+	 * or it was not registered using {@link #registerGlobalReceiver(CustomPayload.Id, PlayPacketHandler)}
+	 * @see ClientPlayNetworking#registerGlobalReceiver(CustomPayload.Id, PlayPacketHandler)
+	 * @see ClientPlayNetworking#unregisterReceiver(Identifier)
 	 */
 	@Nullable
 	public static ClientPlayNetworking.PlayPacketHandler<?> unregisterGlobalReceiver(Identifier id) {
@@ -97,7 +97,7 @@ public final class ClientPlayNetworking {
 	 * Registers a handler for a payload type.
 	 *
 	 * <p>If a handler is already registered for the {@code type}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(PacketType)} to unregister the existing handler.
+	 * Use {@link #unregisterReceiver(Identifier)} to unregister the existing handler.
 	 *
 	 * <p>For example, if you only register a receiver using this method when a {@linkplain ClientLoginNetworking#registerGlobalReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)}
 	 * login query has been received, you should use {@link ClientPlayConnectionEvents#INIT} to register the channel handler.
@@ -119,13 +119,13 @@ public final class ClientPlayNetworking {
 	}
 
 	/**
-	 * Removes the handler for a payload type.
+	 * Removes the handler for a payload id.
 	 *
 	 * <p>The {@code type} is guaranteed not to have an associated handler after this call.
 	 *
-	 * @param type the payload type
+	 * @param id the payload id
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerReceiver(PacketType, PlayPacketHandler)}
+	 * or it was not registered using {@link #registerReceiver(CustomPayload.Id, PlayPacketHandler)}
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
 	@Nullable

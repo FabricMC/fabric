@@ -26,6 +26,8 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 
@@ -37,7 +39,7 @@ import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
  *
  * <p>This class should be only used on the physical client and for the logical client.
  *
- * <p>See {@link net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking} for information on how to use the packet
+ * <p>See {@link ServerPlayNetworking} for information on how to use the packet
  * object-based API.
  *
  * @see ServerConfigurationNetworking
@@ -48,13 +50,13 @@ public final class ClientConfigurationNetworking {
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>If a handler is already registered for the {@code type}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterGlobalReceiver(PacketType)} to unregister the existing handler.
+	 * Use {@link #unregisterGlobalReceiver(CustomPayload.Type)} to unregister the existing handler.
 	 *
 	 * @param type the packet type
 	 * @param handler the handler
 	 * @return false if a handler is already registered to the channel
-	 * @see ClientConfigurationNetworking#unregisterGlobalReceiver(PacketType)
-	 * @see ClientConfigurationNetworking#registerReceiver(PacketType, ConfigurationPayloadHandler)
+	 * @see ClientConfigurationNetworking#unregisterGlobalReceiver(CustomPayload.Type)
+	 * @see ClientConfigurationNetworking#registerReceiver(CustomPayload.Type, ConfigurationPayloadHandler)
 	 */
 	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Id<T> type, ConfigurationPayloadHandler<T> handler) {
 		return ClientNetworkingImpl.CONFIGURATION.registerGlobalReceiver(type.id(), handler);
@@ -68,9 +70,9 @@ public final class ClientConfigurationNetworking {
 	 *
 	 * @param type the packet type
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerGlobalReceiver(PacketType, ConfigurationPayloadHandler)}
-	 * @see ClientConfigurationNetworking#registerGlobalReceiver(PacketType, ConfigurationPayloadHandler)
-	 * @see ClientConfigurationNetworking#unregisterReceiver(PacketType)
+	 * or it was not registered using {@link #registerGlobalReceiver(CustomPayload.Id, ConfigurationPayloadHandler)}
+	 * @see ClientConfigurationNetworking#registerGlobalReceiver(CustomPayload.Id, ConfigurationPayloadHandler)
+	 * @see ClientConfigurationNetworking#unregisterReceiver(Identifier)
 	 */
 	@Nullable
 	public static ClientConfigurationNetworking.ConfigurationPayloadHandler<?> unregisterGlobalReceiver(CustomPayload.Type<PacketByteBuf, ?> type) {
@@ -91,7 +93,7 @@ public final class ClientConfigurationNetworking {
 	 * Registers a handler for a packet type.
 	 *
 	 * <p>If a handler is already registered for the {@code type}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(PacketType)} to unregister the existing handler.
+	 * Use {@link #unregisterReceiver(Identifier)} to unregister the existing handler.
 	 *
 	 * <p>For example, if you only register a receiver using this method when a {@linkplain ClientLoginNetworking#registerGlobalReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)}
 	 * login query has been received, you should use {@link ClientPlayConnectionEvents#INIT} to register the channel handler.
@@ -119,7 +121,7 @@ public final class ClientConfigurationNetworking {
 	 *
 	 * @param id the payload id to unregister
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerReceiver(PacketType, ConfigurationPayloadHandler)}
+	 * or it was not registered using {@link #registerReceiver(CustomPayload.Type, ConfigurationPayloadHandler)}
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
 	@Nullable

@@ -44,7 +44,7 @@ public interface PacketSender {
 	 * @param packet the packet
 	 */
 	default void sendPacket(Packet<?> packet) {
-		sendPacket(packet, (PacketCallbacks) null);
+		sendPacket(packet, null);
 	}
 
 	/**
