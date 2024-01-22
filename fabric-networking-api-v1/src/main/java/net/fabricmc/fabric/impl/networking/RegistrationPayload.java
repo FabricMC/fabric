@@ -79,7 +79,6 @@ public record RegistrationPayload(Id<RegistrationPayload> id, List<Identifier> c
 		try {
 			ids.add(new Identifier(literal));
 		} catch (InvalidIdentifierException ex) {
-			// TODO 1.20.5 maybe mode these back to the network addon, so we can log the connection as we did before?
 			NetworkingImpl.LOGGER.warn("Received invalid channel identifier \"{}\"", literal);
 		}
 	}
