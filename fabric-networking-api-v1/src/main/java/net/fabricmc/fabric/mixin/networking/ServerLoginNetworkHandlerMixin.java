@@ -22,14 +22,13 @@ import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.networking.v1.ServerCookieStore;
 import net.fabricmc.fabric.api.networking.v1.ServerTransferable;
 
-import net.fabricmc.fabric.impl.networking.ServerTransferMeta;
+import net.fabricmc.fabric.impl.networking.ServerCookieCallback;
 
 import net.minecraft.network.ClientConnection;
 
 import net.minecraft.network.packet.c2s.common.CookieResponseC2SPacket;
+import net.minecraft.network.packet.s2c.common.ServerTransferS2CPacket;
 import net.minecraft.util.Identifier;
-
-import net.minecraft.util.Pair;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -54,9 +53,6 @@ import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
 
-import javax.crypto.Mac;
-
-import java.security.InvalidKeyException;
 import java.util.concurrent.CompletableFuture;
 
 @Mixin(ServerLoginNetworkHandler.class)
@@ -67,6 +63,9 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 	@Shadow
 	@Final
 	private ClientConnection connection;
+	@Shadow
+	@Final
+	private boolean transferred;
 	@Unique
 	private ServerLoginNetworkAddon addon;
 
@@ -104,7 +103,7 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 
 	@Inject(method = "onCookieResponse", at = @At("HEAD"))
 	private void storeCookie(CookieResponseC2SPacket packet, CallbackInfo ci) {
-		((ServerTransferMeta) connection).fabric_invokeCookieCallback(packet.key(), packet.payload());
+		((ServerCookieCallback) connection).fabric_invokeCookieCallback(packet.key(), packet.payload());
 	}
 
 	@WrapWithCondition(method = "onCookieResponse", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;disconnect(Lnet/minecraft/text/Text;)V"))
@@ -131,12 +130,12 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 
 	@Override
 	public void transferToServer(String host, int port) {
-		((ServerTransferable) connection).transferToServer(host, port);
+		connection.send(new ServerTransferS2CPacket(host, port));
 	}
 
 	@Override
 	public boolean wasTransferred() {
-		return ((ServerTransferable) connection).wasTransferred();
+		return transferred;
 	}
 
 	@Override
