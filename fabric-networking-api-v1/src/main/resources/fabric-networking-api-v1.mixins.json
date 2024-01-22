@@ -17,7 +17,6 @@
     "ServerConfigurationNetworkHandlerMixin",
     "ServerHandshakeNetworkHandlerMixin",
     "ServerLoginNetworkHandlerMixin",
-    "ServerPlayerEntityMixin",
     "ServerPlayNetworkHandlerMixin",
     "accessor.EntityTrackerAccessor",
     "accessor.ServerCommonNetworkHandlerAccessor",
