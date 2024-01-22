@@ -30,7 +30,9 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.nbt.NbtSizeTracker;
 import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -100,6 +102,7 @@ public class NbtIngredient implements CustomIngredient {
 		return base;
 	}
 
+	@Nullable
 	private NbtCompound getNbt() {
 		return nbt;
 	}
@@ -124,9 +127,31 @@ public class NbtIngredient implements CustomIngredient {
 
 		private static final Codec<NbtIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
 		private static final Codec<NbtIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
+		private static final PacketCodec<RegistryByteBuf, NbtCompound> NULLABLE_NBT_PACKET_CODEC = new PacketCodec<>() {
+			private static final NbtSizeTracker SIZE_TRACKER = NbtSizeTracker.of(PacketByteBuf.MAX_READ_NBT_SIZE);
+			@Override
+			@Nullable
+			public NbtCompound decode(RegistryByteBuf buf) {
+				if (buf.readBoolean() && buf.readNbt(SIZE_TRACKER) instanceof NbtCompound nbt) {
+					return nbt;
+				}
+
+				return null;
+			}
+
+			@Override
+			public void encode(RegistryByteBuf buf, @Nullable NbtCompound value) {
+				if (value == null) {
+					buf.writeBoolean(false);
+				} else {
+					buf.writeBoolean(true);
+					buf.writeNbt(value);
+				}
+			}
+		};
 		private static final PacketCodec<RegistryByteBuf, NbtIngredient> PACKET_CODEC = PacketCodec.tuple(
 				Ingredient.PACKET_CODEC, NbtIngredient::getBase,
-				PacketCodecs.NBT_COMPOUND, NbtIngredient::getNbt,
+				NULLABLE_NBT_PACKET_CODEC, NbtIngredient::getNbt,
 				PacketCodecs.BOOL, NbtIngredient::isStrict,
 				NbtIngredient::new
 		);
