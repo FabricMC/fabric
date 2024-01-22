@@ -146,6 +146,7 @@ public final class ConventionalBiomeTags {
 	public static final TagKey<Biome> IS_SNOWY_PLAINS = register("is_snowy_plains");
 	public static final TagKey<Biome> IS_STONY_SHORES = register("is_stony_shores");
 	public static final TagKey<Biome> IS_FLOWER_FOREST = register("is_flower_forest");
+	public static final TagKey<Biome> IS_OLD_GROWTH = register("is_old_growth");
 	public static final TagKey<Biome> IS_DEEP_OCEAN = register("is_deep_ocean");
 	public static final TagKey<Biome> IS_SHALLOW_OCEAN = register("is_shallow_ocean");
 

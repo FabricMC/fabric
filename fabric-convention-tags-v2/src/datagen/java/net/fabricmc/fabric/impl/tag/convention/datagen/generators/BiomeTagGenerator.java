@@ -257,6 +257,13 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.MEADOW)
 				.add(BiomeKeys.CHERRY_GROVE)
 				.addOptionalTag(ConventionalBiomeTags.IS_FLOWER_FOREST);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_FLOWER_FOREST)
+				.add(BiomeKeys.FLOWER_FOREST)
+				.addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "flower_forests"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_OLD_GROWTH)
+				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST)
+				.add(BiomeKeys.OLD_GROWTH_PINE_TAIGA)
+				.add(BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA);
 	}
 
 	private void generateTerrainDescriptorTags() {
@@ -279,9 +286,6 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.SNOWY_PLAINS);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_STONY_SHORES)
 				.add(BiomeKeys.STONY_SHORE);
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_FLOWER_FOREST)
-				.add(BiomeKeys.FLOWER_FOREST)
-				.addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "flower_forests"));
 	}
 
 	private void generateBackwardsCompatTags() {
