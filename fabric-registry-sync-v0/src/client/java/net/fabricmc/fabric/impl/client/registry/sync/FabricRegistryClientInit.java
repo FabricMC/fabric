@@ -52,7 +52,7 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 						}
 
 						if (complete) {
-							responseSender.sendPacket(new SyncCompletePayload());
+							responseSender.sendPacket(SyncCompletePayload.INSTANCE);
 						}
 					});
 		});

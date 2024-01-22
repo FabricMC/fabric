@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 
 /**
  * A more optimized method to sync registry ids to client.
- * Produce smaller packet than old {@link NbtRegistryPacketHandler nbt-based} method.
+ * Produce smaller packet than old nbt-based method.
  *
  * <p>This method optimize the packet in multiple way:
  * <ul>
