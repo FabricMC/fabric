@@ -16,19 +16,11 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 
-import net.fabricmc.fabric.api.networking.v1.ServerCookieStore;
-import net.fabricmc.fabric.api.networking.v1.ServerTransferable;
-
-import net.fabricmc.fabric.impl.networking.ServerTransferMeta;
-
-import net.minecraft.network.ClientConnection;
-
-import net.minecraft.network.packet.c2s.common.CookieResponseC2SPacket;
-import net.minecraft.server.network.ServerLoginNetworkHandler;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.packet.s2c.common.ServerTransferS2CPacket;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,15 +29,20 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.c2s.common.CommonPongC2SPacket;
+import net.minecraft.network.packet.c2s.common.CookieResponseC2SPacket;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.ServerCookieStore;
+import net.fabricmc.fabric.api.networking.v1.ServerTransferable;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.ServerCookieCallback;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
-
-import java.util.concurrent.CompletableFuture;
 
 @Mixin(ServerCommonNetworkHandler.class)
 public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerExtensions, ServerTransferable, ServerCookieStore {
@@ -53,6 +50,10 @@ public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerE
 	@Shadow
 	@Final
 	protected ClientConnection connection;
+
+	@Shadow
+	@Final
+	private boolean transferred;
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	private void handleCustomPayloadReceivedAsync(CustomPayloadC2SPacket packet, CallbackInfo ci) {
@@ -81,7 +82,7 @@ public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerE
 
 	@Inject(method = "onCookieResponse", at = @At("HEAD"))
 	private void storeCookie(CookieResponseC2SPacket packet, CallbackInfo ci) {
-		((ServerTransferMeta) connection).fabric_invokeCookieCallback(packet.key(), packet.payload());
+		((ServerCookieCallback) connection).fabric_invokeCookieCallback(packet.key(), packet.payload());
 	}
 
 	@WrapWithCondition(method = "onCookieResponse", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerCommonNetworkHandler;disconnect(Lnet/minecraft/text/Text;)V"))
@@ -91,12 +92,12 @@ public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerE
 
 	@Override
 	public void transferToServer(String host, int port) {
-		((ServerTransferable) connection).transferToServer(host, port);
+		connection.send(new ServerTransferS2CPacket(host, port));
 	}
 
 	@Override
 	public boolean wasTransferred() {
-		return ((ServerTransferable) connection).wasTransferred();
+		return transferred;
 	}
 
 	@Override
