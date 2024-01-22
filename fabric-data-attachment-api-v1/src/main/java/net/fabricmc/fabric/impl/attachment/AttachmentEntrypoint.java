@@ -25,14 +25,14 @@ public class AttachmentEntrypoint implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) ->
-				AttachmentTargetImpl.copyOnRespawn(oldPlayer, newPlayer, !alive)
+				AttachmentTargetImpl.transfer(oldPlayer, newPlayer, !alive)
 		);
 		ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.register(((originalEntity, newEntity, origin, destination) ->
-				AttachmentTargetImpl.copyOnRespawn(originalEntity, newEntity, false))
+				AttachmentTargetImpl.transfer(originalEntity, newEntity, false))
 		);
 		// using the corresponding player event is unnecessary as no new instance is created
 		ServerLivingEntityEvents.MOB_CONVERSION.register((previous, converted, keepEquipment) ->
-				AttachmentTargetImpl.copyOnRespawn(previous, converted, true)
+				AttachmentTargetImpl.transfer(previous, converted, true)
 		);
 	}
 }
