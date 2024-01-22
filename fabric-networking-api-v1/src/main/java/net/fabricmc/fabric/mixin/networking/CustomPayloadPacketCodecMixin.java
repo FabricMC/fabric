@@ -28,8 +28,8 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.FabricCustomPayloadPacketCodec;
 import net.fabricmc.fabric.impl.networking.CustomPayloadTypeProvider;
+import net.fabricmc.fabric.impl.networking.FabricCustomPayloadPacketCodec;
 
 @Mixin(targets = "net/minecraft/network/packet/CustomPayload$1")
 public abstract class CustomPayloadPacketCodecMixin<B extends PacketByteBuf> implements PacketCodec<B, CustomPayload>, FabricCustomPayloadPacketCodec<B> {

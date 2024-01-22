@@ -27,7 +27,7 @@ public class NetworkingConfigurationClientTest implements ClientModInitializer {
 			// Handle stuff here
 
 			// Respond back to the server that the task is complete
-			responseSender.sendPacket(new NetworkingConfigurationTest.ConfigurationCompletePacket());
+			responseSender.sendPacket(NetworkingConfigurationTest.ConfigurationCompletePacket.INSTANCE);
 		});
 	}
 }

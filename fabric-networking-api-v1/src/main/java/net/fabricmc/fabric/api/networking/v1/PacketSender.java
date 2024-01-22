@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
-import io.netty.channel.ChannelFutureListener;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,16 +26,16 @@ import net.minecraft.text.Text;
 
 /**
  * Represents something that supports sending packets to channels.
- * @see PacketByteBufs
+ * Any packets sent must be {@linkplain PayloadTypeRegistry registered} in the appropriate registry.
  */
 @ApiStatus.NonExtendable
 public interface PacketSender {
 	/**
-	 * Makes a packet for a fabric packet.
+	 * Creates a packet from a packet payload.
 	 *
-	 * @param packet the fabric packet
+	 * @param payload the packet payload
 	 */
-	Packet<?> createPacket(CustomPayload packet);
+	Packet<?> createPacket(CustomPayload payload);
 
 	/**
 	 * Sends a packet.
@@ -59,7 +58,7 @@ public interface PacketSender {
 	 * Sends a packet.
 	 *
 	 * @param packet the packet
-	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
+	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}.
 	 */
 	void sendPacket(Packet<?> packet, @Nullable PacketCallbacks callback);
 
@@ -67,11 +66,15 @@ public interface PacketSender {
 	 * Sends a packet.
 	 *
 	 * @param payload the payload
-	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
+	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}.
 	 */
 	default void sendPacket(CustomPayload payload, @Nullable PacketCallbacks callback) {
 		sendPacket(createPacket(payload), callback);
 	}
 
+	/**
+	 * Disconnects the player.
+	 * @param disconnectReason the reason for disconnection
+	 */
 	void disconnect(Text disconnectReason);
 }

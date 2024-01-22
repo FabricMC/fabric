@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -26,11 +28,13 @@ import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 /**
  * A registry for payload types.
  */
+@ApiStatus.NonExtendable
 public interface PayloadTypeRegistry<B extends PacketByteBuf> {
 	/**
-	 * Register a custom payload type.
+	 * Registers a custom payload type.
 	 *
-	 * <p>This must be done on both the sending and receiving side, usually during mod initialization.
+	 * <p>This must be done on both the sending and receiving side, usually during mod initialization
+	 * and <strong>before registering a packet handler</strong>.
 	 *
 	 * @param id    the id of the payload type
 	 * @param codec the codec for the payload type

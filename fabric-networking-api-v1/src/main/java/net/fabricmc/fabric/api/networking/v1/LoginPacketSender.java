@@ -32,6 +32,13 @@ import net.minecraft.util.Identifier;
  */
 @ApiStatus.NonExtendable
 public interface LoginPacketSender extends PacketSender {
+	/**
+	 * Creates a packet for sending to a login channel.
+	 *
+	 * @param channelName the id of the channel
+	 * @param buf the content of the packet
+	 * @return the created packet
+	 */
 	Packet<?> createPacket(Identifier channelName, PacketByteBuf buf);
 
 	/**

@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.networking.v1;
+package net.fabricmc.fabric.impl.networking;
 
 import net.minecraft.network.PacketByteBuf;
-
-import net.fabricmc.fabric.impl.networking.CustomPayloadTypeProvider;
 
 public interface FabricCustomPayloadPacketCodec<B extends PacketByteBuf> {
 	void fabric_setPacketCodecProvider(CustomPayloadTypeProvider<B> customPayloadTypeProvider);

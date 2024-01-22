@@ -36,6 +36,9 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerA
  * Offers access to configuration stage server-side networking functionalities.
  *
  * <p>Server-side networking functionalities include receiving serverbound packets, sending clientbound packets, and events related to server-side network handlers.
+ * Packets <strong>received</strong> by this class must be registered to {@link PayloadTypeRegistry#configurationC2S()} on both ends.
+ * Packets <strong>sent</strong> by this class must be registered to {@link PayloadTypeRegistry#configurationS2C()} on both ends.
+ * Packets must be registered before registering any receivers.
  *
  * <p>This class should be only used for the logical server.
  *
@@ -57,6 +60,7 @@ public final class ServerConfigurationNetworking {
 	 * @param type the packet type
 	 * @param handler the handler
 	 * @return {@code false} if a handler is already registered to the channel
+	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#configurationC2S() registered} yet
 	 * @see ServerConfigurationNetworking#unregisterGlobalReceiver(Identifier)
 	 * @see ServerConfigurationNetworking#registerReceiver(ServerConfigurationNetworkHandler, CustomPayload.Id, ConfigurationPacketHandler)
 	 */
@@ -96,7 +100,6 @@ public final class ServerConfigurationNetworking {
 	 * This method differs from {@link ServerConfigurationNetworking#registerGlobalReceiver(CustomPayload.Id, ConfigurationPacketHandler)} since
 	 * the channel handler will only be applied to the client represented by the {@link ServerConfigurationNetworkHandler}.
 	 *
-	 *
 	 * <p>If a handler is already registered for the {@code type}, this method will return {@code false}, and no change will be made.
 	 * Use {@link #unregisterReceiver(ServerConfigurationNetworkHandler, Identifier)} to unregister the existing handler.
 	 *
@@ -104,6 +107,7 @@ public final class ServerConfigurationNetworking {
 	 * @param type the packet type
 	 * @param handler the handler
 	 * @return {@code false} if a handler is already registered to the channel name
+	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#configurationC2S() registered} yet
 	 * @see ServerPlayConnectionEvents#INIT
 	 */
 	public static <T extends CustomPayload> boolean registerReceiver(ServerConfigurationNetworkHandler networkHandler, CustomPayload.Id<T> type, ConfigurationPacketHandler<T> handler) {
@@ -204,6 +208,8 @@ public final class ServerConfigurationNetworking {
 	/**
 	 * Sends a packet to a configuring player.
 	 *
+	 * <p>Any packets sent must be {@linkplain PayloadTypeRegistry#configurationS2C() registered}.</p>
+	 *
 	 * @param handler the network handler to send the packet to
 	 * @param payload to be sent
 	 */
@@ -232,7 +238,7 @@ public final class ServerConfigurationNetworking {
 	}
 
 	/**
-	 * A thread-safe packet handler utilizing {@link CustomPayload}.
+	 * A packet handler utilizing {@link CustomPayload}.
 	 * @param <T> the type of the packet
 	 */
 	@FunctionalInterface

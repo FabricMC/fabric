@@ -22,9 +22,12 @@ import net.minecraft.network.packet.CustomPayload;
 
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
-public record KeybindPayload() implements CustomPayload {
+public class KeybindPayload implements CustomPayload {
+	public static final KeybindPayload INSTANCE = new KeybindPayload();
 	public static final CustomPayload.Id<KeybindPayload> ID = new CustomPayload.Id<>(NetworkingTestmods.id("keybind_press_test"));
-	public static final PacketCodec<RegistryByteBuf, KeybindPayload> CODEC = CustomPayload.codecOf((value, buf) -> { }, buf -> new KeybindPayload());
+	public static final PacketCodec<RegistryByteBuf, KeybindPayload> CODEC = PacketCodec.unit(INSTANCE);
+
+	private KeybindPayload() { }
 
 	@Override
 	public Id<? extends CustomPayload> getId() {

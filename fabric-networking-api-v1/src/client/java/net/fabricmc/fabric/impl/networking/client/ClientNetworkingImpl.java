@@ -52,7 +52,7 @@ import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAcces
 public final class ClientNetworkingImpl {
 	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>(NetworkSide.CLIENTBOUND, NetworkPhase.LOGIN, null);
 	public static final GlobalReceiverRegistry<ClientConfigurationNetworking.ConfigurationPayloadHandler<?>> CONFIGURATION = new GlobalReceiverRegistry<>(NetworkSide.CLIENTBOUND, NetworkPhase.CONFIGURATION, PayloadTypeRegistryImpl.CONFIGURATION_S2C);
-	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayPacketHandler<?>> PLAY = new GlobalReceiverRegistry<>(NetworkSide.CLIENTBOUND, NetworkPhase.PLAY, PayloadTypeRegistryImpl.PLAY_S2C);
+	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayPayloadHandler<?>> PLAY = new GlobalReceiverRegistry<>(NetworkSide.CLIENTBOUND, NetworkPhase.PLAY, PayloadTypeRegistryImpl.PLAY_S2C);
 
 	private static ClientPlayNetworkAddon currentPlayAddon;
 	private static ClientConfigurationNetworkAddon currentConfigurationAddon;
@@ -77,7 +77,7 @@ public final class ClientNetworkingImpl {
 	}
 
 	/**
-	 * Due to the way logging into a integrated or remote dedicated server will differ, we need to obtain the login client connection differently.
+	 * Due to the way logging into an integrated or remote dedicated server will differ, we need to obtain the login client connection differently.
 	 */
 	@Nullable
 	public static ClientConnection getLoginConnection() {

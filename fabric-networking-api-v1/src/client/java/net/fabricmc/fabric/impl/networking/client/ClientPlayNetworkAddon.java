@@ -37,7 +37,7 @@ import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 
-public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientPlayNetworking.PlayPacketHandler<?>> {
+public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientPlayNetworking.PlayPayloadHandler<?>> {
 	private final ClientPlayNetworkHandler handler;
 	private final MinecraftClient client;
 	private boolean sentInitialRegisterPacket;
@@ -71,9 +71,9 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	protected void receive(ClientPlayNetworking.PlayPacketHandler<?> handler, CustomPayload payload) {
+	protected void receive(ClientPlayNetworking.PlayPayloadHandler<?> handler, CustomPayload payload) {
 		this.client.execute(() -> {
-			((ClientPlayNetworking.PlayPacketHandler) handler).receive(payload, client.player, ClientPlayNetworkAddon.this);
+			((ClientPlayNetworking.PlayPayloadHandler) handler).receive(payload, client.player, ClientPlayNetworkAddon.this);
 		});
 	}
 

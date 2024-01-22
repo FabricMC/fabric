@@ -29,6 +29,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
@@ -38,6 +39,9 @@ import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
  *
  * <p>Client-side networking functionalities include receiving clientbound packets,
  * sending serverbound packets, and events related to client-side network handlers.
+ * Packets <strong>received</strong> by this class must be registered to {@link PayloadTypeRegistry#playS2C()} on both ends.
+ * Packets <strong>sent</strong> by this class must be registered to {@link PayloadTypeRegistry#playC2S()} on both ends.
+ * Packets must be registered before registering any receivers.
  *
  * <p>This class should be only used on the physical client and for the logical client.
  *
@@ -59,10 +63,11 @@ public final class ClientPlayNetworking {
 	 * @param type the payload type
 	 * @param handler the handler
 	 * @return false if a handler is already registered to the channel
+	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#playS2C() registered} yet
 	 * @see ClientPlayNetworking#unregisterGlobalReceiver(Identifier)
-	 * @see ClientPlayNetworking#registerReceiver(CustomPayload.Id, PlayPacketHandler)
+	 * @see ClientPlayNetworking#registerReceiver(CustomPayload.Id, PlayPayloadHandler)
 	 */
-	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Id<T> type, PlayPacketHandler<T> handler) {
+	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Id<T> type, PlayPayloadHandler<T> handler) {
 		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(type.id(), handler);
 	}
 
@@ -74,12 +79,12 @@ public final class ClientPlayNetworking {
 	 *
 	 * @param id the payload id
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerGlobalReceiver(CustomPayload.Id, PlayPacketHandler)}
-	 * @see ClientPlayNetworking#registerGlobalReceiver(CustomPayload.Id, PlayPacketHandler)
+	 * or it was not registered using {@link #registerGlobalReceiver(CustomPayload.Id, PlayPayloadHandler)}
+	 * @see ClientPlayNetworking#registerGlobalReceiver(CustomPayload.Id, PlayPayloadHandler)
 	 * @see ClientPlayNetworking#unregisterReceiver(Identifier)
 	 */
 	@Nullable
-	public static ClientPlayNetworking.PlayPacketHandler<?> unregisterGlobalReceiver(Identifier id) {
+	public static ClientPlayNetworking.PlayPayloadHandler<?> unregisterGlobalReceiver(Identifier id) {
 		return ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(id);
 	}
 
@@ -105,10 +110,11 @@ public final class ClientPlayNetworking {
 	 * @param type the payload type
 	 * @param handler the handler
 	 * @return {@code false} if a handler is already registered for the type
+	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#playS2C() registered} yet
 	 * @throws IllegalStateException if the client is not connected to a server
 	 * @see ClientPlayConnectionEvents#INIT
 	 */
-	public static <T extends CustomPayload> boolean registerReceiver(CustomPayload.Id<T> type, PlayPacketHandler<T> handler) {
+	public static <T extends CustomPayload> boolean registerReceiver(CustomPayload.Id<T> type, PlayPayloadHandler<T> handler) {
 		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
 
 		if (addon != null) {
@@ -125,11 +131,11 @@ public final class ClientPlayNetworking {
 	 *
 	 * @param id the payload id
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerReceiver(CustomPayload.Id, PlayPacketHandler)}
+	 * or it was not registered using {@link #registerReceiver(CustomPayload.Id, PlayPayloadHandler)}
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
 	@Nullable
-	public static ClientPlayNetworking.PlayPacketHandler<?> unregisterReceiver(Identifier id) {
+	public static ClientPlayNetworking.PlayPayloadHandler<?> unregisterReceiver(Identifier id) {
 		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
 
 		if (addon != null) {
@@ -226,6 +232,8 @@ public final class ClientPlayNetworking {
 	/**
 	 * Sends a payload to the connected server.
 	 *
+	 * <p>Any packets sent must be {@linkplain PayloadTypeRegistry#playC2S() registered}.</p>
+	 *
 	 * @param payload the payload
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
@@ -250,7 +258,7 @@ public final class ClientPlayNetworking {
 	 * @param <T> the type of the payload
 	 */
 	@FunctionalInterface
-	public interface PlayPacketHandler<T extends CustomPayload> {
+	public interface PlayPayloadHandler<T extends CustomPayload> {
 		/**
 		 * Handles the incoming payload. This is called on the render thread, and can safely
 		 * call client methods.
