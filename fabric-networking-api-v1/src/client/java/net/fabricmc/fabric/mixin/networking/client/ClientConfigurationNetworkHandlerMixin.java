@@ -51,7 +51,7 @@ public abstract class ClientConfigurationNetworkHandlerMixin extends ClientCommo
 		this.addon.lateInit();
 	}
 
-	@Inject(method = "onReady", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;transitionInbound(Lnet/minecraft/network/NetworkState;Lnet/minecraft/network/listener/PacketListener;)V"))
+	@Inject(method = "onReady", at = @At(value = "NEW", target = "(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/network/ClientConnection;Lnet/minecraft/client/network/ClientConnectionState;)Lnet/minecraft/client/network/ClientPlayNetworkHandler;"))
 	public void onReady(ReadyS2CPacket packet, CallbackInfo ci) {
 		this.addon.handleReady();
 	}
