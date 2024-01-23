@@ -33,6 +33,7 @@ public class SetAttachmentFeature extends Feature<DefaultFeatureConfig> {
 	@Override
 	public boolean generate(FeatureContext<DefaultFeatureConfig> context) {
 		Chunk chunk = context.getWorld().getChunk(context.getOrigin());
+
 		if (!(chunk instanceof ProtoChunk) || chunk instanceof WrapperProtoChunk) {
 			AttachmentTestMod.LOGGER.warn("Feature not attaching to ProtoChunk");
 		}

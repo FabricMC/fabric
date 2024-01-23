@@ -69,7 +69,6 @@ public class AttachmentTestMod implements ModInitializer {
 				RegistryKey.of(RegistryKeys.PLACED_FEATURE, new Identifier(MOD_ID, "set_attachment"))
 		);
 
-
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			ServerWorld overworld;
 			WorldChunk chunk;
