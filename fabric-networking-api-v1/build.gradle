@@ -10,8 +10,4 @@ testDependencies(project, [
 
 loom {
 	accessWidenerPath = file('src/main/resources/fabric-networking-api-v1.accesswidener')
-
-	interfaceInjection {
-		enableDependencyInterfaceInjection = true
-	}
 }
