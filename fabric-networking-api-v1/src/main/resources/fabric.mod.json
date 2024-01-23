@@ -40,9 +40,8 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_2535": [ "net/fabricmc/fabric/api/ServerCookieStore" ],
-      "net/minecraft/class_3248": [ "net/fabricmc/fabric/api/ServerTransferable", "net/fabricmc/fabric/api/ServerCookieStore" ],
-      "net/minecraft/class_8609": [ "net/fabricmc/fabric/api/ServerTransferable", "net/fabricmc/fabric/api/ServerCookieStore" ],
+      "net/minecraft/class_3248": [ "net/fabricmc/fabric/api/networking/v1/ServerTransferable", "net/fabricmc/fabric/api/networking/v1/ServerCookieStore" ],
+      "net/minecraft/class_8609": [ "net/fabricmc/fabric/api/networking/v1/ServerTransferable", "net/fabricmc/fabric/api/networking/v1/ServerCookieStore" ],
       "net/minecraft/class_8610": [ "net/fabricmc/fabric/api/networking/v1/FabricServerConfigurationNetworkHandler" ]
     }
   }

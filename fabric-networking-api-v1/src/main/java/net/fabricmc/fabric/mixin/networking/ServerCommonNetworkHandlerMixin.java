@@ -90,6 +90,7 @@ public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerE
 		return false;
 	}
 
+
 	@Override
 	public void transferToServer(String host, int port) {
 		connection.send(new ServerTransferS2CPacket(host, port));
