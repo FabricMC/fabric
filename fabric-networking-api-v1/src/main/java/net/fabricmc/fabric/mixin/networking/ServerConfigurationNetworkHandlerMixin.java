@@ -17,16 +17,6 @@
 package net.fabricmc.fabric.mixin.networking;
 
 import java.util.Queue;
-import java.util.concurrent.CompletableFuture;
-
-import net.fabricmc.fabric.api.networking.v1.ServerCookieStore;
-
-import net.fabricmc.fabric.api.networking.v1.ServerTransferable;
-
-import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
-
-import net.minecraft.network.packet.s2c.common.ServerTransferS2CPacket;
-import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;

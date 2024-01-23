@@ -23,15 +23,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.netty.channel.ChannelHandlerContext;
-
-import net.fabricmc.fabric.api.networking.v1.ServerCookieStore;
-
-import net.fabricmc.fabric.impl.networking.ServerCookieCallback;
-
-import net.minecraft.network.packet.s2c.common.CookieRequestS2CPacket;
-
-import net.minecraft.network.packet.s2c.common.StoreCookieS2CPacket;
-
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -48,13 +39,17 @@ import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.listener.PacketListener;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.common.CookieRequestS2CPacket;
+import net.minecraft.network.packet.s2c.common.StoreCookieS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.ServerCookieStore;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
+import net.fabricmc.fabric.impl.networking.ServerCookieCallback;
 
 @Mixin(ClientConnection.class)
 abstract class ClientConnectionMixin implements ChannelInfoHolder, ServerCookieCallback, ServerCookieStore {
