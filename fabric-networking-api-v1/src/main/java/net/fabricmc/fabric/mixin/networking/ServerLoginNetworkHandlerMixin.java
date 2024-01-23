@@ -40,11 +40,10 @@ import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.ServerCookieStore;
+import net.fabricmc.fabric.impl.networking.ServerCookieStore;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
-import net.fabricmc.fabric.impl.networking.ServerCookieCallback;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
 
@@ -56,10 +55,6 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 	@Shadow
 	@Final
 	private ClientConnection connection;
-
-	@Shadow
-	@Final
-	private boolean transferred;
 
 	@Unique
 	private ServerLoginNetworkAddon addon;
@@ -97,8 +92,8 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 	}
 
 	@Inject(method = "onCookieResponse", at = @At("HEAD"))
-	private void storeCookie(CookieResponseC2SPacket packet, CallbackInfo ci) {
-		((ServerCookieCallback) connection).fabric_invokeCookieCallback(packet.key(), packet.payload());
+	private void triggerCookieFuture(CookieResponseC2SPacket packet, CallbackInfo ci) {
+		addon.triggerCookieFuture(packet.key(), packet.payload());
 	}
 
 	@WrapWithCondition(method = "onCookieResponse", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;disconnect(Lnet/minecraft/text/Text;)V"))
@@ -125,11 +120,11 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 
 	@Override
 	public void setCookie(Identifier cookieId, byte[] cookie) {
-		((ServerCookieStore) connection).setCookie(cookieId, cookie);
+		addon.setCookie(connection, cookieId, cookie);
 	}
 
 	@Override
 	public CompletableFuture<byte[]> getCookie(Identifier cookieId) {
-		return ((ServerCookieStore) connection).getCookie(cookieId);
+		return addon.getCookie(connection, cookieId);
 	}
 }

@@ -35,9 +35,8 @@ import net.minecraft.server.network.ServerCommonNetworkHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.ServerCookieStore;
+import net.fabricmc.fabric.impl.networking.ServerCookieStore;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
-import net.fabricmc.fabric.impl.networking.ServerCookieCallback;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 
 @Mixin(ServerCommonNetworkHandler.class)
@@ -45,10 +44,6 @@ public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerE
 	@Shadow
 	@Final
 	protected ClientConnection connection;
-
-	@Shadow
-	@Final
-	private boolean transferred;
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	private void handleCustomPayloadReceivedAsync(CustomPayloadC2SPacket packet, CallbackInfo ci) {
@@ -76,8 +71,8 @@ public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerE
 	}
 
 	@Inject(method = "onCookieResponse", at = @At("HEAD"))
-	private void storeCookie(CookieResponseC2SPacket packet, CallbackInfo ci) {
-		((ServerCookieCallback) connection).fabric_invokeCookieCallback(packet.key(), packet.payload());
+	private void triggerCookieFuture(CookieResponseC2SPacket packet, CallbackInfo ci) {
+		getAddon().triggerCookieFuture(packet.key(), packet.payload());
 	}
 
 	@WrapWithCondition(method = "onCookieResponse", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerCommonNetworkHandler;disconnect(Lnet/minecraft/text/Text;)V"))
@@ -87,11 +82,11 @@ public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerE
 
 	@Override
 	public void setCookie(Identifier cookieId, byte[] cookie) {
-		((ServerCookieStore) connection).setCookie(cookieId, cookie);
+		getAddon().setCookie(connection, cookieId, cookie);
 	}
 
 	@Override
 	public CompletableFuture<byte[]> getCookie(Identifier cookieId) {
-		return ((ServerCookieStore) connection).getCookie(cookieId);
+		return getAddon().getCookie(connection, cookieId);
 	}
 }

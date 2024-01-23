@@ -39,20 +39,16 @@ import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.listener.PacketListener;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.common.CookieRequestS2CPacket;
-import net.minecraft.network.packet.s2c.common.StoreCookieS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.ServerCookieStore;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
-import net.fabricmc.fabric.impl.networking.ServerCookieCallback;
 
 @Mixin(ClientConnection.class)
-abstract class ClientConnectionMixin implements ChannelInfoHolder, ServerCookieCallback, ServerCookieStore {
+abstract class ClientConnectionMixin implements ChannelInfoHolder {
 	@Shadow
 	private PacketListener packetListener;
 
@@ -67,8 +63,6 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder, ServerCookieC
 
 	@Unique
 	private Map<NetworkPhase, Collection<Identifier>> playChannels;
-	@Unique
-	private final Map<Identifier, CompletableFuture<byte[]>> pendingCookieRequests = new ConcurrentHashMap<>();
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddedFields(NetworkSide side, CallbackInfo ci) {
@@ -119,28 +113,5 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder, ServerCookieC
 	@Override
 	public Collection<Identifier> fabric_getPendingChannelsNames(NetworkPhase state) {
 		return this.playChannels.computeIfAbsent(state, (key) -> Collections.newSetFromMap(new ConcurrentHashMap<>()));
-	}
-
-	@Override
-	public void fabric_invokeCookieCallback(Identifier cookieId, byte[] cookie) {
-		CompletableFuture<byte[]> future = pendingCookieRequests.remove(cookieId);
-		if (future == null) return;
-		future.complete(cookie);
-	}
-
-	@Override
-	public void setCookie(Identifier cookieId, byte[] cookie) {
-		send(new StoreCookieS2CPacket(cookieId, cookie));
-	}
-
-	@Override
-	public CompletableFuture<byte[]> getCookie(Identifier cookieId) {
-		CompletableFuture<byte[]> future = pendingCookieRequests.get(cookieId);
-		if (future != null) return future;
-
-		future = new CompletableFuture<>();
-		pendingCookieRequests.put(cookieId, future);
-		send(new CookieRequestS2CPacket(cookieId));
-		return future;
 	}
 }
