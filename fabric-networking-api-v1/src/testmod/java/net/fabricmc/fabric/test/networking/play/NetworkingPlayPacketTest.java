@@ -20,6 +20,8 @@ import static com.mojang.brigadier.arguments.StringArgumentType.string;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 import com.mojang.brigadier.Command;
@@ -36,13 +38,17 @@ import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerCookieStore;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerTransferable;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -88,6 +94,22 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 					));
 					ServerPlayNetworking.getSender(ctx.getSource().getPlayer()).sendPacket(packet);
 					return Command.SINGLE_SUCCESS;
+				}))
+				.then(literal("transfer").executes(ctx -> {
+					((ServerTransferable) ctx.getSource().getPlayer().networkHandler).transferToServer("localhost", 25565);
+					return Command.SINGLE_SUCCESS;
+				}))
+				.then(literal("setCookie").executes(ctx -> {
+					((ServerCookieStore) ctx.getSource().getPlayer().networkHandler).setCookie(new Identifier("fabric:test"), "123456789".getBytes(StandardCharsets.UTF_8));
+					return Command.SINGLE_SUCCESS;
+				}))
+				.then(literal("getCookie").executes(ctx -> {
+					ServerPlayerEntity player = ctx.getSource().getPlayer();
+					((ServerCookieStore) player.networkHandler).getCookie(new Identifier("fabric:test")).whenComplete((data, throwable) -> {
+						if (data.length == 0) return;
+						player.sendMessage(Text.of(new String(data)));
+					});
+					return Command.SINGLE_SUCCESS;
 				})));
 	}
 
@@ -116,6 +138,13 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 					sendToUnknownChannel(player);
 				}
 			}
+		});
+
+		ServerLoginConnectionEvents.INIT.register((handler, server) -> {
+			((ServerCookieStore) handler).getCookie(new Identifier("fabric:test")).whenComplete((data, throwable) -> {
+				if (data.length == 0) return;
+				assert Arrays.equals(data, "123456789".getBytes(StandardCharsets.UTF_8));
+			});
 		});
 	}
 
