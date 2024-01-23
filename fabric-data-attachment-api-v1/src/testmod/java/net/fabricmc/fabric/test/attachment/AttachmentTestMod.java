@@ -20,6 +20,10 @@ import com.mojang.serialization.Codec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkPos;
@@ -28,10 +32,14 @@ import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.chunk.WrapperProtoChunk;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
@@ -42,34 +50,49 @@ public class AttachmentTestMod implements ModInitializer {
 			new Identifier(MOD_ID, "persistent"),
 			Codec.STRING
 	);
+	public static final AttachmentType<String> FEATURE_ATTACHMENT = AttachmentRegistry.createPersistent(
+			new Identifier(MOD_ID, "feature"),
+			Codec.STRING
+	);
+
 	public static final ChunkPos FAR_CHUNK_POS = new ChunkPos(30, 0);
 
 	private boolean firstLaunch = true;
 
 	@Override
 	public void onInitialize() {
+		Registry.register(Registries.FEATURE, new Identifier(MOD_ID, "set_attachment"), new SetAttachmentFeature(DefaultFeatureConfig.CODEC));
+
+		BiomeModifications.addFeature(
+				BiomeSelectors.foundInOverworld(),
+				GenerationStep.Feature.VEGETAL_DECORATION,
+				RegistryKey.of(RegistryKeys.PLACED_FEATURE, new Identifier(MOD_ID, "set_attachment"))
+		);
+
+
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			ServerWorld overworld;
 			WorldChunk chunk;
 
-			if (firstLaunch) {
-				LOGGER.info("First launch, setting up");
+			overworld = server.getOverworld();
+			chunk = overworld.getChunk(0, 0);
 
-				overworld = server.getOverworld();
+			if (firstLaunch) {
+				LOGGER.info("First launch, testing attachment by feature");
+				if (!"feature".equals(chunk.getAttached(FEATURE_ATTACHMENT))) throw new AssertionError("Feature did not write write attachment to ProtoChunk");
+
+				LOGGER.info("setting up persistent attachments");
+
 				overworld.setAttached(PERSISTENT, "world_data");
 
-				chunk = overworld.getChunk(0, 0);
 				chunk.setAttached(PERSISTENT, "chunk_data");
 
 				ProtoChunk protoChunk = (ProtoChunk) overworld.getChunkManager().getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z, ChunkStatus.STRUCTURE_STARTS, true);
 				protoChunk.setAttached(PERSISTENT, "protochunk_data");
 			} else {
-				LOGGER.info("Second launch, testing");
+				LOGGER.info("Second launch, testing persistent attachments");
 
-				overworld = server.getOverworld();
 				if (!"world_data".equals(overworld.getAttached(PERSISTENT))) throw new AssertionError("World attachement did not persist");
-
-				chunk = overworld.getChunk(0, 0);
 				if (!"chunk_data".equals(chunk.getAttached(PERSISTENT))) throw new AssertionError("WorldChunk attachement did not persist");
 
 				WrapperProtoChunk wrapperProtoChunk = (WrapperProtoChunk) overworld.getChunkManager().getChunk(0, 0, ChunkStatus.EMPTY, true);
@@ -90,7 +113,7 @@ public class AttachmentTestMod implements ModInitializer {
 		ServerChunkEvents.CHUNK_LOAD.register(((world, chunk) -> {
 			if (!chunk.getPos().equals(FAR_CHUNK_POS)) return;
 
-			LOGGER.info("Loaded chunk {}, testing", FAR_CHUNK_POS);
+			LOGGER.info("Loaded chunk {}, testing transfer of attachments to WorldChunk", FAR_CHUNK_POS);
 
 			if (!"protochunk_data".equals(chunk.getAttached(PERSISTENT))) throw new AssertionError("ProtoChunk attachement was not transfered to WorldChunk");
 		}));
