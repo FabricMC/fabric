@@ -11,7 +11,7 @@ public interface ServerTransferable {
     void transferToServer(String host, int port);
 
 	/**
-	 * @return Weather or not this client joined from a server transfer
+	 * @return Whether or not this client joined from a server transfer
 	 */
     boolean wasTransferred();
 }
