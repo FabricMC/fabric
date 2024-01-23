@@ -21,10 +21,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import net.minecraft.network.ClientConnection;
+import net.minecraft.network.packet.s2c.common.CookieRequestS2CPacket;
+import net.minecraft.network.packet.s2c.common.StoreCookieS2CPacket;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -46,6 +52,7 @@ public abstract class AbstractNetworkAddon<H> {
 	// All access to this map is guarded by the lock
 	private final Map<Identifier, H> handlers = new HashMap<>();
 	private final AtomicBoolean disconnected = new AtomicBoolean(); // blocks redundant disconnect notifications
+	private final Map<Identifier, CompletableFuture<byte[]>> pendingCookieRequests = new ConcurrentHashMap<>();
 
 	protected AbstractNetworkAddon(GlobalReceiverRegistry<H> receiver, String description) {
 		this.receiver = receiver;
@@ -172,4 +179,24 @@ public abstract class AbstractNetworkAddon<H> {
 	 * @return whether the channel is reserved
 	 */
 	protected abstract boolean isReservedChannel(Identifier channelName);
+
+	public void triggerCookieFuture(Identifier cookieId, byte[] cookie) {
+		CompletableFuture<byte[]> future = pendingCookieRequests.remove(cookieId);
+		if (future == null) return;
+		future.complete(cookie);
+	}
+
+	public void setCookie(ClientConnection connection, Identifier cookieId, byte[] cookie) {
+		connection.send(new StoreCookieS2CPacket(cookieId, cookie));
+	}
+
+	public CompletableFuture<byte[]> getCookie(ClientConnection connection, Identifier cookieId) {
+		CompletableFuture<byte[]> future = pendingCookieRequests.get(cookieId);
+		if (future != null) return future;
+
+		future = new CompletableFuture<>();
+		pendingCookieRequests.put(cookieId, future);
+		connection.send(new CookieRequestS2CPacket(cookieId));
+		return future;
+	}
 }

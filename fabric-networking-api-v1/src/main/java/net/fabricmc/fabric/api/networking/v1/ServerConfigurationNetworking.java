@@ -18,6 +18,9 @@ package net.fabricmc.fabric.api.networking.v1;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+
+import net.fabricmc.fabric.impl.networking.ServerCookieStore;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -233,6 +236,26 @@ public final class ServerConfigurationNetworking {
 		Objects.requireNonNull(handler, "Network handler cannot be null");
 
 		return ((ServerCommonNetworkHandlerAccessor) handler).getServer();
+	}
+
+	/**
+	 * Sets the cookie data on the client.
+	 *
+	 * @param cookieId The id to tag the data with.
+	 * @param cookie The data to be set on the client.
+	 */
+	public static void setCookie(ServerConfigurationNetworkHandler handler, Identifier cookieId, byte[] cookie) {
+		((ServerCookieStore) handler).setCookie(cookieId, cookie);
+	}
+
+	/**
+	 * Retrieves cookie data from the client.
+	 *
+	 * @param cookieId The id the data was tagged with.
+	 * @return The cookie data or an empty byte[] if there was no cookie found with that id.
+	 */
+	public static CompletableFuture<byte[]> getCookie(ServerConfigurationNetworkHandler handler, Identifier cookieId) {
+		return ((ServerCookieStore) handler).getCookie(cookieId);
 	}
 
 	private ServerConfigurationNetworking() {
