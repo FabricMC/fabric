@@ -1,2 +1,4 @@
 accessWidener v2 named
 
+accessible field net/minecraft/server/network/ServerLoginNetworkHandler transferred Z
+accessible field net/minecraft/server/network/ServerCommonNetworkHandler transferred Z
