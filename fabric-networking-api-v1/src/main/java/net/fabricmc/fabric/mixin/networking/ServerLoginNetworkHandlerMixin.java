@@ -33,7 +33,6 @@ import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CookieResponseC2SPacket;
 import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
-import net.minecraft.network.packet.s2c.common.ServerTransferS2CPacket;
 import net.minecraft.network.packet.s2c.login.LoginDisconnectS2CPacket;
 import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
 import net.minecraft.server.MinecraftServer;
@@ -42,7 +41,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.ServerCookieStore;
-import net.fabricmc.fabric.api.networking.v1.ServerTransferable;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
@@ -51,7 +49,7 @@ import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRespon
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
 
 @Mixin(ServerLoginNetworkHandler.class)
-abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtensions, DisconnectPacketSource, PacketCallbackListener, ServerTransferable, ServerCookieStore {
+abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtensions, DisconnectPacketSource, PacketCallbackListener, ServerCookieStore {
 	@Shadow
 	protected abstract void tickVerify(GameProfile profile);
 
@@ -123,16 +121,6 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 	@Override
 	public Packet<?> createDisconnectPacket(Text message) {
 		return new LoginDisconnectS2CPacket(message);
-	}
-
-	@Override
-	public void transferToServer(String host, int port) {
-		connection.send(new ServerTransferS2CPacket(host, port));
-	}
-
-	@Override
-	public boolean wasTransferred() {
-		return transferred;
 	}
 
 	@Override
