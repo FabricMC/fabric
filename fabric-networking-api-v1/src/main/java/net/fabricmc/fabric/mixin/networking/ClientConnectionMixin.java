@@ -73,7 +73,7 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder, ServerCookieC
 	@Unique
 	private Map<NetworkPhase, Collection<Identifier>> playChannels;
 	@Unique
-	private final ConcurrentHashMap<Identifier, CompletableFuture<byte[]>> pendingCookieRequests = new ConcurrentHashMap<>();
+	private final Map<Identifier, CompletableFuture<byte[]>> pendingCookieRequests = new ConcurrentHashMap<>();
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddedFields(NetworkSide side, CallbackInfo ci) {
@@ -140,10 +140,12 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder, ServerCookieC
 
 	@Override
 	public CompletableFuture<byte[]> getCookie(Identifier cookieId) {
+		CompletableFuture<byte[]> future = pendingCookieRequests.get(cookieId);
+		if (future != null) return future;
+
 		send(new CookieRequestS2CPacket(cookieId));
-		CompletableFuture<byte[]> future = new CompletableFuture<>();
-		CompletableFuture<byte[]> oldFuture = pendingCookieRequests.put(cookieId, future);
-		if (oldFuture != null) oldFuture.cancel(true);
+		future = new CompletableFuture<>();
+		pendingCookieRequests.put(cookieId, future);
 		return future;
 	}
 }
