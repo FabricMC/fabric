@@ -138,9 +138,9 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder, ServerCookieC
 		CompletableFuture<byte[]> future = pendingCookieRequests.get(cookieId);
 		if (future != null) return future;
 
-		send(new CookieRequestS2CPacket(cookieId));
 		future = new CompletableFuture<>();
 		pendingCookieRequests.put(cookieId, future);
+		send(new CookieRequestS2CPacket(cookieId));
 		return future;
 	}
 }
