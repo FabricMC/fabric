@@ -16,20 +16,10 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.mojang.authlib.GameProfile;
-
-import net.fabricmc.fabric.api.networking.v1.ServerCookieStore;
-import net.fabricmc.fabric.api.networking.v1.ServerTransferable;
-
-import net.fabricmc.fabric.impl.networking.ServerCookieCallback;
-
-import net.minecraft.network.ClientConnection;
-
-import net.minecraft.network.packet.c2s.common.CookieResponseC2SPacket;
-import net.minecraft.network.packet.s2c.common.ServerTransferS2CPacket;
-import net.minecraft.util.Identifier;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -39,21 +29,26 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.c2s.common.CookieResponseC2SPacket;
 import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
+import net.minecraft.network.packet.s2c.common.ServerTransferS2CPacket;
 import net.minecraft.network.packet.s2c.login.LoginDisconnectS2CPacket;
 import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.ServerCookieStore;
+import net.fabricmc.fabric.api.networking.v1.ServerTransferable;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
+import net.fabricmc.fabric.impl.networking.ServerCookieCallback;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
-
-import java.util.concurrent.CompletableFuture;
 
 @Mixin(ServerLoginNetworkHandler.class)
 abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtensions, DisconnectPacketSource, PacketCallbackListener, ServerTransferable, ServerCookieStore {
@@ -63,9 +58,11 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 	@Shadow
 	@Final
 	private ClientConnection connection;
+
 	@Shadow
 	@Final
 	private boolean transferred;
+
 	@Unique
 	private ServerLoginNetworkAddon addon;
 
