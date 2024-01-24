@@ -23,8 +23,7 @@
     "shears.EfficiencyEnchantmentMixin",
     "shears.EntityInteractShearsMixin",
     "shears.MatchToolLootConditionMixin",
-    "shears.TripwireBlockMixin",
-    "shears.accessors.DirectRegistryEntryListAccessor"
+    "shears.TripwireBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1
