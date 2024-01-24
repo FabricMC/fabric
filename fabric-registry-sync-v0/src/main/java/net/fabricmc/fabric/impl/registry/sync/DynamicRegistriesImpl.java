@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.registry.sync;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +28,6 @@ import org.jetbrains.annotations.Unmodifiable;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryLoader;
-import net.minecraft.registry.SerializableRegistries;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
@@ -52,7 +50,7 @@ public final class DynamicRegistriesImpl {
 		return List.copyOf(DYNAMIC_REGISTRIES);
 	}
 
-	public static <T> void register(RegistryKey<? extends Registry<T>> key, Codec<T> codec) {
+	public static <T> RegistryLoader.Entry<T> register(RegistryKey<? extends Registry<T>> key, Codec<T> codec) {
 		Objects.requireNonNull(key, "Registry key cannot be null");
 		Objects.requireNonNull(codec, "Codec cannot be null");
 
@@ -63,22 +61,22 @@ public final class DynamicRegistriesImpl {
 		var entry = new RegistryLoader.Entry<>(key, codec);
 		DYNAMIC_REGISTRIES.add(entry);
 		FABRIC_DYNAMIC_REGISTRY_KEYS.add(key);
+		return entry;
 	}
 
-	public static <T> void addSyncedRegistry(RegistryKey<? extends Registry<T>> registryKey, Codec<T> networkCodec, DynamicRegistries.SyncOption... options) {
-		Objects.requireNonNull(registryKey, "Registry key cannot be null");
-		Objects.requireNonNull(networkCodec, "Network codec cannot be null");
+	public static <T> void addSyncedRegistry(RegistryLoader.Entry<T> entry, DynamicRegistries.SyncOption... options) {
+		Objects.requireNonNull(entry, "Registry loader entry cannot be null");
 		Objects.requireNonNull(options, "Options cannot be null");
 
-		if (!(SerializableRegistries.REGISTRIES instanceof HashMap<?, ?>)) {
-			SerializableRegistries.REGISTRIES = new HashMap<>(SerializableRegistries.REGISTRIES);
+		if (!(RegistryLoader.field_48709 instanceof ArrayList<RegistryLoader.Entry<?>>)) {
+			RegistryLoader.field_48709 = new ArrayList<>(RegistryLoader.field_48709);
 		}
 
-		SerializableRegistries.REGISTRIES.put(registryKey, new SerializableRegistries.Info<>(registryKey, networkCodec));
+		RegistryLoader.field_48709.add(entry);
 
 		for (DynamicRegistries.SyncOption option : options) {
 			if (option == DynamicRegistries.SyncOption.SKIP_WHEN_EMPTY) {
-				SKIP_EMPTY_SYNC_REGISTRIES.add(registryKey);
+				SKIP_EMPTY_SYNC_REGISTRIES.add(entry.key());
 			}
 		}
 	}

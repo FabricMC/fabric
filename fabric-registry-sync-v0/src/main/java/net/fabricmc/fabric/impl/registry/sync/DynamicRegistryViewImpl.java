@@ -26,7 +26,6 @@ import net.minecraft.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistryView;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 
 public final class DynamicRegistryViewImpl implements DynamicRegistryView {
 	private final Map<RegistryKey<? extends Registry<?>>, Registry<?>> registries;
@@ -76,16 +75,6 @@ public final class DynamicRegistryViewImpl implements DynamicRegistryView {
 
 		if (registry != null) {
 			RegistryEntryAddedCallback.event(registry).register(callback);
-		}
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> void registerEntryRemoved(RegistryKey<? extends Registry<? extends T>> registryRef, RegistryEntryRemovedCallback<T> callback) {
-		Registry<T> registry = (Registry<T>) this.registries.get(registryRef);
-
-		if (registry != null) {
-			RegistryEntryRemovedCallback.event(registry).register(callback);
 		}
 	}
 }
