@@ -139,9 +139,9 @@ public final class ConventionalBlockTags {
 	 */
 	public static final TagKey<Block> RELOCATION_NOT_SUPPORTED = register("relocation_not_supported");
 	/**
-	 * Tag that holds all head based blocks such as Skeleton Skull or Player Head.
+	 * Tag that holds all head based blocks such as Skeleton Skull or Player Head. (Named skulls to match minecraft:skulls item tag)
 	 */
-	public static final TagKey<Block> HEADS = register("heads");
+	public static final TagKey<Block> SKULLS = register("skulls");
 	public static final TagKey<Block> ROPES = register("ropes");
 	public static final TagKey<Block> CHAINS = register("chains");
 

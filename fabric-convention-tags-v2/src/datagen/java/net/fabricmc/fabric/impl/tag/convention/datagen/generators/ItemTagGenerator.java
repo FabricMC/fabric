@@ -437,15 +437,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.WOODEN_RODS)
 				.addOptionalTag(ConventionalItemTags.BLAZE_RODS);
 
-		getOrCreateTagBuilder(ConventionalItemTags.HEADS)
-				.add(Items.SKELETON_SKULL)
-				.add(Items.WITHER_SKELETON_SKULL)
-				.add(Items.PLAYER_HEAD)
-				.add(Items.ZOMBIE_HEAD)
-				.add(Items.CREEPER_HEAD)
-				.add(Items.PIGLIN_HEAD)
-				.add(Items.DRAGON_HEAD);
-
 		getOrCreateTagBuilder(ConventionalItemTags.ROPES); // Generate tag so others can see it exists through JSON.
 
 		getOrCreateTagBuilder(ConventionalItemTags.CHAINS)

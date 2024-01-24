@@ -428,7 +428,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateHeadTags() {
-		getOrCreateTagBuilder(ConventionalBlockTags.HEADS)
+		getOrCreateTagBuilder(ConventionalBlockTags.SKULLS)
 				.add(Blocks.SKELETON_SKULL)
 				.add(Blocks.SKELETON_WALL_SKULL)
 				.add(Blocks.WITHER_SKELETON_SKULL)
