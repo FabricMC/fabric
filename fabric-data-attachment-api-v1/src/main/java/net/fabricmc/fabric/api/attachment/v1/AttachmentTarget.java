@@ -28,14 +28,14 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.chunk.ChunkStatus;
 
 /**
  * Marks all objects on which data can be attached using {@link AttachmentType}s.
  *
- * <p>Fabric implements this on {@link Entity}, {@link BlockEntity}, {@link ServerWorld} and {@link WorldChunk} via mixin.</p>
+ * <p>Fabric implements this on {@link Entity}, {@link BlockEntity}, {@link ServerWorld} and {@link Chunk} via mixin.</p>
  *
- * <p>Note about {@link BlockEntity} and {@link WorldChunk} targets: these objects need to be notified of changes to their
+ * <p>Note about {@link BlockEntity} and {@link Chunk} targets: these objects need to be notified of changes to their
  * state (using {@link BlockEntity#markDirty()} and {@link Chunk#setNeedsSaving(boolean)} respectively), otherwise the modifications will not take effect properly.
  * The {@link #setAttached(AttachmentType, Object)} method handles this automatically, but this needs to be done manually
  * when attached data is mutable, for example:
@@ -54,6 +54,12 @@ import net.minecraft.world.chunk.WorldChunk;
  * undesirable behavior, the API completely removes attachments from the result of {@link BlockEntity#toInitialChunkDataNbt()},
  * which takes care of all vanilla types. However, modded block entities may be coded differently, so be wary of this
  * when attaching data to modded block entities.
+ * </p>
+ *
+ * <p>
+ * Note about {@link Chunk} targets with {@link ChunkStatus#EMPTY}: These chunks are not saved unless the generation
+ * progresses to at least {@link ChunkStatus#STRUCTURE_STARTS}. Therefore, persistent attachments to those chunks may not
+ * be saved. The {@link #setAttached(AttachmentType, Object)} method will log a warning when this is attempted.
  * </p>
  */
 @ApiStatus.Experimental
