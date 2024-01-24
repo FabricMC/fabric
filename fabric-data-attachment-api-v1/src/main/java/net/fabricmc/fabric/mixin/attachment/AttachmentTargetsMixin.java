@@ -27,8 +27,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkStatus;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
@@ -55,6 +57,10 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			((BlockEntity) thisObject).markDirty();
 		} else if (thisObject instanceof Chunk) {
 			((Chunk) thisObject).setNeedsSaving(true);
+
+			if (type.isPersistent() && ((Chunk) thisObject).getStatus().equals(ChunkStatus.EMPTY)) {
+				AttachmentEntrypoint.LOGGER.warn("Attaching persistent attachment {} to chunk with chunk status EMPTY. Attachment might be discarded.", type.identifier());
+			}
 		}
 
 		if (value == null) {
