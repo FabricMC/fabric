@@ -21,6 +21,9 @@ import java.util.concurrent.CompletableFuture;
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
+
+import net.minecraft.network.packet.s2c.common.StoreCookieS2CPacket;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -84,7 +87,7 @@ public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerE
 
 	@Override
 	public void setCookie(Identifier cookieId, byte[] cookie) {
-		getAddon().setCookie(connection, cookieId, cookie);
+		connection.send(new StoreCookieS2CPacket(cookieId, cookie));
 	}
 
 	@Override
