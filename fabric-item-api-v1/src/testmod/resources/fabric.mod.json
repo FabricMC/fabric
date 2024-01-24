@@ -30,7 +30,7 @@
       "net.fabricmc.fabric.test.item.gametest.ShearsGameTest"
     ],
     "fabric-datagen": [
-      "net.fabricmc.fabric.test.item.CustomItemPredicateTest"
+      "net.fabricmc.fabric.test.item.CustomItemPredicateTest",
       "net.fabricmc.fabric.test.item.gametest.RecipeGameTest",
       "net.fabricmc.fabric.test.item.gametest.FoodGameTest"
     ]
