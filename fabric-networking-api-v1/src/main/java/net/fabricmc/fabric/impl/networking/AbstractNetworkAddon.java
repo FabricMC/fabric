@@ -186,10 +186,6 @@ public abstract class AbstractNetworkAddon<H> {
 		return true;
 	}
 
-	public void setCookie(ClientConnection connection, Identifier cookieId, byte[] cookie) {
-		connection.send(new StoreCookieS2CPacket(cookieId, cookie));
-	}
-
 	public CompletableFuture<byte[]> getCookie(ClientConnection connection, Identifier cookieId) {
 		CompletableFuture<byte[]> future = pendingCookieRequests.get(cookieId);
 		if (future != null) return future;

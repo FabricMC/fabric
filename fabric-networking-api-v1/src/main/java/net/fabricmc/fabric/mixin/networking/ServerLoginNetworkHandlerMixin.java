@@ -22,6 +22,9 @@ import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import com.mojang.authlib.GameProfile;
+
+import net.minecraft.network.packet.s2c.common.StoreCookieS2CPacket;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -122,7 +125,7 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 
 	@Override
 	public void setCookie(Identifier cookieId, byte[] cookie) {
-		addon.setCookie(connection, cookieId, cookie);
+		connection.send(new StoreCookieS2CPacket(cookieId, cookie));
 	}
 
 	@Override
