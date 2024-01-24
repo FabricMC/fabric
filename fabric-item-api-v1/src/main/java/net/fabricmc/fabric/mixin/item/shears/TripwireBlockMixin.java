@@ -33,6 +33,6 @@ public abstract class TripwireBlockMixin {
 	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isOf(Lnet/minecraft/item/Item;)Z"), method = "onBreak")
 	private boolean isShears(ItemStack stack, Item item, Operation<Boolean> original) {
 		// allows anything in fabric:shears to silently break tripwire (string)
-		return original.call(stack, item) || (stack.isShears() && item == Items.SHEARS);
+		return original.call(stack, item) || (item == Items.SHEARS && stack.isShears());
 	}
 }

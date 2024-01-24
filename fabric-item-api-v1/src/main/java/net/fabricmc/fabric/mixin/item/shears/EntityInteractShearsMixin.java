@@ -33,6 +33,6 @@ public abstract class EntityInteractShearsMixin {
 	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isOf(Lnet/minecraft/item/Item;)Z"), method = "interactMob")
 	private boolean isShears(ItemStack stack, Item item, Operation<Boolean> original) {
 		// allows anything in fabric:shears to shear sheep and snow golems
-		return original.call(stack, item) || (stack.isShears() && item == Items.SHEARS);
+		return original.call(stack, item) || (item == Items.SHEARS && stack.isShears());
 	}
 }

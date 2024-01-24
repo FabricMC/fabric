@@ -18,27 +18,45 @@ package net.fabricmc.fabric.mixin.item.shears;
 
 import java.util.Optional;
 
-import net.fabricmc.fabric.impl.item.ShearsHelper;
+import com.google.common.collect.ImmutableList;
 
+import net.fabricmc.fabric.impl.item.ItemPredicateExtensions;
+import net.fabricmc.fabric.impl.item.ShearsItemPredicate;
+
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.item.Items;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.condition.MatchToolLootCondition;
 import net.minecraft.predicate.item.ItemPredicate;
 
+import net.fabricmc.fabric.api.item.v1.CustomItemPredicate;
+
 @Mixin(MatchToolLootCondition.class)
 public abstract class MatchToolLootConditionMixin implements LootCondition {
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 	@Shadow
-	public abstract Optional<ItemPredicate> predicate();
+	@Final
+	private Optional<ItemPredicate> predicate;
 
+	@SuppressWarnings("deprecation")
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void shearsLoot(CallbackInfo ci) {
 		// allows anything in fabric:shears to mine grass (and other stuff) and it will drop
 		// the list will later be filtered to only contain the ones that have shears
-		predicate().flatMap(ItemPredicate::items).ifPresent(ShearsHelper.MATCH_TOOL_REGISTRY_ENTRIES::add);
+		if (this.predicate.isEmpty()) {
+			return;
+		}
+
+		ItemPredicate predicate = this.predicate.get();
+		if (predicate.items().isPresent() && predicate.items().get().contains(Items.SHEARS.getRegistryEntry())) {
+			CustomItemPredicate[] customPredicates = predicate.custom().toArray(new CustomItemPredicate[0]);
+			((ItemPredicateExtensions) (Object) predicate).fabric_setCustom(ImmutableList.<CustomItemPredicate>builderWithExpectedSize(customPredicates.length + 1).add(customPredicates).add(ShearsItemPredicate.INSTANCE).build());
+		}
 	}
 }
