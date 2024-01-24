@@ -145,7 +145,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		});
 
 		ServerLoginConnectionEvents.INIT.register((handler, server) -> {
-			if (handler.transferred) return;
+			if (!handler.transferred) return;
 
 			ServerLoginNetworking.getCookie(handler, new Identifier("fabric:test")).whenComplete((data, throwable) -> {
 				assert Arrays.equals(data, "123456789".getBytes(StandardCharsets.UTF_8));
@@ -153,7 +153,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		});
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
-			if (handler.transferred) return;
+			if (!handler.transferred) return;
 
 			ServerConfigurationNetworking.getCookie(handler, new Identifier("fabric:test")).whenComplete((data, throwable) -> {
 				assert Arrays.equals(data, "123456789".getBytes(StandardCharsets.UTF_8));

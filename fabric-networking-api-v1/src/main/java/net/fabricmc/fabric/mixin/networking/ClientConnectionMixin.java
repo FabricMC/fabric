@@ -57,9 +57,6 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 	@Shadow
 	public abstract void send(Packet<?> packet, @Nullable PacketCallbacks arg);
 
-	@Shadow
-	public abstract void send(Packet<?> packet);
-
 	@Unique
 	private Map<NetworkPhase, Collection<Identifier>> playChannels;
 
