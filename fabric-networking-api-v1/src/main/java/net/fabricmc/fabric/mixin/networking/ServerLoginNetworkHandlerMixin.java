@@ -19,7 +19,12 @@ package net.fabricmc.fabric.mixin.networking;
 import java.util.concurrent.CompletableFuture;
 
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import com.mojang.authlib.GameProfile;
+
+import net.minecraft.server.network.ServerCommonNetworkHandler;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -92,13 +97,13 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 	}
 
 	@Inject(method = "onCookieResponse", at = @At("HEAD"))
-	private void triggerCookieFuture(CookieResponseC2SPacket packet, CallbackInfo ci) {
-		addon.triggerCookieFuture(packet.key(), packet.payload());
+	private void triggerCookieFuture(CookieResponseC2SPacket packet, CallbackInfo ci, @Share("allowedCookie") LocalBooleanRef allowedCookie) {
+		allowedCookie.set(getAddon().triggerCookieFuture(packet.key(), packet.payload()));
 	}
 
 	@WrapWithCondition(method = "onCookieResponse", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;disconnect(Lnet/minecraft/text/Text;)V"))
-	private boolean cancelDisconnect(ServerLoginNetworkHandler instance, Text reason) {
-		return false;
+	private boolean cancelDisconnect(ServerLoginNetworkHandler instance, Text reason, @Share("allowedCookie") LocalBooleanRef allowedCookie) {
+		return !allowedCookie.get();
 	}
 
 	@Override

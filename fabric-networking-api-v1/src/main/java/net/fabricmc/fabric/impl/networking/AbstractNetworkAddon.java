@@ -180,10 +180,11 @@ public abstract class AbstractNetworkAddon<H> {
 	 */
 	protected abstract boolean isReservedChannel(Identifier channelName);
 
-	public void triggerCookieFuture(Identifier cookieId, byte[] cookie) {
+	public boolean triggerCookieFuture(Identifier cookieId, byte[] cookie) {
 		CompletableFuture<byte[]> future = pendingCookieRequests.remove(cookieId);
-		if (future == null) return;
+		if (future == null) return false;
 		future.complete(cookie);
+		return true;
 	}
 
 	public void setCookie(ClientConnection connection, Identifier cookieId, byte[] cookie) {
