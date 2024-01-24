@@ -56,6 +56,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public final class NetworkingPlayPacketTest implements ModInitializer {
 	private static boolean spamUnknownPackets = false;
+	private static final Identifier testCookie = new Identifier("fabric:test");
 
 	public static void sendToTestChannel(ServerPlayerEntity player, String stuff) {
 		ServerPlayNetworking.getSender(player).sendPacket(new OverlayPacket(Text.literal(stuff)), PacketCallbacks.always(() -> {
@@ -99,12 +100,12 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 				}))
 				.then(literal("transfer").executes(ctx -> {
 					ServerPlayerEntity player = ctx.getSource().getPlayer();
-					ServerPlayNetworking.setCookie(player, new Identifier("fabric:test"), "123456789".getBytes(StandardCharsets.UTF_8));
+					ServerPlayNetworking.setCookie(player, testCookie, "123456789".getBytes(StandardCharsets.UTF_8));
 					player.networkHandler.sendPacket(new ServerTransferS2CPacket("localhost", 25565));
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("setCookie").executes(ctx -> {
-					ServerPlayNetworking.setCookie(ctx.getSource().getPlayer(), new Identifier("fabric:test"), "123456789".getBytes(StandardCharsets.UTF_8));
+					ServerPlayNetworking.setCookie(ctx.getSource().getPlayer(), testCookie, "123456789".getBytes(StandardCharsets.UTF_8));
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("getCookie").executes(ctx -> {
@@ -147,7 +148,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		ServerLoginConnectionEvents.INIT.register((handler, server) -> {
 			if (!handler.transferred) return;
 
-			ServerLoginNetworking.getCookie(handler, new Identifier("fabric:test")).whenComplete((data, throwable) -> {
+			ServerLoginNetworking.getCookie(handler, testCookie).whenComplete((data, throwable) -> {
 				assert Arrays.equals(data, "123456789".getBytes(StandardCharsets.UTF_8));
 			});
 		});
@@ -155,7 +156,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
 			if (!handler.transferred) return;
 
-			ServerConfigurationNetworking.getCookie(handler, new Identifier("fabric:test")).whenComplete((data, throwable) -> {
+			ServerConfigurationNetworking.getCookie(handler, testCookie).whenComplete((data, throwable) -> {
 				assert Arrays.equals(data, "123456789".getBytes(StandardCharsets.UTF_8));
 			});
 		});
