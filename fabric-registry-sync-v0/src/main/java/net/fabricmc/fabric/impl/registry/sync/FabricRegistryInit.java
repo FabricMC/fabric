@@ -153,8 +153,9 @@ public class FabricRegistryInit implements ModInitializer {
 		// Synced by id
 		RegistryAttributeHolder.get(Registries.RECIPE_SERIALIZER);
 
-		// Synced and saved by id
-		RegistryAttributeHolder.get(Registries.ATTRIBUTE);
+		// Synced by rawID in 24w03a+
+		RegistryAttributeHolder.get(Registries.ATTRIBUTE)
+				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in StatisticsS2CPacket
 		RegistryAttributeHolder.get(Registries.STAT_TYPE)
@@ -194,6 +195,14 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Synced in TagManager::toPacket/fromPacket -> TagGroup::serialize/deserialize
 		RegistryAttributeHolder.get(Registries.GAME_EVENT)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Synced by rawID in its serialization code.
+		RegistryAttributeHolder.get(Registries.NUMBER_FORMAT_TYPE)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Synced by rawID.
+		RegistryAttributeHolder.get(Registries.POSITION_SOURCE_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 	}
 }
