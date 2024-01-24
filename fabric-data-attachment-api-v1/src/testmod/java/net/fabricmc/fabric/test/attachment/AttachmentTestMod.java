@@ -50,14 +50,14 @@ public class AttachmentTestMod implements ModInitializer {
 			new Identifier(MOD_ID, "persistent"),
 			Codec.STRING
 	);
-	public static final AttachmentType<String> FEATURE_ATTACHMENT = AttachmentRegistry.createPersistent(
-			new Identifier(MOD_ID, "feature"),
-			Codec.STRING
+	public static final AttachmentType<String> FEATURE_ATTACHMENT = AttachmentRegistry.create(
+			new Identifier(MOD_ID, "feature")
 	);
 
 	public static final ChunkPos FAR_CHUNK_POS = new ChunkPos(30, 0);
 
 	private boolean firstLaunch = true;
+	public static boolean featurePlaced = false;
 
 	@Override
 	public void onInitialize() {
@@ -78,7 +78,14 @@ public class AttachmentTestMod implements ModInitializer {
 
 			if (firstLaunch) {
 				LOGGER.info("First launch, testing attachment by feature");
-				if (!"feature".equals(chunk.getAttached(FEATURE_ATTACHMENT))) throw new AssertionError("Feature did not write write attachment to ProtoChunk");
+
+				if (featurePlaced) {
+					if (!"feature".equals(chunk.getAttached(FEATURE_ATTACHMENT))) {
+						throw new AssertionError("Feature did not write attachment to ProtoChunk");
+					}
+				} else {
+					LOGGER.warn("Feature not placed, could not test writing during worldgen");
+				}
 
 				LOGGER.info("setting up persistent attachments");
 

@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.attachment;
 
 import com.mojang.serialization.Codec;
 
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.WrapperProtoChunk;
@@ -34,11 +35,16 @@ public class SetAttachmentFeature extends Feature<DefaultFeatureConfig> {
 	public boolean generate(FeatureContext<DefaultFeatureConfig> context) {
 		Chunk chunk = context.getWorld().getChunk(context.getOrigin());
 
-		if (!(chunk instanceof ProtoChunk) || chunk instanceof WrapperProtoChunk) {
-			AttachmentTestMod.LOGGER.warn("Feature not attaching to ProtoChunk");
+		if (chunk.getPos().equals(new ChunkPos(0, 0))) {
+			AttachmentTestMod.featurePlaced = true;
+
+			if (!(chunk instanceof ProtoChunk) || chunk instanceof WrapperProtoChunk) {
+				AttachmentTestMod.LOGGER.warn("Feature not attaching to ProtoChunk");
+			}
+
+			chunk.setAttached(AttachmentTestMod.FEATURE_ATTACHMENT, "feature");
 		}
 
-		chunk.setAttached(AttachmentTestMod.FEATURE_ATTACHMENT, "feature");
 		return true;
 	}
 }
