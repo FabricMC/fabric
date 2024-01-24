@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,19 +27,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.common.DisconnectS2CPacket;
+import net.minecraft.network.packet.s2c.common.ServerTransferS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.ServerCookieStore;
+import net.fabricmc.fabric.api.networking.v1.ServerTransferable;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
+import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
 @Mixin(value = ServerPlayNetworkHandler.class, priority = 999)
-abstract class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkHandler implements NetworkHandlerExtensions, DisconnectPacketSource {
+abstract class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkHandler implements NetworkHandlerExtensions, DisconnectPacketSource, ServerTransferable, ServerCookieStore {
 	@Unique
 	private ServerPlayNetworkAddon addon;
 
@@ -60,5 +67,25 @@ abstract class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkHandler 
 	@Override
 	public Packet<?> createDisconnectPacket(Text message) {
 		return new DisconnectS2CPacket(message);
+	}
+
+	@Override
+	public void transferToServer(String host, int port) {
+		connection.send(new ServerTransferS2CPacket(host, port));
+	}
+
+	@Override
+	public boolean wasTransferred() {
+		return ((ServerCommonNetworkHandlerAccessor) this).isTransferred();
+	}
+
+	@Override
+	public void setCookie(Identifier cookieId, byte[] cookie) {
+		((ServerCookieStore) connection).setCookie(cookieId, cookie);
+	}
+
+	@Override
+	public CompletableFuture<byte[]> getCookie(Identifier cookieId) {
+		return ((ServerCookieStore) connection).getCookie(cookieId);
 	}
 }

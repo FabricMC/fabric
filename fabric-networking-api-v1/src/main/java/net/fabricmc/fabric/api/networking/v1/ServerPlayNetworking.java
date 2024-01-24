@@ -301,8 +301,8 @@ public final class ServerPlayNetworking {
 	 * @param cookieId The id to tag the data with.
 	 * @param cookie The data to be set on the client.
 	 */
-	public static void setCookie(ServerPlayNetworkHandler handler, Identifier cookieId, byte[] cookie) {
-		((ServerCookieStore) handler).setCookie(cookieId, cookie);
+	public static void setCookie(ServerPlayerEntity player, Identifier cookieId, byte[] cookie) {
+		((ServerCookieStore) player.networkHandler).setCookie(cookieId, cookie);
 	}
 
 	/**
@@ -311,8 +311,8 @@ public final class ServerPlayNetworking {
 	 * @param cookieId The id the data was tagged with.
 	 * @return The cookie data or an empty byte[] if there was no cookie found with that id.
 	 */
-	public static CompletableFuture<byte[]> getCookie(ServerPlayNetworkHandler handler, Identifier cookieId) {
-		return ((ServerCookieStore) handler).getCookie(cookieId);
+	public static CompletableFuture<byte[]> getCookie(ServerPlayerEntity player, Identifier cookieId) {
+		return ((ServerCookieStore) player.networkHandler).getCookie(cookieId);
 	}
 
 	private ServerPlayNetworking() {

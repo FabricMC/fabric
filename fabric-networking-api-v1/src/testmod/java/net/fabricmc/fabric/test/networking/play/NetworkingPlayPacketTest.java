@@ -34,6 +34,7 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.packet.s2c.common.ServerTransferS2CPacket;
 import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -45,10 +46,11 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.impl.networking.ServerCookieStore;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.ServerTransferable;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -96,16 +98,18 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("transfer").executes(ctx -> {
-					((ServerTransferable) ctx.getSource().getPlayer().networkHandler).transferToServer("localhost", 25565);
+					ServerPlayerEntity player = ctx.getSource().getPlayer();
+					ServerPlayNetworking.setCookie(player, new Identifier("fabric:test"), "123456789".getBytes(StandardCharsets.UTF_8));
+					player.networkHandler.sendPacket(new ServerTransferS2CPacket("localhost", 25565));
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("setCookie").executes(ctx -> {
-					((ServerCookieStore) ctx.getSource().getPlayer().networkHandler).setCookie(new Identifier("fabric:test"), "123456789".getBytes(StandardCharsets.UTF_8));
+					ServerPlayNetworking.setCookie(ctx.getSource().getPlayer(), new Identifier("fabric:test"), "123456789".getBytes(StandardCharsets.UTF_8));
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("getCookie").executes(ctx -> {
 					ServerPlayerEntity player = ctx.getSource().getPlayer();
-					((ServerCookieStore) player.networkHandler).getCookie(new Identifier("fabric:test")).whenComplete((data, throwable) -> {
+					ServerPlayNetworking.getCookie(player, new Identifier("fabric:test")).whenComplete((data, throwable) -> {
 						if (data.length == 0) return;
 						player.sendMessage(Text.of(new String(data)));
 					});
@@ -141,8 +145,17 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		});
 
 		ServerLoginConnectionEvents.INIT.register((handler, server) -> {
-			((ServerCookieStore) handler).getCookie(new Identifier("fabric:test")).whenComplete((data, throwable) -> {
-				if (data.length == 0) return;
+			if (handler.transferred) return;
+
+			ServerLoginNetworking.getCookie(handler, new Identifier("fabric:test")).whenComplete((data, throwable) -> {
+				assert Arrays.equals(data, "123456789".getBytes(StandardCharsets.UTF_8));
+			});
+		});
+
+		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
+			if (handler.transferred) return;
+
+			ServerConfigurationNetworking.getCookie(handler, new Identifier("fabric:test")).whenComplete((data, throwable) -> {
 				assert Arrays.equals(data, "123456789".getBytes(StandardCharsets.UTF_8));
 			});
 		});

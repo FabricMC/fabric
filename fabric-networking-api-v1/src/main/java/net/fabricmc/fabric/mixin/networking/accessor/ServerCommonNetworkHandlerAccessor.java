@@ -30,4 +30,7 @@ public interface ServerCommonNetworkHandlerAccessor {
 
 	@Accessor
 	MinecraftServer getServer();
+
+	@Accessor
+	boolean isTransferred();
 }
