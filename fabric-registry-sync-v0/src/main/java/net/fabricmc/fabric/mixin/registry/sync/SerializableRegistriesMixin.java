@@ -16,13 +16,11 @@
 
 package net.fabricmc.fabric.mixin.registry.sync;
 
-import java.util.stream.Stream;
-
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.SerializableRegistries;
@@ -32,17 +30,13 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 // Implements skipping empty dynamic registries with the SKIP_WHEN_EMPTY sync option.
 @Mixin(SerializableRegistries.class)
 abstract class SerializableRegistriesMixin {
-	@Shadow
-	private static Stream<DynamicRegistryManager.Entry<?>> stream(DynamicRegistryManager dynamicRegistryManager) {
-		return null;
-	}
+	@Dynamic("method_45961: Stream.filter in stream")
+	@Inject(method = "method_56601", at = @At("HEAD"), cancellable = true)
+	private static void filterNonSyncedEntries(DynamicRegistryManager.Entry<?> entry, CallbackInfoReturnable<Boolean> cir) {
+		boolean canSkip = DynamicRegistriesImpl.SKIP_EMPTY_SYNC_REGISTRIES.contains(entry.key());
 
-	@Dynamic("method_45961: Codec.xmap in createDynamicRegistryManagerCodec")
-	@Redirect(method = "method_45961", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/SerializableRegistries;stream(Lnet/minecraft/registry/DynamicRegistryManager;)Ljava/util/stream/Stream;"))
-	private static Stream<DynamicRegistryManager.Entry<?>> filterNonSyncedEntries(DynamicRegistryManager drm) {
-		return stream(drm).filter(entry -> {
-			boolean canSkip = DynamicRegistriesImpl.SKIP_EMPTY_SYNC_REGISTRIES.contains(entry.key());
-			return !canSkip || entry.value().size() > 0;
-		});
+		if (canSkip && entry.value().size() == 0) {
+			cir.setReturnValue(false);
+		}
 	}
 }

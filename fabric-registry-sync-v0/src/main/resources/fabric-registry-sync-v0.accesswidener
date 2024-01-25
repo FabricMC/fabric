@@ -4,7 +4,7 @@ accessible    field    net/minecraft/registry/SimpleRegistry frozen Z
 accessible method net/minecraft/registry/entry/RegistryEntry$Reference setValue (Ljava/lang/Object;)V
 accessible    method    net/minecraft/registry/Registries    init    ()V
 
-accessible class net/minecraft/registry/SerializableRegistries$Info
-accessible method net/minecraft/registry/SerializableRegistries$Info <init> (Lnet/minecraft/registry/RegistryKey;Lcom/mojang/serialization/Codec;)V
-accessible field net/minecraft/registry/SerializableRegistries REGISTRIES Ljava/util/Map;
-mutable field net/minecraft/registry/SerializableRegistries REGISTRIES Ljava/util/Map;
+accessible field net/minecraft/registry/RegistryLoader field_48709 Ljava/util/List;
+mutable field net/minecraft/registry/RegistryLoader field_48709 Ljava/util/List;
+
+accessible class net/minecraft/registry/RegistryLoader$class_9158

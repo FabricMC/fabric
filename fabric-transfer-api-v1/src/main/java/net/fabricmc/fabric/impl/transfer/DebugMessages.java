@@ -27,7 +27,7 @@ import net.minecraft.world.World;
 
 public final class DebugMessages {
 	public static String forGlobalPos(@Nullable World world, BlockPos pos) {
-		String dimension = world != null ? world.getDimensionKey().getValue().toString() : "<no dimension>";
+		String dimension = world != null ? world.getDimensionEntry().getIdAsString() : "<no dimension>";
 		return dimension + "@" + pos.toShortString();
 	}
 

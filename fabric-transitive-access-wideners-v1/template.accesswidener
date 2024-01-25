@@ -35,7 +35,7 @@ transitive-accessible class net/minecraft/village/TradeOffers$SellMapFactory
 transitive-accessible class net/minecraft/village/TradeOffers$SellDyedArmorFactory
 
 # Registering custom entity spawn restrictions
-transitive-accessible method net/minecraft/entity/SpawnRestriction register (Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/SpawnRestriction$Location;Lnet/minecraft/world/Heightmap$Type;Lnet/minecraft/entity/SpawnRestriction$SpawnPredicate;)V
+transitive-accessible method net/minecraft/entity/SpawnRestriction register (Lnet/minecraft/entity/EntityType;Lnet/minecraft/class_9168;Lnet/minecraft/world/Heightmap$Type;Lnet/minecraft/entity/SpawnRestriction$SpawnPredicate;)V
 
 # Item usage context constructors
 transitive-accessible method net/minecraft/item/ItemUsageContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
