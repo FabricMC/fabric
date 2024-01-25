@@ -17,13 +17,12 @@
       "net.fabricmc.fabric.test.item.ModifyItemAttributeModifiersCallbackTest",
       "net.fabricmc.fabric.test.item.ArmorKnockbackResistanceTest",
       "net.fabricmc.fabric.test.item.gametest.ShearsGameTest",
-      "net.fabricmc.fabric.test.item.ArmorKnockbackResistanceTest",
       "net.fabricmc.fabric.test.item.FoodGameInitializer"
     ],
     "client": [
       "net.fabricmc.fabric.test.item.client.TooltipTests"
     ],
-    "fabric-gametest" : [
+    "fabric-gametest": [
       "net.fabricmc.fabric.test.item.gametest.BrewingStandGameTest",
       "net.fabricmc.fabric.test.item.gametest.FurnaceGameTest",
       "net.fabricmc.fabric.test.item.gametest.RecipeGameTest",
