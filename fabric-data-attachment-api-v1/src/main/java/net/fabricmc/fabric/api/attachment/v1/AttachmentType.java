@@ -23,8 +23,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.chunk.Chunk;
@@ -32,6 +30,7 @@ import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 /**
@@ -49,7 +48,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
  * an attachment that keeps a reference to an {@link Entity} or {@link ProtoChunk} instance can and will break unexpectedly. If,
  * for whatever reason, keeping a reference to the target is absolutely necessary, be sure to implement custom copying logic.
  * For {@link Entity} targets, use {@link ServerPlayerEvents#COPY_FROM}, {@link ServerEntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD},
- * and a mixin into {@link MobEntity#convertTo(EntityType, boolean)}. For {@link Chunk} targets, mixin into
+ * and {@link ServerLivingEntityEvents#MOB_CONVERSION}. For {@link Chunk} targets, mixin into
  * {@link WorldChunk#WorldChunk(ServerWorld, ProtoChunk, WorldChunk.EntityLoader)}.
  * </p>
  *
