@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.networking.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import io.netty.util.concurrent.Future;
@@ -67,11 +66,6 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 		this.logger.debug("Handling inbound login response with id {} and channel with name {}", queryId, channelName);
 
 		if (this.firstResponse) {
-			// Register global handlers
-			for (Map.Entry<Identifier, ClientLoginNetworking.LoginQueryRequestHandler> entry : ClientNetworkingImpl.LOGIN.getHandlers().entrySet()) {
-				ClientLoginNetworking.registerReceiver(entry.getKey(), entry.getValue());
-			}
-
 			ClientLoginConnectionEvents.QUERY_START.invoker().onLoginQueryStart(this.handler, this.client);
 			this.firstResponse = false;
 		}

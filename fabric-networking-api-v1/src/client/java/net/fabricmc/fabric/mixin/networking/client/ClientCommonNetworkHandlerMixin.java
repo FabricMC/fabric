@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.mixin.networking.client;
 
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -32,6 +35,10 @@ import net.fabricmc.fabric.impl.networking.payload.RetainedPayload;
 
 @Mixin(ClientCommonNetworkHandler.class)
 public abstract class ClientCommonNetworkHandlerMixin implements NetworkHandlerExtensions {
+	@Shadow
+	@Final
+	private static Logger LOGGER;
+
 	@Inject(method = "onCustomPayload(Lnet/minecraft/network/packet/s2c/common/CustomPayloadS2CPacket;)V", at = @At("HEAD"), cancellable = true)
 	public void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
 		if (packet.payload() instanceof ResolvablePayload payload) {
@@ -45,14 +52,15 @@ public abstract class ClientCommonNetworkHandlerMixin implements NetworkHandlerE
 				throw new IllegalStateException("Unknown network addon");
 			}
 
-			if (handled) {
-				ci.cancel();
-			} else if (payload instanceof RetainedPayload retained && retained.buf().refCnt() > 0) {
-				// Vanilla forces to use the render thread for its payloads,
-				// that means this method can get called multiple times.
+			if (!handled && payload instanceof RetainedPayload retained && retained.buf().refCnt() > 0) {
+				// Duplicate the vanilla log message, as we cancel further processing.
+				LOGGER.warn("Unknown custom packet payload: {}", payload.id());
+
 				retained.buf().skipBytes(retained.buf().readableBytes());
 				retained.buf().release();
 			}
+
+			ci.cancel();
 		}
 	}
 }
