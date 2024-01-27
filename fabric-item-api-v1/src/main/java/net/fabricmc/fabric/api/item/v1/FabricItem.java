@@ -109,7 +109,9 @@ public interface FabricItem {
 	 * Determines if this item should behave like shears.
 	 * To act like shears means to be able to {@linkplain Shearable#sheared(SoundCategory) shear mobs}, pumpkins, and beehives, {@linkplain MatchToolLootCondition harvest grass, cobwebs, and etc.}, be {@linkplain EfficiencyEnchantment#isAcceptableItem(ItemStack) enchanted with efficiency}, disarm tripwire, and have {@link ShearsDispenserBehavior} if there isn't one already registered.
 	 *
-	 * <p>The default implementation checks if {@code this} is a {@link ShearsItem}, or in the {@code #fabric:shears} tag.
+	 * <p>The default implementation checks if {@code this} is a {@link ShearsItem}, or in the {@link #FABRIC_SHEARS #fabric:shears} tag.
+	 *
+	 * <p>If you want to check if a stack should be shears, it is recommended to use the stack version of this method: {@link FabricItemStack#isShears()}.
 	 *
 	 * @param stack the current stack
 	 * @return {@code true} if this item should behave like shears.
