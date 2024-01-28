@@ -52,7 +52,7 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	/**
 	 * @deprecated Please use {@link FabricCodecDataProvider#FabricCodecDataProvider(FabricDataOutput, CompletableFuture, DataOutput.OutputType, String, Codec)}.
 	 */
-	@Deprecated(forRemoval = true)
+	@Deprecated()
 	protected FabricCodecDataProvider(FabricDataOutput dataOutput, DataOutput.OutputType outputType, String directoryName, Codec<T> codec) {
 		this.pathResolver = dataOutput.getResolver(outputType, directoryName);
 		this.registriesFuture = null;
@@ -107,7 +107,7 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	 * @param provider A consumer that accepts an {@link Identifier} and a value to register.
 	 * @deprecated Please use {@link FabricCodecDataProvider#configure(BiConsumer, RegistryWrapper.WrapperLookup)}.
 	 */
-	@Deprecated(forRemoval = true)
+	@Deprecated()
 	protected void configure(BiConsumer<Identifier, T> provider) {
 		throw new UnsupportedOperationException("Override this method.");
 	}
