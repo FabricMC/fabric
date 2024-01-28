@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryLoader;
+import net.minecraft.registry.SerializableRegistries;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
@@ -64,19 +65,26 @@ public final class DynamicRegistriesImpl {
 		return entry;
 	}
 
-	public static <T> void addSyncedRegistry(RegistryLoader.Entry<T> entry, DynamicRegistries.SyncOption... options) {
-		Objects.requireNonNull(entry, "Registry loader entry cannot be null");
+	public static <T> void addSyncedRegistry(RegistryKey<? extends Registry<T>> key, Codec<T> networkCodec, DynamicRegistries.SyncOption... options) {
+		Objects.requireNonNull(key, "Registry key cannot be null");
+		Objects.requireNonNull(networkCodec, "Network codec cannot be null");
 		Objects.requireNonNull(options, "Options cannot be null");
 
 		if (!(RegistryLoader.field_48709 instanceof ArrayList<RegistryLoader.Entry<?>>)) {
 			RegistryLoader.field_48709 = new ArrayList<>(RegistryLoader.field_48709);
 		}
 
-		RegistryLoader.field_48709.add(entry);
+		RegistryLoader.field_48709.add(new RegistryLoader.Entry<>(key, networkCodec));
+
+		if (!(SerializableRegistries.field_48771 instanceof HashSet<RegistryKey<? extends Registry<?>>>)) {
+			SerializableRegistries.field_48771 = new HashSet<>(SerializableRegistries.field_48771);
+		}
+
+		SerializableRegistries.field_48771.add(key);
 
 		for (DynamicRegistries.SyncOption option : options) {
 			if (option == DynamicRegistries.SyncOption.SKIP_WHEN_EMPTY) {
-				SKIP_EMPTY_SYNC_REGISTRIES.add(entry.key());
+				SKIP_EMPTY_SYNC_REGISTRIES.add(key);
 			}
 		}
 	}
