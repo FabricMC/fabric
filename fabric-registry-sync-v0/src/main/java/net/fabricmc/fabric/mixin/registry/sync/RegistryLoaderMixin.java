@@ -20,8 +20,11 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -39,6 +42,23 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistryViewImpl;
 
 @Mixin(RegistryLoader.class)
 public class RegistryLoaderMixin {
+	@Unique
+	private static final ThreadLocal<Boolean> IS_SERVER = ThreadLocal.withInitial(() -> false);
+
+	/**
+	 * Sets IS_SERVER flag. Note that this must be reset after call, as the render thread
+	 * invokes this method as well.
+	 */
+	@WrapOperation(method = "method_56515", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/RegistryLoader;load(Lnet/minecraft/registry/RegistryLoader$RegistryLoadable;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;"))
+	private static DynamicRegistryManager.Immutable wrapIsServerCall(@Coerce Object registryLoadable, DynamicRegistryManager baseRegistryManager, List<RegistryLoader.Entry<?>> entries, Operation<DynamicRegistryManager.Immutable> original) {
+		try {
+			IS_SERVER.set(true);
+			return original.call(registryLoadable, baseRegistryManager, entries);
+		} finally {
+			IS_SERVER.set(false);
+		}
+	}
+
 	@Inject(
 			method = "load(Lnet/minecraft/registry/RegistryLoader$RegistryLoadable;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;",
 			at = @At(
@@ -48,6 +68,8 @@ public class RegistryLoaderMixin {
 			)
 	)
 	private static void beforeLoad(@Coerce Object registryLoadable, DynamicRegistryManager baseRegistryManager, List<RegistryLoader.Entry<?>> entries, CallbackInfoReturnable<DynamicRegistryManager.Immutable> cir, @Local(ordinal = 1) List<RegistryLoader.class_9158<?>> registriesList) {
+		if (!IS_SERVER.get()) return;
+
 		Map<RegistryKey<? extends Registry<?>>, Registry<?>> registries = new IdentityHashMap<>(registriesList.size());
 
 		for (RegistryLoader.class_9158<?> entry : registriesList) {

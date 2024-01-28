@@ -26,7 +26,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.network.packet.s2c.common.SynchronizeTagsS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
 import net.minecraft.world.chunk.WorldChunk;
@@ -96,15 +95,12 @@ abstract class ClientPlayNetworkHandlerMixin {
 		}
 	}
 
+	/**
+	 * Also invoked during GameJoin, but before Networking API fires the Ready event.
+	 */
 	@SuppressWarnings("ConstantConditions")
-	@Inject(
-			method = "onSynchronizeTags",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;refreshTagBasedData()V"
-			)
-	)
-	private void hookOnSynchronizeTags(SynchronizeTagsS2CPacket packet, CallbackInfo ci) {
+	@Inject(method = "refreshTagBasedData", at = @At("RETURN"))
+	private void hookOnSynchronizeTags(CallbackInfo ci) {
 		ClientPlayNetworkHandler self = (ClientPlayNetworkHandler) (Object) this;
 		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(self.getRegistryManager(), true);
 	}
