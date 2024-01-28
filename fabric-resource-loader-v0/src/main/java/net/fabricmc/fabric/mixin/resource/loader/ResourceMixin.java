@@ -27,8 +27,6 @@ import net.fabricmc.fabric.impl.resource.loader.ResourcePackSourceTracker;
 /**
  * Implements {@link FabricResource} (resource source getter/setter)
  * for vanilla's basic {@link Resource} used for most game resources.
- *
- * @see NamespaceResourceManagerMixin the usage site for this mixin
  */
 @Mixin(Resource.class)
 class ResourceMixin implements FabricResource {
