@@ -55,7 +55,9 @@ abstract class SerializableRegistriesMixin {
 	@Dynamic("method_56597: Optional.ifPresent in serialize")
 	@Inject(method = "method_56596", at = @At("HEAD"), cancellable = true)
 	private static void filterNonSyncedEntriesAgain(RegistryLoader.Entry entry, DynamicOps dynamicOps, BiConsumer biConsumer, Registry registry, CallbackInfo ci) {
-		if (registry.size() == 0) {
+		boolean canSkip = DynamicRegistriesImpl.SKIP_EMPTY_SYNC_REGISTRIES.contains(registry.getKey());
+
+		if (canSkip && registry.size() == 0) {
 			ci.cancel();
 		}
 	}

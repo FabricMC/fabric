@@ -33,6 +33,8 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryLoader;
 import net.minecraft.registry.SerializableRegistries;
 
+import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
+
 @Mixin(targets = "net/minecraft/class_9173$class_9174")
 public class ClientRegistriesDynamicRegistriesMixin {
 	@Shadow
@@ -45,7 +47,7 @@ public class ClientRegistriesDynamicRegistriesMixin {
 	@WrapOperation(method = "method_56589", at = @At(value = "FIELD", target = "Lnet/minecraft/registry/RegistryLoader;field_48709:Ljava/util/List;", opcode = Opcodes.GETSTATIC))
 	private List<RegistryLoader.Entry<?>> skipEmptyRegistries(Operation<List<RegistryLoader.Entry<?>>> operation) {
 		List<RegistryLoader.Entry<?>> result = new ArrayList<>(operation.call());
-		result.removeIf(entry -> !this.field_48769.containsKey(entry.key()));
+		result.removeIf(entry -> DynamicRegistriesImpl.SKIP_EMPTY_SYNC_REGISTRIES.contains(entry.key()) && !this.field_48769.containsKey(entry.key()));
 		return result;
 	}
 }
