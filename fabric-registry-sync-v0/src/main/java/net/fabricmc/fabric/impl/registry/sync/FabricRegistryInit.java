@@ -35,13 +35,17 @@ public class FabricRegistryInit implements ModInitializer {
 			handler.completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
 		});
 
+		// Note: add REMOVAL_CHECKED if the registry is critical for world loading,
+		// such as blocks, items, or entity types.
+
 		// Synced in PlaySoundS2CPacket.
 		RegistryAttributeHolder.get(Registries.SOUND_EVENT)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced with RegistryTagContainer from RegistryTagManager.
 		RegistryAttributeHolder.get(Registries.FLUID)
-				.addAttribute(RegistryAttribute.SYNCED);
+				.addAttribute(RegistryAttribute.SYNCED)
+				.addAttribute(RegistryAttribute.REMOVAL_CHECKED);
 
 		// StatusEffectInstance serialises with raw id.
 		RegistryAttributeHolder.get(Registries.STATUS_EFFECT)
@@ -49,7 +53,8 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Synced in ChunkDeltaUpdateS2CPacket among other places, a pallet is used when saving.
 		RegistryAttributeHolder.get(Registries.BLOCK)
-				.addAttribute(RegistryAttribute.SYNCED);
+				.addAttribute(RegistryAttribute.SYNCED)
+				.addAttribute(RegistryAttribute.REMOVAL_CHECKED);
 
 		// Synced in EnchantmentScreenHandler
 		RegistryAttributeHolder.get(Registries.ENCHANTMENT)
@@ -57,11 +62,13 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Synced in EntitySpawnS2CPacket and RegistryTagManager
 		RegistryAttributeHolder.get(Registries.ENTITY_TYPE)
-				.addAttribute(RegistryAttribute.SYNCED);
+				.addAttribute(RegistryAttribute.SYNCED)
+				.addAttribute(RegistryAttribute.REMOVAL_CHECKED);
 
 		// Synced in RegistryTagManager
 		RegistryAttributeHolder.get(Registries.ITEM)
-				.addAttribute(RegistryAttribute.SYNCED);
+				.addAttribute(RegistryAttribute.SYNCED)
+				.addAttribute(RegistryAttribute.REMOVAL_CHECKED);
 
 		// Saved and synced using string ID.
 		RegistryAttributeHolder.get(Registries.POTION);
@@ -96,7 +103,8 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Synced. Vanilla uses raw ids in BlockEntityUpdateS2CPacket, and mods use the Vanilla syncing since 1.18
 		RegistryAttributeHolder.get(Registries.BLOCK_ENTITY_TYPE)
-				.addAttribute(RegistryAttribute.SYNCED);
+				.addAttribute(RegistryAttribute.SYNCED)
+				.addAttribute(RegistryAttribute.REMOVAL_CHECKED);
 
 		// Synced in PaintingSpawnS2CPacket
 		RegistryAttributeHolder.get(Registries.PAINTING_VARIANT)

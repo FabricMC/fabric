@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_16",
   "client": [
     "BlockColorsMixin",
+    "CreateWorldScreenMixin",
+    "IntegratedServerLoaderMixin",
     "ItemColorsMixin",
     "ItemModelsMixin",
     "MinecraftClientMixin",
