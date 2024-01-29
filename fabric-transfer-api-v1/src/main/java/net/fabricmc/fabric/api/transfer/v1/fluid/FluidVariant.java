@@ -16,6 +16,14 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
+import java.util.Optional;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
+import net.minecraft.registry.Registries;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +51,19 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 @ApiStatus.Experimental
 @ApiStatus.NonExtendable
 public interface FluidVariant extends TransferVariant<Fluid> {
-	/**
+	Codec<FluidVariant> CODEC = RecordCodecBuilder.create(instance ->
+			instance.group(
+					Registries.FLUID.getCodec().fieldOf("fluid").forGetter(FluidVariant::getFluid),
+					NbtCompound.CODEC.optionalFieldOf("nbt").forGetter(variant -> Optional.ofNullable(variant.getNbt()))
+			).apply(instance, (fluid, optionalNbt) -> FluidVariant.of(fluid, optionalNbt.orElse(null))));
+
+	Codec<ResourceAmount<FluidVariant>> AMOUNT_CODEC = RecordCodecBuilder.create(instance ->
+			instance.group(
+					CODEC.fieldOf("variant").forGetter(ResourceAmount::resource),
+					Codec.LONG.fieldOf("amount").forGetter(ResourceAmount::amount)
+			).apply(instance, ResourceAmount::new));
+
+    /**
 	 * Retrieve a blank FluidVariant.
 	 */
 	static FluidVariant blank() {

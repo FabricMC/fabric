@@ -18,7 +18,8 @@
     ],
     "fabric-gametest": [
       "net.fabricmc.fabric.test.transfer.gametests.VanillaStorageTests",
-      "net.fabricmc.fabric.test.transfer.gametests.WorldDependentAttributesTest"
+      "net.fabricmc.fabric.test.transfer.gametests.WorldDependentAttributesTest",
+      "net.fabricmc.fabric.test.transfer.gametests.CodecsTest"
     ]
   },
   "mixins": [
