@@ -13,6 +13,7 @@
     "FireBlockMixin",
     "OxidizableMixin",
     "ShovelItemAccessor",
+    "SpreadableBlockMixin",
     "VillagerEntityAccessor"
   ],
   "injectors": {

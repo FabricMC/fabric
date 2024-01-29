@@ -23,6 +23,7 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SpreadableBlock;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.HoeItem;
@@ -55,6 +56,7 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.registry.LandPathNodeTypesRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.SculkSensorFrequencyRegistry;
+import net.fabricmc.fabric.api.registry.SpreadableBlockRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
 import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
@@ -65,6 +67,8 @@ public final class ContentRegistryTest implements ModInitializer {
 
 	public static final Identifier TEST_EVENT_ID = new Identifier("fabric-content-registries-v0-testmod", "test_event");
 	public static final GameEvent TEST_EVENT = new GameEvent(GameEvent.DEFAULT_RANGE);
+
+	public static final Identifier SPREADABLE_PODZOL = new Identifier("fabric-content-registries-v0-testmod", "spreadable_podzol");
 
 	@Override
 	public void onInitialize() {
@@ -86,6 +90,9 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - right-clicking a 'test_event' block will emit a 'test_event' game event, which will have a sculk sensor frequency of 2
 		//  - instant health potions can be brewed from awkward potions with any item in the 'minecraft:small_flowers' tag
 		//  - dirty potions can be brewed by adding any item in the 'minecraft:dirt' tag to any standard potion
+		//  - 'spreadable_podzol' spreads to coarse dirt, with the coarse dirt block being replaced by a 'spreadable_podzol' block
+		//  - mycelium spreads to coarse dirt, with the coarse dirt block being replaced by a mycelium block
+		//  - grass and mycelium still spread to dirt, with the usual vanilla results
 
 		CompostingChanceRegistry.INSTANCE.add(Items.OBSIDIAN, 0.5F);
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.DIAMOND_BLOCK, 4, 4);
@@ -161,6 +168,34 @@ public final class ContentRegistryTest implements ModInitializer {
 		 * This testmod uses an accessor due to Loom limitations that prevent TAWs from applying across Gradle subproject boundaries */
 		BrewingRecipeRegistryAccessor.callRegisterPotionType(dirtyPotion);
 		FabricBrewingRecipeRegistry.registerItemRecipe((PotionItem) Items.POTION, Ingredient.fromTag(ItemTags.DIRT), dirtyPotion);
+
+		Block spreadablePodzol = Registry.register(Registries.BLOCK, SPREADABLE_PODZOL, new SpreadablePodzolBlock(AbstractBlock.Settings.copy(Blocks.PODZOL).ticksRandomly()));
+		SpreadableBlockRegistry.getInstance(SPREADABLE_PODZOL).add(Blocks.COARSE_DIRT, spreadablePodzol.getDefaultState());
+		SpreadableBlockRegistry.getInstance(SpreadableBlockRegistry.MYCELIUM).add(Blocks.COARSE_DIRT, Blocks.MYCELIUM.getDefaultState());
+
+		// assert that SpreadableBlockRegistry throws when registering null blocks or block states
+		try {
+			SpreadableBlockRegistry.getInstance(SpreadableBlockRegistry.GRASS).add((Block) null, Blocks.STONE.getDefaultState());
+			SpreadableBlockRegistry.getInstance(SpreadableBlockRegistry.GRASS).add(Blocks.STONE, null);
+
+			throw new AssertionError("SpreadableBlockRegistry didn't throw when blocks were null!");
+		} catch (NullPointerException e) {
+			// expected behavior
+			LOGGER.info("SpreadableBlockRegistry null test passed!");
+		}
+
+		// assert that SpreadableBlockRegistry throws when registering the same spreadable block to multiple registries
+		try {
+			SpreadableBlockRegistry.getInstance(new Identifier("fabric-content-registries-v0-testmod", "unused_a"))
+					.add(Blocks.CRIMSON_NYLIUM, Blocks.NETHERRACK.getDefaultState());
+			SpreadableBlockRegistry.getInstance(new Identifier("fabric-content-registries-v0-testmod", "unused_b"))
+					.add(Blocks.WARPED_NYLIUM, Blocks.NETHERRACK.getDefaultState());
+
+			throw new AssertionError("SpreadableBlockRegistry didn't throw when spreadable added to second registry!");
+		} catch (UnsupportedOperationException e) {
+			// expected behavior
+			LOGGER.info("SpreadableBlockRegistry multiple registration test passed!");
+		}
 	}
 
 	public static class TestEventBlock extends Block {
@@ -184,6 +219,12 @@ public final class ContentRegistryTest implements ModInitializer {
 		@Override
 		public Text getName(ItemStack stack) {
 			return Text.literal("Dirty ").append(Items.POTION.getName(stack));
+		}
+	}
+
+	public static class SpreadablePodzolBlock extends SpreadableBlock {
+		protected SpreadablePodzolBlock(Settings settings) {
+			super(settings);
 		}
 	}
 }
