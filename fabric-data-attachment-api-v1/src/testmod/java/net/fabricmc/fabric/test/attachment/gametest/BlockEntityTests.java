@@ -60,6 +60,7 @@ public class BlockEntityTests implements FabricGameTest {
 				continue;
 			}
 
+			be.setWorld(context.getWorld());
 			be.setAttached(AttachmentTestMod.PERSISTENT, "test");
 			Packet<ClientPlayPacketListener> packet = be.toUpdatePacket();
 
