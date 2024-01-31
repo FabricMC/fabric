@@ -154,8 +154,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestRecipeProvider extends FabricRecipeProvider {
-		private TestRecipeProvider(FabricDataOutput output) {
-			super(output);
+		private TestRecipeProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(output, registriesFuture);
 		}
 
 		@Override

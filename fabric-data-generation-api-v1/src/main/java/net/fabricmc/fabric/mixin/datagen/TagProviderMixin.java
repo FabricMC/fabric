@@ -16,33 +16,24 @@
 
 package net.fabricmc.fabric.mixin.datagen;
 
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
-
-import com.google.gson.JsonElement;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import net.minecraft.data.DataWriter;
 import net.minecraft.data.server.tag.TagProvider;
 import net.minecraft.registry.tag.TagBuilder;
-import net.minecraft.registry.tag.TagEntry;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 
 @Mixin(TagProvider.class)
 public class TagProviderMixin {
-	@Inject(method = "method_27046", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/DataProvider;writeToPath(Lnet/minecraft/data/DataWriter;Lcom/google/gson/JsonElement;Ljava/nio/file/Path;)Ljava/util/concurrent/CompletableFuture;"), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void addReplaced(Predicate<Identifier> predicate, Predicate<Identifier> predicate2, DataWriter dataWriter, Map.Entry<Identifier, TagBuilder> entry, CallbackInfoReturnable<CompletableFuture<?>> cir, Identifier identifier, TagBuilder builder, List<TagEntry> list, List<TagEntry> list2, JsonElement jsonElement, Path path) {
-		if (builder instanceof FabricTagBuilder fabricTagBuilder) {
-			jsonElement.getAsJsonObject().addProperty("replace", fabricTagBuilder.fabric_isReplaced());
+	@ModifyArg(method = "method_27046", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/tag/TagFile;<init>(Ljava/util/List;Z)V"), index = 1)
+	private boolean addReplaced(boolean replaced, @Local TagBuilder tagBuilder) {
+		if (tagBuilder instanceof FabricTagBuilder fabricTagBuilder) {
+			return fabricTagBuilder.fabric_isReplaced();
 		}
+
+		return replaced;
 	}
 }

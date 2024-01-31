@@ -23,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.Nullable;
@@ -37,6 +38,8 @@ import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
@@ -53,8 +56,8 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 public abstract class FabricRecipeProvider extends RecipeProvider {
 	protected final FabricDataOutput output;
 
-	public FabricRecipeProvider(FabricDataOutput output) {
-		super(output);
+	public FabricRecipeProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+		super(output, registriesFuture);
 		this.output = output;
 	}
 
@@ -84,7 +87,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	}
 
 	@Override
-	public CompletableFuture<?> run(DataWriter writer) {
+	public CompletableFuture<?> method_56888(DataWriter writer, RegistryWrapper.WrapperLookup wrapperLookup) {
 		Set<Identifier> generatedRecipes = Sets.newHashSet();
 		List<CompletableFuture<?>> list = new ArrayList<>();
 		generate(new RecipeExporter() {
@@ -96,14 +99,15 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 					throw new IllegalStateException("Duplicate recipe " + identifier);
 				}
 
-				JsonObject recipeJson = Util.getResult(Recipe.CODEC.encodeStart(JsonOps.INSTANCE, recipe), IllegalStateException::new).getAsJsonObject();
+				RegistryOps<JsonElement> registryOps = RegistryOps.of(JsonOps.INSTANCE, wrapperLookup);
+				JsonObject recipeJson = Util.getResult(Recipe.CODEC.encodeStart(registryOps, recipe), IllegalStateException::new).getAsJsonObject();
 				ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(recipe);
 				ConditionJsonProvider.write(recipeJson, conditions);
 
 				list.add(DataProvider.writeToPath(writer, recipeJson, recipesPathResolver.resolveJson(identifier)));
 
 				if (advancement != null) {
-					JsonObject advancementJson = Util.getResult(Advancement.CODEC.encodeStart(JsonOps.INSTANCE, advancement.value()), IllegalStateException::new).getAsJsonObject();
+					JsonObject advancementJson = Util.getResult(Advancement.CODEC.encodeStart(registryOps, advancement.value()), IllegalStateException::new).getAsJsonObject();
 					ConditionJsonProvider.write(advancementJson, conditions);
 					list.add(DataProvider.writeToPath(writer, advancementJson, advancementsPathResolver.resolveJson(getRecipeIdentifier(advancement.id()))));
 				}

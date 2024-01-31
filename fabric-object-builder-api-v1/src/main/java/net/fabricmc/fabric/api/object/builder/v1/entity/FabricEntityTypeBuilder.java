@@ -20,9 +20,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.entity.SpawnLocation;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -31,6 +28,7 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.SpawnLocation;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.mob.MobEntity;

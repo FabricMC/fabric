@@ -132,11 +132,11 @@ public class CommonAttachmentTests {
 		map.put(dummy, 0.5d);
 		var fakeSave = new NbtCompound();
 
-		AttachmentSerializingImpl.serializeAttachmentData(fakeSave, map);
+		AttachmentSerializingImpl.serializeAttachmentData(fakeSave, null, map);
 		assertTrue(fakeSave.contains(AttachmentTarget.NBT_ATTACHMENT_KEY, NbtElement.COMPOUND_TYPE));
 		assertTrue(fakeSave.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).contains(dummy.identifier().toString()));
 
-		map = AttachmentSerializingImpl.deserializeAttachmentData(fakeSave);
+		map = AttachmentSerializingImpl.deserializeAttachmentData(fakeSave, null);
 		assertEquals(1, map.size());
 		Map.Entry<AttachmentType<?>, Object> entry = map.entrySet().stream().findFirst().orElseThrow();
 		// in this case the key should be the exact same object
@@ -194,9 +194,9 @@ public class CommonAttachmentTests {
 
 		int expected = 1;
 		blockEntity.setAttached(PERSISTENT, expected);
-		NbtCompound fakeSave = blockEntity.createNbtWithId();
+		NbtCompound fakeSave = blockEntity.createNbtWithId(null);
 
-		blockEntity = BlockEntity.createFromNbt(BlockPos.ORIGIN, mock(), fakeSave);
+		blockEntity = BlockEntity.createFromNbt(BlockPos.ORIGIN, mock(), fakeSave, null);
 		assertNotNull(blockEntity);
 		assertTrue(blockEntity.hasAttached(PERSISTENT));
 		assertEquals(expected, blockEntity.getAttached(PERSISTENT));
@@ -211,10 +211,10 @@ public class CommonAttachmentTests {
 
 		int expected = 1;
 		world.setAttached(PERSISTENT, expected);
-		NbtCompound fakeSave = state.writeNbt(new NbtCompound());
+		NbtCompound fakeSave = state.writeNbt(new NbtCompound(), null);
 
 		world = mock(ServerWorld.class, CALLS_REAL_METHODS);
-		AttachmentPersistentState.read(world, fakeSave);
+		AttachmentPersistentState.read(world, fakeSave, null);
 		assertTrue(world.hasAttached(PERSISTENT));
 		assertEquals(expected, world.getAttached(PERSISTENT));
 	}

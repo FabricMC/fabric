@@ -31,11 +31,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.loot.LootDataType;
 import net.minecraft.loot.LootManager;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
@@ -51,21 +52,21 @@ public class LootManagerMixin {
 	@Unique
 	private static final Map<Object, DynamicRegistryManager.Immutable> dynamicRegistryManagerMap = Collections.synchronizedMap(new IdentityHashMap<>());
 
-	@Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;runAsync(Ljava/lang/Runnable;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private static void load(LootDataType type, ResourceManager resourceManager, Executor executor, Map<LootDataType<?>, Map<Identifier, ?>> results, CallbackInfoReturnable<CompletableFuture<?>> cir, Map map) {
-		dynamicRegistryManagerMap.put(map, ResourceConditionsImpl.CURRENT_REGISTRIES.get());
+	@Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;runAsync(Ljava/lang/Runnable;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
+	private static void load(LootDataType type, RegistryWrapper.WrapperLookup wrapperLookup, ResourceManager resourceManager, Executor executor, Map<LootDataType<?>, Map<Identifier, ?>> results, CallbackInfoReturnable<CompletableFuture<?>> cir) {
+		dynamicRegistryManagerMap.put(results.get(type), ResourceConditionsImpl.CURRENT_REGISTRIES.get());
 	}
 
 	// runAsync Runnable in load method
 	@Inject(method = "method_51189", at = @At("HEAD"))
-	private static void runAsync(ResourceManager resourceManager, LootDataType lootDataType, Map map, CallbackInfo ci) {
+	private static void runAsync(ResourceManager resourceManager, LootDataType lootDataType, RegistryOps registryOps, Map map, CallbackInfo ci) {
 		assert ResourceConditionsImpl.CURRENT_REGISTRIES.get() == null;
 		ResourceConditionsImpl.CURRENT_REGISTRIES.set(Objects.requireNonNull(dynamicRegistryManagerMap.remove(map)));
 	}
 
 	// forEach in load method
 	@Inject(method = "method_51195", at = @At("HEAD"), cancellable = true)
-	private static void applyResourceConditions(LootDataType lootDataType, Map map, Identifier id, JsonElement json, CallbackInfo ci) {
+	private static void applyResourceConditions(LootDataType lootDataType, RegistryOps registryOps, Map map, Identifier id, JsonElement json, CallbackInfo ci) {
 		if (json.isJsonObject()) {
 			JsonObject obj = json.getAsJsonObject();
 
@@ -86,7 +87,7 @@ public class LootManagerMixin {
 
 	// runAsync Runnable in load method
 	@Inject(method = "method_51189", at = @At("RETURN"))
-	private static void runAsyncEnd(ResourceManager resourceManager, LootDataType lootDataType, Map map, CallbackInfo ci) {
+	private static void runAsyncEnd(ResourceManager resourceManager, LootDataType lootDataType, RegistryOps registryOps, Map map, CallbackInfo ci) {
 		ResourceConditionsImpl.CURRENT_REGISTRIES.remove();
 	}
 }

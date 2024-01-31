@@ -34,10 +34,12 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -88,7 +90,7 @@ public abstract class MinecraftClientMixin {
 				BlockEntity be = client.world.getBlockEntity(((BlockHitResult) client.crosshairTarget).getBlockPos());
 
 				if (be != null) {
-					addBlockEntityNbt(stack, be);
+					addBlockEntityNbt(stack, be, world.getRegistryManager());
 				}
 			}
 
@@ -114,9 +116,6 @@ public abstract class MinecraftClientMixin {
 			}
 		}
 	}
-
-	@Shadow
-	protected abstract void addBlockEntityNbt(ItemStack itemStack_1, BlockEntity blockEntity_1);
 
 	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I", shift = At.Shift.BEFORE), method = "doItemPick", ordinal = 0)
 	public ItemStack modifyItemPick(ItemStack stack) {
@@ -146,6 +145,13 @@ public abstract class MinecraftClientMixin {
 	@Shadow
 	@Nullable
 	public ClientPlayerInteractionManager interactionManager;
+
+	@Shadow
+	protected abstract void addBlockEntityNbt(ItemStack stack, BlockEntity blockEntity, DynamicRegistryManager dynamicRegistryManager);
+
+	@Shadow
+	@Nullable
+	public ClientWorld world;
 
 	@Inject(
 			at = @At(

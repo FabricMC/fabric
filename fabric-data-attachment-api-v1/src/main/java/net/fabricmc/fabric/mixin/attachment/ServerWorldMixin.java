@@ -16,11 +16,14 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 
@@ -28,13 +31,17 @@ import net.fabricmc.fabric.impl.attachment.AttachmentPersistentState;
 
 @Mixin(ServerWorld.class)
 abstract class ServerWorldMixin {
+	@Shadow
+	@Final
+	private MinecraftServer server;
+
 	@Inject(at = @At("TAIL"), method = "<init>")
 	private void createAttachmentsPersistentState(CallbackInfo ci) {
 		// Force persistent state creation
 		ServerWorld world = (ServerWorld) (Object) this;
 		var type = new PersistentState.Type<>(
 				() -> new AttachmentPersistentState(world),
-				(nbt, wrapperLookup) -> AttachmentPersistentState.read(world, nbt),
+				(nbt, wrapperLookup) -> AttachmentPersistentState.read(world, nbt, server.getRegistryManager()),
 				null // Object builder API 12.1.0 and later makes this a no-op
 		);
 		world.getPersistentStateManager().getOrCreate(type, AttachmentPersistentState.ID);

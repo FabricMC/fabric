@@ -36,6 +36,7 @@ import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
@@ -123,12 +124,12 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		public static final CustomPayload.Id<OverlayPacket> ID = new Id<>(NetworkingTestmods.id("test_channel"));
 		public static final PacketCodec<RegistryByteBuf, OverlayPacket> CODEC = CustomPayload.codecOf(OverlayPacket::write, OverlayPacket::new);
 
-		public OverlayPacket(PacketByteBuf buf) {
-			this(buf.readText());
+		public OverlayPacket(RegistryByteBuf buf) {
+			this(TextCodecs.PACKET_CODEC.decode(buf));
 		}
 
-		public void write(PacketByteBuf buf) {
-			buf.writeText(this.message);
+		public void write(RegistryByteBuf buf) {
+			TextCodecs.PACKET_CODEC.encode(buf, this.message);
 		}
 
 		@Override
