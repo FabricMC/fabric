@@ -70,17 +70,17 @@ public final class DynamicRegistriesImpl {
 		Objects.requireNonNull(networkCodec, "Network codec cannot be null");
 		Objects.requireNonNull(options, "Options cannot be null");
 
-		if (!(RegistryLoader.field_48709 instanceof ArrayList<RegistryLoader.Entry<?>>)) {
-			RegistryLoader.field_48709 = new ArrayList<>(RegistryLoader.field_48709);
+		if (!(RegistryLoader.SYNCED_REGISTRIES instanceof ArrayList<RegistryLoader.Entry<?>>)) {
+			RegistryLoader.SYNCED_REGISTRIES = new ArrayList<>(RegistryLoader.SYNCED_REGISTRIES);
 		}
 
-		RegistryLoader.field_48709.add(new RegistryLoader.Entry<>(key, networkCodec));
+		RegistryLoader.SYNCED_REGISTRIES.add(new RegistryLoader.Entry<>(key, networkCodec));
 
-		if (!(SerializableRegistries.field_48771 instanceof HashSet<RegistryKey<? extends Registry<?>>>)) {
-			SerializableRegistries.field_48771 = new HashSet<>(SerializableRegistries.field_48771);
+		if (!(SerializableRegistries.SYNCED_REGISTRIES instanceof HashSet<RegistryKey<? extends Registry<?>>>)) {
+			SerializableRegistries.SYNCED_REGISTRIES = new HashSet<>(SerializableRegistries.SYNCED_REGISTRIES);
 		}
 
-		SerializableRegistries.field_48771.add(key);
+		SerializableRegistries.SYNCED_REGISTRIES.add(key);
 
 		for (DynamicRegistries.SyncOption option : options) {
 			if (option == DynamicRegistries.SyncOption.SKIP_WHEN_EMPTY) {

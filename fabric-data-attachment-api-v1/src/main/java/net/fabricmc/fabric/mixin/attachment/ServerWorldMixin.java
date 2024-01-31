@@ -34,7 +34,7 @@ abstract class ServerWorldMixin {
 		ServerWorld world = (ServerWorld) (Object) this;
 		var type = new PersistentState.Type<>(
 				() -> new AttachmentPersistentState(world),
-				nbt -> AttachmentPersistentState.read(world, nbt),
+				(nbt, wrapperLookup) -> AttachmentPersistentState.read(world, nbt),
 				null // Object builder API 12.1.0 and later makes this a no-op
 		);
 		world.getPersistentStateManager().getOrCreate(type, AttachmentPersistentState.ID);

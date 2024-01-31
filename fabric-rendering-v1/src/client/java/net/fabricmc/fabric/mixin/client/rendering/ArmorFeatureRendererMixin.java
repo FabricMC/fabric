@@ -63,17 +63,19 @@ public abstract class ArmorFeatureRendererMixin extends FeatureRenderer<LivingEn
 		}
 	}
 
-	@Inject(method = "getArmorTexture", at = @At(value = "HEAD"), cancellable = true)
-	private void getArmorTexture(ArmorItem item, boolean secondLayer, String overlay, CallbackInfoReturnable<Identifier> cir) {
-		final String name = item.getMaterial().getName();
-		final int separator = name.indexOf(Identifier.NAMESPACE_SEPARATOR);
-
-		if (separator != -1) {
-			final String namespace = name.substring(0, separator);
-			final String path = name.substring(separator + 1);
-			final String texture = String.format(Locale.ROOT, "%s:textures/models/armor/%s_layer_%d%s.png", namespace, path, secondLayer ? 2 : 1, overlay == null ? "" : "_" + overlay);
-
-			cir.setReturnValue(ARMOR_TEXTURE_CACHE.computeIfAbsent(texture, Identifier::new));
-		}
-	}
+	// TODO 1.20.5
+	// TODO Check ArmorMaterial.class, seems to be no longer required
+//	@Inject(method = "getArmorTexture", at = @At(value = "HEAD"), cancellable = true)
+//	private void getArmorTexture(ArmorItem item, boolean secondLayer, String overlay, CallbackInfoReturnable<Identifier> cir) {
+//		final String name = item.getMaterial().getName();
+//		final int separator = name.indexOf(Identifier.NAMESPACE_SEPARATOR);
+//
+//		if (separator != -1) {
+//			final String namespace = name.substring(0, separator);
+//			final String path = name.substring(separator + 1);
+//			final String texture = String.format(Locale.ROOT, "%s:textures/models/armor/%s_layer_%d%s.png", namespace, path, secondLayer ? 2 : 1, overlay == null ? "" : "_" + overlay);
+//
+//			cir.setReturnValue(ARMOR_TEXTURE_CACHE.computeIfAbsent(texture, Identifier::new));
+//		}
+//	}
 }

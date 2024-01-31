@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// TODO 1.20.5 I am not gonna touch rendering code...
+/*
 package net.fabricmc.fabric.mixin.client.rendering;
 
 import org.joml.Matrix4f;
@@ -61,7 +63,8 @@ public abstract class WorldRendererMixin {
 	@Unique private boolean didRenderParticles;
 
 	@Inject(method = "render", at = @At("HEAD"))
-	private void beforeRender(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci) {
+	private void beforeRender(float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, Matrix4f matrix4f2, CallbackInfo ci) {
+		// MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci
 		context.prepare((WorldRenderer) (Object) this, matrices, tickDelta, limitTime, renderBlockOutline, camera, gameRenderer, lightmapTextureManager, matrix4f, bufferBuilders.getEntityVertexConsumers(), world.getProfiler(), transparencyPostProcessor != null, world);
 		WorldRenderEvents.START.invoker().onStart(context);
 		didRenderParticles = false;
@@ -213,3 +216,4 @@ public abstract class WorldRendererMixin {
 		}
 	}
 }
+*/

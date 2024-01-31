@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.attachment;
 
+import net.minecraft.registry.RegistryWrapper;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NbtCompound;
@@ -47,8 +49,9 @@ public class AttachmentPersistentState extends PersistentState {
 		return wasSerialized || worldTarget.fabric_hasPersistentAttachments();
 	}
 
+	// TODO 1.20.5 Add WrapperLookup to API (?)
 	@Override
-	public NbtCompound writeNbt(NbtCompound nbt) {
+	public NbtCompound writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
 		worldTarget.fabric_writeAttachmentsToNbt(nbt);
 		return nbt;
 	}

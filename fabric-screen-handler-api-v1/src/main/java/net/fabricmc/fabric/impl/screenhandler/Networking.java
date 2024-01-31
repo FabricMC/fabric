@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import net.minecraft.text.TextCodecs;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,7 +97,8 @@ public final class Networking implements ModInitializer {
 		private static <D> OpenScreenPayload<D> fromBuf(RegistryByteBuf buf) {
 			Identifier id = buf.readIdentifier();
 			PacketCodec<RegistryByteBuf, D> codec = (PacketCodec<RegistryByteBuf, D>) CODEC_BY_ID.get(id);
-			return new OpenScreenPayload<>(id, buf.readByte(), buf.readText(), codec, codec == null ? null : codec.decode(buf));
+
+			return new OpenScreenPayload<>(id, buf.readByte(), TextCodecs.PACKET_CODEC.decode(buf), codec, codec == null ? null : codec.decode(buf));
 		}
 
 		private void write(RegistryByteBuf buf) {
