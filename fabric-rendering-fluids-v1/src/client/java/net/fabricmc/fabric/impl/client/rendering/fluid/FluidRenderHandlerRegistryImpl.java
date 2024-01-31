@@ -108,10 +108,10 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 			}
 		};
 
-		register(Fluids.WATER, waterHandler);
-		register(Fluids.FLOWING_WATER, waterHandler);
-		register(Fluids.LAVA, lavaHandler);
-		register(Fluids.FLOWING_LAVA, lavaHandler);
+		handlers.put(Fluids.WATER, waterHandler);
+		handlers.put(Fluids.FLOWING_WATER, waterHandler);
+		handlers.put(Fluids.LAVA, lavaHandler);
+		handlers.put(Fluids.FLOWING_LAVA, lavaHandler);
 		handlers.putAll(modHandlers);
 
 		SpriteAtlasTexture texture = MinecraftClient.getInstance()
