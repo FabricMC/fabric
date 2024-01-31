@@ -23,12 +23,12 @@ import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.class_9168;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.SpawnLocation;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.mob.MobEntity;
@@ -423,7 +423,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @param <T> Entity class.
 	 */
 	public static class Mob<T extends MobEntity> extends FabricEntityTypeBuilder.Living<T> {
-		private class_9168 spawnLocation;
+		private SpawnLocation spawnLocation;
 		private Heightmap.Type restrictionHeightmap;
 		private SpawnRestriction.SpawnPredicate<T> spawnPredicate;
 
@@ -536,7 +536,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		 *
 		 * @return this builder for chaining.
 		 */
-		public FabricEntityTypeBuilder.Mob<T> spawnRestriction(class_9168 spawnLocation, Heightmap.Type heightmap, SpawnRestriction.SpawnPredicate<T> spawnPredicate) {
+		public FabricEntityTypeBuilder.Mob<T> spawnRestriction(SpawnLocation spawnLocation, Heightmap.Type heightmap, SpawnRestriction.SpawnPredicate<T> spawnPredicate) {
 			this.spawnLocation = Objects.requireNonNull(spawnLocation, "Spawn location cannot be null.");
 			this.restrictionHeightmap = Objects.requireNonNull(heightmap, "Heightmap type cannot be null.");
 			this.spawnPredicate = Objects.requireNonNull(spawnPredicate, "Spawn predicate cannot be null.");

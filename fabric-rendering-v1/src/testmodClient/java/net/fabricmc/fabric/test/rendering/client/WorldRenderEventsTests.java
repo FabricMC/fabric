@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.rendering.client;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -29,20 +30,21 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 public class WorldRenderEventsTests implements ClientModInitializer {
 	private static boolean onBlockOutline(WorldRenderContext wrc, WorldRenderContext.BlockOutlineContext blockOutlineContext) {
 		if (blockOutlineContext.blockState().isOf(Blocks.DIAMOND_BLOCK)) {
-			wrc.matrixStack().push();
+			MatrixStack matrixStack = new MatrixStack();
+			matrixStack.push();
 			Vec3d cameraPos = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
 			BlockPos pos = blockOutlineContext.blockPos();
 			double x = pos.getX() - cameraPos.x;
 			double y = pos.getY() - cameraPos.y;
 			double z = pos.getZ() - cameraPos.z;
-			wrc.matrixStack().translate(x+0.25, y+0.25+1, z+0.25);
-			wrc.matrixStack().scale(0.5f, 0.5f, 0.5f);
+			matrixStack.translate(x+0.25, y+0.25+1, z+0.25);
+			matrixStack.scale(0.5f, 0.5f, 0.5f);
 
 			MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(
 					Blocks.DIAMOND_BLOCK.getDefaultState(),
-					wrc.matrixStack(), wrc.consumers(), 15728880, OverlayTexture.DEFAULT_UV);
+					matrixStack, wrc.consumers(), 15728880, OverlayTexture.DEFAULT_UV);
 
-			wrc.matrixStack().pop();
+			matrixStack.pop();
 		}
 
 		return true;

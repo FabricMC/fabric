@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.registry.DynamicRegistryManager;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 
@@ -39,12 +40,12 @@ public class BlockEntityUpdateS2CPacketMixin {
 			method = "create(Lnet/minecraft/block/entity/BlockEntity;)Lnet/minecraft/network/packet/s2c/play/BlockEntityUpdateS2CPacket;",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/network/packet/s2c/play/BlockEntityUpdateS2CPacket;create(Lnet/minecraft/block/entity/BlockEntity;Ljava/util/function/Function;)Lnet/minecraft/network/packet/s2c/play/BlockEntityUpdateS2CPacket;"
+					target = "Lnet/minecraft/network/packet/s2c/play/BlockEntityUpdateS2CPacket;create(Lnet/minecraft/block/entity/BlockEntity;Ljava/util/function/BiFunction;)Lnet/minecraft/network/packet/s2c/play/BlockEntityUpdateS2CPacket;"
 			)
 	)
-	private static Function<BlockEntity, NbtCompound> stripPersistentAttachmentData(Function<BlockEntity, NbtCompound> getter) {
-		return be -> {
-			NbtCompound nbt = getter.apply(be);
+	private static BiFunction<BlockEntity, DynamicRegistryManager, NbtCompound> stripPersistentAttachmentData(BiFunction<BlockEntity, DynamicRegistryManager, NbtCompound> getter) {
+		return (be, drm) -> {
+			NbtCompound nbt = getter.apply(be, drm);
 			nbt.remove(AttachmentTarget.NBT_ATTACHMENT_KEY);
 			return nbt;
 		};

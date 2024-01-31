@@ -27,7 +27,6 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
@@ -37,7 +36,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 
 public final class WorldRenderContextImpl implements WorldRenderContext.BlockOutlineContext, WorldRenderContext {
 	private WorldRenderer worldRenderer;
-	private MatrixStack matrixStack;
 	private float tickDelta;
 	private long limitTime;
 	private boolean blockOutlines;
@@ -46,6 +44,7 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	private GameRenderer gameRenderer;
 	private LightmapTextureManager lightmapTextureManager;
 	private Matrix4f projectionMatrix;
+	private Matrix4f positionMatrix;
 	private VertexConsumerProvider consumers;
 	private Profiler profiler;
 	private boolean advancedTranslucency;
@@ -62,7 +61,6 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 
 	public void prepare(
 			WorldRenderer worldRenderer,
-			MatrixStack matrixStack,
 			float tickDelta,
 			long limitTime,
 			boolean blockOutlines,
@@ -70,13 +68,13 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 			GameRenderer gameRenderer,
 			LightmapTextureManager lightmapTextureManager,
 			Matrix4f projectionMatrix,
+			Matrix4f positionMatrix,
 			VertexConsumerProvider consumers,
 			Profiler profiler,
 			boolean advancedTranslucency,
 			ClientWorld world
 	) {
 		this.worldRenderer = worldRenderer;
-		this.matrixStack = matrixStack;
 		this.tickDelta = tickDelta;
 		this.limitTime = limitTime;
 		this.blockOutlines = blockOutlines;
@@ -84,6 +82,7 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 		this.gameRenderer = gameRenderer;
 		this.lightmapTextureManager = lightmapTextureManager;
 		this.projectionMatrix = projectionMatrix;
+		this.positionMatrix = positionMatrix;
 		this.consumers = consumers;
 		this.profiler = profiler;
 		this.advancedTranslucency = advancedTranslucency;
@@ -116,11 +115,6 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	}
 
 	@Override
-	public MatrixStack matrixStack() {
-		return matrixStack;
-	}
-
-	@Override
 	public float tickDelta() {
 		return tickDelta;
 	}
@@ -143,6 +137,11 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	@Override
 	public Matrix4f projectionMatrix() {
 		return projectionMatrix;
+	}
+
+	@Override
+	public Matrix4f positionMatrix() {
+		return positionMatrix;
 	}
 
 	@Override

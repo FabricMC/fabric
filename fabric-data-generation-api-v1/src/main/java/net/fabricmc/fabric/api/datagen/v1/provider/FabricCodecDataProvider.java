@@ -49,16 +49,6 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	private final CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture;
 	private final Codec<T> codec;
 
-	/**
-	 * @deprecated Please use {@link FabricCodecDataProvider#FabricCodecDataProvider(FabricDataOutput, CompletableFuture, DataOutput.OutputType, String, Codec)}.
-	 */
-	@Deprecated()
-	protected FabricCodecDataProvider(FabricDataOutput dataOutput, DataOutput.OutputType outputType, String directoryName, Codec<T> codec) {
-		this.pathResolver = dataOutput.getResolver(outputType, directoryName);
-		this.registriesFuture = null;
-		this.codec = codec;
-	}
-
 	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture, DataOutput.OutputType outputType, String directoryName, Codec<T> codec) {
 		this.pathResolver = dataOutput.getResolver(outputType, directoryName);
 		this.registriesFuture = Objects.requireNonNull(registriesFuture);
@@ -67,49 +57,22 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 
 	@Override
 	public CompletableFuture<?> run(DataWriter writer) {
-		// TODO: Remove the null check once the deprecated method and constructor are removed.
-		if (this.registriesFuture != null) {
-			return this.registriesFuture.thenCompose(lookup -> {
-				Map<Identifier, JsonElement> entries = new HashMap<>();
-				RegistryOps<JsonElement> ops = RegistryOps.of(JsonOps.INSTANCE, lookup);
+		return this.registriesFuture.thenCompose(lookup -> {
+			Map<Identifier, JsonElement> entries = new HashMap<>();
+			RegistryOps<JsonElement> ops = RegistryOps.of(JsonOps.INSTANCE, lookup);
 
-				BiConsumer<Identifier, T> provider = (id, value) -> {
-					JsonElement json = this.convert(id, value, ops);
-					JsonElement existingJson = entries.put(id, json);
+			BiConsumer<Identifier, T> provider = (id, value) -> {
+				JsonElement json = this.convert(id, value, ops);
+				JsonElement existingJson = entries.put(id, json);
 
-					if (existingJson != null) {
-						throw new IllegalArgumentException("Duplicate entry " + id);
-					}
-				};
+				if (existingJson != null) {
+					throw new IllegalArgumentException("Duplicate entry " + id);
+				}
+			};
 
-				this.configure(provider, lookup);
-				return this.write(writer, entries);
-			});
-		}
-
-		Map<Identifier, JsonElement> entries = new HashMap<>();
-		BiConsumer<Identifier, T> provider = (id, value) -> {
-			JsonElement json = this.convert(id, value);
-			JsonElement existingJson = entries.put(id, json);
-
-			if (existingJson != null) {
-				throw new IllegalArgumentException("Duplicate entry " + id);
-			}
-		};
-
-		this.configure(provider);
-		return this.write(writer, entries);
-	}
-
-	/**
-	 * Implement this method to register entries to generate.
-	 *
-	 * @param provider A consumer that accepts an {@link Identifier} and a value to register.
-	 * @deprecated Please use {@link FabricCodecDataProvider#configure(BiConsumer, RegistryWrapper.WrapperLookup)}.
-	 */
-	@Deprecated()
-	protected void configure(BiConsumer<Identifier, T> provider) {
-		throw new UnsupportedOperationException("Override this method.");
+			this.configure(provider, lookup);
+			return this.write(writer, entries);
+		});
 	}
 
 	/**
@@ -117,10 +80,7 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	 * @param provider A consumer that accepts an {@link Identifier} and a value to register.
 	 * @param lookup A lookup for registries.
 	 */
-	protected void configure(BiConsumer<Identifier, T> provider, RegistryWrapper.WrapperLookup lookup) {
-		// TODO: Make abstract once the deprecated method is removed.
-		throw new UnsupportedOperationException("Override this method.");
-	}
+	protected abstract void configure(BiConsumer<Identifier, T> provider, RegistryWrapper.WrapperLookup lookup);
 
 	private JsonElement convert(Identifier id, T value) {
 		return this.convert(id, value, JsonOps.INSTANCE);

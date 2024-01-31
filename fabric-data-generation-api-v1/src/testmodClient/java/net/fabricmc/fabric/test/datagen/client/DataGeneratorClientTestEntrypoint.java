@@ -19,12 +19,14 @@ package net.fabricmc.fabric.test.datagen.client;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
 import net.minecraft.client.texture.atlas.AtlasSource;
 import net.minecraft.client.texture.atlas.AtlasSourceManager;
 import net.minecraft.client.texture.atlas.DirectoryAtlasSource;
 import net.minecraft.data.DataOutput;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
@@ -47,12 +49,12 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 	}
 
 	private static class TestAtlasSourceProvider extends FabricCodecDataProvider<List<AtlasSource>> {
-		private TestAtlasSourceProvider(FabricDataOutput dataOutput) {
-			super(dataOutput, DataOutput.OutputType.RESOURCE_PACK, "atlases", AtlasSourceManager.LIST_CODEC);
+		private TestAtlasSourceProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(dataOutput, registriesFuture, DataOutput.OutputType.RESOURCE_PACK, "atlases", AtlasSourceManager.LIST_CODEC);
 		}
 
 		@Override
-		protected void configure(BiConsumer<Identifier, List<AtlasSource>> provider) {
+		protected void configure(BiConsumer<Identifier, List<AtlasSource>> provider, RegistryWrapper.WrapperLookup lookup) {
 			provider.accept(new Identifier(MOD_ID, "atlas_source_test"), List.of(new DirectoryAtlasSource("example", "example/")));
 		}
 

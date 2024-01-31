@@ -45,8 +45,6 @@ public interface WorldRenderContext {
 	 */
 	WorldRenderer worldRenderer();
 
-	MatrixStack matrixStack();
-
 	float tickDelta();
 
 	long limitTime();
@@ -60,6 +58,8 @@ public interface WorldRenderContext {
 	LightmapTextureManager lightmapTextureManager();
 
 	Matrix4f projectionMatrix();
+
+	Matrix4f positionMatrix();
 
 	/**
 	 * Convenient access to {WorldRenderer.world}.

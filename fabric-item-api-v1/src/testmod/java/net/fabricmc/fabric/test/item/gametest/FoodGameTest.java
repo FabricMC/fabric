@@ -30,6 +30,7 @@ import net.minecraft.test.TestContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.GameMode;
 
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.fabric.test.item.FoodGameInitializer;
@@ -37,7 +38,7 @@ import net.fabricmc.fabric.test.item.FoodGameInitializer;
 public final class FoodGameTest implements FabricGameTest {
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void damageFoodTest(TestContext context) {
-		PlayerEntity player = context.createMockSurvivalPlayer();
+		PlayerEntity player = context.createMockCreativePlayer(GameMode.SURVIVAL);
 		HungerManager hungerManager = player.getHungerManager();
 
 		for (int damage : new int[]{0, 1, 10, 19}) {
@@ -60,7 +61,7 @@ public final class FoodGameTest implements FabricGameTest {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void nameFoodTest(TestContext context) {
-		PlayerEntity player = context.createMockSurvivalPlayer();
+		PlayerEntity player = context.createMockCreativePlayer(GameMode.SURVIVAL);
 		HungerManager hungerManager = player.getHungerManager();
 		hungerManager.setFoodLevel(0);
 		hungerManager.setSaturationLevel(0);
@@ -79,7 +80,7 @@ public final class FoodGameTest implements FabricGameTest {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void nameMeatTest(TestContext context) {
-		PlayerEntity player = context.createMockSurvivalPlayer();
+		PlayerEntity player = context.createMockCreativePlayer(GameMode.SURVIVAL);
 		WolfEntity wolf = context.spawnEntity(EntityType.WOLF, context.getRelative(Vec3d.ZERO));
 		wolf.setTamed(true);
 		wolf.setOwner(player);

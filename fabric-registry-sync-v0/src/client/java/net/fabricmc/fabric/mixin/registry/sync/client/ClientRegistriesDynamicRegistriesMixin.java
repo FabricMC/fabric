@@ -35,19 +35,19 @@ import net.minecraft.registry.SerializableRegistries;
 
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 
-@Mixin(targets = "net/minecraft/class_9173$class_9174")
+@Mixin(targets = "net/minecraft/client/network/ClientRegistries$DynamicRegistries")
 public class ClientRegistriesDynamicRegistriesMixin {
 	@Shadow
 	@Final
-	private Map<RegistryKey<? extends Registry<?>>, List<SerializableRegistries.class_9176>> field_48769;
+	private Map<RegistryKey<? extends Registry<?>>, List<SerializableRegistries.SerializedRegistryEntry>> dynamicRegistries;
 
 	/**
 	 * Keep the pre-24w04a behavior of removing empty registries, even if the client knows that registry.
 	 */
-	@WrapOperation(method = "method_56589", at = @At(value = "FIELD", target = "Lnet/minecraft/registry/RegistryLoader;field_48709:Ljava/util/List;", opcode = Opcodes.GETSTATIC))
+	@WrapOperation(method = "load", at = @At(value = "FIELD", target = "Lnet/minecraft/registry/RegistryLoader;SYNCED_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC))
 	private List<RegistryLoader.Entry<?>> skipEmptyRegistries(Operation<List<RegistryLoader.Entry<?>>> operation) {
 		List<RegistryLoader.Entry<?>> result = new ArrayList<>(operation.call());
-		result.removeIf(entry -> DynamicRegistriesImpl.SKIP_EMPTY_SYNC_REGISTRIES.contains(entry.key()) && !this.field_48769.containsKey(entry.key()));
+		result.removeIf(entry -> DynamicRegistriesImpl.SKIP_EMPTY_SYNC_REGISTRIES.contains(entry.key()) && !this.dynamicRegistries.containsKey(entry.key()));
 		return result;
 	}
 }
