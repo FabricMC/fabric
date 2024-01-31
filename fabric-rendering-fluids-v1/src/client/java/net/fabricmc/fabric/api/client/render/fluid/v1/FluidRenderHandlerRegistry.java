@@ -42,6 +42,15 @@ public interface FluidRenderHandlerRegistry {
 	FluidRenderHandler get(Fluid fluid);
 
 	/**
+	 * Get a {@link FluidRenderHandler} for a given Fluid, if it is not the
+	 * default implementation. Supports vanilla and Fabric fluids.
+	 *
+	 * @param fluid The Fluid.
+	 * @return The FluidRenderHandler.
+	 */
+	FluidRenderHandler getOverride(Fluid fluid);
+
+	/**
 	 * Register a {@link FluidRenderHandler} for a given Fluid.
 	 *
 	 * <p>Note that most fluids have a still and a flowing type, and a

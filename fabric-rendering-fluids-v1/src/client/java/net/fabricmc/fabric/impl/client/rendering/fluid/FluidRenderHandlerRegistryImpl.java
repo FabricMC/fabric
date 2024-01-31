@@ -59,6 +59,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		return handlers.get(fluid);
 	}
 
+	@Override
 	public FluidRenderHandler getOverride(Fluid fluid) {
 		return modHandlers.get(fluid);
 	}
