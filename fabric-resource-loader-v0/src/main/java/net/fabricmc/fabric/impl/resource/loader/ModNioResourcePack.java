@@ -94,7 +94,8 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 
 		if (paths.isEmpty()) return null;
 
-		ModNioResourcePack ret = new ModNioResourcePack(id, mod, paths, type, activationType, modBundled);
+		String packId = subPath == null ? id : id + "_" + subPath;
+		ModNioResourcePack ret = new ModNioResourcePack(packId, mod, paths, type, activationType, modBundled);
 
 		return ret.getNamespaces(type).isEmpty() ? null : ret;
 	}
