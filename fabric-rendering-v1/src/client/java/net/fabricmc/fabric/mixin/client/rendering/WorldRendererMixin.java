@@ -58,13 +58,11 @@ public abstract class WorldRendererMixin {
 	@Shadow
 	private MinecraftClient client;
 	@Unique private final WorldRenderContextImpl context = new WorldRenderContextImpl();
-	@Unique private boolean didRenderParticles;
 
 	@Inject(method = "render", at = @At("HEAD"))
 	private void beforeRender(float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
 		context.prepare((WorldRenderer) (Object) this, tickDelta, limitTime, renderBlockOutline, camera, gameRenderer, lightmapTextureManager, projectionMatrix, positionMatrix, bufferBuilders.getEntityVertexConsumers(), world.getProfiler(), transparencyPostProcessor != null, world);
 		WorldRenderEvents.START.invoker().onStart(context);
-		didRenderParticles = false;
 	}
 
 	@Inject(method = "setupTerrain", at = @At("RETURN"))
@@ -136,24 +134,9 @@ public abstract class WorldRendererMixin {
 		WorldRenderEvents.BEFORE_DEBUG_RENDER.invoker().beforeDebugRender(context);
 	}
 
-	@Inject(
-			method = "render",
-			at = @At(
-				value = "INVOKE",
-				target = "Lnet/minecraft/client/particle/ParticleManager;renderParticles(Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/client/render/Camera;F)V"
-			)
-	)
-	private void onRenderParticles(CallbackInfo ci) {
-		// set a flag so we know the next pushMatrix call is after particles
-		didRenderParticles = true;
-	}
-
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;push()V"))
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;"))
 	private void beforeClouds(CallbackInfo ci) {
-		if (didRenderParticles) {
-			didRenderParticles = false;
-			WorldRenderEvents.AFTER_TRANSLUCENT.invoker().afterTranslucent(context);
-		}
+		WorldRenderEvents.AFTER_TRANSLUCENT.invoker().afterTranslucent(context);
 	}
 
 	@Inject(
