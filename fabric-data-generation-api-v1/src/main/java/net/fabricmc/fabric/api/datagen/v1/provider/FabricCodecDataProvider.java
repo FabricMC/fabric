@@ -82,10 +82,6 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	 */
 	protected abstract void configure(BiConsumer<Identifier, T> provider, RegistryWrapper.WrapperLookup lookup);
 
-	private JsonElement convert(Identifier id, T value) {
-		return this.convert(id, value, JsonOps.INSTANCE);
-	}
-
 	private JsonElement convert(Identifier id, T value, DynamicOps<JsonElement> ops) {
 		DataResult<JsonElement> dataResult = this.codec.encodeStart(ops, value);
 		return dataResult.get()
