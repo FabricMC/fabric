@@ -25,6 +25,7 @@ import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 
@@ -33,6 +34,8 @@ import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
@@ -49,10 +52,12 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 public abstract class FabricAdvancementProvider implements DataProvider {
 	protected final FabricDataOutput output;
 	private final DataOutput.PathResolver pathResolver;
+	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup;
 
-	protected FabricAdvancementProvider(FabricDataOutput output) {
+	protected FabricAdvancementProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
 		this.output = output;
 		this.pathResolver = output.getResolver(DataOutput.OutputType.DATA_PACK, "advancements");
+		this.registryLookup = registryLookup;
 	}
 
 	/**
@@ -80,20 +85,22 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 
 		generateAdvancement(advancements::add);
 
-		final List<CompletableFuture<?>> futures = new ArrayList<>();
+		return this.registryLookup.thenCompose(lookup -> {
+			RegistryOps<JsonElement> ops = RegistryOps.of(JsonOps.INSTANCE, lookup);
+			final List<CompletableFuture<?>> futures = new ArrayList<>();
 
-		for (AdvancementEntry advancement : advancements) {
-			if (!identifiers.add(advancement.id())) {
-				throw new IllegalStateException("Duplicate advancement " + advancement.id());
+			for (AdvancementEntry advancement : advancements) {
+				if (!identifiers.add(advancement.id())) {
+					throw new IllegalStateException("Duplicate advancement " + advancement.id());
+				}
+
+				JsonObject advancementJson = Util.getResult(Advancement.CODEC.encodeStart(ops, advancement.value()), IllegalStateException::new).getAsJsonObject();
+				ConditionJsonProvider.write(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
+				futures.add(DataProvider.writeToPath(writer, advancementJson, getOutputPath(advancement)));
 			}
 
-			JsonObject advancementJson = Util.getResult(Advancement.CODEC.encodeStart(JsonOps.INSTANCE, advancement.value()), IllegalStateException::new).getAsJsonObject();
-			ConditionJsonProvider.write(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
-
-			futures.add(DataProvider.writeToPath(writer, advancementJson, getOutputPath(advancement)));
-		}
-
-		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+			return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+		});
 	}
 
 	private Path getOutputPath(AdvancementEntry advancement) {

@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.common.collect.Maps;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 
@@ -32,6 +33,8 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
@@ -50,7 +53,8 @@ public final class FabricLootTableProviderImpl {
 			DataWriter writer,
 			FabricLootTableProvider provider,
 			LootContextType lootContextType,
-			FabricDataOutput fabricDataOutput) {
+			FabricDataOutput fabricDataOutput,
+			CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
 		HashMap<Identifier, LootTable> builders = Maps.newHashMap();
 		HashMap<Identifier, ConditionJsonProvider[]> conditionMap = new HashMap<>();
 
@@ -63,16 +67,18 @@ public final class FabricLootTableProviderImpl {
 			}
 		});
 
-		final List<CompletableFuture<?>> futures = new ArrayList<>();
+		return registryLookup.thenCompose(lookup -> {
+			RegistryOps<JsonElement> ops = RegistryOps.of(JsonOps.INSTANCE, lookup);
+			final List<CompletableFuture<?>> futures = new ArrayList<>();
 
-		for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
-			JsonObject tableJson = (JsonObject) Util.getResult(LootTable.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue()), IllegalStateException::new);
-			ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
+			for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
+				JsonObject tableJson = (JsonObject) Util.getResult(LootTable.CODEC.encodeStart(ops, entry.getValue()), IllegalStateException::new);
+				ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
+				futures.add(DataProvider.writeToPath(writer, tableJson, getOutputPath(fabricDataOutput, entry.getKey())));
+			}
 
-			futures.add(DataProvider.writeToPath(writer, tableJson, getOutputPath(fabricDataOutput, entry.getKey())));
-		}
-
-		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+			return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+		});
 	}
 
 	private static Path getOutputPath(FabricDataOutput dataOutput, Identifier lootTableId) {
