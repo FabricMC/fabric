@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -82,6 +83,12 @@ public abstract class WorldRendererMixin {
 	)
 	private void afterTerrainSolid(CallbackInfo ci) {
 		WorldRenderEvents.BEFORE_ENTITIES.invoker().beforeEntities(context);
+	}
+
+	@ModifyExpressionValue(method = "render", at = @At(value = "NEW", target = "net/minecraft/client/util/math/MatrixStack"))
+	private MatrixStack setMatrixStack(MatrixStack matrixStack) {
+		context.setMatrixStack(matrixStack);
+		return matrixStack;
 	}
 
 	@Inject(method = "render", at = @At(value = "CONSTANT", args = "stringValue=blockentities", ordinal = 0))
