@@ -82,7 +82,7 @@ public class AttachmentSerializingImpl {
 
 				if (codec != null) {
 					RegistryOps<NbtElement> registryOps = RegistryOps.of(NbtOps.INSTANCE, wrapperLookup);
-					codec.parse(NbtOps.INSTANCE, compound.get(key))
+					codec.parse(registryOps, compound.get(key))
 							.get()
 							.ifRight(partial -> {
 								LOGGER.warn("Couldn't deserialize attachment " + type.identifier() + ", skipping. Error:");
