@@ -77,6 +77,7 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 			ClientWorld world
 	) {
 		this.worldRenderer = worldRenderer;
+		this.matrixStack = null;
 		this.tickDelta = tickDelta;
 		this.limitTime = limitTime;
 		this.blockOutlines = blockOutlines;
