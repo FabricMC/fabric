@@ -50,13 +50,23 @@ public final class ColorResolverRegistry {
 	}
 
 	/**
-	 * Gets a view of all registered {@link ColorResolver}s. This includes all vanilla resolvers.
+	 * Gets a view of all registered {@link ColorResolver}s, including all vanilla resolvers.
 	 *
 	 * @return a view of all registered resolvers
 	 */
 	@UnmodifiableView
-	public static Set<ColorResolver> getAllRegistered() {
-		return ColorResolverRegistryImpl.getAllRegistered();
+	public static Set<ColorResolver> getAllResolvers() {
+		return ColorResolverRegistryImpl.getAllResolvers();
+	}
+
+	/**
+	 * Gets a view of all registered {@link ColorResolver}s, not including vanilla resolvers.
+	 *
+	 * @return a view of all registered custom resolvers
+	 */
+	@UnmodifiableView
+	public static Set<ColorResolver> getCustomResolvers() {
+		return ColorResolverRegistryImpl.getCustomResolvers();
 	}
 
 	/**
@@ -66,6 +76,6 @@ public final class ColorResolverRegistry {
 	 * @return whether the given resolver is registered
 	 */
 	public static boolean isRegistered(ColorResolver resolver) {
-		return getAllRegistered().contains(resolver);
+		return getAllResolvers().contains(resolver);
 	}
 }

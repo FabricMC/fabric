@@ -19,31 +19,56 @@ package net.fabricmc.fabric.impl.client.rendering;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.client.color.world.BiomeColors;
+import net.minecraft.client.world.BiomeColorCache;
 import net.minecraft.world.biome.ColorResolver;
 
 public final class ColorResolverRegistryImpl {
-	private static final Set<ColorResolver> RESOLVERS = new HashSet<>();
-	private static final Set<ColorResolver> RESOLVERS_VIEW = Collections.unmodifiableSet(RESOLVERS);
+	// Includes vanilla resolvers
+	private static final Set<ColorResolver> ALL_RESOLVERS = new HashSet<>();
+	// Does not include vanilla resolvers
+	private static final Set<ColorResolver> CUSTOM_RESOLVERS = new HashSet<>();
+	private static final Set<ColorResolver> ALL_RESOLVERS_VIEW = Collections.unmodifiableSet(ALL_RESOLVERS);
+	private static final Set<ColorResolver> CUSTOM_RESOLVERS_VIEW = Collections.unmodifiableSet(CUSTOM_RESOLVERS);
 
 	static {
-		register(BiomeColors.GRASS_COLOR);
-		register(BiomeColors.FOLIAGE_COLOR);
-		register(BiomeColors.WATER_COLOR);
+		ALL_RESOLVERS.add(BiomeColors.GRASS_COLOR);
+		ALL_RESOLVERS.add(BiomeColors.FOLIAGE_COLOR);
+		ALL_RESOLVERS.add(BiomeColors.WATER_COLOR);
 	}
 
 	private ColorResolverRegistryImpl() {
 	}
 
 	public static void register(ColorResolver resolver) {
-		RESOLVERS.add(resolver);
+		ALL_RESOLVERS.add(resolver);
+		CUSTOM_RESOLVERS.add(resolver);
 	}
 
 	@UnmodifiableView
-	public static Set<ColorResolver> getAllRegistered() {
-		return RESOLVERS_VIEW;
+	public static Set<ColorResolver> getAllResolvers() {
+		return ALL_RESOLVERS_VIEW;
+	}
+
+	@UnmodifiableView
+	public static Set<ColorResolver> getCustomResolvers() {
+		return CUSTOM_RESOLVERS_VIEW;
+	}
+
+	public static Reference2ReferenceMap<ColorResolver, BiomeColorCache> createCustomCacheMap(Function<ColorResolver, BiomeColorCache> cacheFactory) {
+		Reference2ReferenceOpenHashMap<ColorResolver, BiomeColorCache> map = new Reference2ReferenceOpenHashMap<>();
+
+		for (ColorResolver resolver : CUSTOM_RESOLVERS) {
+			map.put(resolver, cacheFactory.apply(resolver));
+		}
+
+		map.trim();
+		return map;
 	}
 }
