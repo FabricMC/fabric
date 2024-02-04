@@ -25,7 +25,6 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -37,7 +36,7 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 
 	@Override
 	public void onInitializeClient() {
-		ClientPlayConnectionEvents.INIT.register((handler, client) -> ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.OverlayPacket.PACKET_TYPE, this));
+		ClientPlayNetworking.registerGlobalReceiver(NetworkingPlayPacketTest.OverlayPacket.PACKET_TYPE, this);
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
 				ClientCommandManager.literal("clientnetworktestcommand")
