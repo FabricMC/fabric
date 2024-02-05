@@ -19,6 +19,8 @@ package net.fabricmc.fabric.impl.client.rendering.fluid;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
@@ -60,6 +62,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 	}
 
 	@Override
+	@Nullable
 	public FluidRenderHandler getOverride(Fluid fluid) {
 		return modHandlers.get(fluid);
 	}
