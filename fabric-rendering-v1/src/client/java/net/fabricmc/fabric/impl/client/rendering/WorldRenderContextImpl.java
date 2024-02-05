@@ -27,6 +27,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
@@ -36,6 +37,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 
 public final class WorldRenderContextImpl implements WorldRenderContext.BlockOutlineContext, WorldRenderContext {
 	private WorldRenderer worldRenderer;
+	private MatrixStack matrixStack;
 	private float tickDelta;
 	private long limitTime;
 	private boolean blockOutlines;
@@ -75,6 +77,7 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 			ClientWorld world
 	) {
 		this.worldRenderer = worldRenderer;
+		this.matrixStack = null;
 		this.tickDelta = tickDelta;
 		this.limitTime = limitTime;
 		this.blockOutlines = blockOutlines;
@@ -91,6 +94,10 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 
 	public void setFrustum(Frustum frustum) {
 		this.frustum = frustum;
+	}
+
+	public void setMatrixStack(MatrixStack matrixStack) {
+		this.matrixStack = matrixStack;
 	}
 
 	public void prepareBlockOutline(
@@ -112,6 +119,11 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	@Override
 	public WorldRenderer worldRenderer() {
 		return worldRenderer;
+	}
+
+	@Override
+	public MatrixStack matrixStack() {
+		return matrixStack;
 	}
 
 	@Override

@@ -45,6 +45,12 @@ public interface WorldRenderContext {
 	 */
 	WorldRenderer worldRenderer();
 
+	/**
+	 * The matrix stack is only not null in {@link WorldRenderEvents#AFTER_ENTITIES} or later events.
+	 */
+	@Nullable
+	MatrixStack matrixStack();
+
 	float tickDelta();
 
 	long limitTime();
