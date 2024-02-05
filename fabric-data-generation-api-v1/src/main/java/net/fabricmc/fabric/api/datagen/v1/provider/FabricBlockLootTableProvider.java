@@ -32,6 +32,7 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.util.Identifier;
 
@@ -47,10 +48,12 @@ import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
 public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerator implements FabricLootTableProvider {
 	private final FabricDataOutput output;
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
+	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup;
 
-	protected FabricBlockLootTableProvider(FabricDataOutput dataOutput) {
+	protected FabricBlockLootTableProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
 		super(Collections.emptySet(), FeatureFlags.FEATURE_MANAGER.getFeatureSet());
 		this.output = dataOutput;
+		this.registryLookup = registryLookup;
 	}
 
 	/**
@@ -107,7 +110,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 
 	@Override
 	public CompletableFuture<?> run(DataWriter writer) {
-		return FabricLootTableProviderImpl.run(writer, this, LootContextTypes.BLOCK, output);
+		return FabricLootTableProviderImpl.run(writer, this, LootContextTypes.BLOCK, output, registryLookup);
 	}
 
 	@Override
