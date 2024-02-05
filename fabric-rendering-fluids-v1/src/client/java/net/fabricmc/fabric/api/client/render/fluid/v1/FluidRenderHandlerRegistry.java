@@ -41,6 +41,7 @@ public interface FluidRenderHandlerRegistry {
 	 * @param fluid The Fluid.
 	 * @return The FluidRenderHandler.
 	 */
+	@Nullable
 	FluidRenderHandler get(Fluid fluid);
 
 	/**
