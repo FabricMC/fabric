@@ -1,29 +1,22 @@
-buildscript {
-	dependencies {
-		classpath 'org.kohsuke:github-api:1.135'
-	}
-}
-
 plugins {
 	id "java-library"
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
 	id 'jacoco'
-	id "fabric-loom" version "1.2.7" apply false
-	id "com.diffplug.spotless" version "6.18.0"
+	id "fabric-loom" version "1.5.4" apply false
+	id "com.diffplug.spotless" version "6.20.0"
 	id "org.ajoberstar.grgit" version "3.1.0"
-	id "com.matthewprenger.cursegradle" version "1.4.0"
-	id "com.modrinth.minotaur" version "2.4.3"
 	id "me.modmuss50.remotesign" version "0.4.0" apply false
+	id "me.modmuss50.mod-publish-plugin" version "0.4.5"
 }
 
 def ENV = System.getenv()
-def signingEnabled = ENV.SIGNING_SERVER
 
 version = project.version + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
 logger.lifecycle("Building Fabric: " + version)
 
+def metaProjects = ['deprecated']
 
 import net.fabricmc.loom.util.gradle.SourceSetHelper
 import groovy.json.JsonSlurper
@@ -123,16 +116,16 @@ allprojects {
 		enabled = false
 	}
 
-	if (signingEnabled) {
-		remoteSign {
-			requestUrl = ENV.SIGNING_SERVER
-			pgpAuthKey = ENV.SIGNING_PGP_KEY
-			jarAuthKey = ENV.SIGNING_JAR_KEY
+	remoteSign {
+		requestUrl = ENV.SIGNING_SERVER
+		pgpAuthKey = ENV.SIGNING_PGP_KEY
+		jarAuthKey = ENV.SIGNING_JAR_KEY
 
-			afterEvaluate {
-				// PGP sign all maven publications.
-				sign publishing.publications.mavenJava
-			}
+		useDummyForTesting = ENV.SIGNING_SERVER == null
+
+		afterEvaluate {
+			// PGP sign all maven publications.
+			sign publishing.publications.mavenJava
 		}
 	}
 
@@ -140,7 +133,7 @@ allprojects {
 		setupRepositories(repositories)
 	}
 
-	if (it.name == "deprecated") {
+	if (metaProjects.contains(it.name)) {
 		return
 	}
 
@@ -160,6 +153,9 @@ allprojects {
 
 	loom {
 		splitEnvironmentSourceSets()
+		mixin {
+			useLegacyMixinAp = true
+		}
 	}
 
 	sourceSets {
@@ -203,8 +199,12 @@ allprojects {
 		}
 	}
 
+	loom.runs.configureEach {
+		vmArg("-enableassertions")
+	}
+
 	allprojects.each { p ->
-		if (project.name == "deprecated") {
+		if (metaProjects.contains(project.name)) {
 			return
 		}
 
@@ -231,6 +231,7 @@ allprojects {
 
 		testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
 		testImplementation sourceSets.testmodClient.output
+		testImplementation 'org.mockito:mockito-core:5.4.0'
 	}
 
 	test {
@@ -261,12 +262,15 @@ allprojects {
 	spotless {
 		java {
 			licenseHeaderFile(rootProject.file("HEADER"))
+			removeUnusedImports()
+			indentWithTabs()
+			trimTrailingWhitespace()
 		}
 	}
 
 	checkstyle {
 		configFile = rootProject.file("checkstyle.xml")
-		toolVersion = "10.11.0"
+		toolVersion = "10.12.1"
 	}
 
 	tasks.withType(AbstractArchiveTask).configureEach {
@@ -274,10 +278,8 @@ allprojects {
 		reproducibleFileOrder = true
 	}
 
-	if (signingEnabled) {
-		remoteSign {
-			sign remapJar
-		}
+	remoteSign {
+		sign remapJar
 	}
 
 	// Run this task after updating minecraft to regenerate any required resources
@@ -333,7 +335,7 @@ remapTestmodJar {
 	def testModJarTasks = []
 
 	subprojects {
-		if (it.name == "deprecated" || !(it.file("src/testmod").exists() || it.file("src/testmodClient").exists())) {
+		if (metaProjects.contains(it.name) || !(it.file("src/testmod").exists() || it.file("src/testmodClient").exists())) {
 			return
 		}
 
@@ -375,7 +377,7 @@ javadoc {
 	}
 
 	allprojects.each {
-		if (it.name == "deprecated") {
+		if (metaProjects.contains(it.name)) {
 			return
 		}
 
@@ -411,7 +413,7 @@ loom {
 		}
 		autoTestServer {
 			inherit testmodServer
-			name "Auto Test Server"
+			name  "Auto Test Server"
 			vmArg "-Dfabric.autoTest"
 		}
 		autoTestClient {
@@ -510,7 +512,8 @@ tasks.register('runProductionAutoTestClient', JavaExec) {
 
 		jvmArgs(
 				"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
-				"-Dfabric.autoTest"
+				"-Dfabric.autoTest",
+				"-enableassertions"
 				)
 	}
 }
@@ -541,7 +544,8 @@ tasks.register('runProductionAutoTestServer', JavaExec) {
 
 		jvmArgs(
 				"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
-				"-Dfabric.autoTest"
+				"-Dfabric.autoTest",
+				"-enableassertions"
 				)
 
 		args("nogui")
@@ -591,8 +595,12 @@ def addPomMetadataInformation(Project project, MavenPom pom) {
 }
 
 subprojects {
-	if (it.name == "deprecated") {
+	if (metaProjects.contains(it.name)) {
 		return
+	}
+
+	base {
+		archivesName = project.name
 	}
 
 	dependencies {
@@ -619,8 +627,8 @@ subprojects {
 				pom {
 					addPomMetadataInformation(project, pom)
 				}
-				artifact(signingEnabled ? signRemapJar.output : remapJar) {
-					builtBy(signingEnabled ? signRemapJar : remapJar)
+				artifact(signRemapJar.output) {
+					builtBy(signRemapJar)
 				}
 
 				artifact(remapSourcesJar) {
@@ -639,8 +647,8 @@ subprojects {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifact(signingEnabled ? signRemapJar.output : remapJar) {
-				builtBy(signingEnabled ? signRemapJar : remapJar)
+			artifact(signRemapJar.output) {
+				builtBy(signRemapJar)
 			}
 
 			artifact(sourcesJar) {
@@ -658,7 +666,7 @@ publishing {
 				def depsNode = asNode().appendNode("dependencies")
 				subprojects.each {
 					// The maven BOM containing all of the deprecated modules is added manually below.
-					if (it.path.startsWith(":deprecated")) {
+					if (it.path.startsWith(":deprecated") || metaProjects.contains(it.name)) {
 						return
 					}
 
@@ -700,7 +708,7 @@ void setupRepositories(RepositoryHandler repositories) {
 }
 
 subprojects.each {
-	if (it.name == "deprecated") {
+	if (metaProjects.contains(it.name)) {
 		return
 	}
 
@@ -713,7 +721,7 @@ def devOnlyModules = ["fabric-gametest-api-v1",]
 dependencies {
 	afterEvaluate {
 		subprojects.each {
-			if (it.name == "deprecated") {
+			if (metaProjects.contains(it.name)) {
 				return
 			}
 
@@ -729,82 +737,44 @@ dependencies {
 remapJar {
 	afterEvaluate {
 		subprojects.each {
-			if (it.name in devOnlyModules || it.name == "deprecated") {
+			if (it.name in devOnlyModules || metaProjects.contains(it.name)) {
 				return
 			}
 
 			// Include the signed or none signed jar from the sub project.
-			nestedJars.from project("${it.path}").tasks.getByName(signingEnabled ? "signRemapJar" : "remapJar")
+			nestedJars.from project("${it.path}").tasks.getByName("signRemapJar")
 		}
 	}
 }
 
-curseforge {
-	if (ENV.CURSEFORGE_API_KEY) {
-		apiKey = ENV.CURSEFORGE_API_KEY
+publishMods {
+	file = signRemapJar.output
+	changelog = providers.environmentVariable("CHANGELOG").getOrElse("No changelog provided")
+	type = project.prerelease == "true" ? BETA : STABLE
+	displayName = "[${project.minecraft_version}] Fabric API $project.version"
+	modLoaders.add("fabric")
+	dryRun = providers.environmentVariable("CURSEFORGE_API_KEY").getOrNull() == null
+
+	curseforge {
+		accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
+		projectId = "306612"
+		minecraftVersions.add(project.curseforge_minecraft_version)
 	}
-
-	project {
-		id = "306612"
-		changelog = ENV.CHANGELOG ?: "No changelog provided"
-		releaseType = project.prerelease == "true" ? "beta" : "release"
-		addGameVersion "1.20.1"
-		addGameVersion "Fabric"
-
-		mainArtifact(signingEnabled ? signRemapJar.output : remapJar) {
-			displayName = "[$project.minecraft_version] Fabric API $project.version"
-		}
-
-		afterEvaluate {
-			uploadTask.dependsOn("remapJar")
-		}
+	modrinth {
+		accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+		projectId = "P7dR8mSH"
+		minecraftVersions.add(project.minecraft_version)
 	}
-
-	options {
-		forgeGradleIntegration = false
+	github {
+		accessToken = providers.environmentVariable("GITHUB_TOKEN")
+		repository = providers.environmentVariable("GITHUB_REPOSITORY").getOrElse("FabricMC/dryrun")
+		commitish = providers.environmentVariable("GITHUB_REF_NAME").getOrElse("dryrun")
 	}
 }
 
-if (signingEnabled) {
-	project.tasks.curseforge.dependsOn signRemapJar
-	project.tasks.modrinth.dependsOn signRemapJar
-	build.dependsOn signRemapJar
-}
-
-import org.kohsuke.github.GHReleaseBuilder
-import org.kohsuke.github.GitHub
+assemble.dependsOn signRemapJar
 
 import java.util.stream.Collectors
-
-tasks.register('github') {
-	dependsOn(signingEnabled ? signRemapJar : remapJar)
-	onlyIf {
-		ENV.GITHUB_TOKEN
-	}
-
-	doLast {
-		def github = GitHub.connectUsingOAuth(ENV.GITHUB_TOKEN as String)
-		def repository = github.getRepository(ENV.GITHUB_REPOSITORY)
-
-		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
-		releaseBuilder.name("[$project.minecraft_version] Fabric API $project.version")
-		releaseBuilder.body(ENV.CHANGELOG ?: "No changelog provided")
-		releaseBuilder.commitish(getBranch())
-		releaseBuilder.prerelease(project.prerelease == "true")
-
-		def ghRelease = releaseBuilder.create()
-		ghRelease.uploadAsset(signingEnabled ? signRemapJar.output.get().getAsFile() : remapJar.archiveFile.get().getAsFile(), "application/java-archive");
-	}
-}
-
-modrinth {
-	projectId = "fabric-api"
-	versionName = "[$project.minecraft_version] Fabric API $project.version"
-	versionType = project.prerelease == "true" ? "beta" : "release"
-	changelog = ENV.CHANGELOG ?: "No changelog provided"
-
-	uploadFile = signingEnabled ? signRemapJar.output : remapJar
-}
 
 // A task to ensure that the version being released has not already been released.
 tasks.register('checkVersion') {
@@ -818,7 +788,5 @@ tasks.register('checkVersion') {
 	}
 }
 
-github.mustRunAfter checkVersion
-project.tasks.modrinth.mustRunAfter checkVersion
+tasks.publishMods.dependsOn checkVersion
 publish.mustRunAfter checkVersion
-project.tasks.curseforge.mustRunAfter checkVersion

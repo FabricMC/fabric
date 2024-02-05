@@ -8,12 +8,12 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     container:
-      image: eclipse-temurin:20-jdk
+      image: mcr.microsoft.com/openjdk/jdk:21-ubuntu
       options: --user root
     steps:
       - run: apt update && apt install git -y && git --version
       - run: git config --global --add safe.directory /__w/fabric/fabric
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: FabricMC/fabric-action-scripts@v2
@@ -22,7 +22,7 @@ jobs:
           context: changelog
           workflow_id: release.yml
       - uses: gradle/wrapper-validation-action@v1
-      - run: ./gradlew checkVersion build publish curseforge github modrinth --stacktrace -Porg.gradle.parallel.threads=4
+      - run: ./gradlew checkVersion build publish publishMods --stacktrace -Porg.gradle.parallel.threads=4
         env:
           MAVEN_URL: ${{ secrets.MAVEN_URL }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
