@@ -1,4 +1,3 @@
-archivesBaseName = "fabric-key-binding-api-v1"
 version = getSubprojectVersion(project)
 
 testDependencies(project, [

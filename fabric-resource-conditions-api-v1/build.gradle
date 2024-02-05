@@ -1,4 +1,3 @@
-archivesBaseName = "fabric-resource-conditions-api-v1"
 version = getSubprojectVersion(project)
 
 testDependencies(project, [':fabric-gametest-api-v1'])

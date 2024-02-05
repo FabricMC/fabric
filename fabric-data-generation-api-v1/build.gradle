@@ -1,4 +1,3 @@
-archivesBaseName = "fabric-data-generation-api-v1"
 version = getSubprojectVersion(project)
 
 moduleDependencies(project, [

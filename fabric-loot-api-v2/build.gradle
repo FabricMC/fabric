@@ -1,4 +1,3 @@
-archivesBaseName = "fabric-loot-api-v2"
 version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
