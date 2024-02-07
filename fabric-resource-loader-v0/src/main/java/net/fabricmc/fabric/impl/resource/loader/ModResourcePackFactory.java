@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.resource.loader;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.class_9224;
 import net.minecraft.resource.OverlayResourcePack;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
@@ -27,12 +28,12 @@ import net.fabricmc.fabric.api.resource.ModResourcePack;
 
 public record ModResourcePackFactory(ModResourcePack pack) implements ResourcePackProfile.PackFactory {
 	@Override
-	public ResourcePack open(String name) {
+	public ResourcePack open(class_9224 var1) {
 		return pack;
 	}
 
 	@Override
-	public ResourcePack openWithOverlays(String name, ResourcePackProfile.Metadata metadata) {
+	public ResourcePack openWithOverlays(class_9224 var1, ResourcePackProfile.Metadata metadata) {
 		if (metadata.overlays().isEmpty()) {
 			return pack;
 		} else {

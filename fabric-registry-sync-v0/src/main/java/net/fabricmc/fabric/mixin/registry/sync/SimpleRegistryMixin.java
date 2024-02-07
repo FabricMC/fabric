@@ -46,6 +46,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.class_9248;
 import net.minecraft.registry.MutableRegistry;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -150,7 +151,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	}
 
 	@Inject(method = "add", at = @At("RETURN"))
-	private void set(RegistryKey<T> key, T entry, Lifecycle lifecycle, CallbackInfoReturnable<RegistryEntry.Reference<T>> info) {
+	private void set(RegistryKey<T> key, T entry, class_9248 arg, CallbackInfoReturnable<RegistryEntry.Reference<T>> info) {
 		// We need to restore the 1.19 behavior of binding the value to references immediately.
 		// Unfrozen registries cannot be interacted with otherwise, because the references would throw when
 		// trying to access their values.

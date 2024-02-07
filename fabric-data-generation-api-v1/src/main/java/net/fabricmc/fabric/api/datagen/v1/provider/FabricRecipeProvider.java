@@ -87,7 +87,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	}
 
 	@Override
-	public CompletableFuture<?> method_56888(DataWriter writer, RegistryWrapper.WrapperLookup wrapperLookup) {
+	public CompletableFuture<?> run(DataWriter writer, RegistryWrapper.WrapperLookup wrapperLookup) {
 		Set<Identifier> generatedRecipes = Sets.newHashSet();
 		List<CompletableFuture<?>> list = new ArrayList<>();
 		generate(new RecipeExporter() {

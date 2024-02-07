@@ -20,6 +20,7 @@ import java.util.EnumSet;
 
 import com.mojang.serialization.Lifecycle;
 
+import net.minecraft.class_9248;
 import net.minecraft.registry.DefaultedRegistry;
 import net.minecraft.registry.MutableRegistry;
 import net.minecraft.registry.Registry;
@@ -145,7 +146,7 @@ public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 		}
 
 		//noinspection unchecked
-		RegistriesAccessor.getROOT().add((RegistryKey<MutableRegistry<?>>) key, registry, Lifecycle.stable());
+		RegistriesAccessor.getROOT().add((RegistryKey<MutableRegistry<?>>) key, registry, class_9248.field_49136);
 
 		return registry;
 	}

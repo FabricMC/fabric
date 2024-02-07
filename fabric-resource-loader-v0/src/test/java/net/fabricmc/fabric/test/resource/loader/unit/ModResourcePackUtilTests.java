@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Predicate;
@@ -35,6 +36,8 @@ import org.junit.jupiter.api.Test;
 
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
+import net.minecraft.class_9224;
+import net.minecraft.class_9225;
 import net.minecraft.resource.ResourcePackProfile;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricResourcePackProfile;
@@ -203,15 +206,19 @@ public class ModResourcePackUtilTests {
 	}
 
 	private ResourcePackProfile mockProfile(Map<String, ResourcePackProfile> profiles, String id, @Nullable Predicate<Set<String>> parents) {
-		ResourcePackProfile profile = ResourcePackProfile.of(
-				id,
+		ResourcePackProfile profile = new ResourcePackProfile(
+				new class_9224(
+						id,
+						null,
+						null,
+						Optional.empty()
+				),
 				null,
-				false,
 				null,
-				null,
-				null,
-				false,
-				ModResourcePackCreator.RESOURCE_PACK_SOURCE
+				new class_9225(
+						false,
+						null,
+						false)
 		);
 
 		if (parents != null) ((FabricResourcePackProfile) profile).fabric_setParentsPredicate(parents);

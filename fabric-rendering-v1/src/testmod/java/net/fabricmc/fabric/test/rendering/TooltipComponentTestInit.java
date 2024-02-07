@@ -38,7 +38,7 @@ import net.fabricmc.api.ModInitializer;
 
 public class TooltipComponentTestInit implements ModInitializer {
 	public static Item CUSTOM_TOOLTIP_ITEM = new CustomTooltipItem();
-	public static RegistryEntry<ArmorMaterial> TEST_ARMOR_MATERIAL = Registry.registerReference(Registries.field_48976, new Identifier("fabric-rendering-v1-testmod", "test_material"), createTestArmorMaterial());
+	public static RegistryEntry<ArmorMaterial> TEST_ARMOR_MATERIAL = Registry.registerReference(Registries.ARMOR_MATERIAL, new Identifier("fabric-rendering-v1-testmod", "test_material"), createTestArmorMaterial());
 	public static Item CUSTOM_ARMOR_ITEM = new ArmorItem(TEST_ARMOR_MATERIAL, ArmorItem.Type.CHESTPLATE, new Item.Settings());
 
 	@Override
@@ -72,7 +72,7 @@ public class TooltipComponentTestInit implements ModInitializer {
 			0,
 			SoundEvents.ITEM_ARMOR_EQUIP_LEATHER,
 				() -> Ingredient.ofItems(Items.LEATHER),
-			List.of(new ArmorMaterial.class_9196(new Identifier("fabric-rendering-v1-testmod", "test_material"))),
+			List.of(new ArmorMaterial.Layer(new Identifier("fabric-rendering-v1-testmod", "test_material"))),
 			0,
 			0
 		);

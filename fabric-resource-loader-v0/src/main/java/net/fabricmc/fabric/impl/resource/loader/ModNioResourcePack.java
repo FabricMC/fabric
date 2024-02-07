@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -41,11 +42,13 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.class_9224;
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PathUtil;
 
@@ -65,6 +68,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	private final ResourceType type;
 	private final ResourcePackActivationType activationType;
 	private final Map<ResourceType, Set<String>> namespaces;
+	private final class_9224 metadata;
 	/**
 	 * Whether the pack is bundled and loaded by default, as opposed to registered built-in packs.
 	 * @see ModResourcePackUtil#appendModResourcePacks(List, ResourceType, String)
@@ -95,12 +99,21 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 		if (paths.isEmpty()) return null;
 
 		String packId = subPath == null ? id : id + "_" + subPath;
-		ModNioResourcePack ret = new ModNioResourcePack(packId, mod, paths, type, activationType, modBundled);
+		Text displayName = subPath == null
+				? Text.translatable("pack.name.fabricMod", mod.getMetadata().getName())
+				: Text.translatable("pack.name.fabricMod.subPack", mod.getMetadata().getName(), Text.translatable("resourcePack." + subPath + ".name"));
+		class_9224 metadata = new class_9224(
+				packId,
+				displayName,
+				ModResourcePackCreator.RESOURCE_PACK_SOURCE,
+				Optional.empty()
+		);
+		ModNioResourcePack ret = new ModNioResourcePack(packId, mod, paths, type, activationType, modBundled, metadata);
 
 		return ret.getNamespaces(type).isEmpty() ? null : ret;
 	}
 
-	private ModNioResourcePack(String id, ModContainer mod, List<Path> paths, ResourceType type, ResourcePackActivationType activationType, boolean modBundled) {
+	private ModNioResourcePack(String id, ModContainer mod, List<Path> paths, ResourceType type, ResourcePackActivationType activationType, boolean modBundled, class_9224 metadata) {
 		this.id = id;
 		this.mod = mod;
 		this.basePaths = paths;
@@ -108,6 +121,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 		this.activationType = activationType;
 		this.modBundled = modBundled;
 		this.namespaces = readNamespaces(paths, mod.getMetadata().getId());
+		this.metadata = metadata;
 	}
 
 	@Override
@@ -115,7 +129,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 		// See DirectoryResourcePack.
 		return new ModNioResourcePack(id, mod, basePaths.stream().map(
 				path -> path.resolve(overlay)
-		).toList(), type, activationType, modBundled);
+		).toList(), type, activationType, modBundled, metadata);
 	}
 
 	static Map<ResourceType, Set<String>> readNamespaces(List<Path> paths, String modId) {
@@ -271,6 +285,11 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	}
 
 	@Override
+	public class_9224 method_56926() {
+		return metadata;
+	}
+
+	@Override
 	public void close() {
 	}
 
@@ -286,11 +305,6 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	@Override
 	public String getName() {
 		return id;
-	}
-
-	@Override
-	public boolean isAlwaysStable() {
-		return this.modBundled;
 	}
 
 	private static boolean exists(Path path) {

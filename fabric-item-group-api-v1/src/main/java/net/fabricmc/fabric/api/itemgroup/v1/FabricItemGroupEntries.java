@@ -214,7 +214,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	/**
 	 * Adds stacks after an existing stack in the group, or at the end, if the stack isn't in the group.
 	 *
-	 * @param afterLast  Add {@code newStacks} after the last group entry matching this stack (compared using {@link ItemStack#canCombine}).
+	 * @param afterLast  Add {@code newStacks} after the last group entry matching this stack (compared using {@link ItemStack#areItemsAndNbtEqual}).
 	 * @param newStacks  The stacks to add. Only {@linkplain #isEnabled(ItemStack) enabled} stacks will be added.
 	 * @param visibility Determines whether the stack will be shown in the tab itself, returned
 	 *                   for searches, or both.
@@ -331,7 +331,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	/**
 	 * Adds stacks before an existing stack to the group, or at the end, if the stack isn't in the group.
 	 *
-	 * @param beforeFirst Add {@code newStacks} before the first group entry matching this stack (compared using {@link ItemStack#canCombine}).
+	 * @param beforeFirst Add {@code newStacks} before the first group entry matching this stack (compared using {@link ItemStack#areItemsAndNbtEqual}).
 	 * @param newStacks   The stacks to add. Only {@linkplain #isEnabled(ItemStack) enabled} stacks will be added.
 	 * @param visibility  Determines whether the stack will be shown in the tab itself, returned
 	 *                    for searches, or both.
@@ -431,7 +431,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 		checkStacks(newStacks);
 
 		for (int i = 0; i < addTo.size(); i++) {
-			if (ItemStack.canCombine(anchor, addTo.get(i))) {
+			if (ItemStack.areItemsAndNbtEqual(anchor, addTo.get(i))) {
 				addTo.subList(i, i).addAll(newStacks);
 				return;
 			}
@@ -446,7 +446,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 
 		// Iterate in reverse to add after the last match
 		for (int i = addTo.size() - 1; i >= 0; i--) {
-			if (ItemStack.canCombine(anchor, addTo.get(i))) {
+			if (ItemStack.areItemsAndNbtEqual(anchor, addTo.get(i))) {
 				addTo.subList(i + 1, i + 1).addAll(newStacks);
 				return;
 			}

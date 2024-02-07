@@ -38,7 +38,7 @@ import net.fabricmc.fabric.test.item.FoodGameInitializer;
 public final class FoodGameTest implements FabricGameTest {
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void damageFoodTest(TestContext context) {
-		PlayerEntity player = context.createMockCreativePlayer(GameMode.SURVIVAL);
+		PlayerEntity player = context.createMockPlayer(GameMode.SURVIVAL);
 		HungerManager hungerManager = player.getHungerManager();
 
 		for (int damage : new int[]{0, 1, 10, 19}) {
@@ -61,7 +61,7 @@ public final class FoodGameTest implements FabricGameTest {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void nameFoodTest(TestContext context) {
-		PlayerEntity player = context.createMockCreativePlayer(GameMode.SURVIVAL);
+		PlayerEntity player = context.createMockPlayer(GameMode.SURVIVAL);
 		HungerManager hungerManager = player.getHungerManager();
 		hungerManager.setFoodLevel(0);
 		hungerManager.setSaturationLevel(0);
@@ -80,9 +80,9 @@ public final class FoodGameTest implements FabricGameTest {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void nameMeatTest(TestContext context) {
-		PlayerEntity player = context.createMockCreativePlayer(GameMode.SURVIVAL);
+		PlayerEntity player = context.createMockPlayer(GameMode.SURVIVAL);
 		WolfEntity wolf = context.spawnEntity(EntityType.WOLF, context.getRelative(Vec3d.ZERO));
-		wolf.setTamed(true);
+		wolf.setTamed(true, true);
 		wolf.setOwner(player);
 		wolf.setHealth(1f);
 		ItemStack meat = FoodGameInitializer.NAME.getDefaultStack();

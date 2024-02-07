@@ -99,7 +99,7 @@ abstract class ClientPlayNetworkHandlerMixin {
 	 * Also invoked during GameJoin, but before Networking API fires the Ready event.
 	 */
 	@SuppressWarnings("ConstantConditions")
-	@Inject(method = "refreshTagBasedData", at = @At("RETURN"))
+	@Inject(method = "onSynchronizeTags", at = @At("RETURN"))
 	private void hookOnSynchronizeTags(CallbackInfo ci) {
 		ClientPlayNetworkHandler self = (ClientPlayNetworkHandler) (Object) this;
 		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(self.getRegistryManager(), true);

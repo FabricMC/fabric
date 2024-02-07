@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.resource.loader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -25,6 +26,8 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
+import net.minecraft.class_9224;
+import net.minecraft.class_9225;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
@@ -65,6 +68,8 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 		}
 	};
 	public static final ModResourcePackCreator CLIENT_RESOURCE_PACK_PROVIDER = new ModResourcePackCreator(ResourceType.CLIENT_RESOURCES);
+	private static final class_9225 ACTIVATION_INFO = new class_9225(true, ResourcePackProfile.InsertionPosition.TOP, false);
+
 	private final ResourceType type;
 
 	public ModResourcePackCreator(ResourceType type) {
@@ -90,14 +95,18 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			4. User resource packs
 		 */
 
-		consumer.accept(ResourcePackProfile.create(
+		class_9224 metadata = new class_9224(
 				FABRIC,
 				Text.translatable("pack.name.fabricMods"),
-				true,
-				new PlaceholderResourcePack.Factory(this.type),
+				RESOURCE_PACK_SOURCE,
+				Optional.empty()
+		);
+
+		consumer.accept(ResourcePackProfile.create(
+				metadata,
+				new PlaceholderResourcePack.Factory(this.type, metadata),
 				this.type,
-				ResourcePackProfile.InsertionPosition.TOP,
-				RESOURCE_PACK_SOURCE
+				ACTIVATION_INFO
 		));
 
 		// Build a list of mod resource packs.
@@ -118,17 +127,11 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 		ModResourcePackUtil.appendModResourcePacks(packs, this.type, subPath);
 
 		for (ModResourcePack pack : packs) {
-			Text displayName = subPath == null
-					? Text.translatable("pack.name.fabricMod", pack.getFabricModMetadata().getName())
-					: Text.translatable("pack.name.fabricMod.subPack", pack.getFabricModMetadata().getName(), Text.translatable("resourcePack." + subPath + ".name"));
 			ResourcePackProfile profile = ResourcePackProfile.create(
-					pack.getName(),
-					displayName,
-					subPath == null,
+					pack.method_56926(),
 					new ModResourcePackFactory(pack),
 					this.type,
-					ResourcePackProfile.InsertionPosition.TOP,
-					RESOURCE_PACK_SOURCE
+					ACTIVATION_INFO
 			);
 
 			if (profile != null) {

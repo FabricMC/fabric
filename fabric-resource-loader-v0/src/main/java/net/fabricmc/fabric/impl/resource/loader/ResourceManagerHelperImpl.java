@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -32,6 +33,8 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.class_9224;
+import net.minecraft.class_9225;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceReloader;
@@ -112,18 +115,30 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 			// Add the built-in pack only if namespaces for the specified resource type are present.
 			if (!pack.getNamespaces(resourceType).isEmpty()) {
 				// Make the resource pack profile for built-in pack, should never be always enabled.
-				ResourcePackProfile profile = ResourcePackProfile.create(entry.getRight().getName(), entry.getLeft(), pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED, new ResourcePackProfile.PackFactory() {
+				class_9224 info = new class_9224(
+						entry.getRight().getName(),
+						entry.getLeft(),
+						new BuiltinModResourcePackSource(pack.getFabricModMetadata().getName()),
+						Optional.empty()
+				);
+				class_9225 info2 = new class_9225(
+						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,
+						ResourcePackProfile.InsertionPosition.TOP,
+						false // TODO check me
+				);
+
+				ResourcePackProfile profile = ResourcePackProfile.create(info, new ResourcePackProfile.PackFactory() {
 					@Override
-					public ResourcePack open(String name) {
+					public ResourcePack open(class_9224 var1) {
 						return entry.getRight();
 					}
 
 					@Override
-					public ResourcePack openWithOverlays(String string, ResourcePackProfile.Metadata metadata) {
+					public ResourcePack openWithOverlays(class_9224 var1, ResourcePackProfile.Metadata metadata) {
 						// Don't support overlays in builtin res packs.
 						return entry.getRight();
 					}
-				}, resourceType, ResourcePackProfile.InsertionPosition.TOP, new BuiltinModResourcePackSource(pack.getFabricModMetadata().getName()));
+				}, resourceType, info2);
 				consumer.accept(profile);
 			}
 		}
