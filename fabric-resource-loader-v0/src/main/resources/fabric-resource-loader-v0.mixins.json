@@ -3,11 +3,10 @@
   "package": "net.fabricmc.fabric.mixin.resource.loader",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "DatapackCommandMixin",
     "KeyedResourceReloadListenerMixin",
     "LifecycledResourceManagerImplMixin",
     "MinecraftServerMixin",
-    "NamespaceResourceManagerMixin",
-    "ReloadableResourceManagerImplMixin",
     "ResourceMixin",
     "ResourcePackManagerMixin",
     "ResourcePackProfileMixin",
