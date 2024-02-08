@@ -1,4 +1,3 @@
-archivesBaseName = "fabric-renderer-indigo"
 version = getSubprojectVersion(project)
 
 loom {

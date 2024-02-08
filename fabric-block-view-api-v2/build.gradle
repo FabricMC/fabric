@@ -1,4 +1,3 @@
-archivesBaseName = "fabric-block-view-api-v2"
 version = getSubprojectVersion(project)
 
 loom {
