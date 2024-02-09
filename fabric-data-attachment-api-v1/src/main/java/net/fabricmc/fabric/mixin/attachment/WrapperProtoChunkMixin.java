@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.chunk.WrapperProtoChunk;
 
@@ -54,13 +55,13 @@ public class WrapperProtoChunkMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public void fabric_writeAttachmentsToNbt(NbtCompound nbt) {
-		((AttachmentTargetImpl) this.wrapped).fabric_writeAttachmentsToNbt(nbt);
+	public void fabric_writeAttachmentsToNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
+		((AttachmentTargetImpl) this.wrapped).fabric_writeAttachmentsToNbt(nbt, wrapperLookup);
 	}
 
 	@Override
-	public void fabric_readAttachmentsFromNbt(NbtCompound nbt) {
-		((AttachmentTargetImpl) this.wrapped).fabric_readAttachmentsFromNbt(nbt);
+	public void fabric_readAttachmentsFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
+		((AttachmentTargetImpl) this.wrapped).fabric_readAttachmentsFromNbt(nbt, wrapperLookup);
 	}
 
 	@Override

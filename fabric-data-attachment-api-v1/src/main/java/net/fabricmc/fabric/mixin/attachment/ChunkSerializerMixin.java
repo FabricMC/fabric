@@ -55,7 +55,7 @@ abstract class ChunkSerializerMixin {
 			method = "deserialize"
 	)
 	private static ProtoChunk readProtoChunkAttachments(ProtoChunk chunk, ServerWorld world, PointOfInterestStorage poiStorage, ChunkPos chunkPos, NbtCompound nbt) {
-		((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(nbt);
+		((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(nbt, world.getRegistryManager());
 		return chunk;
 	}
 
