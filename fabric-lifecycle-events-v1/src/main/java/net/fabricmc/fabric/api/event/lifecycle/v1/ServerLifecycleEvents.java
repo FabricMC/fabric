@@ -107,6 +107,24 @@ public final class ServerLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called before a Minecraft server begins saving data.
+	 */
+	public static final Event<BeforeSave> BEFORE_SAVE = EventFactory.createArrayBacked(BeforeSave.class, callbacks -> (server, flush, force) -> {
+		for (BeforeSave callback : callbacks) {
+			callback.onBeforeSave(server, flush, force);
+		}
+	});
+
+	/**
+	 * Called after a Minecraft server finishes saving data.
+	 */
+	public static final Event<AfterSave> AFTER_SAVE = EventFactory.createArrayBacked(AfterSave.class, callbacks -> (server, flush, force) -> {
+		for (AfterSave callback : callbacks) {
+			callback.onAfterSave(server, flush, force);
+		}
+	});
+
 	@FunctionalInterface
 	public interface ServerStarting {
 		void onServerStarting(MinecraftServer server);
@@ -159,5 +177,29 @@ public final class ServerLifecycleEvents {
 		 * @param success if the reload was successful
 		 */
 		void endDataPackReload(MinecraftServer server, LifecycledResourceManager resourceManager, boolean success);
+	}
+
+	@FunctionalInterface
+	public interface BeforeSave {
+		/**
+		 * Called before a Minecraft server begins saving data.
+		 *
+		 * @param server the server
+		 * @param flush is true when all chunks are being written to disk, server will likely freeze during this time
+		 * @param force whether servers that have save-off set should save
+		 */
+		void onBeforeSave(MinecraftServer server, boolean flush, boolean force);
+	}
+
+	@FunctionalInterface
+	public interface AfterSave {
+		/**
+		 * Called before a Minecraft server begins saving data.
+		 *
+		 * @param server the server
+		 * @param flush is true when all chunks are being written to disk, server will likely freeze during this time
+		 * @param force whether servers that have save-off set should save
+		 */
+		void onAfterSave(MinecraftServer server, boolean flush, boolean force);
 	}
 }

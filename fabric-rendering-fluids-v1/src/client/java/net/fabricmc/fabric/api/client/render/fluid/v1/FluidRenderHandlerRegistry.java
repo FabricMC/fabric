@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.render.fluid.v1;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.TransparentBlock;
@@ -39,7 +41,18 @@ public interface FluidRenderHandlerRegistry {
 	 * @param fluid The Fluid.
 	 * @return The FluidRenderHandler.
 	 */
+	@Nullable
 	FluidRenderHandler get(Fluid fluid);
+
+	/**
+	 * Get a {@link FluidRenderHandler} for a given Fluid, if it is not the
+	 * default implementation. Supports vanilla and Fabric fluids.
+	 *
+	 * @param fluid The Fluid.
+	 * @return The FluidRenderHandler.
+	 */
+	@Nullable
+	FluidRenderHandler getOverride(Fluid fluid);
 
 	/**
 	 * Register a {@link FluidRenderHandler} for a given Fluid.

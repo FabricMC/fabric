@@ -19,6 +19,8 @@ package net.fabricmc.fabric.impl.client.rendering.fluid;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
@@ -55,10 +57,13 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 	}
 
 	@Override
+	@Nullable
 	public FluidRenderHandler get(Fluid fluid) {
 		return handlers.get(fluid);
 	}
 
+	@Override
+	@Nullable
 	public FluidRenderHandler getOverride(Fluid fluid) {
 		return modHandlers.get(fluid);
 	}
@@ -107,10 +112,10 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 			}
 		};
 
-		register(Fluids.WATER, waterHandler);
-		register(Fluids.FLOWING_WATER, waterHandler);
-		register(Fluids.LAVA, lavaHandler);
-		register(Fluids.FLOWING_LAVA, lavaHandler);
+		handlers.put(Fluids.WATER, waterHandler);
+		handlers.put(Fluids.FLOWING_WATER, waterHandler);
+		handlers.put(Fluids.LAVA, lavaHandler);
+		handlers.put(Fluids.FLOWING_LAVA, lavaHandler);
 		handlers.putAll(modHandlers);
 
 		SpriteAtlasTexture texture = MinecraftClient.getInstance()
