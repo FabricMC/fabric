@@ -34,14 +34,14 @@ import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 public class MinecraftServerMixin {
 	@Redirect(method = "loadDataPacks", at = @At(value = "INVOKE", target = "Ljava/util/List;contains(Ljava/lang/Object;)Z"))
 	private static boolean onCheckDisabled(List<String> list, Object o, ResourcePackManager resourcePackManager) {
-		String profileName = (String) o;
-		boolean contains = list.contains(profileName);
+		String profileId = (String) o;
+		boolean contains = list.contains(profileId);
 
 		if (contains) {
 			return true;
 		}
 
-		ResourcePackProfile profile = resourcePackManager.getProfile(profileName);
+		ResourcePackProfile profile = resourcePackManager.getProfile(profileId);
 
 		if (profile.getSource() instanceof BuiltinModResourcePackSource) {
 			try (ResourcePack pack = profile.createResourcePack()) {
