@@ -19,6 +19,8 @@ package net.fabricmc.fabric.test.event.lifecycle.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
+
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.World;
 
@@ -27,6 +29,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
 public final class ClientTickTests implements ClientModInitializer {
+	private boolean tagsLoadedCalled;
 	private final Map<RegistryKey<World>, Integer> tickTracker = new HashMap<>();
 	private int ticks;
 
@@ -40,7 +43,15 @@ public final class ClientTickTests implements ClientModInitializer {
 			}
 		});
 
+		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
+			if (client) tagsLoadedCalled = true;
+		});
+
 		ClientTickEvents.END_WORLD_TICK.register(world -> {
+			if (!tagsLoadedCalled) {
+				throw new IllegalStateException("TAGS_LOADED was not invoked during configuration!");
+			}
+
 			final int worldTicks = this.tickTracker.computeIfAbsent(world.getRegistryKey(), k -> 0);
 
 			if (worldTicks % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the client world

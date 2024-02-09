@@ -32,7 +32,6 @@ import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.impl.event.lifecycle.LoadedChunksCache;
 
 @Mixin(ClientPlayNetworkHandler.class)
@@ -93,15 +92,5 @@ abstract class ClientPlayNetworkHandlerMixin {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Also invoked during GameJoin, but before Networking API fires the Ready event.
-	 */
-	@SuppressWarnings("ConstantConditions")
-	@Inject(method = "onSynchronizeTags", at = @At("RETURN"))
-	private void hookOnSynchronizeTags(CallbackInfo ci) {
-		ClientPlayNetworkHandler self = (ClientPlayNetworkHandler) (Object) this;
-		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(self.getRegistryManager(), true);
 	}
 }
