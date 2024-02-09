@@ -19,13 +19,12 @@ package net.fabricmc.fabric.test.event.lifecycle.client;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
-
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
 public final class ClientTickTests implements ClientModInitializer {
