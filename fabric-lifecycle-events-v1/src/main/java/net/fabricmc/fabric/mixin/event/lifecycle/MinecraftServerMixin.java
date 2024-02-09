@@ -101,4 +101,14 @@ public abstract class MinecraftServerMixin {
 			return value;
 		}, (MinecraftServer) (Object) this);
 	}
+
+	@Inject(method = "save", at = @At("HEAD"))
+	private void startSave(boolean suppressLogs, boolean flush, boolean force, CallbackInfoReturnable<Boolean> cir) {
+		ServerLifecycleEvents.BEFORE_SAVE.invoker().onBeforeSave((MinecraftServer) (Object) this, flush, force);
+	}
+
+	@Inject(method = "save", at = @At("TAIL"))
+	private void endSave(boolean suppressLogs, boolean flush, boolean force, CallbackInfoReturnable<Boolean> cir) {
+		ServerLifecycleEvents.AFTER_SAVE.invoker().onAfterSave((MinecraftServer) (Object) this, flush, force);
+	}
 }
