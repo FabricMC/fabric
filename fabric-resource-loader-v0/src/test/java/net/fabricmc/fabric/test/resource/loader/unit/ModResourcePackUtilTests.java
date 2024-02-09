@@ -36,8 +36,8 @@ import org.junit.jupiter.api.Test;
 
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.class_9224;
-import net.minecraft.class_9225;
+import net.minecraft.resource.ResourcePackInfo;
+import net.minecraft.resource.ResourcePackPosition;
 import net.minecraft.resource.ResourcePackProfile;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricResourcePackProfile;
@@ -207,7 +207,7 @@ public class ModResourcePackUtilTests {
 
 	private ResourcePackProfile mockProfile(Map<String, ResourcePackProfile> profiles, String id, @Nullable Predicate<Set<String>> parents) {
 		ResourcePackProfile profile = new ResourcePackProfile(
-				new class_9224(
+				new ResourcePackInfo(
 						id,
 						null,
 						null,
@@ -215,7 +215,7 @@ public class ModResourcePackUtilTests {
 				),
 				null,
 				null,
-				new class_9225(
+				new ResourcePackPosition(
 						false,
 						null,
 						false)
@@ -231,9 +231,9 @@ public class ModResourcePackUtilTests {
 		List<ResourcePackProfile> processed = new ArrayList<>(before);
 		ModResourcePackUtil.refreshAutoEnabledPacks(processed, profiles);
 		assertEquals(
-				after.stream().map(ResourcePackProfile::getName).toList(),
-				processed.stream().map(ResourcePackProfile::getName).toList(),
-				() -> "Testing %s; input %s".formatted(reason, before.stream().map(ResourcePackProfile::getName).toList())
+				after.stream().map(ResourcePackProfile::getId).toList(),
+				processed.stream().map(ResourcePackProfile::getId).toList(),
+				() -> "Testing %s; input %s".formatted(reason, before.stream().map(ResourcePackProfile::getId).toList())
 		);
 	}
 

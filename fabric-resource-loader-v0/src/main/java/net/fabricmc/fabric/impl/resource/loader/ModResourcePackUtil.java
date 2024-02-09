@@ -87,27 +87,27 @@ public final class ModResourcePackUtil {
 	}
 
 	public static void refreshAutoEnabledPacks(List<ResourcePackProfile> enabledProfiles, Map<String, ResourcePackProfile> allProfiles) {
-		LOGGER.debug("[Fabric] Starting internal pack sorting with: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
+		LOGGER.debug("[Fabric] Starting internal pack sorting with: {}", enabledProfiles.stream().map(ResourcePackProfile::getId).toList());
 		enabledProfiles.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
-		LOGGER.debug("[Fabric] Removed all internal packs, result: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
+		LOGGER.debug("[Fabric] Removed all internal packs, result: {}", enabledProfiles.stream().map(ResourcePackProfile::getId).toList());
 		ListIterator<ResourcePackProfile> it = enabledProfiles.listIterator();
 		Set<String> seen = new LinkedHashSet<>();
 
 		while (it.hasNext()) {
 			ResourcePackProfile profile = it.next();
-			seen.add(profile.getName());
+			seen.add(profile.getId());
 
 			for (ResourcePackProfile p : allProfiles.values()) {
 				FabricResourcePackProfile fp = (FabricResourcePackProfile) p;
 
-				if (fp.fabric_isHidden() && fp.fabric_parentsEnabled(seen) && seen.add(p.getName())) {
+				if (fp.fabric_isHidden() && fp.fabric_parentsEnabled(seen) && seen.add(p.getId())) {
 					it.add(p);
-					LOGGER.debug("[Fabric] cur @ {}, auto-enabled {}, currently enabled: {}", profile.getName(), p.getName(), seen);
+					LOGGER.debug("[Fabric] cur @ {}, auto-enabled {}, currently enabled: {}", profile.getId(), p.getId(), seen);
 				}
 			}
 		}
 
-		LOGGER.debug("[Fabric] Final sorting result: {}", enabledProfiles.stream().map(ResourcePackProfile::getName).toList());
+		LOGGER.debug("[Fabric] Final sorting result: {}", enabledProfiles.stream().map(ResourcePackProfile::getId).toList());
 	}
 
 	public static boolean containsDefault(String filename, boolean modBundled) {
@@ -129,7 +129,7 @@ public final class ModResourcePackUtil {
 	public static InputStream openDefault(ModContainer container, ResourceType type, String filename) throws IOException {
 		switch (filename) {
 		case "pack.mcmeta":
-			String description = Objects.requireNonNullElse(container.getMetadata().getName(), "");
+			String description = Objects.requireNonNullElse(container.getMetadata().getId(), "");
 			String metadata = serializeMetadata(SharedConstants.getGameVersion().getResourceVersion(type), description);
 			return IOUtils.toInputStream(metadata, Charsets.UTF_8);
 		case "pack.png":
@@ -162,8 +162,8 @@ public final class ModResourcePackUtil {
 	}
 
 	public static Text getName(ModMetadata info) {
-		if (info.getName() != null) {
-			return Text.literal(info.getName());
+		if (info.getId() != null) {
+			return Text.literal(info.getId());
 		} else {
 			return Text.translatable("pack.name.fabricMod", info.getId());
 		}
@@ -186,15 +186,15 @@ public final class ModResourcePackUtil {
 		// as the data pack screen automatically put any data pack as disabled except the Default data pack.
 		for (ResourcePackProfile profile : moddedResourcePacks) {
 			if (profile.getSource() == ModResourcePackCreator.RESOURCE_PACK_SOURCE) {
-				enabled.add(profile.getName());
+				enabled.add(profile.getId());
 				continue;
 			}
 
 			try (ResourcePack pack = profile.createResourcePack()) {
 				if (pack instanceof ModNioResourcePack && ((ModNioResourcePack) pack).getActivationType().isEnabledByDefault()) {
-					enabled.add(profile.getName());
+					enabled.add(profile.getId());
 				} else {
-					disabled.add(profile.getName());
+					disabled.add(profile.getId());
 				}
 			}
 		}
@@ -214,7 +214,7 @@ public final class ModResourcePackUtil {
 		// Collect modded profiles
 		Set<String> moddedProfiles = new HashSet<>();
 		ModResourcePackCreator modResourcePackCreator = new ModResourcePackCreator(ResourceType.SERVER_DATA);
-		modResourcePackCreator.register(profile -> moddedProfiles.add(profile.getName()));
+		modResourcePackCreator.register(profile -> moddedProfiles.add(profile.getId()));
 
 		// Remove them from the enabled list
 		List<String> moveToTheEnd = new ArrayList<>();

@@ -42,10 +42,10 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.class_9224;
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackInfo;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
 import net.minecraft.text.Text;
@@ -68,7 +68,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	private final ResourceType type;
 	private final ResourcePackActivationType activationType;
 	private final Map<ResourceType, Set<String>> namespaces;
-	private final class_9224 metadata;
+	private final ResourcePackInfo metadata;
 	/**
 	 * Whether the pack is bundled and loaded by default, as opposed to registered built-in packs.
 	 * @see ModResourcePackUtil#appendModResourcePacks(List, ResourceType, String)
@@ -102,7 +102,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 		Text displayName = subPath == null
 				? Text.translatable("pack.name.fabricMod", mod.getMetadata().getName())
 				: Text.translatable("pack.name.fabricMod.subPack", mod.getMetadata().getName(), Text.translatable("resourcePack." + subPath + ".name"));
-		class_9224 metadata = new class_9224(
+		ResourcePackInfo metadata = new ResourcePackInfo(
 				packId,
 				displayName,
 				ModResourcePackCreator.RESOURCE_PACK_SOURCE,
@@ -113,7 +113,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 		return ret.getNamespaces(type).isEmpty() ? null : ret;
 	}
 
-	private ModNioResourcePack(String id, ModContainer mod, List<Path> paths, ResourceType type, ResourcePackActivationType activationType, boolean modBundled, class_9224 metadata) {
+	private ModNioResourcePack(String id, ModContainer mod, List<Path> paths, ResourceType type, ResourcePackActivationType activationType, boolean modBundled, ResourcePackInfo metadata) {
 		this.id = id;
 		this.mod = mod;
 		this.basePaths = paths;
@@ -285,7 +285,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	}
 
 	@Override
-	public class_9224 method_56926() {
+	public ResourcePackInfo getInfo() {
 		return metadata;
 	}
 
@@ -303,7 +303,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	}
 
 	@Override
-	public String getName() {
+	public String getId() {
 		return id;
 	}
 

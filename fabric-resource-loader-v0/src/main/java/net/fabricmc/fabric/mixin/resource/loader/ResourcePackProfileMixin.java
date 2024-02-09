@@ -26,8 +26,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_9224;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackInfo;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackSource;
 
@@ -49,11 +49,11 @@ abstract class ResourcePackProfileMixin implements FabricResourcePackProfile {
 	private Predicate<Set<String>> parentsPredicate = DEFAULT_PARENT_PREDICATE;
 
 	@Shadow
-	public abstract class_9224 method_56933();
+	public abstract ResourcePackInfo getInfo();
 
 	@Inject(method = "createResourcePack", at = @At("RETURN"))
 	private void onCreateResourcePack(CallbackInfoReturnable<ResourcePack> info) {
-		ResourcePackSourceTracker.setSource(info.getReturnValue(), method_56933().source());
+		ResourcePackSourceTracker.setSource(info.getReturnValue(), getInfo().source());
 	}
 
 	@Override

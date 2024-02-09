@@ -26,8 +26,8 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
-import net.minecraft.class_9224;
-import net.minecraft.class_9225;
+import net.minecraft.resource.ResourcePackInfo;
+import net.minecraft.resource.ResourcePackPosition;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
@@ -68,7 +68,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 		}
 	};
 	public static final ModResourcePackCreator CLIENT_RESOURCE_PACK_PROVIDER = new ModResourcePackCreator(ResourceType.CLIENT_RESOURCES);
-	private static final class_9225 ACTIVATION_INFO = new class_9225(true, ResourcePackProfile.InsertionPosition.TOP, false);
+	private static final ResourcePackPosition ACTIVATION_INFO = new ResourcePackPosition(true, ResourcePackProfile.InsertionPosition.TOP, false);
 
 	private final ResourceType type;
 
@@ -95,7 +95,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			4. User resource packs
 		 */
 
-		class_9224 metadata = new class_9224(
+		ResourcePackInfo metadata = new ResourcePackInfo(
 				FABRIC,
 				Text.translatable("pack.name.fabricMods"),
 				RESOURCE_PACK_SOURCE,
@@ -128,7 +128,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 
 		for (ModResourcePack pack : packs) {
 			ResourcePackProfile profile = ResourcePackProfile.create(
-					pack.method_56926(),
+					pack.getInfo(),
 					new ModResourcePackFactory(pack),
 					this.type,
 					ACTIVATION_INFO

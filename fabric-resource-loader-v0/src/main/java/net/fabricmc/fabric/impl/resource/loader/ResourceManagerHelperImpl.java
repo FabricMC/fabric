@@ -33,9 +33,9 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.class_9224;
-import net.minecraft.class_9225;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackInfo;
+import net.minecraft.resource.ResourcePackPosition;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
@@ -115,26 +115,26 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 			// Add the built-in pack only if namespaces for the specified resource type are present.
 			if (!pack.getNamespaces(resourceType).isEmpty()) {
 				// Make the resource pack profile for built-in pack, should never be always enabled.
-				class_9224 info = new class_9224(
-						entry.getRight().getName(),
+				ResourcePackInfo info = new ResourcePackInfo(
+						entry.getRight().getId(),
 						entry.getLeft(),
 						new BuiltinModResourcePackSource(pack.getFabricModMetadata().getName()),
 						Optional.empty()
 				);
-				class_9225 info2 = new class_9225(
+				ResourcePackPosition info2 = new ResourcePackPosition(
 						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,
 						ResourcePackProfile.InsertionPosition.TOP,
-						false // TODO check me
+						false
 				);
 
 				ResourcePackProfile profile = ResourcePackProfile.create(info, new ResourcePackProfile.PackFactory() {
 					@Override
-					public ResourcePack open(class_9224 var1) {
+					public ResourcePack open(ResourcePackInfo var1) {
 						return entry.getRight();
 					}
 
 					@Override
-					public ResourcePack openWithOverlays(class_9224 var1, ResourcePackProfile.Metadata metadata) {
+					public ResourcePack openWithOverlays(ResourcePackInfo var1, ResourcePackProfile.Metadata metadata) {
 						// Don't support overlays in builtin res packs.
 						return entry.getRight();
 					}
