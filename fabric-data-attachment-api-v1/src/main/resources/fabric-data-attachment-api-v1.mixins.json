@@ -8,7 +8,9 @@
     "BlockEntityUpdateS2CPacketMixin",
     "ChunkSerializerMixin",
     "EntityMixin",
-    "ServerWorldMixin"
+    "ServerWorldMixin",
+    "WorldChunkMixin",
+    "WrapperProtoChunkMixin"
   ],
   "injectors": {
     "defaultRequire": 1

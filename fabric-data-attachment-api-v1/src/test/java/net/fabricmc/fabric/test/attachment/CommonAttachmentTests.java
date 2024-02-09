@@ -48,6 +48,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
@@ -82,8 +83,9 @@ public class CommonAttachmentTests {
 		Entity entity = mock(Entity.class, CALLS_REAL_METHODS);
 		BlockEntity blockEntity = mock(BlockEntity.class, CALLS_REAL_METHODS);
 		WorldChunk worldChunk = mock(WorldChunk.class, CALLS_REAL_METHODS);
+		ProtoChunk protoChunk = mock(ProtoChunk.class, CALLS_REAL_METHODS);
 
-		for (AttachmentTarget target : new AttachmentTarget[]{serverWorld, entity, blockEntity, worldChunk}) {
+		for (AttachmentTarget target : new AttachmentTarget[]{serverWorld, entity, blockEntity, worldChunk, protoChunk}) {
 			testForTarget(target, basic);
 		}
 	}
@@ -161,8 +163,8 @@ public class CommonAttachmentTests {
 		Entity respawnTarget = mock(Entity.class, CALLS_REAL_METHODS);
 		Entity nonRespawnTarget = mock(Entity.class, CALLS_REAL_METHODS);
 
-		AttachmentTargetImpl.copyOnRespawn(original, respawnTarget, true);
-		AttachmentTargetImpl.copyOnRespawn(original, nonRespawnTarget, false);
+		AttachmentTargetImpl.transfer(original, respawnTarget, true);
+		AttachmentTargetImpl.transfer(original, nonRespawnTarget, false);
 		assertTrue(respawnTarget.hasAttached(copiedOnRespawn));
 		assertFalse(respawnTarget.hasAttached(notCopiedOnRespawn));
 		assertTrue(nonRespawnTarget.hasAttached(copiedOnRespawn));
