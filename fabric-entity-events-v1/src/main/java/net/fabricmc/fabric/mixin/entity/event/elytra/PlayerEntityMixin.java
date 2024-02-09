@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.entity.event.elytra;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -40,6 +41,10 @@ abstract class PlayerEntityMixin extends LivingEntity {
 	@Shadow
 	public abstract void startFallFlying();
 
+	@Shadow
+	@Nullable
+	public Double ignoreFallDamageAboveY;
+
 	/**
 	 * Allow the server-side and client-side elytra checks to fail when {@link EntityElytraEvents#ALLOW} blocks flight,
 	 * and otherwise to succeed for elytra flight through {@link EntityElytraEvents#CUSTOM}.
@@ -56,6 +61,7 @@ abstract class PlayerEntityMixin extends LivingEntity {
 
 		if (EntityElytraEvents.CUSTOM.invoker().useCustomElytra(self, false)) {
 			startFallFlying();
+			this.ignoreFallDamageAboveY = null;
 			cir.setReturnValue(true);
 		}
 	}
