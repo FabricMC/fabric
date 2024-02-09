@@ -85,7 +85,7 @@ public class FluidRendererMixin {
 	@Unique
 	private void tessellateViaHandler(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, CallbackInfo info) {
 		FluidRendererHookContainer ctr = fabric_renderHandler.get();
-		FluidRenderHandler handler = ((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).getOverride(fluidState.getFluid());
+		FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluidState.getFluid());
 
 		ctr.view = view;
 		ctr.pos = pos;
