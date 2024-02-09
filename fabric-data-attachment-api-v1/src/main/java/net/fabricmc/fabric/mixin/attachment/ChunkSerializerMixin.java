@@ -27,7 +27,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ChunkSerializer;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.poi.PointOfInterestStorage;
 
@@ -42,7 +42,19 @@ abstract class ChunkSerializerMixin {
 			),
 			method = "deserialize"
 	)
-	private static WorldChunk readChunkAttachments(WorldChunk chunk, ServerWorld world, PointOfInterestStorage poiStorage, ChunkPos chunkPos, NbtCompound nbt) {
+	private static WorldChunk readWorldChunkAttachments(WorldChunk chunk, ServerWorld world, PointOfInterestStorage poiStorage, ChunkPos chunkPos, NbtCompound nbt) {
+		((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(nbt);
+		return chunk;
+	}
+
+	@ModifyExpressionValue(
+			at = @At(
+					value = "NEW",
+					target = "net/minecraft/world/chunk/ProtoChunk"
+			),
+			method = "deserialize"
+	)
+	private static ProtoChunk readProtoChunkAttachments(ProtoChunk chunk, ServerWorld world, PointOfInterestStorage poiStorage, ChunkPos chunkPos, NbtCompound nbt) {
 		((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(nbt);
 		return chunk;
 	}
@@ -52,8 +64,6 @@ abstract class ChunkSerializerMixin {
 			method = "serialize"
 	)
 	private static void writeChunkAttachments(ServerWorld world, Chunk chunk, CallbackInfoReturnable<NbtCompound> cir) {
-		if (chunk.getStatus().getChunkType() == ChunkStatus.ChunkType.LEVELCHUNK) {
-			((AttachmentTargetImpl) chunk).fabric_writeAttachmentsToNbt(cir.getReturnValue());
-		}
+		((AttachmentTargetImpl) chunk).fabric_writeAttachmentsToNbt(cir.getReturnValue());
 	}
 }
