@@ -8,11 +8,13 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.rendering.CustomAtlasSourcesTestInit",
+      "net.fabricmc.fabric.test.rendering.CustomColorResolverTestInit",
       "net.fabricmc.fabric.test.rendering.TooltipComponentTestInit"
     ],
     "client": [
       "net.fabricmc.fabric.test.rendering.client.ArmorRenderingTests",
       "net.fabricmc.fabric.test.rendering.client.CustomAtlasSourcesTest",
+      "net.fabricmc.fabric.test.rendering.client.CustomColorResolverTest",
       "net.fabricmc.fabric.test.rendering.client.DimensionalRenderingTest",
       "net.fabricmc.fabric.test.rendering.client.FeatureRendererTest",
       "net.fabricmc.fabric.test.rendering.client.HudAndShaderTest",
