@@ -37,7 +37,7 @@
     "fabric-api:module-lifecycle": "experimental",
     "loom:injected_interfaces": {
       "net/minecraft/class_2586": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"],
-      "net/minecraft/class_2818": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"],
+      "net/minecraft/class_2791": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"],
       "net/minecraft/class_1297": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"],
       "net/minecraft/class_3218": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"]
     }
