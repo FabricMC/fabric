@@ -51,9 +51,9 @@ public class DatapackCommandMixin {
 	private static final DynamicCommandExceptionType INTERNAL_PACK_EXCEPTION = new DynamicCommandExceptionType(
 			packName -> Text.stringifiedTranslatable("commands.datapack.fabric.internal", packName));
 
-	@Redirect(method = "method_13136", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackManager;getEnabledNames()Ljava/util/Collection;"))
+	@Redirect(method = "method_13136", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackManager;getEnabledIds()Ljava/util/Collection;"))
 	private static Collection<String> filterEnabledPackSuggestions(ResourcePackManager dataPackManager) {
-		return dataPackManager.getEnabledProfiles().stream().filter(profile -> !((FabricResourcePackProfile) profile).fabric_isHidden()).map(ResourcePackProfile::getName).toList();
+		return dataPackManager.getEnabledProfiles().stream().filter(profile -> !((FabricResourcePackProfile) profile).fabric_isHidden()).map(ResourcePackProfile::getId).toList();
 	}
 
 	@WrapOperation(method = "method_13120", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0))
@@ -63,6 +63,6 @@ public class DatapackCommandMixin {
 
 	@Inject(method = "getPackContainer", at = @At(value = "INVOKE", target = "Ljava/util/Collection;contains(Ljava/lang/Object;)Z", shift = At.Shift.BEFORE))
 	private static void errorOnInternalPack(CommandContext<ServerCommandSource> context, String name, boolean enable, CallbackInfoReturnable<ResourcePackProfile> cir, @Local ResourcePackProfile profile) throws CommandSyntaxException {
-		if (((FabricResourcePackProfile) profile).fabric_isHidden()) throw INTERNAL_PACK_EXCEPTION.create(profile.getName());
+		if (((FabricResourcePackProfile) profile).fabric_isHidden()) throw INTERNAL_PACK_EXCEPTION.create(profile.getId());
 	}
 }

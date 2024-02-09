@@ -25,9 +25,9 @@ import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.class_9224;
 import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackInfo;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.PackResourceMetadata;
@@ -36,7 +36,7 @@ import net.minecraft.resource.metadata.ResourceMetadataReader;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public record PlaceholderResourcePack(ResourceType type, class_9224 metadata) implements ResourcePack {
+public record PlaceholderResourcePack(ResourceType type, ResourcePackInfo metadata) implements ResourcePack {
 	private static final Text DESCRIPTION_TEXT = Text.translatable("pack.description.modResources");
 
 	public PackResourceMetadata getMetadata() {
@@ -89,12 +89,12 @@ public record PlaceholderResourcePack(ResourceType type, class_9224 metadata) im
 	}
 
 	@Override
-	public class_9224 method_56926() {
+	public ResourcePackInfo getInfo() {
 		return metadata;
 	}
 
 	@Override
-	public String getName() {
+	public String getId() {
 		return ModResourcePackCreator.FABRIC;
 	}
 
@@ -102,14 +102,14 @@ public record PlaceholderResourcePack(ResourceType type, class_9224 metadata) im
 	public void close() {
 	}
 
-	public record Factory(ResourceType type, class_9224 metadata) implements ResourcePackProfile.PackFactory {
+	public record Factory(ResourceType type, ResourcePackInfo metadata) implements ResourcePackProfile.PackFactory {
 		@Override
-		public ResourcePack open(class_9224 var1) {
+		public ResourcePack open(ResourcePackInfo var1) {
 			return new PlaceholderResourcePack(this.type, metadata);
 		}
 
 		@Override
-		public ResourcePack openWithOverlays(class_9224 var1, ResourcePackProfile.Metadata metadata) {
+		public ResourcePack openWithOverlays(ResourcePackInfo var1, ResourcePackProfile.Metadata metadata) {
 			return open(var1);
 		}
 	}

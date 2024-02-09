@@ -98,9 +98,9 @@ public abstract class ResourcePackManagerMixin {
 	@Inject(method = "disable", at = @At(value = "INVOKE", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z"))
 	private void handleAutoDisable(String profile, CallbackInfoReturnable<Boolean> cir, @Local List<ResourcePackProfile> enabled) {
 		if (ModResourcePackCreator.POST_CHANGE_HANDLE_REQUIRED.contains(profile)) {
-			Set<String> currentlyEnabled = enabled.stream().map(ResourcePackProfile::getName).collect(Collectors.toSet());
+			Set<String> currentlyEnabled = enabled.stream().map(ResourcePackProfile::getId).collect(Collectors.toSet());
 			enabled.removeIf(p -> !((FabricResourcePackProfile) p).fabric_parentsEnabled(currentlyEnabled));
-			LOGGER.debug("[Fabric] Internal pack auto-removed upon disabling {}, result: {}", profile, enabled.stream().map(ResourcePackProfile::getName).toList());
+			LOGGER.debug("[Fabric] Internal pack auto-removed upon disabling {}, result: {}", profile, enabled.stream().map(ResourcePackProfile::getId).toList());
 		}
 	}
 }
