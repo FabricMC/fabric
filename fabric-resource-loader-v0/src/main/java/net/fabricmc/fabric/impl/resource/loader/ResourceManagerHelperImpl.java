@@ -124,7 +124,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 				ResourcePackPosition info2 = new ResourcePackPosition(
 						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,
 						ResourcePackProfile.InsertionPosition.TOP,
-						false // TODO check me
+						false
 				);
 
 				ResourcePackProfile profile = ResourcePackProfile.create(info, new ResourcePackProfile.PackFactory() {

@@ -93,7 +93,7 @@ public interface ContainerItemContext {
 	 * This matches the behavior of {@link ItemUsage#exchangeStack}.
 	 */
 	static ContainerItemContext forPlayerInteraction(PlayerEntity player, Hand hand) {
-		if (player.getAbilities().creativeMode) {
+		if (player.isInCreativeMode()) {
 			return forCreativeInteraction(player, player.getStackInHand(hand));
 		} else {
 			return ofPlayerHand(player, hand);

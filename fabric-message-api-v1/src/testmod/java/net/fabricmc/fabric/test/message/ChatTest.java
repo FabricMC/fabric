@@ -57,7 +57,7 @@ public class ChatTest implements ModInitializer {
 
 		// Basic styling phase testing
 		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.STYLING_PHASE, (sender, message) -> {
-			if (sender != null && sender.getAbilities().creativeMode) {
+			if (sender != null && sender.isInCreativeMode()) {
 				return message.copy().styled(style -> style.withColor(0xFFA500));
 			}
 
