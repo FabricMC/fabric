@@ -462,7 +462,7 @@ tasks.register('coverage', JacocoReport) {
 
 	// Add all source as input
 	allprojects { p ->
-		if (p.path.startsWith(":deprecated")) {
+		if (p.path.startsWith(":deprecated") || metaProjects.contains(p.name)) {
 			return
 		}
 		sourceSets p.sourceSets.main, p.sourceSets.client, p.sourceSets.testmod, p.sourceSets.testmodClient
