@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.test.attachment;
 
+import java.io.File;
+import java.io.IOException;
+
 import com.mojang.serialization.Codec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
@@ -54,9 +58,9 @@ public class AttachmentTestMod implements ModInitializer {
 			new Identifier(MOD_ID, "feature")
 	);
 
-	public static final ChunkPos FAR_CHUNK_POS = new ChunkPos(30, 0);
+	public static final ChunkPos FAR_CHUNK_POS = new ChunkPos(300, 0);
 
-	private boolean firstLaunch = true;
+	private boolean serverStarted = false;
 	public static boolean featurePlaced = false;
 
 	@Override
@@ -70,11 +74,18 @@ public class AttachmentTestMod implements ModInitializer {
 		);
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			ServerWorld overworld;
-			WorldChunk chunk;
+			File saveRoot = server.getSavePath(WorldSavePath.ROOT).toFile();
+			File markerFile = new File(saveRoot, MOD_ID + "_MARKER");
+			boolean firstLaunch;
 
-			overworld = server.getOverworld();
-			chunk = overworld.getChunk(0, 0);
+			try {
+				firstLaunch = markerFile.createNewFile();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+
+			ServerWorld overworld = server.getOverworld();
+			WorldChunk chunk = overworld.getChunk(0, 0);
 
 			if (firstLaunch) {
 				LOGGER.info("First launch, testing attachment by feature");
@@ -112,12 +123,18 @@ public class AttachmentTestMod implements ModInitializer {
 					if (!"protochunk_data".equals(farChunk.getAttached(PERSISTENT))) throw new AssertionError("ProtoChunk attachement did not persist");
 				}
 			}
-		});
-		ServerLifecycleEvents.SERVER_STOPPING.register(server -> firstLaunch = false);
 
-		// Testing hint: load far chunk by running /tp @s 480 ~ 0
+			serverStarted = true;
+		});
+
+		// Testing hint: load far chunk by running /tp @s 4800 ~ 0
 		ServerChunkEvents.CHUNK_LOAD.register(((world, chunk) -> {
 			if (!chunk.getPos().equals(FAR_CHUNK_POS)) return;
+
+			if (!serverStarted) {
+				LOGGER.warn("Chunk {} loaded before server started, can't test transfer of attachments to WorldChun", FAR_CHUNK_POS);
+				return;
+			}
 
 			LOGGER.info("Loaded chunk {}, testing transfer of attachments to WorldChunk", FAR_CHUNK_POS);
 
