@@ -118,7 +118,7 @@ public class AttachmentTestMod implements ModInitializer {
 				Chunk farChunk = overworld.getChunkManager().getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z, ChunkStatus.EMPTY, true);
 
 				if (farChunk instanceof WrapperProtoChunk) {
-					LOGGER.warn("Far chunk alread generated, can't test persistence in ProtoChunk.");
+					LOGGER.warn("Far chunk already generated, can't test persistence in ProtoChunk.");
 				} else {
 					if (!"protochunk_data".equals(farChunk.getAttached(PERSISTENT))) throw new AssertionError("ProtoChunk attachment did not persist");
 				}
