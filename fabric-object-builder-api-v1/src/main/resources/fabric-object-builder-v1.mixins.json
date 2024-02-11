@@ -9,6 +9,8 @@
     "DefaultAttributeRegistryMixin",
     "DetectorRailBlockMixin",
     "PersistentStateManagerMixin",
+    "TrackedDataHandlerRegistryAccessor",
+    "TrackedDataHandlerRegistryMixin",
     "TradeOffersTypeAwareBuyForOneEmeraldFactoryMixin"
   ],
   "injectors": {
