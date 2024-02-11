@@ -109,18 +109,18 @@ public class AttachmentTestMod implements ModInitializer {
 			} else {
 				LOGGER.info("Second launch, testing persistent attachments");
 
-				if (!"world_data".equals(overworld.getAttached(PERSISTENT))) throw new AssertionError("World attachement did not persist");
-				if (!"chunk_data".equals(chunk.getAttached(PERSISTENT))) throw new AssertionError("WorldChunk attachement did not persist");
+				if (!"world_data".equals(overworld.getAttached(PERSISTENT))) throw new AssertionError("World attachment did not persist");
+				if (!"chunk_data".equals(chunk.getAttached(PERSISTENT))) throw new AssertionError("WorldChunk attachment did not persist");
 
 				WrapperProtoChunk wrapperProtoChunk = (WrapperProtoChunk) overworld.getChunkManager().getChunk(0, 0, ChunkStatus.EMPTY, true);
-				if (!"chunk_data".equals(wrapperProtoChunk.getAttached(PERSISTENT))) throw new AssertionError("Attachement is not accessible through WrapperProtoChunk");
+				if (!"chunk_data".equals(wrapperProtoChunk.getAttached(PERSISTENT))) throw new AssertionError("Attachment is not accessible through WrapperProtoChunk");
 
 				Chunk farChunk = overworld.getChunkManager().getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z, ChunkStatus.EMPTY, true);
 
 				if (farChunk instanceof WrapperProtoChunk) {
 					LOGGER.warn("Far chunk alread generated, can't test persistence in ProtoChunk.");
 				} else {
-					if (!"protochunk_data".equals(farChunk.getAttached(PERSISTENT))) throw new AssertionError("ProtoChunk attachement did not persist");
+					if (!"protochunk_data".equals(farChunk.getAttached(PERSISTENT))) throw new AssertionError("ProtoChunk attachment did not persist");
 				}
 			}
 
@@ -132,13 +132,13 @@ public class AttachmentTestMod implements ModInitializer {
 			if (!chunk.getPos().equals(FAR_CHUNK_POS)) return;
 
 			if (!serverStarted) {
-				LOGGER.warn("Chunk {} loaded before server started, can't test transfer of attachments to WorldChun", FAR_CHUNK_POS);
+				LOGGER.warn("Chunk {} loaded before server started, can't test transfer of attachments to WorldChunk", FAR_CHUNK_POS);
 				return;
 			}
 
 			LOGGER.info("Loaded chunk {}, testing transfer of attachments to WorldChunk", FAR_CHUNK_POS);
 
-			if (!"protochunk_data".equals(chunk.getAttached(PERSISTENT))) throw new AssertionError("ProtoChunk attachement was not transfered to WorldChunk");
+			if (!"protochunk_data".equals(chunk.getAttached(PERSISTENT))) throw new AssertionError("ProtoChunk attachment was not transfered to WorldChunk");
 		}));
 	}
 }
