@@ -28,7 +28,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
-import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.UnaryOperator;
