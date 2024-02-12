@@ -37,7 +37,7 @@ public class AttachmentSerializingImpl {
 
 	@SuppressWarnings("unchecked")
 	public static void serializeAttachmentData(NbtCompound nbt, @Nullable IdentityHashMap<AttachmentType<?>, ?> attachments) {
-		if (attachments == null) {
+		if (attachments == null || attachments.isEmpty()) {
 			return;
 		}
 
@@ -61,10 +61,10 @@ public class AttachmentSerializingImpl {
 		nbt.put(AttachmentTarget.NBT_ATTACHMENT_KEY, compound);
 	}
 
+	@Nullable
 	public static IdentityHashMap<AttachmentType<?>, Object> deserializeAttachmentData(NbtCompound nbt) {
-		var attachments = new IdentityHashMap<AttachmentType<?>, Object>();
-
 		if (nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY, NbtElement.COMPOUND_TYPE)) {
+			var attachments = new IdentityHashMap<AttachmentType<?>, Object>();
 			NbtCompound compound = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY);
 
 			for (String key : compound.getKeys()) {
@@ -89,9 +89,15 @@ public class AttachmentSerializingImpl {
 							);
 				}
 			}
+
+			if (attachments.isEmpty()) {
+				return null;
+			}
+
+			return attachments;
 		}
 
-		return attachments;
+		return null;
 	}
 
 	public static boolean hasPersistentAttachments(@Nullable IdentityHashMap<AttachmentType<?>, ?> map) {
