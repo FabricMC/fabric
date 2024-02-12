@@ -28,6 +28,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.UnaryOperator;
@@ -145,6 +146,25 @@ public class CommonAttachmentTests {
 		// but in practice this is meaningless because on a dedicated server the JVM restarted
 		assertEquals(dummy.identifier(), entry.getKey().identifier());
 		assertEquals(0.5d, entry.getValue());
+	}
+
+	@Test
+	void deserializeNull() {
+		var nbt = new NbtCompound();
+		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(nbt));
+
+		nbt.put(new Identifier("test").toString(), new NbtCompound());
+		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(nbt));
+	}
+
+	@Test
+	void serializeNullOrEmpty() {
+		var nbt = new NbtCompound();
+		AttachmentSerializingImpl.serializeAttachmentData(nbt, null);
+		assertFalse(nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+
+		AttachmentSerializingImpl.serializeAttachmentData(nbt, new IdentityHashMap<>());
+		assertFalse(nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
 	}
 
 	@Test
