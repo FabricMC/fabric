@@ -148,6 +148,25 @@ public class CommonAttachmentTests {
 	}
 
 	@Test
+	void deserializeNull() {
+		var nbt = new NbtCompound();
+		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(nbt, null));
+
+		nbt.put(new Identifier("test").toString(), new NbtCompound());
+		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(nbt, null));
+	}
+
+	@Test
+	void serializeNullOrEmpty() {
+		var nbt = new NbtCompound();
+		AttachmentSerializingImpl.serializeAttachmentData(nbt, null, null);
+		assertFalse(nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+
+		AttachmentSerializingImpl.serializeAttachmentData(nbt, null, new IdentityHashMap<>());
+		assertFalse(nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+	}
+
+	@Test
 	void testEntityCopy() {
 		AttachmentType<Boolean> notCopiedOnRespawn = AttachmentRegistry.create(
 				new Identifier(MOD_ID, "not_copied_on_respawn")
