@@ -18,7 +18,7 @@
   "depends": {
     "fabricloader": ">=0.15.1"
   },
-  "description": "Allows conditionally loading overlay.",
+  "description": "Allows conditionally loading resource pack overlays.",
   "mixins": [
     "fabric-overlay-conditions-api-v1.mixins.json"
   ],
