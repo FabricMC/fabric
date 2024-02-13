@@ -37,7 +37,6 @@ import net.fabricmc.loader.api.FabricLoader;
  * Registration and access to overlay conditions.
  * An overlay condition is an identified {@code Predicate<JsonObject>} that can decide whether a resource pack overlay is applied.
  * <ul>
- *     <li>A pack.mcmeta file that contains an overlay condition will be parsed in {@link net.fabricmc.fabric.impl.overlay.conditions.OverlayConditionsMetadata#getAppliedOverlays()}.</li>
  *     <li>The lower-level {@link #conditionsMatch} and {@link #conditionMatches} may be useful when implementing conditions.</li>
  *     <li>Conditions are registered with {@link #register} and queried with {@link #get}.</li>
  * </ul>
@@ -115,9 +114,9 @@ public final class OverlayConditions {
 	 * If {@code matchAll} is true, check if all the passed conditions match.
 	 * If it is false, check if at least one of the passed conditions matches.
 	 *
-	 * @throws RuntimeException If some condition failed to parse.
+	 * @throws JsonParseException If some condition failed to parse.
 	 */
-	public static boolean conditionsMatch(JsonArray conditions, boolean matchAll) throws RuntimeException {
+	public static boolean conditionsMatch(JsonArray conditions, boolean matchAll) {
 		for (JsonElement element : conditions) {
 			if (element.isJsonObject()) {
 				if (conditionMatches(element.getAsJsonObject()) != matchAll) {
@@ -134,10 +133,11 @@ public final class OverlayConditions {
 	/**
 	 * Check if the passed condition object matches.
 	 *
-	 * @throws RuntimeException If some condition failed to parse.
+	 * @throws JsonParseException If some condition failed to parse.
 	 */
-	public static boolean conditionMatches(JsonObject condition) throws RuntimeException {
-		Identifier conditionId = new Identifier(JsonHelper.getString(condition, CONDITION_TYPE_KEY));
+	public static boolean conditionMatches(JsonObject condition) {
+		Identifier conditionId = Identifier.tryParse(JsonHelper.getString(condition, CONDITION_TYPE_KEY));
+		Objects.requireNonNull(conditionId, "Invalid identifier for condition type");
 		Predicate<JsonObject> jrc = get(conditionId);
 
 		if (jrc == null) {
@@ -150,9 +150,9 @@ public final class OverlayConditions {
 	/**
 	 * Check if a mod with the passed mod id string exists.
 	 *
-	 * @throws RuntimeException If the mod id failed to parse.
+	 * @throws JsonParseException If the mod id failed to parse.
 	 */
-	public static boolean modLoaded(JsonElement modId) throws RuntimeException {
+	public static boolean modLoaded(JsonElement modId) {
 		if (modId instanceof JsonPrimitive) {
 			return FabricLoader.getInstance().isModLoaded(modId.getAsString());
 		} else {
