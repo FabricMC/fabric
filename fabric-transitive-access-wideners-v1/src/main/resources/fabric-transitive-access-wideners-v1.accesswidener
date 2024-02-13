@@ -130,6 +130,12 @@ transitive-accessible method net/minecraft/entity/damage/DamageSources create (L
 # The attack cooldown
 transitive-accessible field net/minecraft/client/MinecraftClient attackCooldown I
 
+# Camera transformations
+transitive-accessible method net/minecraft/client/render/Camera moveBy (DDD)V
+transitive-accessible method net/minecraft/client/render/Camera setRotation (FF)V
+transitive-accessible method net/minecraft/client/render/Camera setPos (DDD)V
+transitive-accessible method net/minecraft/client/render/Camera setPos (Lnet/minecraft/util/math/Vec3d;)V
+
 # Creating certain types of blocks
 transitive-accessible method net/minecraft/block/Blocks createBambooBlock (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/PillarBlock;
 transitive-accessible method net/minecraft/block/Blocks createFlowerPotBlock (Lnet/minecraft/block/Block;[Lnet/minecraft/resource/featuretoggle/FeatureFlag;)Lnet/minecraft/block/FlowerPotBlock;
