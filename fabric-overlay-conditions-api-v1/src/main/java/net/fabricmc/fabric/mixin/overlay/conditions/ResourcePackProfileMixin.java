@@ -36,9 +36,11 @@ public class ResourcePackProfileMixin {
 	private static List<String> fabric_applyOverlayConditions(List<String> overlays, @Local ResourcePack resourcePack) throws IOException {
 		List<String> appliedOverlays = new ArrayList<>(overlays);
 		OverlayConditionsMetadata overlayConditionsMetadata = resourcePack.parseMetadata(OverlayConditionsMetadata.SERIALIZER);
+
 		if (overlayConditionsMetadata != null) {
 			appliedOverlays.addAll(overlayConditionsMetadata.getAppliedOverlays());
 		}
+
 		return appliedOverlays;
 	}
 }

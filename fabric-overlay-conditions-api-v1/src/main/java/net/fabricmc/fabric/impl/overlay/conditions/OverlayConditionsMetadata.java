@@ -57,10 +57,12 @@ public record OverlayConditionsMetadata(JsonArray overlays) {
 
 	public List<String> getAppliedOverlays() {
 		List<String> appliedOverlays = new ArrayList<>();
+
 		for (JsonElement element : this.overlays()) {
 			if (element.isJsonObject()) {
 				JsonObject object = element.getAsJsonObject();
 				String directoryName = JsonHelper.getString(object, "directory");
+
 				if (validDirectoryName(directoryName)) {
 					if (OverlayConditions.conditionMatches(element.getAsJsonObject())) {
 						appliedOverlays.add(directoryName);
