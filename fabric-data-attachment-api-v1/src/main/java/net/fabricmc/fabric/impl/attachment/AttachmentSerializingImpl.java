@@ -50,7 +50,7 @@ public class AttachmentSerializingImpl {
 			Codec<Object> codec = (Codec<Object>) type.persistenceCodec();
 
 			if (codec != null) {
-				RegistryOps<NbtElement> registryOps = RegistryOps.of(NbtOps.INSTANCE, wrapperLookup);
+				RegistryOps<NbtElement> registryOps = wrapperLookup.method_57093(NbtOps.INSTANCE);
 				codec.encodeStart(registryOps, entry.getValue())
 						.get()
 						.ifRight(partial -> {
@@ -81,7 +81,7 @@ public class AttachmentSerializingImpl {
 				Codec<?> codec = type.persistenceCodec();
 
 				if (codec != null) {
-					RegistryOps<NbtElement> registryOps = RegistryOps.of(NbtOps.INSTANCE, wrapperLookup);
+					RegistryOps<NbtElement> registryOps = wrapperLookup.method_57093(NbtOps.INSTANCE);
 					codec.parse(registryOps, compound.get(key))
 							.get()
 							.ifRight(partial -> {

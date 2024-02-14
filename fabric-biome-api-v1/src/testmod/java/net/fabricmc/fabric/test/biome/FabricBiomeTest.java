@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.biome;
 
+import static net.fabricmc.fabric.test.biome.DataGeneratorEntrypoint.PLACED_COMMON_DESERT_WELL;
+
 import com.google.common.base.Preconditions;
 
 import net.minecraft.registry.RegistryKey;
@@ -25,8 +27,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.PlacedFeature;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -47,15 +47,6 @@ import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
  */
 public class FabricBiomeTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-biome-api-v1-testmod";
-
-	public static final RegistryKey<ConfiguredFeature<?, ?>> COMMON_DESERT_WELL = RegistryKey.of(
-			RegistryKeys.CONFIGURED_FEATURE,
-			new Identifier(FabricBiomeTest.MOD_ID, "fab_desert_well")
-	);
-	public static final RegistryKey<PlacedFeature> PLACED_COMMON_DESERT_WELL = RegistryKey.of(
-			RegistryKeys.PLACED_FEATURE,
-			new Identifier(FabricBiomeTest.MOD_ID, "fab_desert_well")
-	);
 
 	@Override
 	public void onInitialize() {

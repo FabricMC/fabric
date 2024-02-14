@@ -99,7 +99,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 					throw new IllegalStateException("Duplicate recipe " + identifier);
 				}
 
-				RegistryOps<JsonElement> registryOps = RegistryOps.of(JsonOps.INSTANCE, wrapperLookup);
+				RegistryOps<JsonElement> registryOps = wrapperLookup.method_57093(JsonOps.INSTANCE);
 				JsonObject recipeJson = Util.getResult(Recipe.CODEC.encodeStart(registryOps, recipe), IllegalStateException::new).getAsJsonObject();
 				ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(recipe);
 				ConditionJsonProvider.write(recipeJson, conditions);
