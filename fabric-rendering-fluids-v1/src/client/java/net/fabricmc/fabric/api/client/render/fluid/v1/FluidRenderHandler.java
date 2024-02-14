@@ -72,10 +72,6 @@ public interface FluidRenderHandler {
 	 * {@code FluidRenderHandler.super.renderFluid} if you want to render over
 	 * the default fluid renderer.
 	 *
-	 * <p>Note that this method must *only* return {@code true} if at least one
-	 * face is tessellated. If no faces are tessellated this method must return
-	 * {@code false}.
-	 *
 	 * @param pos The position in the world, of the fluid to render.
 	 * @param world The world the fluid is in
 	 * @param vertexConsumer The vertex consumer to tessellate the fluid in.
