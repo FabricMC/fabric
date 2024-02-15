@@ -24,12 +24,10 @@ import java.util.concurrent.ConcurrentMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.TranslucentBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -55,8 +53,6 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		handlers.put(Fluids.LAVA, LavaRenderHandler.INSTANCE);
 		handlers.put(Fluids.FLOWING_LAVA, LavaRenderHandler.INSTANCE);
 	}
-
-	private FluidRenderer fluidRenderer;
 
 	public FluidRenderHandlerRegistryImpl() {
 	}
@@ -90,7 +86,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 	}
 
 	public void onFluidRendererReload(FluidRenderer renderer, Sprite[] waterSprites, Sprite[] lavaSprites, Sprite waterOverlay) {
-		fluidRenderer = renderer;
+		DefaultFluidRenderer.setVanillaRenderer(renderer);
 
 		WaterRenderHandler.INSTANCE.updateSprites(waterSprites, waterOverlay);
 		LavaRenderHandler.INSTANCE.updateSprites(lavaSprites);
@@ -102,10 +98,6 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		for (FluidRenderHandler handler : handlers.values()) {
 			handler.reloadTextures(texture);
 		}
-	}
-
-	public void renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
-		fluidRenderer.render(world, pos, vertexConsumer, blockState, fluidState);
 	}
 
 	private static class WaterRenderHandler implements FluidRenderHandler {
