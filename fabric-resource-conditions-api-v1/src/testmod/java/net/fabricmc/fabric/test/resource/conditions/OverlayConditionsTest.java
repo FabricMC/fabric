@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.resource.loader;
+package net.fabricmc.fabric.test.resource.conditions;
 
 import java.util.List;
 import java.util.Optional;
-
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
-import net.fabricmc.loader.api.FabricLoader;
-
-import net.fabricmc.loader.api.ModContainer;
 
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 
-public class OverlayConditionsTestMod implements ModInitializer {
-	private static final String MOD_ID = "fabric-resource-loader-v0-testmod";
+public class OverlayConditionsTest implements ModInitializer {
+	private static final String MOD_ID = "fabric-resource-conditions-api-v1-testmod";
 
 	private static Identifier id(String path) {
 		return new Identifier(MOD_ID, path);
@@ -42,7 +40,6 @@ public class OverlayConditionsTestMod implements ModInitializer {
 		Optional<ModContainer> container = FabricLoader.getInstance().getModContainer(MOD_ID);
 		if (container.isEmpty() || !ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "overlay_test"), container.get(), ResourcePackActivationType.NORMAL)) {
 			throw new AssertionError("Could not register overlay_test datapack.");
-
 		}
 
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> {

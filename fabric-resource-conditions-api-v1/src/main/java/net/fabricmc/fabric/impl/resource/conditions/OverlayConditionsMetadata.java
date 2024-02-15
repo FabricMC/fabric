@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.resource.loader;
+package net.fabricmc.fabric.impl.resource.conditions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-import net.fabricmc.fabric.api.resource.OverlayConditions;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 
 import net.minecraft.resource.metadata.ResourceMetadataSerializer;
 import net.minecraft.util.JsonHelper;
@@ -36,18 +36,18 @@ public record OverlayConditionsMetadata(JsonArray overlays) {
 		@Override
 		public JsonObject toJson(OverlayConditionsMetadata metadata) {
 			JsonObject object = new JsonObject();
-			object.add(OverlayConditions.ENTRIES_KEY, metadata.overlays());
+			object.add(ResourceConditions.ENTRIES_KEY, metadata.overlays());
 			return object;
 		}
 
 		@Override
 		public String getKey() {
-			return OverlayConditions.OVERLAYS_KEY;
+			return ResourceConditions.OVERLAYS_KEY;
 		}
 
 		@Override
 		public OverlayConditionsMetadata fromJson(JsonObject json) {
-			return new OverlayConditionsMetadata(json.getAsJsonArray(OverlayConditions.ENTRIES_KEY));
+			return new OverlayConditionsMetadata(json.getAsJsonArray(ResourceConditions.ENTRIES_KEY));
 		}
 	};
 
@@ -64,7 +64,7 @@ public record OverlayConditionsMetadata(JsonArray overlays) {
 				String directoryName = JsonHelper.getString(object, "directory");
 
 				if (validDirectoryName(directoryName)) {
-					if (OverlayConditions.conditionMatches(element.getAsJsonObject())) {
+					if (ResourceConditions.conditionMatches(object)) {
 						appliedOverlays.add(directoryName);
 					}
 				} else {

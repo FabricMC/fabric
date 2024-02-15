@@ -128,7 +128,6 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 							return pack;
 						} else {
 							List<ResourcePack> overlays = new ArrayList<>(metadata.overlays().size());
-
 							for (String overlay : metadata.overlays()) {
 								overlays.add(pack.createOverlay(overlay));
 							}
