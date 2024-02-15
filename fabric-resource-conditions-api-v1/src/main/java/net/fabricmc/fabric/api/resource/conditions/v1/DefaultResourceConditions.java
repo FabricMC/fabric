@@ -216,6 +216,24 @@ public final class DefaultResourceConditions {
 		return ResourceConditionsImpl.registryContains(REGISTRY_CONTAINS, registry.getValue(), entries);
 	}
 
+	/**
+	 * Creates a condition with a directory field, for use in overlay conditions.
+	 */
+	public static ConditionJsonProvider withDirectory(ConditionJsonProvider condition, String directory) {
+		return new ConditionJsonProvider() {
+			@Override
+			public void writeParameters(JsonObject object) {
+				condition.writeParameters(object);
+				object.addProperty(ResourceConditions.DIRECTORY_KEY, directory);
+			}
+
+			@Override
+			public Identifier getConditionId() {
+				return condition.getConditionId();
+			}
+		};
+	}
+
 	static void init() {
 		// init static
 	}

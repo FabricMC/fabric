@@ -38,6 +38,7 @@ public class OverlayConditionsTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		Optional<ModContainer> container = FabricLoader.getInstance().getModContainer(MOD_ID);
+
 		if (container.isEmpty() || !ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "overlay_test"), container.get(), ResourcePackActivationType.NORMAL)) {
 			throw new AssertionError("Could not register overlay_test datapack.");
 		}
@@ -48,6 +49,7 @@ public class OverlayConditionsTest implements ModInitializer {
 			if (recipes.contains(id("dont_overlay"))) {
 				throw new AssertionError("dont_overlay recipe should not have been overlayed.");
 			}
+
 			if (!recipes.contains(id("do_overlay"))) {
 				throw new AssertionError("do_overlay recipe should have been overlayed.");
 			}

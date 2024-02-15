@@ -25,10 +25,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
-
 import net.minecraft.resource.metadata.ResourceMetadataSerializer;
 import net.minecraft.util.JsonHelper;
+
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 
 public record OverlayConditionsMetadata(JsonArray overlays) {
 	private static final Pattern DIRECTORY_NAME_PATTERN = Pattern.compile("[-_a-zA-Z0-9.]+");
@@ -61,7 +61,7 @@ public record OverlayConditionsMetadata(JsonArray overlays) {
 		for (JsonElement element : this.overlays()) {
 			if (element.isJsonObject()) {
 				JsonObject object = element.getAsJsonObject();
-				String directoryName = JsonHelper.getString(object, "directory");
+				String directoryName = JsonHelper.getString(object, ResourceConditions.DIRECTORY_KEY);
 
 				if (validDirectoryName(directoryName)) {
 					if (ResourceConditions.conditionMatches(object)) {

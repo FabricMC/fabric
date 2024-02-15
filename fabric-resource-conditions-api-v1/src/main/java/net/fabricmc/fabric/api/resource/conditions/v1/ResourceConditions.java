@@ -97,6 +97,11 @@ public final class ResourceConditions {
 	public static final String ENTRIES_KEY = "entries";
 
 	/**
+	 * The key ({@value}) identifying the overlay directory in a condition object.
+	 */
+	public static final String DIRECTORY_KEY = "directory";
+
+	/**
 	 * The key ({@value}) identifying the resource condition's identifier inside a condition object.
 	 */
 	public static final String CONDITION_ID_KEY = "condition";
