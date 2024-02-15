@@ -34,6 +34,7 @@ import net.minecraft.network.NetworkSide;
 import net.minecraft.util.Identifier;
 
 public final class GlobalReceiverRegistry<H> {
+	public static final int DEFAULT_CHANNEL_NAME_MAX_LENGTH = 128;
 	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalReceiverRegistry.class);
 
 	private final NetworkSide side;
@@ -217,7 +218,7 @@ public final class GlobalReceiverRegistry<H> {
 			throw new IllegalArgumentException(String.format("Cannot register handler as no payload type has been registered with name \"%s\" for %s %s", channelName, side, phase));
 		}
 
-		if (channelName.toString().length() >= 128) {
+		if (channelName.toString().length() > DEFAULT_CHANNEL_NAME_MAX_LENGTH) {
 			throw new IllegalArgumentException(String.format("Cannot register handler for channel with name \"%s\" as it exceeds the maximum length of 128 characters", channelName));
 		}
 	}
