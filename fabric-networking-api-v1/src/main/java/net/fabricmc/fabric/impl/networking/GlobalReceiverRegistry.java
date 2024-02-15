@@ -216,6 +216,10 @@ public final class GlobalReceiverRegistry<H> {
 		if (payloadTypeRegistry.get(channelName) == null) {
 			throw new IllegalArgumentException(String.format("Cannot register handler as no payload type has been registered with name \"%s\" for %s %s", channelName, side, phase));
 		}
+
+		if (channelName.toString().length() >= 128) {
+			throw new IllegalArgumentException(String.format("Cannot register handler for channel with name \"%s\" as it exceeds the maximum length of 128 characters", channelName));
+		}
 	}
 
 	public NetworkPhase getPhase() {

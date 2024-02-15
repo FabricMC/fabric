@@ -42,6 +42,11 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
  * @param <H> the channel handler type
  */
 public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon<H> implements PacketSender, CommonPacketHandler {
+	// The maximum number of channels that a connecting client can register.
+	private static final int MAX_CHANNELS = Integer.getInteger("fabric.networking.maxChannels", 8192);
+	// The maximum length of a channel name a connecting client can use.
+	private static final int MAX_CHANNEL_NAME_LENGTH = Integer.getInteger("fabric.networking.maxChannelNameLength", 128);
+
 	protected final ClientConnection connection;
 	protected final GlobalReceiverRegistry<H> receiver;
 	protected final Set<Identifier> sendableChannels;
@@ -127,8 +132,21 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	void register(List<Identifier> ids) {
-		this.sendableChannels.addAll(ids);
+		ids.forEach(this::registerChannel);
 		schedule(() -> this.invokeRegisterEvent(ids));
+	}
+
+	private void registerChannel(Identifier id) {
+		if (this.sendableChannels.size() >= MAX_CHANNELS) {
+			throw new IllegalArgumentException("Cannot register more than " + MAX_CHANNELS + " channels");
+		}
+
+		if (id.toString().length() > MAX_CHANNEL_NAME_LENGTH) {
+			throw new IllegalArgumentException("Channel name is too long");
+		}
+
+		this.sendableChannels.add(id);
+		schedule(() -> this.invokeRegisterEvent(Collections.singletonList(id)));
 	}
 
 	void unregister(List<Identifier> ids) {
