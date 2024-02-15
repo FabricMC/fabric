@@ -146,7 +146,6 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		}
 
 		this.sendableChannels.add(id);
-		schedule(() -> this.invokeRegisterEvent(Collections.singletonList(id)));
 	}
 
 	void unregister(List<Identifier> ids) {
