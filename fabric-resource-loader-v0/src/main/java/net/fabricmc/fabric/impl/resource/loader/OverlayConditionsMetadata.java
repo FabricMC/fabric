@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.overlay.conditions;
+package net.fabricmc.fabric.impl.resource.loader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +25,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import net.fabricmc.fabric.api.resource.OverlayConditions;
+
 import net.minecraft.resource.metadata.ResourceMetadataSerializer;
 import net.minecraft.util.JsonHelper;
-
-import net.fabricmc.fabric.api.overlay.conditions.v1.OverlayConditions;
 
 public record OverlayConditionsMetadata(JsonArray overlays) {
 	private static final Pattern DIRECTORY_NAME_PATTERN = Pattern.compile("[-_a-zA-Z0-9.]+");

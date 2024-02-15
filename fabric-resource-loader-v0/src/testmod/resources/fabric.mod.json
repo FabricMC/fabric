@@ -12,7 +12,8 @@
     "main": [
       "net.fabricmc.fabric.test.resource.loader.BuiltinResourcePackTestMod",
       "net.fabricmc.fabric.test.resource.loader.ResourceReloadListenerTestMod",
-      "net.fabricmc.fabric.test.resource.loader.VanillaBuiltinResourcePackInjectionTestMod"
+      "net.fabricmc.fabric.test.resource.loader.VanillaBuiltinResourcePackInjectionTestMod",
+      "net.fabricmc.fabric.test.resource.loader.OverlayConditionsTestMod"
     ],
     "server": [
       "net.fabricmc.fabric.test.resource.loader.LanguageTestMod"

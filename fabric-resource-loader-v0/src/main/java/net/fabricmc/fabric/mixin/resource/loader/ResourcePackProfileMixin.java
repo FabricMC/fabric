@@ -16,8 +16,15 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+
+import com.llamalad7.mixinextras.sugar.Local;
+
+import net.fabricmc.fabric.impl.resource.loader.OverlayConditionsMetadata;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,6 +32,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.resource.ResourcePack;
@@ -69,5 +77,17 @@ abstract class ResourcePackProfileMixin implements FabricResourcePackProfile {
 	@Override
 	public void fabric_setParentsPredicate(Predicate<Set<String>> predicate) {
 		this.parentsPredicate = predicate;
+	}
+
+	@ModifyVariable(method = "loadMetadata", at = @At("STORE"))
+	private static List<String> fabric_applyOverlayConditions(List<String> overlays, @Local ResourcePack resourcePack) throws IOException {
+		List<String> appliedOverlays = new ArrayList<>(overlays);
+		OverlayConditionsMetadata overlayConditionsMetadata = resourcePack.parseMetadata(OverlayConditionsMetadata.SERIALIZER);
+
+		if (overlayConditionsMetadata != null) {
+			appliedOverlays.addAll(overlayConditionsMetadata.getAppliedOverlays());
+		}
+
+		return appliedOverlays;
 	}
 }

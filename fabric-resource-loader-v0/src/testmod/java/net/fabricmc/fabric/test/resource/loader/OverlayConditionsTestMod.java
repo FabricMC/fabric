@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.overlay.conditions;
+package net.fabricmc.fabric.test.resource.loader;
 
 import java.util.List;
+import java.util.Optional;
+
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
+
+import net.fabricmc.loader.api.ModContainer;
 
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
-public class OverlayConditionsTest implements ModInitializer {
-	private static final String MOD_ID = "fabric-overlay-conditions-api-v1-testmod";
+public class OverlayConditionsTestMod implements ModInitializer {
+	private static final String MOD_ID = "fabric-resource-loader-v0-testmod";
 
 	private static Identifier id(String path) {
 		return new Identifier(MOD_ID, path);
@@ -32,6 +39,12 @@ public class OverlayConditionsTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		Optional<ModContainer> container = FabricLoader.getInstance().getModContainer(MOD_ID);
+		if (container.isEmpty() || !ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "overlay_test"), container.get(), ResourcePackActivationType.NORMAL)) {
+			throw new AssertionError("Could not register overlay_test datapack.");
+
+		}
+
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
 			List<Identifier> recipes = server.getRecipeManager().keys().toList();
 

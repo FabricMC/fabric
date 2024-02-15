@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.overlay.conditions.v1;
+package net.fabricmc.fabric.api.resource;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
