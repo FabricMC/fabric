@@ -255,7 +255,7 @@ public final class ResourceConditionsImpl {
 		return true;
 	}
 
-	public static final ThreadLocal<FeatureSet> CURRENT_FEATURES = ThreadLocal.withInitial(() -> FeatureFlags.DEFAULT_ENABLED_FEATURES);
+	public static final ThreadLocal<FeatureSet> CURRENT_FEATURES = new ThreadLocal<>();
 
 	public static boolean featuresEnabledMatch(JsonObject object) {
 		List<Identifier> featureIds = JsonHelper.getArray(object, "features").asList().stream().map((element) -> new Identifier(element.getAsString())).toList();
@@ -263,7 +263,14 @@ public final class ResourceConditionsImpl {
 			throw new JsonParseException("Unknown feature flag: " + id);
 		});
 
-		return set.isSubsetOf(CURRENT_FEATURES.get());
+		FeatureSet currentFeatures = CURRENT_FEATURES.get();
+
+		if (currentFeatures == null) {
+			LOGGER.warn("Can't retrieve current features. Failing features_enabled resource condition check.");
+			return false;
+		}
+
+		return set.isSubsetOf(currentFeatures);
 	}
 
 	public static final ThreadLocal<DynamicRegistryManager.Immutable> CURRENT_REGISTRIES = new ThreadLocal<>();
