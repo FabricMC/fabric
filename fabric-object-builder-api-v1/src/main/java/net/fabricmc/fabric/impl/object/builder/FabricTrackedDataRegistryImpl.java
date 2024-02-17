@@ -19,23 +19,30 @@ package net.fabricmc.fabric.impl.object.builder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.entity.data.TrackedDataHandler;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.Int2ObjectBiMap;
 
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.mixin.object.builder.TrackedDataHandlerRegistryAccessor;
 
 public class FabricTrackedDataRegistryImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricTrackedDataRegistryImpl.class);
 
+	private static final Identifier HANDLER_REGISTRY_ID = new Identifier("fabric-object-builder-api-v1", "tracked_data_handler");
+	private static final RegistryKey<Registry<TrackedDataHandler<?>>> HANDLER_REGISTRY_KEY = RegistryKey.ofRegistry(HANDLER_REGISTRY_ID);
+
 	private static List<TrackedDataHandler<?>> VANILLA_HANDLERS = new ArrayList<>();
-	private static SortedMap<Identifier, TrackedDataHandler<?>> MODDED_HANDLERS = new TreeMap<>();
+	private static @Nullable Registry<TrackedDataHandler<?>> HANDLER_REGISTRY = null;
 	private static List<TrackedDataHandler<?>> EXTERNAL_MODDED_HANDLERS = new ArrayList<>();
 
 	private FabricTrackedDataRegistryImpl() {
@@ -69,7 +76,7 @@ public class FabricTrackedDataRegistryImpl {
 		// Store external modded handlers
 		for (TrackedDataHandler<?> handler : dataHandlers) {
 			if (VANILLA_HANDLERS.contains(handler)) continue;
-			if (MODDED_HANDLERS.containsValue(handler)) continue;
+			if (HANDLER_REGISTRY != null && HANDLER_REGISTRY.getId(handler) != null) continue;
 			if (EXTERNAL_MODDED_HANDLERS.contains(handler)) continue;
 
 			EXTERNAL_MODDED_HANDLERS.add(handler);
@@ -84,8 +91,10 @@ public class FabricTrackedDataRegistryImpl {
 			dataHandlers.add(handler);
 		}
 
-		for (TrackedDataHandler<?> handler : MODDED_HANDLERS.values()) {
-			dataHandlers.add(handler);
+		if (HANDLER_REGISTRY != null) {
+			for (TrackedDataHandler<?> handler : HANDLER_REGISTRY) {
+				dataHandlers.add(handler);
+			}
 		}
 
 		for (TrackedDataHandler<?> handler : EXTERNAL_MODDED_HANDLERS) {
@@ -99,15 +108,20 @@ public class FabricTrackedDataRegistryImpl {
 		Objects.requireNonNull(id, "Tracked data handler ID cannot be null!");
 		Objects.requireNonNull(handler, "Tracked data handler cannot be null!");
 
-		if (MODDED_HANDLERS.containsKey(id)) {
-			throw new IllegalArgumentException("Tracked data handler ID already registered: " + id);
-		} else if (MODDED_HANDLERS.containsValue(handler)) {
-			throw new IllegalArgumentException("The same tracked data handler cannot be registered under multiple IDs");
-		} else if (VANILLA_HANDLERS.contains(handler) || EXTERNAL_MODDED_HANDLERS.contains(handler)) {
+		if (VANILLA_HANDLERS.contains(handler) || EXTERNAL_MODDED_HANDLERS.contains(handler)) {
 			throw new IllegalArgumentException("Cannot register tracked data handler added via TrackedDataHandlerRegistry.register");
 		}
 
-		MODDED_HANDLERS.put(id, handler);
+		if (HANDLER_REGISTRY == null) {
+			HANDLER_REGISTRY = FabricRegistryBuilder
+					.createSimple(HANDLER_REGISTRY_KEY)
+					.attribute(RegistryAttribute.SYNCED)
+					.buildAndRegister();
+
+			RegistryIdRemapCallback.event(HANDLER_REGISTRY).register(state -> reorderHandlers());
+		}
+
+		Registry.register(HANDLER_REGISTRY, id, handler);
 		reorderHandlers();
 	}
 }
