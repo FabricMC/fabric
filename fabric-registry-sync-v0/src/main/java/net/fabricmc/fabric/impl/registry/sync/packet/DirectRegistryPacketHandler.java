@@ -265,11 +265,17 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler<DirectReg
 		public static PacketCodec<PacketByteBuf, Payload> CODEC = CustomPayload.codecOf(Payload::write, Payload::new);
 
 		Payload(PacketByteBuf buf) {
-			this(buf.readByteArray());
+			this(readAllBytes(buf));
 		}
 
 		private void write(PacketByteBuf buf) {
-			buf.writeByteArray(data);
+			buf.writeBytes(data);
+		}
+
+		private static byte[] readAllBytes(PacketByteBuf buf) {
+			byte[] bytes = new byte[buf.readableBytes()];
+			buf.readBytes(bytes);
+			return bytes;
 		}
 
 		@Override
