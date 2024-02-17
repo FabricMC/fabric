@@ -27,7 +27,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.impl.client.rendering.fluid.DefaultFluidRenderer;
+import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderingImpl;
 
 /**
  * Interface for handling the rendering of a FluidState.
@@ -83,7 +83,7 @@ public interface FluidRenderHandler {
 	 * @param fluidState The fluid state being rendered.
 	 */
 	default void renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
-		DefaultFluidRenderer.render(this, world, pos, vertexConsumer, blockState, fluidState);
+		FluidRenderingImpl.renderDefault(this, world, pos, vertexConsumer, blockState, fluidState);
 	}
 
 	/**

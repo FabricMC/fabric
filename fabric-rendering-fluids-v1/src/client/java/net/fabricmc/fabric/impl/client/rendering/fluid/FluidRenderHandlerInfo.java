@@ -25,7 +25,7 @@ import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 
-public class FluidRendererHookContainer {
+public class FluidRenderHandlerInfo {
 	public final Sprite[] sprites = new Sprite[2];
 	@Nullable
 	public FluidRenderHandler handler;

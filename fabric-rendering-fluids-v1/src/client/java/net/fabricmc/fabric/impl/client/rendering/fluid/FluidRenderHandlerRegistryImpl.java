@@ -86,7 +86,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 	}
 
 	public void onFluidRendererReload(FluidRenderer renderer, Sprite[] waterSprites, Sprite[] lavaSprites, Sprite waterOverlay) {
-		DefaultFluidRenderer.setVanillaRenderer(renderer);
+		FluidRenderingImpl.setVanillaRenderer(renderer);
 
 		WaterRenderHandler.INSTANCE.updateSprites(waterSprites, waterOverlay);
 		LavaRenderHandler.INSTANCE.updateSprites(lavaSprites);
