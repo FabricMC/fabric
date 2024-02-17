@@ -93,13 +93,10 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 
 	private void fabric_updateSelection() {
 		if (!fabric_isGroupVisible(selectedTab)) {
-			ItemGroups.getGroups().stream()
+			ItemGroups.getGroups()
+					.stream()
 					.filter(this::fabric_isGroupVisible)
-					.min((a, b) -> {
-						if (a.isSpecial() && !b.isSpecial()) return 1;
-						if (!a.isSpecial() && b.isSpecial()) return -1;
-						return 0;
-					})
+					.min((a, b) -> Boolean.compare(a.isSpecial(), b.isSpecial()))
 					.ifPresent(this::setSelectedTab);
 		}
 	}
@@ -144,7 +141,7 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 	}
 
 	private boolean fabric_isGroupVisible(ItemGroup itemGroup) {
-		return fabric_currentPage == fabric_getPage(itemGroup);
+		return itemGroup.shouldDisplay() && fabric_currentPage == fabric_getPage(itemGroup);
 	}
 
 	private static int fabric_getPage(ItemGroup itemGroup) {
