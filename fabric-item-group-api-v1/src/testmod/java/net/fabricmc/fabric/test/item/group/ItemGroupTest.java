@@ -19,11 +19,7 @@ package net.fabricmc.fabric.test.item.group;
 import com.google.common.base.Supplier;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -69,6 +65,10 @@ public class ItemGroupTest implements ModInitializer {
 
 		// Add a differently damaged pickaxe to all groups
 		ItemGroupEvents.MODIFY_ENTRIES_ALL.register((group, content) -> {
+			if (group.getIcon() == ItemStack.EMPTY) { // Leave the empty groups empty
+				return;
+			}
+
 			ItemStack minDmgPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
 			minDmgPickaxe.setDamage(1);
 			content.prepend(minDmgPickaxe);
@@ -77,6 +77,17 @@ public class ItemGroupTest implements ModInitializer {
 			maxDmgPickaxe.setDamage(maxDmgPickaxe.getMaxDamage() - 1);
 			content.add(maxDmgPickaxe);
 		});
+
+		// Regression test for #3566
+		for (int j = 0; j < 20; j++) {
+			Registry.register(
+					Registries.ITEM_GROUP,
+					new Identifier(MOD_ID, "empty_group_" + j),
+					FabricItemGroup.builder()
+							.displayName(Text.literal("Empty Item Group: " + j))
+							.build()
+			);
+		}
 
 		for (int i = 0; i < 100; i++) {
 			final int index = i;
