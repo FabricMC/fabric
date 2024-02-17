@@ -249,7 +249,7 @@ public class DirectRegistryPacketHandler extends RegistryPacketHandler<DirectReg
 			return new Payload(new byte[0]);
 		}
 
-		return new Payload(buf.readByteArray());
+		return new Payload(buf.array());
 	}
 
 	private static String optimizeNamespace(String namespace) {
