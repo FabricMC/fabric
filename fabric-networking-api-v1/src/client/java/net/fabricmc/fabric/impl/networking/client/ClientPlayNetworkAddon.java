@@ -52,8 +52,8 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		super(ClientNetworkingImpl.PLAY, handler.getConnection(), "ClientPlayNetworkAddon for " + handler.getProfile().getName());
 		this.handler = handler;
 		this.client = client;
-
 		this.context = new ContextImpl(client, this);
+
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkPhase.PLAY);
 	}
