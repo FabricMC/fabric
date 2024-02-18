@@ -76,6 +76,8 @@ public class TealSignTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		WoodType.register(TEAL_WOOD_TYPE);
+
 		Registry.register(Registries.BLOCK, ObjectBuilderTestConstants.id("teal_sign"), TEAL_SIGN);
 		Registry.register(Registries.BLOCK, ObjectBuilderTestConstants.id("teal_wall_sign"), TEAL_WALL_SIGN);
 		Registry.register(Registries.BLOCK, ObjectBuilderTestConstants.id("teal_hanging_sign"), TEAL_HANGING_SIGN);
