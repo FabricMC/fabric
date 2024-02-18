@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.networking.server;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkPhase;
@@ -129,5 +130,9 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	private record ContextImpl(ServerPlayerEntity player, PacketSender responseSender) implements ServerPlayNetworking.Context {
+		private ContextImpl {
+			Objects.requireNonNull(player, "player");
+			Objects.requireNonNull(responseSender, "responseSender");
+		}
 	}
 }
