@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.networking.client.play;
 
+import java.util.Objects;
+
 import com.mojang.brigadier.Command;
 
 import net.minecraft.network.PacketByteBuf;
@@ -38,7 +40,13 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 		// Register the payload only on the client.
 		PayloadTypeRegistry.playC2S().register(UnknownPayload.ID, UnknownPayload.CODEC);
 
-		ClientPlayConnectionEvents.INIT.register((handler, client) -> ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.OverlayPacket.ID, (payload, context) -> context.client().inGameHud.setOverlayMessage(payload.message(), true)));
+		ClientPlayConnectionEvents.INIT.register((handler, client) -> ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.OverlayPacket.ID, (payload, context) -> {
+			Objects.requireNonNull(context);
+			Objects.requireNonNull(context.client());
+			Objects.requireNonNull(context.player());
+
+			context.client().inGameHud.setOverlayMessage(payload.message(), true);
+		}));
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
 				ClientCommandManager.literal("clientnetworktestcommand")

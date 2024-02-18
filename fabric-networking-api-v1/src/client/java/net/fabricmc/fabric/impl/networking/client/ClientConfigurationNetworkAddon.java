@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.networking.client;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
@@ -144,5 +145,8 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	private record ContextImpl(PacketSender responseSender) implements ClientConfigurationNetworking.Context {
+		private ContextImpl {
+			Objects.requireNonNull(responseSender, "responseSender");
+		}
 	}
 }

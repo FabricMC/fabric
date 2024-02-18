@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.networking.client;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
@@ -51,8 +52,8 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		super(ClientNetworkingImpl.PLAY, handler.getConnection(), "ClientPlayNetworkAddon for " + handler.getProfile().getName());
 		this.handler = handler;
 		this.client = client;
-		this.context = new ContextImpl(client, client.player, this);
 
+		this.context = new ContextImpl(client, this);
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkPhase.PLAY);
 	}
@@ -137,6 +138,15 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		return NetworkingImpl.isReservedCommonChannel(channelName);
 	}
 
-	private record ContextImpl(MinecraftClient client, ClientPlayerEntity player, PacketSender responseSender) implements ClientPlayNetworking.Context {
+	private record ContextImpl(MinecraftClient client, PacketSender responseSender) implements ClientPlayNetworking.Context {
+		private ContextImpl {
+			Objects.requireNonNull(client, "client");
+			Objects.requireNonNull(responseSender, "responseSender");
+		}
+
+		@Override
+		public ClientPlayerEntity player() {
+			return Objects.requireNonNull(client.player, "player");
+		}
 	}
 }
