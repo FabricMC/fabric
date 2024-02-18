@@ -36,8 +36,8 @@ public class CustomizedFluidRenderer extends SimpleFluidRenderHandler {
 		int light = getLight(world, pos);
 		float u1 = sprites[2].getFrameU(0);
 		float v1 = sprites[2].getFrameV(0);
-		float u2 = sprites[2].getFrameU(16);
-		float v2 = sprites[2].getFrameV(16 * fluidState.getHeight(world, pos));
+		float u2 = sprites[2].getFrameU(1);
+		float v2 = sprites[2].getFrameV(fluidState.getHeight(world, pos));
 
 		float x1 = (pos.getX() & 15) + 0.1f;
 		float y1 = pos.getY() & 15;
