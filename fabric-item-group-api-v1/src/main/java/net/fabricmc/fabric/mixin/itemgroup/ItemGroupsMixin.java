@@ -45,6 +45,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.impl.itemgroup.FabricItemGroup;
 
@@ -54,21 +55,40 @@ public class ItemGroupsMixin {
 	private static final int TABS_PER_PAGE = FabricItemGroup.TABS_PER_PAGE;
 
 	@Inject(method = "collect", at = @At("HEAD"), cancellable = true)
-	private static void collect(CallbackInfo ci) {
+	private static void deferDuplicateCheck(CallbackInfo ci) {
+		/*
+		 * Defer the duplication checks to when fabric performs them (see mixin below).
+		 * It is preserved just in case, but fabric's pagination logic should prevent any from happening anyway.
+		 */
+		ci.cancel();
+	}
+
+	@Inject(method = "updateEntries", at = @At("TAIL"))
+	private static void paginateGroups(CallbackInfo ci) {
 		final List<RegistryKey<ItemGroup>> vanillaGroups = List.of(BUILDING_BLOCKS, COLORED_BLOCKS, NATURAL, FUNCTIONAL, REDSTONE, HOTBAR, SEARCH, TOOLS, COMBAT, FOOD_AND_DRINK, INGREDIENTS, SPAWN_EGGS, OPERATOR, INVENTORY);
 
 		int count = 0;
 
-		// Sort the item groups to ensure they are in a deterministic order.
-		final List<RegistryKey<ItemGroup>> sortedItemGroups = Registries.ITEM_GROUP.getKeys().stream()
-				.sorted(Comparator.comparing(RegistryKey::getValue))
+		Comparator<RegistryEntry.Reference<ItemGroup>> entryComparator = (e1, e2) -> {
+			// Non-displayable groups should come last for proper pagination
+			int displayCompare = Boolean.compare(e1.value().shouldDisplay(), e2.value().shouldDisplay());
+
+			if (displayCompare != 0) {
+				return -displayCompare;
+			} else {
+				// Ensure a deterministic order
+				return e1.registryKey().getValue().compareTo(e2.registryKey().getValue());
+			}
+		};
+		final List<RegistryEntry.Reference<ItemGroup>> sortedItemGroups = Registries.ITEM_GROUP.streamEntries()
+				.sorted(entryComparator)
 				.toList();
 
-		for (RegistryKey<ItemGroup> registryKey : sortedItemGroups) {
-			final ItemGroup itemGroup = Registries.ITEM_GROUP.getOrThrow(registryKey);
+		for (RegistryEntry.Reference<ItemGroup> reference : sortedItemGroups) {
+			final ItemGroup itemGroup = reference.value();
 			final FabricItemGroup fabricItemGroup = (FabricItemGroup) itemGroup;
 
-			if (vanillaGroups.contains(registryKey)) {
+			if (vanillaGroups.contains(reference.registryKey())) {
 				// Vanilla group goes on the first page.
 				fabricItemGroup.setPage(0);
 				continue;
@@ -99,7 +119,5 @@ public class ItemGroupsMixin {
 				throw new IllegalArgumentException("Duplicate position: (%s) for item groups %s vs %s".formatted(position, displayName, existingName));
 			}
 		}
-
-		ci.cancel();
 	}
 }
