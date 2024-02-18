@@ -56,7 +56,7 @@ public final class VillagerTypeHelper {
 	 */
 	public static VillagerType register(Identifier id) {
 		Objects.requireNonNull(id, "Id of villager type cannot be null");
-		return Registry.register(Registries.VILLAGER_TYPE, new Identifier(id.toString()), new VillagerType(id.toString()));
+		return Registry.register(Registries.VILLAGER_TYPE, id, new VillagerType(id.toString()));
 	}
 
 	/**
