@@ -39,7 +39,7 @@ public class OverlayConditionsTest implements ModInitializer {
 	public void onInitialize() {
 		Optional<ModContainer> container = FabricLoader.getInstance().getModContainer(MOD_ID);
 
-		if (container.isEmpty() || !ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "overlay_test"), container.get(), ResourcePackActivationType.NORMAL)) {
+		if (container.isEmpty() || !ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "overlay_test"), container.get(), ResourcePackActivationType.DEFAULT_ENABLED)) {
 			throw new AssertionError("Could not register overlay_test datapack.");
 		}
 

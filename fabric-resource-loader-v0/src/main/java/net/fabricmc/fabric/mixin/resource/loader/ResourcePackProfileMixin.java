@@ -70,5 +70,4 @@ abstract class ResourcePackProfileMixin implements FabricResourcePackProfile {
 	public void fabric_setParentsPredicate(Predicate<Set<String>> predicate) {
 		this.parentsPredicate = predicate;
 	}
-
 }

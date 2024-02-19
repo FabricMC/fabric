@@ -126,14 +126,13 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 						ModNioResourcePack pack = entry.getRight();
 						if (metadata.overlays().isEmpty()) {
 							return pack;
-						} else {
-							List<ResourcePack> overlays = new ArrayList<>(metadata.overlays().size());
-							for (String overlay : metadata.overlays()) {
-								overlays.add(pack.createOverlay(overlay));
-							}
-
-							return new OverlayResourcePack(pack, overlays);
 						}
+						List<ResourcePack> overlays = new ArrayList<>(metadata.overlays().size());
+						for (String overlay : metadata.overlays()) {
+							overlays.add(pack.createOverlay(overlay));
+						}
+
+						return new OverlayResourcePack(pack, overlays);
 					}
 				}, resourceType, ResourcePackProfile.InsertionPosition.TOP, new BuiltinModResourcePackSource(pack.getFabricModMetadata().getName()));
 				consumer.accept(profile);
