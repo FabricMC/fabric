@@ -5,3 +5,10 @@ testDependencies(project, [
 	':fabric-resource-loader-v0',
 	':fabric-command-api-v2'
 ])
+repositories {
+    maven { url "https://maven.kikugie.dev/releases"}
+}
+
+dependencies {
+    include(modImplementation "dev.kikugie:crash-pipe:0.1.0")
+}
