@@ -56,6 +56,7 @@ public abstract class TestFunctionsMixin {
 				gameTest.required(),
 				gameTest.requiredSuccesses(),
 				gameTest.maxAttempts(),
+				gameTest.method_57098(),
 				FabricGameTestHelper.getTestMethodInvoker(method)
 		);
 

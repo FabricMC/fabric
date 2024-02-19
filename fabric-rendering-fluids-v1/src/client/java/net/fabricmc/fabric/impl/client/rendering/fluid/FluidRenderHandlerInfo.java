@@ -16,7 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.rendering.fluid;
 
-import net.minecraft.block.BlockState;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
@@ -24,41 +25,32 @@ import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 
-public class FluidRendererHookContainer {
-	public BlockRenderView view;
-	public BlockPos pos;
-	public BlockState blockState;
-	public FluidState fluidState;
-	public FluidRenderHandler handler;
+public class FluidRenderHandlerInfo {
 	public final Sprite[] sprites = new Sprite[2];
-	public Sprite overlay;
+	@Nullable
+	public FluidRenderHandler handler;
 	public boolean hasOverlay;
+	public Sprite overlaySprite;
 
-	public void getSprites(BlockRenderView world, BlockPos pos, FluidState fluidState) {
-		if (handler != null) {
-			Sprite[] sprites = handler.getFluidSprites(world, pos, fluidState);
+	public void setup(FluidRenderHandler handler, BlockRenderView world, BlockPos pos, FluidState fluidState) {
+		this.handler = handler;
 
-			this.sprites[0] = sprites[0];
-			this.sprites[1] = sprites[1];
+		Sprite[] sprites = handler.getFluidSprites(world, pos, fluidState);
 
-			if (sprites.length > 2) {
-				hasOverlay = true;
-				overlay = sprites[2];
-			}
-		} else {
-			hasOverlay = false;
+		this.sprites[0] = sprites[0];
+		this.sprites[1] = sprites[1];
+
+		if (sprites.length > 2) {
+			hasOverlay = true;
+			overlaySprite = sprites[2];
 		}
 	}
 
 	public void clear() {
-		view = null;
-		pos = null;
-		blockState = null;
-		fluidState = null;
-		handler = null;
 		sprites[0] = null;
 		sprites[1] = null;
-		overlay = null;
+		handler = null;
 		hasOverlay = false;
+		overlaySprite = null;
 	}
 }

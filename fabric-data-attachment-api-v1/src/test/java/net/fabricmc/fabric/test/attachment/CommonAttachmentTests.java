@@ -24,9 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -45,9 +45,13 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MarkerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.WorldChunk;
 
@@ -134,17 +138,36 @@ public class CommonAttachmentTests {
 		map.put(dummy, 0.5d);
 		var fakeSave = new NbtCompound();
 
-		AttachmentSerializingImpl.serializeAttachmentData(fakeSave, null, map);
+		AttachmentSerializingImpl.serializeAttachmentData(fakeSave, mockDRM(), map);
 		assertTrue(fakeSave.contains(AttachmentTarget.NBT_ATTACHMENT_KEY, NbtElement.COMPOUND_TYPE));
 		assertTrue(fakeSave.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).contains(dummy.identifier().toString()));
 
-		map = AttachmentSerializingImpl.deserializeAttachmentData(fakeSave, null);
+		map = AttachmentSerializingImpl.deserializeAttachmentData(fakeSave, mockDRM());
 		assertEquals(1, map.size());
 		Map.Entry<AttachmentType<?>, Object> entry = map.entrySet().stream().findFirst().orElseThrow();
 		// in this case the key should be the exact same object
 		// but in practice this is meaningless because on a dedicated server the JVM restarted
 		assertEquals(dummy.identifier(), entry.getKey().identifier());
 		assertEquals(0.5d, entry.getValue());
+	}
+
+	@Test
+	void deserializeNull() {
+		var nbt = new NbtCompound();
+		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(nbt, mockDRM()));
+
+		nbt.put(new Identifier("test").toString(), new NbtCompound());
+		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(nbt, mockDRM()));
+	}
+
+	@Test
+	void serializeNullOrEmpty() {
+		var nbt = new NbtCompound();
+		AttachmentSerializingImpl.serializeAttachmentData(nbt, mockDRM(), null);
+		assertFalse(nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+
+		AttachmentSerializingImpl.serializeAttachmentData(nbt, mockDRM(), new IdentityHashMap<>());
+		assertFalse(nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
 	}
 
 	@Test
@@ -173,7 +196,10 @@ public class CommonAttachmentTests {
 
 	@Test
 	void testEntityPersistence() {
-		Entity entity = new MarkerEntity(EntityType.MARKER, mock());
+		DynamicRegistryManager drm = mockDRM();
+		World mockWorld = mock(World.class);
+		when(mockWorld.getRegistryManager()).thenReturn(drm);
+		Entity entity = new MarkerEntity(EntityType.MARKER, mockWorld);
 		assertFalse(entity.hasAttached(PERSISTENT));
 
 		int expected = 1;
@@ -181,9 +207,8 @@ public class CommonAttachmentTests {
 		NbtCompound fakeSave = new NbtCompound();
 		entity.writeNbt(fakeSave);
 
-		entity = spy(new MarkerEntity(EntityType.MARKER, mock())); // fresh object, like on restart
+		entity = new MarkerEntity(EntityType.MARKER, mockWorld); // fresh object, like on restart
 		entity.setChangeListener(mock());
-		doNothing().when(entity).calculateDimensions();
 		entity.readNbt(fakeSave);
 		assertTrue(entity.hasAttached(PERSISTENT));
 		assertEquals(expected, entity.getAttached(PERSISTENT));
@@ -196,9 +221,9 @@ public class CommonAttachmentTests {
 
 		int expected = 1;
 		blockEntity.setAttached(PERSISTENT, expected);
-		NbtCompound fakeSave = blockEntity.createNbtWithId(null);
+		NbtCompound fakeSave = blockEntity.createNbtWithId(mockDRM());
 
-		blockEntity = BlockEntity.createFromNbt(BlockPos.ORIGIN, mock(), fakeSave, null);
+		blockEntity = BlockEntity.createFromNbt(BlockPos.ORIGIN, mock(), fakeSave, mockDRM());
 		assertNotNull(blockEntity);
 		assertTrue(blockEntity.hasAttached(PERSISTENT));
 		assertEquals(expected, blockEntity.getAttached(PERSISTENT));
@@ -213,10 +238,10 @@ public class CommonAttachmentTests {
 
 		int expected = 1;
 		world.setAttached(PERSISTENT, expected);
-		NbtCompound fakeSave = state.writeNbt(new NbtCompound(), null);
+		NbtCompound fakeSave = state.writeNbt(new NbtCompound(), mockDRM());
 
 		world = mock(ServerWorld.class, CALLS_REAL_METHODS);
-		AttachmentPersistentState.read(world, fakeSave, null);
+		AttachmentPersistentState.read(world, fakeSave, mockDRM());
 		assertTrue(world.hasAttached(PERSISTENT));
 		assertEquals(expected, world.getAttached(PERSISTENT));
 	}
@@ -225,4 +250,10 @@ public class CommonAttachmentTests {
 	 * Chunk serializing is coupled with world saving in ChunkSerializer which is too much of a pain to mock,
 	 * so testing is handled by the testmod instead.
 	 */
+
+	private static DynamicRegistryManager mockDRM() {
+		DynamicRegistryManager drm = mock(DynamicRegistryManager.class);
+		when(drm.method_57093(any())).thenReturn((RegistryOps<Object>) (Object) RegistryOps.of(NbtOps.INSTANCE, drm));
+		return drm;
+	}
 }

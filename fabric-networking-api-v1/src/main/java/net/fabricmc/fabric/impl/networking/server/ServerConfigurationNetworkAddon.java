@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.networking.server;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.PacketCallbacks;
@@ -32,7 +33,6 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.S2CConfigurationChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
@@ -117,7 +117,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	public Packet<?> createPacket(CustomPayload packet) {
-		return ServerPlayNetworking.createS2CPacket(packet);
+		return ServerConfigurationNetworking.createS2CPacket(packet);
 	}
 
 	@Override
@@ -181,5 +181,9 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	private record ContextImpl(ServerConfigurationNetworkHandler networkHandler, PacketSender responseSender) implements ServerConfigurationNetworking.Context {
+		private ContextImpl {
+			Objects.requireNonNull(networkHandler, "networkHandler");
+			Objects.requireNonNull(responseSender, "responseSender");
+		}
 	}
 }

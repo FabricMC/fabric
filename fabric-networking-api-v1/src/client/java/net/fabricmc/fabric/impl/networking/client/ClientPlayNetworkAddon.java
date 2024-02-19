@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.networking.client;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
@@ -34,24 +34,16 @@ import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
-import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 
-public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientPlayNetworking.PlayPayloadHandler<?>> {
-	private final ClientPlayNetworkHandler handler;
-	private final MinecraftClient client;
-	private final ClientPlayNetworking.Context context;
-	private boolean sentInitialRegisterPacket;
+public final class ClientPlayNetworkAddon extends ClientCommonNetworkAddon<ClientPlayNetworking.PlayPayloadHandler<?>, ClientPlayNetworkHandler> {
+	private final ContextImpl context;
 
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	public ClientPlayNetworkAddon(ClientPlayNetworkHandler handler, MinecraftClient client) {
-		super(ClientNetworkingImpl.PLAY, handler.getConnection(), "ClientPlayNetworkAddon for " + handler.getProfile().getName());
-		this.handler = handler;
-		this.client = client;
-		this.context = new ContextImpl(client, client.player, this);
+		super(ClientNetworkingImpl.PLAY, handler.getConnection(), "ClientPlayNetworkAddon for " + handler.getProfile().getName(), handler, client);
+		this.context = new ContextImpl(client, this);
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkPhase.PLAY);
@@ -62,6 +54,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		ClientPlayConnectionEvents.INIT.invoker().onPlayInit(this.handler, this.client);
 	}
 
+	@Override
 	public void onServerReady() {
 		try {
 			ClientPlayConnectionEvents.JOIN.invoker().onPlayReady(this.handler, this, this.client);
@@ -71,7 +64,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 		// The client cannot send any packets, including `minecraft:register` until after GameJoinS2CPacket is received.
 		this.sendInitialChannelRegistrationPacket();
-		this.sentInitialRegisterPacket = true;
+		super.onServerReady();
 	}
 
 	@Override
@@ -82,12 +75,6 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	// impl details
-
-	@Override
-	protected void schedule(Runnable task) {
-		MinecraftClient.getInstance().execute(task);
-	}
-
 	@Override
 	public Packet<?> createPacket(CustomPayload packet) {
 		return ClientPlayNetworking.createC2SPacket(packet);
@@ -104,39 +91,19 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	protected void handleRegistration(Identifier channelName) {
-		// If we can already send packets, immediately send the register packet for this channel
-		if (this.sentInitialRegisterPacket) {
-			final RegistrationPayload payload = this.createRegistrationPayload(RegistrationPayload.REGISTER, Collections.singleton(channelName));
-
-			if (payload != null) {
-				this.sendPacket(payload);
-			}
-		}
-	}
-
-	@Override
-	protected void handleUnregistration(Identifier channelName) {
-		// If we can already send packets, immediately send the unregister packet for this channel
-		if (this.sentInitialRegisterPacket) {
-			final RegistrationPayload payload = this.createRegistrationPayload(RegistrationPayload.UNREGISTER, Collections.singleton(channelName));
-
-			if (payload != null) {
-				this.sendPacket(payload);
-			}
-		}
-	}
-
-	@Override
 	protected void invokeDisconnectEvent() {
 		ClientPlayConnectionEvents.DISCONNECT.invoker().onPlayDisconnect(this.handler, this.client);
 	}
 
-	@Override
-	protected boolean isReservedChannel(Identifier channelName) {
-		return NetworkingImpl.isReservedCommonChannel(channelName);
-	}
+	private record ContextImpl(MinecraftClient client, PacketSender responseSender) implements ClientPlayNetworking.Context {
+		private ContextImpl {
+			Objects.requireNonNull(client, "client");
+			Objects.requireNonNull(responseSender, "responseSender");
+		}
 
-	private record ContextImpl(MinecraftClient client, ClientPlayerEntity player, PacketSender responseSender) implements ClientPlayNetworking.Context {
+		@Override
+		public ClientPlayerEntity player() {
+			return Objects.requireNonNull(client.player, "player");
+		}
 	}
 }

@@ -59,7 +59,7 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	public CompletableFuture<?> run(DataWriter writer) {
 		return this.registriesFuture.thenCompose(lookup -> {
 			Map<Identifier, JsonElement> entries = new HashMap<>();
-			RegistryOps<JsonElement> ops = RegistryOps.of(JsonOps.INSTANCE, lookup);
+			RegistryOps<JsonElement> ops = lookup.method_57093(JsonOps.INSTANCE);
 
 			BiConsumer<Identifier, T> provider = (id, value) -> {
 				JsonElement json = this.convert(id, value, ops);

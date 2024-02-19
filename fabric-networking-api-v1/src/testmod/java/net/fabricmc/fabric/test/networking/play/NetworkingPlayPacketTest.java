@@ -43,6 +43,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 import net.fabricmc.loader.api.FabricLoader;
@@ -105,6 +106,8 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			NetworkingPlayPacketTest.registerCommand(dispatcher);
 		});
+
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> sender.sendPacket(new OverlayPacket(Text.literal("Fabric API"))));
 
 		ServerTickEvents.START_SERVER_TICK.register(server -> {
 			if (!spamUnknownPackets) {

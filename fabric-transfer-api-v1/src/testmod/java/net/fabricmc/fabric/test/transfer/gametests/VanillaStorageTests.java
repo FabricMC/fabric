@@ -282,7 +282,7 @@ public class VanillaStorageTests {
 	/**
 	 * Regression test for <a href="https://github.com/FabricMC/fabric/issues/2810">double chest wrapper only updating modified halves</a>.
 	 */
-	@GameTest(templateName = "fabric-transfer-api-v1-testmod:double_chest_comparators")
+	@GameTest(templateName = "fabric-transfer-api-v1-testmod:double_chest_comparators", method_57098 = true)
 	public void testDoubleChestComparator(TestContext context) {
 		BlockPos chestPos = new BlockPos(2, 2, 2);
 		Storage<ItemVariant> storage = ItemStorage.SIDED.find(context.getWorld(), context.getAbsolutePos(chestPos), Direction.UP);

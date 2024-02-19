@@ -68,7 +68,7 @@ public final class FabricLootTableProviderImpl {
 		});
 
 		return registryLookup.thenCompose(lookup -> {
-			RegistryOps<JsonElement> ops = RegistryOps.of(JsonOps.INSTANCE, lookup);
+			RegistryOps<JsonElement> ops = lookup.method_57093(JsonOps.INSTANCE);
 			final List<CompletableFuture<?>> futures = new ArrayList<>();
 
 			for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
