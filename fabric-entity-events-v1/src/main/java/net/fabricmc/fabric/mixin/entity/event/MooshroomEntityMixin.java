@@ -12,7 +12,6 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 
 @Mixin(MooshroomEntity.class)
 class MooshroomEntityMixin {
-
 	@ModifyArg(
 			method = "sheared",
 			at = @At(ordinal = 0, value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z")
