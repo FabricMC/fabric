@@ -6,8 +6,7 @@
     "client.BakedModelMixin",
     "client.MultipartBakedModelMixin",
     "client.WeightedBakedModelMixin",
-    "client.SpriteAtlasTextureMixin",
-    "client.OverlayVertexConsumerMixin"
+    "client.SpriteAtlasTextureMixin"
   ],
   "injectors": {
     "defaultRequire": 1
