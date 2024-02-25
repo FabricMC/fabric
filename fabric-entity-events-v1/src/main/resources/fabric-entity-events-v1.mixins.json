@@ -6,6 +6,7 @@
     "EntityMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
+    "MooshroomEntityMixin",
     "PigEntityMixin",
     "PlayerEntityMixin",
     "PlayerManagerMixin",
