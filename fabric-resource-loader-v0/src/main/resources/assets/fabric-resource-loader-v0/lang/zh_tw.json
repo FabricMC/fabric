@@ -3,5 +3,7 @@
   "pack.source.fabricmod": "Fabric 模組",
   "pack.source.builtinMod": "內建：%s",
   "pack.name.fabricMod": "Fabric 模組「%s」",
-  "pack.name.fabricMods": "Fabric 模組"
+  "pack.name.fabricMods": "Fabric 模組",
+  "pack.name.fabricMod.subPack": "Fabric 模組「%s」(%s)",
+  "commands.datapack.fabric.internal": "無法啟用或停用內建資料夾「%s」。"
 }

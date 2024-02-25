@@ -1,0 +1,7 @@
+{
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Ricevuta una voce di registro sconosciuta a questo client.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Ricevute %d voci di registro sconosciute a questo client.\n",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Questo problema solitamente è causato da un set di mod non compatibile tra client e server.",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Per ulteriori dettagli, consultare i registri del client.\nLe seguenti voci di registro potrebbero essere correlate:\n\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "E altri %d..."
+}

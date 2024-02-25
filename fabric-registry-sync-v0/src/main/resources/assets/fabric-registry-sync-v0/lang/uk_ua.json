@@ -1,0 +1,7 @@
+{
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Отримано запис в реєстрі, невідомий для цього клієнту.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Отримано %d записів реєстру, невідомих для цього клієнту.\n",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Зазвичай це зумовлено невідповідністю наборів модів між клієнтом та сервером.",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Перегляньте логи ігрового клієнта для більш докладної інформації\nТакі простори імен записів реєстру можуть бути пов’язані:\n\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "І ще %d..."
+}
