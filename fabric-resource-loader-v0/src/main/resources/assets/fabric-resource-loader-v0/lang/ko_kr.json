@@ -5,5 +5,5 @@
   "pack.name.fabricMod": "\"%s\" Fabric 모드",
   "pack.name.fabricMods": "Fabric 모드",
   "pack.name.fabricMod.subPack": "\"%s\" (%s) Fabric 모드",
-  "commands.datapack.fabric.internal": "Fabric 내부 팩 \"%s\"을(를) 활성화 또는 비활성화 할 수 없습니다."
+  "commands.datapack.fabric.internal": "Fabric 내부 팩 \"%s\"을(를) 활성화 또는 비활성화할 수 없습니다."
 }
