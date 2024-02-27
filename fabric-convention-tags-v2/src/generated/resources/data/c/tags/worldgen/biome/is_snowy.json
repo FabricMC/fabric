@@ -3,7 +3,11 @@
   "values": [
     "minecraft:snowy_beach",
     "minecraft:snowy_plains",
+    "minecraft:ice_spikes",
+    "minecraft:snowy_taiga",
+    "minecraft:grove",
     "minecraft:snowy_slopes",
-    "minecraft:snowy_taiga"
+    "minecraft:jagged_peaks",
+    "minecraft:frozen_peaks"
   ]
 }

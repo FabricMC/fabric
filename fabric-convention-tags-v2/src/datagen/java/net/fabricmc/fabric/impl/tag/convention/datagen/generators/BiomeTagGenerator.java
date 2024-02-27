@@ -119,8 +119,12 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SNOWY)
 				.add(BiomeKeys.SNOWY_BEACH)
 				.add(BiomeKeys.SNOWY_PLAINS)
+				.add(BiomeKeys.ICE_SPIKES)
+				.add(BiomeKeys.SNOWY_TAIGA)
+				.add(BiomeKeys.GROVE)
 				.add(BiomeKeys.SNOWY_SLOPES)
-				.add(BiomeKeys.SNOWY_TAIGA);
+				.add(BiomeKeys.JAGGED_PEAKS)
+				.add(BiomeKeys.FROZEN_PEAKS);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_BEACH)
 				.addOptionalTag(BiomeTags.IS_BEACH)
 				.add(BiomeKeys.STONY_SHORE);
