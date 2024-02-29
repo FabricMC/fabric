@@ -61,22 +61,6 @@ public abstract class ItemStackMixin implements FabricItemStack {
 		original.call(instance, amount, random, serverPlayerEntity, runnable);
 	}
 
-	// TODO 1.20.5
-//	@Redirect(
-//			method = "getAttributeModifiers",
-//			at = @At(
-//					value = "INVOKE",
-//					target = "Lnet/minecraft/item/Item;getAttributeModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;"
-//			)
-//	)
-//	public Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> hookGetAttributeModifiers(Item item, EquipmentSlot slot) {
-//		ItemStack stack = (ItemStack) (Object) this;
-//		//we need to ensure it is modifiable for the callback, use linked map to preserve ordering
-//		Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> attributeModifiers = LinkedHashMultimap.create(item.getAttributeModifiers(stack, slot));
-//		ModifyItemAttributeModifiersCallback.EVENT.invoker().modifyAttributeModifiers(stack, slot, attributeModifiers);
-//		return attributeModifiers;
-//	}
-
 	@Redirect(
 			method = "isSuitableFor",
 			at = @At(

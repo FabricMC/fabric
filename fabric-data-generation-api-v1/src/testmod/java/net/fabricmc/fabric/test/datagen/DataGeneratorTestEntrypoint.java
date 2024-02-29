@@ -250,12 +250,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class ExistingEnglishLangProvider extends FabricLanguageProvider {
-		private ExistingEnglishLangProvider(FabricDataOutput output) {
-			super(output);
+		private ExistingEnglishLangProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(output, registriesFuture);
 		}
 
 		@Override
-		public void generateTranslations(TranslationBuilder translationBuilder) {
+		public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, TranslationBuilder translationBuilder) {
 			translationBuilder.add(SIMPLE_BLOCK, "Simple Block");
 			translationBuilder.add(new Identifier(MOD_ID, "identifier_test"), "Identifier Test");
 			translationBuilder.add(EntityType.ALLAY, "Allay");
@@ -282,12 +282,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class JapaneseLangProvider extends FabricLanguageProvider {
-		private JapaneseLangProvider(FabricDataOutput output) {
-			super(output, "ja_jp");
+		private JapaneseLangProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(output, "ja_jp", registriesFuture);
 		}
 
 		@Override
-		public void generateTranslations(TranslationBuilder translationBuilder) {
+		public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, TranslationBuilder translationBuilder) {
 			translationBuilder.add(SIMPLE_BLOCK, "シンプルブロック");
 			translationBuilder.add(SIMPLE_ITEM_GROUP, "データ生成項目");
 			translationBuilder.add("this.is.a.test", "こんにちは");
@@ -369,7 +369,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		public void generateAdvancement(Consumer<AdvancementEntry> consumer) {
+		public void generateAdvancement(RegistryWrapper.WrapperLookup registryLookup, Consumer<AdvancementEntry> consumer) {
 			AdvancementEntry root = Advancement.Builder.create()
 					.display(
 							SIMPLE_BLOCK,

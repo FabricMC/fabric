@@ -12,7 +12,6 @@
     "main": [
       "net.fabricmc.fabric.test.item.CustomDamageTest",
       "net.fabricmc.fabric.test.item.ItemUpdateAnimationTest",
-      "net.fabricmc.fabric.test.item.ModifyItemAttributeModifiersCallbackTest",
       "net.fabricmc.fabric.test.item.ArmorKnockbackResistanceTest",
       "net.fabricmc.fabric.test.item.FoodGameInitializer"
     ],
