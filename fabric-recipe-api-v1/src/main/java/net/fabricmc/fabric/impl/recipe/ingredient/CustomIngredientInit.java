@@ -20,7 +20,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AllIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AnyIngredient;
-import net.fabricmc.fabric.impl.recipe.ingredient.builtin.ComponentIngredient;
+import net.fabricmc.fabric.impl.recipe.ingredient.builtin.ComponentsIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.DifferenceIngredient;
 
 /**
@@ -32,6 +32,6 @@ public class CustomIngredientInit implements ModInitializer {
 		CustomIngredientSerializer.register(AllIngredient.SERIALIZER);
 		CustomIngredientSerializer.register(AnyIngredient.SERIALIZER);
 		CustomIngredientSerializer.register(DifferenceIngredient.SERIALIZER);
-		CustomIngredientSerializer.register(ComponentIngredient.SERIALIZER);
+		CustomIngredientSerializer.register(ComponentsIngredient.SERIALIZER);
 	}
 }

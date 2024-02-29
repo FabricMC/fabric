@@ -26,7 +26,7 @@ import net.minecraft.recipe.Ingredient;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AllIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AnyIngredient;
-import net.fabricmc.fabric.impl.recipe.ingredient.builtin.ComponentIngredient;
+import net.fabricmc.fabric.impl.recipe.ingredient.builtin.ComponentsIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.DifferenceIngredient;
 
 /**
@@ -111,7 +111,7 @@ public final class DefaultCustomIngredients {
 		Objects.requireNonNull(base, "Base ingredient cannot be null");
 		Objects.requireNonNull(components, "Component changes cannot be null");
 
-		return new ComponentIngredient(base, components).toVanilla();
+		return new ComponentsIngredient(base, components).toVanilla();
 	}
 
 	/**
