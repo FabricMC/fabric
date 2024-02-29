@@ -74,7 +74,7 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 * Return true if the item and tag of this variant match those of the passed stack, and false otherwise.
 	 */
 	default boolean matches(ItemStack stack) {
-		return ItemStack.areItemsEqual(toStack(), stack);
+		return ItemStack.areItemsAndNbtEqual(toStack(), stack);
 	}
 
 	/**
