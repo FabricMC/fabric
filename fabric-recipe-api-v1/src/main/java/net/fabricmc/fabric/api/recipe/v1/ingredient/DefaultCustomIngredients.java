@@ -19,17 +19,15 @@ package net.fabricmc.fabric.api.recipe.v1.ingredient;
 import java.util.List;
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
-
+import net.minecraft.component.ComponentChanges;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.recipe.Ingredient;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AllIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AnyIngredient;
+import net.fabricmc.fabric.impl.recipe.ingredient.builtin.ComponentIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.DifferenceIngredient;
-import net.fabricmc.fabric.impl.recipe.ingredient.builtin.NbtIngredient;
 
 /**
  * Factory methods for the custom ingredients directly provided by Fabric API.
@@ -121,22 +119,23 @@ public final class DefaultCustomIngredients {
 	 *
 	 * @throws IllegalArgumentException if {@code strict} is {@code false} and the NBT is {@code null}
 	 */
-	public static Ingredient nbt(Ingredient base, @Nullable NbtCompound nbt, boolean strict) {
+	public static Ingredient component(Ingredient base, ComponentChanges components, boolean strict) {
 		Objects.requireNonNull(base, "Base ingredient cannot be null");
+		Objects.requireNonNull(components, "Component changes cannot be null");
 
-		return new NbtIngredient(base, nbt, strict).toVanilla();
+		return new ComponentIngredient(base, components, strict).toVanilla();
 	}
 
 	/**
 	 * Creates an ingredient that matches the passed template stack, including NBT.
 	 * Note that the count of the stack is ignored.
 	 *
-	 * @see #nbt(Ingredient, NbtCompound, boolean)
+	 * @see #component(Ingredient, ComponentChanges, boolean)
 	 */
-	public static Ingredient nbt(ItemStack stack, boolean strict) {
+	public static Ingredient component(ItemStack stack, boolean strict) {
 		Objects.requireNonNull(stack, "Stack cannot be null");
 
-		return nbt(Ingredient.ofItems(stack.getItem()), stack.getNbt(), strict);
+		return component(Ingredient.ofItems(stack.getItem()), stack.getComponentChanges(), strict);
 	}
 
 	private DefaultCustomIngredients() {

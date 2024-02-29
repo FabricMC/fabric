@@ -72,7 +72,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 	}
 
 	@Override
-	public void accept(BiConsumer<Identifier, LootTable.Builder> biConsumer) {
+	public void accept(RegistryWrapper.WrapperLookup registryLookup, BiConsumer<Identifier, LootTable.Builder> biConsumer) {
 		generate();
 
 		for (Map.Entry<Identifier, LootTable.Builder> entry : lootTables.entrySet()) {

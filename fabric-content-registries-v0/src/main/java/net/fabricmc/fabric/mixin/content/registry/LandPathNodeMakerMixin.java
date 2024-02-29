@@ -48,12 +48,13 @@ public class LandPathNodeMakerMixin {
 	/**
 	 * Overrides the node type for the specified position, if the position is found as neighbor block in a path.
 	 */
-	@Inject(method = "getNodeTypeFromNeighbors", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/ai/pathing/LandPathNodeMaker;getCommonNodeType(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/entity/ai/pathing/PathNodeType;"), cancellable = true)
-	private static void getNodeTypeFromNeighbors(BlockView world, BlockPos.Mutable pos, PathNodeType nodeType, CallbackInfoReturnable<PathNodeType> cir) {
-		PathNodeType neighborNodeType = LandPathNodeTypesRegistry.getPathNodeType(world.getBlockState(pos), world, pos, true);
-
-		if (neighborNodeType != null) {
-			cir.setReturnValue(neighborNodeType);
-		}
-	}
+	// TODO 1.20.5
+//	@Inject(method = "getNodeTypeFromNeighbors", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/ai/pathing/LandPathNodeMaker;getCommonNodeType(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/entity/ai/pathing/PathNodeType;"), cancellable = true)
+//	private static void getNodeTypeFromNeighbors(BlockView world, BlockPos.Mutable pos, PathNodeType nodeType, CallbackInfoReturnable<PathNodeType> cir) {
+//		PathNodeType neighborNodeType = LandPathNodeTypesRegistry.getPathNodeType(world.getBlockState(pos), world, pos, true);
+//
+//		if (neighborNodeType != null) {
+//			cir.setReturnValue(neighborNodeType);
+//		}
+//	}
 }

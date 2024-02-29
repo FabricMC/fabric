@@ -16,17 +16,19 @@
 
 package net.fabricmc.fabric.test.item;
 
+import net.minecraft.component.DataComponentType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ToolMaterials;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.potion.Potions;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.dynamic.Codecs;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
@@ -35,6 +37,8 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 
 public class CustomDamageTest implements ModInitializer {
 	public static final Item WEIRD_PICK = new WeirdPick();
+	public static final DataComponentType<Integer> WEIRD = Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier("fabric-item-api-v1-testmod", "weird"),
+																DataComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
 
 	@Override
 	public void onInitialize() {
@@ -48,20 +52,19 @@ public class CustomDamageTest implements ModInitializer {
 		if (entity.isSneaking()) {
 			return amount;
 		} else {
-			NbtCompound tag = stack.getOrCreateNbt();
-			tag.putInt("weird", tag.getInt("weird") + 1);
+			stack.set(WEIRD, stack.getOrDefault(WEIRD, 0) + 1);
 			return 0;
 		}
 	};
 
 	public static class WeirdPick extends PickaxeItem {
 		protected WeirdPick() {
-			super(ToolMaterials.GOLD, 1, -2.8F, new Item.Settings().customDamage(WEIRD_DAMAGE_HANDLER));
+			super(ToolMaterials.GOLD, new Item.Settings().customDamage(WEIRD_DAMAGE_HANDLER));
 		}
 
 		@Override
 		public Text getName(ItemStack stack) {
-			int v = stack.getOrCreateNbt().getInt("weird");
+			int v = stack.getOrDefault(WEIRD, 0);
 			return super.getName(stack).copy().append(" (Weird Value: " + v + ")");
 		}
 

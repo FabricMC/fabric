@@ -86,7 +86,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 		generateAdvancement(advancements::add);
 
 		return this.registryLookup.thenCompose(lookup -> {
-			RegistryOps<JsonElement> ops = lookup.method_57093(JsonOps.INSTANCE);
+			RegistryOps<JsonElement> ops = lookup.getOps(JsonOps.INSTANCE);
 			final List<CompletableFuture<?>> futures = new ArrayList<>();
 
 			for (AdvancementEntry advancement : advancements) {

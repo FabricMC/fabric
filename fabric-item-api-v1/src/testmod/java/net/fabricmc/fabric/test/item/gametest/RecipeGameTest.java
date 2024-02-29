@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.item.gametest;
 
-import java.util.Objects;
-
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -129,8 +127,8 @@ public class RecipeGameTest implements FabricGameTest {
 			throw new GameTestException("Size doesnt match. " + extraErrorInfo);
 		}
 
-		if (!Objects.equals(currentStack.getNbt(), expectedStack.getNbt())) {
-			throw new GameTestException("Nbt doesnt match. " + extraErrorInfo);
+		if (!ItemStack.areItemsAndNbtEqual(currentStack, expectedStack)) {
+			throw new GameTestException("Stack doesnt match. " + extraErrorInfo);
 		}
 	}
 

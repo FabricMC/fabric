@@ -58,17 +58,17 @@ public final class FabricLootTableProviderImpl {
 		HashMap<Identifier, LootTable> builders = Maps.newHashMap();
 		HashMap<Identifier, ConditionJsonProvider[]> conditionMap = new HashMap<>();
 
-		provider.accept((identifier, builder) -> {
-			ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(builder);
-			conditionMap.put(identifier, conditions);
+		return registryLookup.thenApply(lookup -> {
+			provider.accept(lookup, (identifier, builder) -> {
+				ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(builder);
+				conditionMap.put(identifier, conditions);
 
-			if (builders.put(identifier, builder.type(lootContextType).build()) != null) {
-				throw new IllegalStateException("Duplicate loot table " + identifier);
-			}
-		});
+				if (builders.put(identifier, builder.type(lootContextType).build()) != null) {
+					throw new IllegalStateException("Duplicate loot table " + identifier);
+				}
+			});
 
-		return registryLookup.thenCompose(lookup -> {
-			RegistryOps<JsonElement> ops = lookup.method_57093(JsonOps.INSTANCE);
+			RegistryOps<JsonElement> ops = lookup.getOps(JsonOps.INSTANCE);
 			final List<CompletableFuture<?>> futures = new ArrayList<>();
 
 			for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {

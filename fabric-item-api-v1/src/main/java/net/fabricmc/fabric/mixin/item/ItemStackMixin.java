@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.item;
 
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -31,17 +29,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.FabricItemStack;
-import net.fabricmc.fabric.api.item.v1.ModifyItemAttributeModifiersCallback;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 @Mixin(ItemStack.class)
@@ -67,20 +61,21 @@ public abstract class ItemStackMixin implements FabricItemStack {
 		original.call(instance, amount, random, serverPlayerEntity, runnable);
 	}
 
-	@Redirect(
-			method = "getAttributeModifiers",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/item/Item;getAttributeModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;"
-			)
-	)
-	public Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> hookGetAttributeModifiers(Item item, EquipmentSlot slot) {
-		ItemStack stack = (ItemStack) (Object) this;
-		//we need to ensure it is modifiable for the callback, use linked map to preserve ordering
-		Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> attributeModifiers = LinkedHashMultimap.create(item.getAttributeModifiers(stack, slot));
-		ModifyItemAttributeModifiersCallback.EVENT.invoker().modifyAttributeModifiers(stack, slot, attributeModifiers);
-		return attributeModifiers;
-	}
+	// TODO 1.20.5
+//	@Redirect(
+//			method = "getAttributeModifiers",
+//			at = @At(
+//					value = "INVOKE",
+//					target = "Lnet/minecraft/item/Item;getAttributeModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;"
+//			)
+//	)
+//	public Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> hookGetAttributeModifiers(Item item, EquipmentSlot slot) {
+//		ItemStack stack = (ItemStack) (Object) this;
+//		//we need to ensure it is modifiable for the callback, use linked map to preserve ordering
+//		Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> attributeModifiers = LinkedHashMultimap.create(item.getAttributeModifiers(stack, slot));
+//		ModifyItemAttributeModifiersCallback.EVENT.invoker().modifyAttributeModifiers(stack, slot, attributeModifiers);
+//		return attributeModifiers;
+//	}
 
 	@Redirect(
 			method = "isSuitableFor",

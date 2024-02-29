@@ -19,9 +19,10 @@ package net.fabricmc.fabric.test.recipe.ingredient;
 import java.util.List;
 import java.util.Objects;
 
+import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
@@ -91,16 +92,17 @@ public class IngredientMatchTests {
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testNbtIngredient(TestContext context) {
 		for (boolean strict : List.of(true, false)) {
-			NbtCompound undamagedNbt = new NbtCompound();
-			undamagedNbt.putInt(ItemStack.DAMAGE_KEY, 0);
+			ComponentChanges undamagedComponents = ComponentChanges.builder()
+					.add(DataComponentTypes.DAMAGE, 0)
+					.build();
 
-			Ingredient nbtIngredient = DefaultCustomIngredients.nbt(Ingredient.ofItems(Items.DIAMOND_PICKAXE, Items.NETHERITE_PICKAXE), undamagedNbt, strict);
+			Ingredient nbtIngredient = DefaultCustomIngredients.component(Ingredient.ofItems(Items.DIAMOND_PICKAXE, Items.NETHERITE_PICKAXE), undamagedComponents, strict);
 
 			assertEquals(2, nbtIngredient.getMatchingStacks().length);
 			assertEquals(Items.DIAMOND_PICKAXE, nbtIngredient.getMatchingStacks()[0].getItem());
 			assertEquals(Items.NETHERITE_PICKAXE, nbtIngredient.getMatchingStacks()[1].getItem());
-			assertEquals(undamagedNbt, nbtIngredient.getMatchingStacks()[0].getNbt());
-			assertEquals(undamagedNbt, nbtIngredient.getMatchingStacks()[1].getNbt());
+			assertEquals(undamagedComponents, nbtIngredient.getMatchingStacks()[0].getComponentChanges());
+			assertEquals(undamagedComponents, nbtIngredient.getMatchingStacks()[1].getComponentChanges());
 			assertEquals(false, nbtIngredient.isEmpty());
 
 			// Undamaged is fine
@@ -114,25 +116,25 @@ public class IngredientMatchTests {
 
 			// Renamed undamaged is only fine in partial matching
 			ItemStack renamedUndamagedDiamondPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
-			renamedUndamagedDiamondPickaxe.setCustomName(Text.literal("Renamed"));
+			renamedUndamagedDiamondPickaxe.set(DataComponentTypes.CUSTOM_NAME, Text.literal("Renamed"));
 			assertEquals(!strict, nbtIngredient.test(renamedUndamagedDiamondPickaxe));
 		}
 
 		// Also test strict null NBT matching
-		Ingredient noNbtIngredient = DefaultCustomIngredients.nbt(Ingredient.ofItems(Items.APPLE), null, true);
+		Ingredient noComponentIngredient = DefaultCustomIngredients.component(Ingredient.ofItems(Items.APPLE), ComponentChanges.EMPTY, true);
 
-		assertEquals(1, noNbtIngredient.getMatchingStacks().length);
-		assertEquals(Items.APPLE, noNbtIngredient.getMatchingStacks()[0].getItem());
-		assertEquals(null, noNbtIngredient.getMatchingStacks()[0].getNbt());
-		assertEquals(false, noNbtIngredient.isEmpty());
+		assertEquals(1, noComponentIngredient.getMatchingStacks().length);
+		assertEquals(Items.APPLE, noComponentIngredient.getMatchingStacks()[0].getItem());
+		assertEquals(ComponentChanges.EMPTY, noComponentIngredient.getMatchingStacks()[0].getComponentChanges());
+		assertEquals(false, noComponentIngredient.isEmpty());
 
 		// No NBT is fine
-		assertEquals(true, noNbtIngredient.test(new ItemStack(Items.APPLE)));
+		assertEquals(true, noComponentIngredient.test(new ItemStack(Items.APPLE)));
 
 		// NBT is not fine
 		ItemStack nbtApple = new ItemStack(Items.APPLE);
-		nbtApple.setCustomName(Text.literal("Renamed"));
-		assertEquals(false, noNbtIngredient.test(nbtApple));
+		nbtApple.set(DataComponentTypes.CUSTOM_NAME, Text.literal("Renamed"));
+		assertEquals(false, noComponentIngredient.test(nbtApple));
 
 		context.complete();
 	}

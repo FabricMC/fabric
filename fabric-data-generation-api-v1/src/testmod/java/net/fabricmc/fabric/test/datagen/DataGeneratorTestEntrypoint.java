@@ -44,6 +44,7 @@ import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockKeys;
 import net.minecraft.block.Blocks;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
@@ -193,7 +194,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
-					.input(DefaultCustomIngredients.nbt(new ItemStack(Items.DIAMOND_PICKAXE), false))
+					.input(DefaultCustomIngredients.component(new ItemStack(Items.DIAMOND_PICKAXE), false))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
@@ -205,10 +206,10 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			// To test: try renaming an apple to "Golden Apple" in creative with an anvil.
 			// That should match the recipe and give a golden apple. Any other NBT should not match.
 			ItemStack appleWithGoldenName = new ItemStack(Items.APPLE);
-			appleWithGoldenName.setCustomName(Text.literal("Golden Apple"));
-			appleWithGoldenName.setRepairCost(0);
+			appleWithGoldenName.set(DataComponentTypes.CUSTOM_NAME, Text.literal("Golden Apple"));
+			appleWithGoldenName.set(DataComponentTypes.REPAIR_COST, 0);
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLDEN_APPLE)
-					.input(DefaultCustomIngredients.nbt(appleWithGoldenName, true))
+					.input(DefaultCustomIngredients.component(appleWithGoldenName, true))
 					.criterion("has_apple", conditionsFromItem(Items.APPLE))
 					.offerTo(exporter);
 
@@ -406,7 +407,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		public void accept(BiConsumer<Identifier, LootTable.Builder> consumer) {
+		public void accept(RegistryWrapper.WrapperLookup registryLookup, BiConsumer<Identifier, LootTable.Builder> consumer) {
 			withConditions(consumer, ALWAYS_LOADED).accept(
 					LootTables.PIGLIN_BARTERING_GAMEPLAY,
 					LootTable.builder().pool(

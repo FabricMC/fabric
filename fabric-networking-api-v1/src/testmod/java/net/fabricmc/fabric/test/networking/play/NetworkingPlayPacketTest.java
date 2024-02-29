@@ -128,11 +128,11 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		public static final PacketCodec<RegistryByteBuf, OverlayPacket> CODEC = CustomPayload.codecOf(OverlayPacket::write, OverlayPacket::new);
 
 		public OverlayPacket(RegistryByteBuf buf) {
-			this(TextCodecs.PACKET_CODEC.decode(buf));
+			this(TextCodecs.REGISTRY_PACKET_CODEC.decode(buf));
 		}
 
 		public void write(RegistryByteBuf buf) {
-			TextCodecs.PACKET_CODEC.encode(buf, this.message);
+			TextCodecs.REGISTRY_PACKET_CODEC.encode(buf, this.message);
 		}
 
 		@Override
