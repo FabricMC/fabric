@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.lookup.item;
 
 import static net.fabricmc.fabric.test.lookup.FabricApiLookupTest.ensureException;
 
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.ToolItem;
@@ -41,7 +42,7 @@ public class FabricItemApiLookupTest {
 
 		// Diamonds and diamond blocks can be inspected and will also print their name.
 		INSPECTABLE.registerForItems((stack, ignored) -> () -> {
-			if (stack.hasCustomName()) {
+			if (stack.contains(DataComponentTypes.CUSTOM_NAME)) {
 				return stack.getName();
 			} else {
 				return Text.literal("Unnamed gem.");

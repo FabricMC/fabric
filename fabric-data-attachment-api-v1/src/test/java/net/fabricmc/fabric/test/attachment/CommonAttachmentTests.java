@@ -253,7 +253,7 @@ public class CommonAttachmentTests {
 
 	private static DynamicRegistryManager mockDRM() {
 		DynamicRegistryManager drm = mock(DynamicRegistryManager.class);
-		when(drm.method_57093(any())).thenReturn((RegistryOps<Object>) (Object) RegistryOps.of(NbtOps.INSTANCE, drm));
+		when(drm.getOps(any())).thenReturn((RegistryOps<Object>) (Object) RegistryOps.of(NbtOps.INSTANCE, drm));
 		return drm;
 	}
 }

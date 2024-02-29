@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.item.gametest;
 
 import java.util.Objects;
 
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.HungerManager;
@@ -66,7 +67,7 @@ public final class FoodGameTest implements FabricGameTest {
 		hungerManager.setFoodLevel(0);
 		hungerManager.setSaturationLevel(0);
 		ItemStack foodStack = FoodGameInitializer.NAME.getDefaultStack();
-		foodStack.setCustomName(Text.literal("enchanted_golden_apple"));
+		foodStack.set(DataComponentTypes.CUSTOM_NAME, Text.literal("enchanted_golden_apple"));
 		player.eatFood(player.getWorld(), foodStack.copy());
 		FoodComponent fc = FoodComponents.ENCHANTED_GOLDEN_APPLE;
 		int foodActual = hungerManager.getFoodLevel();
@@ -86,7 +87,7 @@ public final class FoodGameTest implements FabricGameTest {
 		wolf.setOwner(player);
 		wolf.setHealth(1f);
 		ItemStack meat = FoodGameInitializer.NAME.getDefaultStack();
-		meat.setCustomName(Text.of("mutton"));
+		meat.set(DataComponentTypes.CUSTOM_NAME, Text.literal("mutton"));
 		player.setStackInHand(Hand.MAIN_HAND, meat);
 		player.interact(wolf, Hand.MAIN_HAND);
 		float wolfHealth = wolf.getHealth();

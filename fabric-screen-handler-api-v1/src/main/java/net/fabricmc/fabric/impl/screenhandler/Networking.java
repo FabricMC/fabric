@@ -97,7 +97,7 @@ public final class Networking implements ModInitializer {
 			Identifier id = buf.readIdentifier();
 			PacketCodec<RegistryByteBuf, D> codec = (PacketCodec<RegistryByteBuf, D>) CODEC_BY_ID.get(id);
 
-			return new OpenScreenPayload<>(id, buf.readByte(), TextCodecs.PACKET_CODEC.decode(buf), codec, codec == null ? null : codec.decode(buf));
+			return new OpenScreenPayload<>(id, buf.readByte(), TextCodecs.REGISTRY_PACKET_CODEC.decode(buf), codec, codec == null ? null : codec.decode(buf));
 		}
 
 		private void write(RegistryByteBuf buf) {

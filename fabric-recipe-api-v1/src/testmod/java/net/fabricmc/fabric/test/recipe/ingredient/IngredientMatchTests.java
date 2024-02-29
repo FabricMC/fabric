@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.test.recipe.ingredient;
 
-import java.util.List;
 import java.util.Objects;
 
+import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
@@ -89,50 +89,42 @@ public class IngredientMatchTests {
 	}
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
-	public void testNbtIngredient(TestContext context) {
-		for (boolean strict : List.of(true, false)) {
-			NbtCompound undamagedNbt = new NbtCompound();
-			undamagedNbt.putInt(ItemStack.DAMAGE_KEY, 0);
+	public void testComponentIngredient(TestContext context) {
+		final Ingredient baseIngredient = Ingredient.ofItems(Items.DIAMOND_PICKAXE, Items.NETHERITE_PICKAXE);
+		final Ingredient undamagedIngredient = DefaultCustomIngredients.components(
+				baseIngredient,
+				builder -> builder.add(DataComponentTypes.DAMAGE, 0)
+		);
+		final Ingredient noNameUndamagedIngredient = DefaultCustomIngredients.components(
+				baseIngredient,
+				builder -> builder
+						.add(DataComponentTypes.DAMAGE, 0)
+						.remove(DataComponentTypes.CUSTOM_NAME)
+		);
 
-			Ingredient nbtIngredient = DefaultCustomIngredients.nbt(Ingredient.ofItems(Items.DIAMOND_PICKAXE, Items.NETHERITE_PICKAXE), undamagedNbt, strict);
+		ItemStack renamedUndamagedDiamondPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
+		renamedUndamagedDiamondPickaxe.set(DataComponentTypes.CUSTOM_NAME, Text.literal("Renamed"));
+		assertEquals(true, undamagedIngredient.test(renamedUndamagedDiamondPickaxe));
+		assertEquals(false, noNameUndamagedIngredient.test(renamedUndamagedDiamondPickaxe));
 
-			assertEquals(2, nbtIngredient.getMatchingStacks().length);
-			assertEquals(Items.DIAMOND_PICKAXE, nbtIngredient.getMatchingStacks()[0].getItem());
-			assertEquals(Items.NETHERITE_PICKAXE, nbtIngredient.getMatchingStacks()[1].getItem());
-			assertEquals(undamagedNbt, nbtIngredient.getMatchingStacks()[0].getNbt());
-			assertEquals(undamagedNbt, nbtIngredient.getMatchingStacks()[1].getNbt());
-			assertEquals(false, nbtIngredient.isEmpty());
+		assertEquals(2, undamagedIngredient.getMatchingStacks().length);
+		ItemStack result0 = undamagedIngredient.getMatchingStacks()[0];
+		ItemStack result1 = undamagedIngredient.getMatchingStacks()[1];
 
-			// Undamaged is fine
-			assertEquals(true, nbtIngredient.test(new ItemStack(Items.DIAMOND_PICKAXE)));
-			assertEquals(true, nbtIngredient.test(new ItemStack(Items.NETHERITE_PICKAXE)));
+		assertEquals(Items.DIAMOND_PICKAXE, result0.getItem());
+		assertEquals(Items.NETHERITE_PICKAXE, result1.getItem());
+		assertEquals(ComponentChanges.EMPTY, result0.getComponentChanges());
+		assertEquals(ComponentChanges.EMPTY, result1.getComponentChanges());
+		assertEquals(false, undamagedIngredient.isEmpty());
 
-			// Damaged is not fine
-			ItemStack damagedDiamondPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
-			damagedDiamondPickaxe.setDamage(10);
-			assertEquals(false, nbtIngredient.test(damagedDiamondPickaxe));
+		// Undamaged is fine
+		assertEquals(true, undamagedIngredient.test(new ItemStack(Items.DIAMOND_PICKAXE)));
+		assertEquals(true, undamagedIngredient.test(new ItemStack(Items.NETHERITE_PICKAXE)));
 
-			// Renamed undamaged is only fine in partial matching
-			ItemStack renamedUndamagedDiamondPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
-			renamedUndamagedDiamondPickaxe.setCustomName(Text.literal("Renamed"));
-			assertEquals(!strict, nbtIngredient.test(renamedUndamagedDiamondPickaxe));
-		}
-
-		// Also test strict null NBT matching
-		Ingredient noNbtIngredient = DefaultCustomIngredients.nbt(Ingredient.ofItems(Items.APPLE), null, true);
-
-		assertEquals(1, noNbtIngredient.getMatchingStacks().length);
-		assertEquals(Items.APPLE, noNbtIngredient.getMatchingStacks()[0].getItem());
-		assertEquals(null, noNbtIngredient.getMatchingStacks()[0].getNbt());
-		assertEquals(false, noNbtIngredient.isEmpty());
-
-		// No NBT is fine
-		assertEquals(true, noNbtIngredient.test(new ItemStack(Items.APPLE)));
-
-		// NBT is not fine
-		ItemStack nbtApple = new ItemStack(Items.APPLE);
-		nbtApple.setCustomName(Text.literal("Renamed"));
-		assertEquals(false, noNbtIngredient.test(nbtApple));
+		// Damaged is not fine
+		ItemStack damagedDiamondPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
+		damagedDiamondPickaxe.setDamage(10);
+		assertEquals(false, undamagedIngredient.test(damagedDiamondPickaxe));
 
 		context.complete();
 	}

@@ -18,18 +18,16 @@ package net.fabricmc.fabric.api.recipe.v1.ingredient;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 
-import org.jetbrains.annotations.Nullable;
-
+import net.minecraft.component.ComponentChanges;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
 import net.minecraft.recipe.Ingredient;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AllIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AnyIngredient;
+import net.fabricmc.fabric.impl.recipe.ingredient.builtin.ComponentsIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.DifferenceIngredient;
-import net.fabricmc.fabric.impl.recipe.ingredient.builtin.NbtIngredient;
 
 /**
  * Factory methods for the custom ingredients directly provided by Fabric API.
@@ -101,42 +99,38 @@ public final class DefaultCustomIngredients {
 	}
 
 	/**
-	 * Creates an ingredient that wraps another ingredient to also check for stack NBT.
-	 * This check can either be strict (the exact NBT must match) or non-strict aka. partial (the ingredient NBT must be a subset of the stack NBT).
+	 * Creates an ingredient that wraps another ingredient to also check for matching components.
 	 *
-	 * <p>In strict mode, passing a {@code null} {@code nbt} is allowed, and will only match stacks with {@code null} NBT.
-	 * In partial mode, passing a {@code null} {@code nbt} is <strong>not</strong> allowed, as it would always match.
+	 * <p>Use {@link ComponentChanges#builder()} to add or remove components.
+	 * Added components are checked to match on the target stack.
+	 * Removed components are checked to not exist in the target stack
 	 *
-	 * <p>See {@link NbtHelper#matches} for the non-strict matching.
-	 *
-	 * <p>The JSON format is as follows:
-	 * <pre>{@code
-	 * {
-	 *    "fabric:type": "fabric:nbt",
-	 *    "base": // base ingredient,
-	 *    "nbt": // NBT tag to match, either in JSON directly or a string representation (default: null),
-	 *    "strict": // whether to use strict matching (default: false)
-	 * }
-	 * }</pre>
-	 *
-	 * @throws IllegalArgumentException if {@code strict} is {@code false} and the NBT is {@code null}
+	 * @throws IllegalArgumentException if {@link ComponentChanges#isEmpty} is true
 	 */
-	public static Ingredient nbt(Ingredient base, @Nullable NbtCompound nbt, boolean strict) {
+	public static Ingredient components(Ingredient base, ComponentChanges components) {
 		Objects.requireNonNull(base, "Base ingredient cannot be null");
+		Objects.requireNonNull(components, "Component changes cannot be null");
 
-		return new NbtIngredient(base, nbt, strict).toVanilla();
+		return new ComponentsIngredient(base, components).toVanilla();
 	}
 
 	/**
-	 * Creates an ingredient that matches the passed template stack, including NBT.
+	 * @see #components(Ingredient, ComponentChanges)
+	 */
+	public static Ingredient components(Ingredient base, UnaryOperator<ComponentChanges.Builder> operator) {
+		return components(base, operator.apply(ComponentChanges.builder()).build());
+	}
+
+	/**
+	 * Creates an ingredient that matches the passed template stack, including {@link ItemStack#getComponentChanges()}.
 	 * Note that the count of the stack is ignored.
 	 *
-	 * @see #nbt(Ingredient, NbtCompound, boolean)
+	 * @see #components(Ingredient, ComponentChanges)
 	 */
-	public static Ingredient nbt(ItemStack stack, boolean strict) {
+	public static Ingredient components(ItemStack stack) {
 		Objects.requireNonNull(stack, "Stack cannot be null");
 
-		return nbt(Ingredient.ofItems(stack.getItem()), stack.getNbt(), strict);
+		return components(Ingredient.ofItems(stack.getItem()), stack.getComponentChanges());
 	}
 
 	private DefaultCustomIngredients() {

@@ -65,7 +65,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	 *
 	 * <p>Use {@link Advancement.Builder#build(Consumer, String)} to help build advancements.
 	 */
-	public abstract void generateAdvancement(Consumer<AdvancementEntry> consumer);
+	public abstract void generateAdvancement(RegistryWrapper.WrapperLookup registryLookup, Consumer<AdvancementEntry> consumer);
 
 	/**
 	 * Return a new exporter that applies the specified conditions to any advancement it receives.
@@ -80,13 +80,13 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 
 	@Override
 	public CompletableFuture<?> run(DataWriter writer) {
-		final Set<Identifier> identifiers = Sets.newHashSet();
-		final Set<AdvancementEntry> advancements = Sets.newHashSet();
-
-		generateAdvancement(advancements::add);
-
 		return this.registryLookup.thenCompose(lookup -> {
-			RegistryOps<JsonElement> ops = lookup.method_57093(JsonOps.INSTANCE);
+			final Set<Identifier> identifiers = Sets.newHashSet();
+			final Set<AdvancementEntry> advancements = Sets.newHashSet();
+
+			generateAdvancement(lookup, advancements::add);
+
+			RegistryOps<JsonElement> ops = lookup.getOps(JsonOps.INSTANCE);
 			final List<CompletableFuture<?>> futures = new ArrayList<>();
 
 			for (AdvancementEntry advancement : advancements) {

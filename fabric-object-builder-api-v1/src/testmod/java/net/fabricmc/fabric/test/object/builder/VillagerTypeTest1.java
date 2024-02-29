@@ -21,8 +21,11 @@ import static net.minecraft.command.argument.EntityArgumentType.getEntity;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
+import java.util.Optional;
+
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 
+import net.minecraft.class_9306;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.item.Item;
@@ -48,16 +51,16 @@ public class VillagerTypeTest1 implements ModInitializer {
 	public void onInitialize() {
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, (factories, rebalanced) -> {
 			Item scrap = rebalanced ? Items.NETHER_BRICK : Items.NETHERITE_SCRAP;
-			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(scrap, 4), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.15F)));
+			factories.add(new SimpleTradeFactory(new TradeOffer(new class_9306(Items.GOLD_INGOT, 3), Optional.of(new class_9306(scrap, 4)), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.15F)));
 		});
 		// Toolsmith is not rebalanced yet
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.TOOLSMITH, 1, (factories, rebalanced) -> {
 			Item scrap = rebalanced ? Items.NETHER_BRICK : Items.NETHERITE_SCRAP;
-			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(scrap, 4), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.15F)));
+			factories.add(new SimpleTradeFactory(new TradeOffer(new class_9306(Items.GOLD_INGOT, 3), Optional.of(new class_9306(scrap, 4)), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.15F)));
 		});
 
 		TradeOfferHelper.registerWanderingTraderOffers(1, factories -> {
-			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(Items.NETHERITE_SCRAP, 4), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.35F)));
+			factories.add(new SimpleTradeFactory(new TradeOffer(new class_9306(Items.GOLD_INGOT, 3), Optional.of(new class_9306(Items.NETHERITE_SCRAP, 4)), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.35F)));
 		});
 
 		TradeOfferHelper.registerRebalancedWanderingTraderOffers(builder -> {
@@ -65,28 +68,28 @@ public class VillagerTypeTest1 implements ModInitializer {
 					FOOD_POOL_ID,
 					5,
 					Registries.ITEM.stream().filter(item -> item.getFoodComponent() != null).map(
-							item -> new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.NETHERITE_INGOT), new ItemStack(item), 3, 4, 0.15F))
+							item -> new SimpleTradeFactory(new TradeOffer(new class_9306(Items.NETHERITE_INGOT), new ItemStack(item), 3, 4, 0.15F))
 					).toList()
 			);
 			builder.addAll(
 					THING_POOL_ID,
-					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.NETHERITE_INGOT), new ItemStack(Items.MOJANG_BANNER_PATTERN), 1, 4, 0.15F))
+					new SimpleTradeFactory(new TradeOffer(new class_9306(Items.NETHERITE_INGOT), new ItemStack(Items.MOJANG_BANNER_PATTERN), 1, 4, 0.15F))
 			);
 			builder.addOffersToPool(
 					TradeOfferHelper.WanderingTraderOffersBuilder.BUY_ITEMS_POOL,
-					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.BLAZE_POWDER, 1), new ItemStack(Items.EMERALD, 4), 3, 4, 0.15F)),
-					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.NETHER_WART, 5), new ItemStack(Items.EMERALD, 1), 3, 4, 0.15F)),
-					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLDEN_CARROT, 4), new ItemStack(Items.EMERALD, 1), 3, 4, 0.15F))
+					new SimpleTradeFactory(new TradeOffer(new class_9306(Items.BLAZE_POWDER, 1), new ItemStack(Items.EMERALD, 4), 3, 4, 0.15F)),
+					new SimpleTradeFactory(new TradeOffer(new class_9306(Items.NETHER_WART, 5), new ItemStack(Items.EMERALD, 1), 3, 4, 0.15F)),
+					new SimpleTradeFactory(new TradeOffer(new class_9306(Items.GOLDEN_CARROT, 4), new ItemStack(Items.EMERALD, 1), 3, 4, 0.15F))
 			);
 			builder.addOffersToPool(
 					TradeOfferHelper.WanderingTraderOffersBuilder.SELL_SPECIAL_ITEMS_POOL,
-					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.EMERALD, 6), new ItemStack(Items.BRUSH, 1), 1, 4, 0.15F)),
-					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.DIAMOND, 16), new ItemStack(Items.ELYTRA, 1), 1, 4, 0.15F)),
-					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.EMERALD, 3), new ItemStack(Items.LEAD, 2), 3, 4, 0.15F))
+					new SimpleTradeFactory(new TradeOffer(new class_9306(Items.EMERALD, 6), new ItemStack(Items.BRUSH, 1), 1, 4, 0.15F)),
+					new SimpleTradeFactory(new TradeOffer(new class_9306(Items.DIAMOND, 16), new ItemStack(Items.ELYTRA, 1), 1, 4, 0.15F)),
+					new SimpleTradeFactory(new TradeOffer(new class_9306(Items.EMERALD, 3), new ItemStack(Items.LEAD, 2), 3, 4, 0.15F))
 			);
 			builder.addOffersToPool(
 					FOOD_POOL_ID,
-					new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.NETHERITE_INGOT), new ItemStack(Items.EGG), 3, 4, 0.15F))
+					new SimpleTradeFactory(new TradeOffer(new class_9306(Items.NETHERITE_INGOT), new ItemStack(Items.EGG), 3, 4, 0.15F))
 			);
 		});
 

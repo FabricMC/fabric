@@ -84,7 +84,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 	/**
 	 * Implement this method and then use {@link FabricTagProvider#getOrCreateTagBuilder} to get and register new tag builders.
 	 */
-	protected abstract void configure(RegistryWrapper.WrapperLookup arg);
+	protected abstract void configure(RegistryWrapper.WrapperLookup wrapperLookup);
 
 	/**
 	 * Override to enable adding objects to the tag builder directly.

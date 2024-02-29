@@ -18,30 +18,36 @@ package net.fabricmc.fabric.mixin.content.registry;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.ai.pathing.LandPathNodeMaker;
+import net.minecraft.class_9316;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.CollisionView;
 
 import net.fabricmc.fabric.api.registry.LandPathNodeTypesRegistry;
 
-// Applied a bit earlier than other mods to ensure changes and optimizations to default vanilla behavior
-@Mixin(value = LandPathNodeMaker.class, priority = 999)
-public class LandPathNodeMakerMixin {
-	/**
-	 * Overrides the node type for the specified position, if the position is a direct target in a path.
-	 */
-	@Inject(method = "getCommonNodeType", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;"), cancellable = true)
-	private static void getCommonNodeType(BlockView world, BlockPos pos, CallbackInfoReturnable<PathNodeType> cir, @Local BlockState state) {
-		PathNodeType nodeType = LandPathNodeTypesRegistry.getPathNodeType(state, world, pos, false);
+@Mixin(class_9316.class)
+public abstract class class_9316Mixin {
+	@Shadow
+	public abstract BlockState method_57623(BlockPos blockPos);
 
-		if (nodeType != null) {
-			cir.setReturnValue(nodeType);
+	@Shadow
+	public abstract CollisionView method_57621();
+
+	/**
+	 * Overrides the node type for the specified position, if the position is found as neighbor block in a path.
+	 */
+	@Inject(method = "method_57622", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/BlockPos$Mutable;set(III)Lnet/minecraft/util/math/BlockPos$Mutable;"), cancellable = true)
+	private void method_57622(int x, int y, int z, CallbackInfoReturnable<PathNodeType> cir, @Local BlockPos pos) {
+		final PathNodeType neighborNodeType = LandPathNodeTypesRegistry.getPathNodeType(method_57623(pos), method_57621(), pos, true);
+
+		if (neighborNodeType != null) {
+			cir.setReturnValue(neighborNodeType);
 		}
 	}
 }

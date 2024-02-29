@@ -6,7 +6,7 @@
     }
   ],
   "result": {
-    "item": "minecraft:diamond"
+    "id": "minecraft:diamond"
   },
   "fabric:load_conditions": [
     {

@@ -9,7 +9,7 @@
     }
   ],
   "result": {
-    "item": "minecraft:diamond",
+    "id": "minecraft:diamond",
     "count": 1
   }
 }

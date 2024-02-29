@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -225,7 +226,7 @@ public final class EntityEventTests implements ModInitializer {
 
 	private static ItemStack createNamedItem(Item item, String name) {
 		ItemStack stack = new ItemStack(item);
-		stack.setCustomName(Text.literal(name));
+		stack.set(DataComponentTypes.CUSTOM_NAME, Text.literal(name));
 		return stack;
 	}
 }

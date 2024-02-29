@@ -208,7 +208,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 						return entries;
 					})
 					.thenCompose(entries -> {
-						final RegistryOps<JsonElement> dynamicOps = registries.method_57093(JsonOps.INSTANCE);
+						final RegistryOps<JsonElement> dynamicOps = registries.getOps(JsonOps.INSTANCE);
 						ArrayList<CompletableFuture<?>> futures = new ArrayList<>();
 
 						for (RegistryEntries<?> registryEntries : entries.queuedEntries.values()) {

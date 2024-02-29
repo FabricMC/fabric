@@ -44,6 +44,8 @@ import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockKeys;
 import net.minecraft.block.Blocks;
+import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
@@ -193,7 +195,13 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
-					.input(DefaultCustomIngredients.nbt(new ItemStack(Items.DIAMOND_PICKAXE), false))
+					.input(DefaultCustomIngredients.components(
+							Ingredient.ofItems(Items.DIAMOND_PICKAXE),
+							ComponentChanges.builder()
+									.add(DataComponentTypes.DAMAGE, 0)
+									.build()
+							)
+					)
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
@@ -205,10 +213,10 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			// To test: try renaming an apple to "Golden Apple" in creative with an anvil.
 			// That should match the recipe and give a golden apple. Any other NBT should not match.
 			ItemStack appleWithGoldenName = new ItemStack(Items.APPLE);
-			appleWithGoldenName.setCustomName(Text.literal("Golden Apple"));
-			appleWithGoldenName.setRepairCost(0);
+			appleWithGoldenName.set(DataComponentTypes.CUSTOM_NAME, Text.literal("Golden Apple"));
+			appleWithGoldenName.set(DataComponentTypes.REPAIR_COST, 0);
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLDEN_APPLE)
-					.input(DefaultCustomIngredients.nbt(appleWithGoldenName, true))
+					.input(DefaultCustomIngredients.components(appleWithGoldenName))
 					.criterion("has_apple", conditionsFromItem(Items.APPLE))
 					.offerTo(exporter);
 
@@ -242,12 +250,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class ExistingEnglishLangProvider extends FabricLanguageProvider {
-		private ExistingEnglishLangProvider(FabricDataOutput output) {
-			super(output);
+		private ExistingEnglishLangProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(output, registriesFuture);
 		}
 
 		@Override
-		public void generateTranslations(TranslationBuilder translationBuilder) {
+		public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, TranslationBuilder translationBuilder) {
 			translationBuilder.add(SIMPLE_BLOCK, "Simple Block");
 			translationBuilder.add(new Identifier(MOD_ID, "identifier_test"), "Identifier Test");
 			translationBuilder.add(EntityType.ALLAY, "Allay");
@@ -274,12 +282,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class JapaneseLangProvider extends FabricLanguageProvider {
-		private JapaneseLangProvider(FabricDataOutput output) {
-			super(output, "ja_jp");
+		private JapaneseLangProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(output, "ja_jp", registriesFuture);
 		}
 
 		@Override
-		public void generateTranslations(TranslationBuilder translationBuilder) {
+		public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, TranslationBuilder translationBuilder) {
 			translationBuilder.add(SIMPLE_BLOCK, "シンプルブロック");
 			translationBuilder.add(SIMPLE_ITEM_GROUP, "データ生成項目");
 			translationBuilder.add("this.is.a.test", "こんにちは");
@@ -361,7 +369,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		public void generateAdvancement(Consumer<AdvancementEntry> consumer) {
+		public void generateAdvancement(RegistryWrapper.WrapperLookup registryLookup, Consumer<AdvancementEntry> consumer) {
 			AdvancementEntry root = Advancement.Builder.create()
 					.display(
 							SIMPLE_BLOCK,
@@ -406,7 +414,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		public void accept(BiConsumer<Identifier, LootTable.Builder> consumer) {
+		public void accept(RegistryWrapper.WrapperLookup registryLookup, BiConsumer<Identifier, LootTable.Builder> consumer) {
 			withConditions(consumer, ALWAYS_LOADED).accept(
 					LootTables.PIGLIN_BARTERING_GAMEPLAY,
 					LootTable.builder().pool(
