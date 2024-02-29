@@ -14,7 +14,7 @@
       "item": "minecraft:diamond_pickaxe"
     },
     {
-      "fabric:type": "fabric:component",
+      "fabric:type": "fabric:components",
       "base": {
         "item": "minecraft:diamond_pickaxe"
       },
