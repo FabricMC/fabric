@@ -16,7 +16,18 @@
 
 package net.fabricmc.fabric.api.transfer.v1.storage.base;
 
+import java.util.function.Supplier;
+
+import com.mojang.serialization.Codec;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
@@ -36,6 +47,8 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
  * @see net.fabricmc.fabric.api.transfer.v1.item.base.SingleItemStorage SingleItemStorage for item variants.
  */
 public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends SnapshotParticipant<ResourceAmount<T>> implements SingleSlotStorage<T> {
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-transfer-api-v1/variant-storage");
+
 	public T variant = getBlankVariant();
 	public long amount = 0;
 
@@ -65,15 +78,6 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 	 */
 	protected boolean canExtract(T variant) {
 		return true;
-	}
-
-	/**
-	 * Simple implementation of writing to NBT. Other formats are allowed, this is just a convenient suggestion.
-	 */
-	// Reading from NBT is not provided because it would need to call the static FluidVariant/ItemVariant.fromNbt
-	public void writeNbt(NbtCompound nbt) {
-		nbt.put("variant", variant.toNbt());
-		nbt.putLong("amount", amount);
 	}
 
 	@Override
@@ -156,5 +160,20 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 	@Override
 	public String toString() {
 		return "SingleVariantStorage[%d %s]".formatted(amount, variant);
+	}
+
+	public static <T extends TransferVariant<?>> void readNbt(SingleVariantStorage<T> storage, Codec<T> codec, Supplier<T> fallback, NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
+		final RegistryOps<NbtElement> ops = wrapperLookup.getOps(NbtOps.INSTANCE);
+		storage.variant = codec.parse(ops, nbt.getCompound("variant")).mapError(string -> {
+			LOGGER.debug("Tried to load an invalid TransferVariant from NBT: {}", string);
+			return string;
+		}).result().orElse(fallback.get());
+		storage.amount = nbt.getLong("amount");
+	}
+
+	public static <T extends TransferVariant<?>> void writeNbt(SingleVariantStorage<T> storage, Codec<T> codec, NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
+		final RegistryOps<NbtElement> ops = wrapperLookup.getOps(NbtOps.INSTANCE);
+		nbt.put("variant", Util.getResult(codec.encodeStart(ops, storage.variant), RuntimeException::new));
+		nbt.putLong("amount", storage.amount);
 	}
 }

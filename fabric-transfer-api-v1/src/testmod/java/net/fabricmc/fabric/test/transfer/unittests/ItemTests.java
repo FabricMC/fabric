@@ -22,14 +22,20 @@ import java.util.stream.IntStream;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.DataComponentType;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
@@ -37,11 +43,15 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer;
 
 /**
  * Tests for the item transfer APIs.
  */
 class ItemTests {
+	public static final DataComponentType<Integer> ENERGY = Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier(TransferTestInitializer.MOD_ID, "energy"),
+																DataComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
+
 	public static void run() {
 		testStackReference();
 		testInventoryWrappers();
@@ -75,9 +85,8 @@ class ItemTests {
 
 		// Also edit the stack when the item matches, even when the NBT and the count change.
 		ItemVariant oldVariant = ItemVariant.of(Items.DIAMOND);
-		NbtCompound testTag = new NbtCompound();
-		testTag.putInt("energy", 42);
-		ItemVariant newVariant = ItemVariant.of(Items.DIAMOND, testTag);
+		ComponentChanges components = ComponentChanges.builder().add(ENERGY, 42).build();
+		ItemVariant newVariant = ItemVariant.of(Items.DIAMOND, components);
 
 		try (Transaction tx = Transaction.openOuter()) {
 			invWrapper.extract(oldVariant, 2, tx);

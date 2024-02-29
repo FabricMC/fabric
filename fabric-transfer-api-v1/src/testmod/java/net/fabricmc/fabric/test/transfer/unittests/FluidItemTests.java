@@ -22,14 +22,19 @@ import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
 
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.potion.PotionUtil;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.Potions;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -151,7 +156,7 @@ class FluidItemTests {
 			transaction.commit();
 		}
 
-		if (PotionUtil.getPotion(testInventory.getStack(0)) != Potions.WATER) throw new AssertionError("Expected water potion.");
+		if (getPotion(testInventory.getStack(0)) != Potions.WATER) throw new AssertionError("Expected water potion.");
 
 		// Try to empty from water potion
 		Storage<FluidVariant> waterBottleStorage = new InventoryContainerItem(testInventory, 0).find(FluidStorage.ITEM);
@@ -162,7 +167,7 @@ class FluidItemTests {
 		}
 
 		// Make sure extraction nothing is returned for other potions
-		PotionUtil.setPotion(testInventory.getStack(0), Potions.LUCK);
+		setPotion(testInventory.getStack(0), Potions.LUCK);
 		Storage<FluidVariant> luckyStorage = new InventoryContainerItem(testInventory, 0).find(FluidStorage.ITEM);
 
 		if (StorageUtil.findStoredResource(luckyStorage) != null) {
@@ -183,9 +188,18 @@ class FluidItemTests {
 				null,
 				StorageUtil.findExtractableContent(
 						ContainerItemContext.withConstant(new ItemStack(Items.WATER_BUCKET)).find(FluidStorage.ITEM),
-						FluidVariant::hasNbt, // Only allow NBT -> won't match anything.
+						FluidVariant::hasComponents, // Only allow NBT -> won't match anything.
 						null
 				)
 		);
+	}
+
+	@Nullable
+	public static RegistryEntry<Potion> getPotion(ItemStack stack) {
+		return stack.getOrDefault(DataComponentTypes.POTION_CONTENTS, PotionContentsComponent.DEFAULT).potion().orElse(null);
+	}
+
+	public static void setPotion(ItemStack itemStack, RegistryEntry<Potion> potion) {
+		itemStack.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(potion));
 	}
 }

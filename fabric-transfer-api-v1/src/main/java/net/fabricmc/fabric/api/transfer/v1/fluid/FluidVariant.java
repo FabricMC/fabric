@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.component.ComponentChanges;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
@@ -30,7 +32,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 /**
  * An immutable association of a still fluid and an optional NBT tag.
  *
- * <p>Do not extend this class. Use {@link #of(Fluid)} and {@link #of(Fluid, NbtCompound)} to create instances.
+ * <p>Do not extend this class. Use {@link #of(Fluid)} and {@link #of(Fluid, ComponentChanges)} to create instances.
  *
  * <p>{@link net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering} can be used for client-side rendering of fluid variants.
  *
@@ -39,6 +41,9 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
  */
 @ApiStatus.NonExtendable
 public interface FluidVariant extends TransferVariant<Fluid> {
+	Codec<FluidVariant> CODEC = FluidVariantImpl.CODEC;
+	PacketCodec<RegistryByteBuf, FluidVariant> PACKET_CODEC = FluidVariantImpl.PACKET_CODEC;
+
 	/**
 	 * Retrieve a blank FluidVariant.
 	 */
@@ -54,7 +59,7 @@ public interface FluidVariant extends TransferVariant<Fluid> {
 	 * {@code FluidVariant.of(Fluids.FLOWING_WATER).getFluid() == Fluids.WATER}.
 	 */
 	static FluidVariant of(Fluid fluid) {
-		return of(fluid, null);
+		return of(fluid, ComponentChanges.EMPTY);
 	}
 
 	/**
@@ -64,8 +69,8 @@ public interface FluidVariant extends TransferVariant<Fluid> {
 	 * are normalized to always refer to the still fluid. For example,
 	 * {@code FluidVariant.of(Fluids.FLOWING_WATER, nbt).getFluid() == Fluids.WATER}.
 	 */
-	static FluidVariant of(Fluid fluid, @Nullable NbtCompound nbt) {
-		return FluidVariantImpl.of(fluid, nbt);
+	static FluidVariant of(Fluid fluid, ComponentChanges components) {
+		return FluidVariantImpl.of(fluid, components);
 	}
 
 	/**
@@ -75,19 +80,7 @@ public interface FluidVariant extends TransferVariant<Fluid> {
 		return getObject();
 	}
 
-	/**
-	 * Deserialize a variant from an NBT compound tag, assuming it was serialized using {@link #toNbt}.
-	 *
-	 * <p>If an error occurs during deserialization, it will be logged with the DEBUG level, and a blank variant will be returned.
-	 */
-	static FluidVariant fromNbt(NbtCompound nbt) {
-		return FluidVariantImpl.fromNbt(nbt);
-	}
-
-	/**
-	 * Read a variant from a packet byte buffer, assuming it was serialized using {@link #toPacket}.
-	 */
-	static FluidVariant fromPacket(PacketByteBuf buf) {
-		return FluidVariantImpl.fromPacket(buf);
+	default RegistryEntry<Fluid> getRegistryEntry() {
+		return getFluid().getRegistryEntry();
 	}
 }
