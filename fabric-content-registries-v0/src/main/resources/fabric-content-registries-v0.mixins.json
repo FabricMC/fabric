@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AxeItemAccessor",
+    "class_9316Mixin",
     "FarmerWorkTaskAccessor",
     "GiveGiftsToHeroTaskAccessor",
     "HoeItemAccessor",

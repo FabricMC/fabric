@@ -14,11 +14,13 @@
       "item": "minecraft:diamond_pickaxe"
     },
     {
-      "fabric:type": "fabric:nbt",
+      "fabric:type": "fabric:component",
       "base": {
         "item": "minecraft:diamond_pickaxe"
       },
-      "nbt": "{Damage:0}",
+      "components": {
+        "minecraft:damage": 0
+      },
       "strict": false
     },
     {
@@ -35,6 +37,6 @@
     }
   ],
   "result": {
-    "item": "minecraft:diamond_block"
+    "id": "minecraft:diamond_block"
   }
 }

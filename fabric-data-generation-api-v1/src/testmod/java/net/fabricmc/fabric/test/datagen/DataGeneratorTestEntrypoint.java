@@ -44,6 +44,7 @@ import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockKeys;
 import net.minecraft.block.Blocks;
+import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.client.BlockStateModelGenerator;
@@ -194,7 +195,13 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
-					.input(DefaultCustomIngredients.component(new ItemStack(Items.DIAMOND_PICKAXE), false))
+					.input(DefaultCustomIngredients.components(
+							Ingredient.ofItems(Items.DIAMOND_PICKAXE),
+							ComponentChanges.builder()
+									.add(DataComponentTypes.DAMAGE, 0)
+									.build()
+							)
+					)
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
@@ -209,7 +216,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			appleWithGoldenName.set(DataComponentTypes.CUSTOM_NAME, Text.literal("Golden Apple"));
 			appleWithGoldenName.set(DataComponentTypes.REPAIR_COST, 0);
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLDEN_APPLE)
-					.input(DefaultCustomIngredients.component(appleWithGoldenName, true))
+					.input(DefaultCustomIngredients.components(appleWithGoldenName))
 					.criterion("has_apple", conditionsFromItem(Items.APPLE))
 					.offerTo(exporter);
 

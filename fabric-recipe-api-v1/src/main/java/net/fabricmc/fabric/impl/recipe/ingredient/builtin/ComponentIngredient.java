@@ -18,17 +18,19 @@ package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.DataComponentType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 
@@ -40,29 +42,43 @@ public class ComponentIngredient implements CustomIngredient {
 
 	private final Ingredient base;
 	private final ComponentChanges components;
-	private final boolean strict;
 
-	public ComponentIngredient(Ingredient base, ComponentChanges components, boolean strict) {
-		if (components.isEmpty() && !strict) {
-			throw new IllegalArgumentException("ComponentIngredient can only have empty components in strict mode");
+	public ComponentIngredient(Ingredient base, ComponentChanges components) {
+		if (components.isEmpty()) {
+			throw new IllegalArgumentException("ComponentIngredient must have at least one defined component");
 		}
 
 		this.base = base;
 		this.components = components;
-		this.strict = strict;
 	}
 
 	@Override
 	public boolean test(ItemStack stack) {
 		if (!base.test(stack)) return false;
 
-		if (strict) {
-			return Objects.equals(components, stack.getComponentChanges());
-		} else {
-			// TODO 1.20.5
-//			return NbtHelper.matches(components, stack.getComponentChanges(), true);
-			return false;
+		// None strict matching
+		for (Map.Entry<DataComponentType<?>, Optional<?>> entry : components.entrySet()) {
+			final DataComponentType<?> type = entry.getKey();
+			final Optional<?> value = entry.getValue();
+
+			if (value.isPresent()) {
+				// Expect the stack to contain a matching component
+				if (!stack.contains(type)) {
+					return false;
+				}
+
+				if (!Objects.equals(value.get(), stack.get(type))) {
+					return false;
+				}
+			} else {
+				// Expect the target stack to not contain this component
+				if (stack.contains(type)) {
+					return false;
+				}
+			}
 		}
+
+		return true;
 	}
 
 	@Override
@@ -98,10 +114,6 @@ public class ComponentIngredient implements CustomIngredient {
 		return components;
 	}
 
-	private boolean isStrict() {
-		return strict;
-	}
-
 	private static class Serializer implements CustomIngredientSerializer<ComponentIngredient> {
 		private static final Identifier ID = new Identifier("fabric", "component");
 		private static final Codec<ComponentIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
@@ -109,7 +121,6 @@ public class ComponentIngredient implements CustomIngredient {
 		private static final PacketCodec<RegistryByteBuf, ComponentIngredient> PACKET_CODEC = PacketCodec.tuple(
 				Ingredient.PACKET_CODEC, ComponentIngredient::getBase,
 				ComponentChanges.PACKET_CODEC, ComponentIngredient::getComponents,
-				PacketCodecs.BOOL, ComponentIngredient::isStrict,
 				ComponentIngredient::new
 		);
 
@@ -117,8 +128,7 @@ public class ComponentIngredient implements CustomIngredient {
 			return RecordCodecBuilder.create(instance ->
 					instance.group(
 							ingredientCodec.fieldOf("base").forGetter(ComponentIngredient::getBase),
-							ComponentChanges.CODEC.fieldOf("components").forGetter(ComponentIngredient::getComponents),
-							Codec.BOOL.optionalFieldOf("strict", false).forGetter(ComponentIngredient::isStrict)
+							ComponentChanges.CODEC.fieldOf("components").forGetter(ComponentIngredient::getComponents)
 					).apply(instance, ComponentIngredient::new)
 			);
 		}

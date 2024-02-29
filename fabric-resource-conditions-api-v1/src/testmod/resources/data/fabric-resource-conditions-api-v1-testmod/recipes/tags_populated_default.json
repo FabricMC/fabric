@@ -6,7 +6,7 @@
     }
   ],
   "result": {
-    "item": "minecraft:dirt"
+    "id": "minecraft:dirt"
   },
   "fabric:load_conditions": [
     {
