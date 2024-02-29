@@ -18,36 +18,19 @@ package net.fabricmc.fabric.impl.transfer.fluid;
 
 import java.util.Objects;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
 public class FluidVariantImpl implements FluidVariant {
-	public static final Codec<FluidVariant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Registries.FLUID.getEntryCodec().fieldOf("fluid").forGetter(FluidVariant::getRegistryEntry),
-			ComponentChanges.CODEC.fieldOf("components").forGetter(FluidVariant::getComponents)
-		).apply(instance, FluidVariantImpl::of)
-	);
-	public static final PacketCodec<RegistryByteBuf, FluidVariant> PACKET_CODEC = PacketCodec.tuple(
-			PacketCodecs.registryEntry(RegistryKeys.FLUID), FluidVariant::getRegistryEntry,
-			ComponentChanges.PACKET_CODEC, FluidVariant::getComponents,
-			FluidVariantImpl::of
-	);
-
 	public static FluidVariant of(Fluid fluid, ComponentChanges components) {
 		Objects.requireNonNull(fluid, "Fluid may not be null.");
 		Objects.requireNonNull(components, "Components may not be null.");
@@ -74,7 +57,7 @@ public class FluidVariantImpl implements FluidVariant {
 		}
 	}
 
-	private static FluidVariant of(RegistryEntry<Fluid> fluid, ComponentChanges components) {
+	public static FluidVariant of(RegistryEntry<Fluid> fluid, ComponentChanges components) {
 		return of(fluid.value(), components);
 	}
 

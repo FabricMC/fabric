@@ -27,6 +27,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
+import net.fabricmc.fabric.impl.transfer.VariantCodecs;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 
 /**
@@ -41,8 +42,8 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
  */
 @ApiStatus.NonExtendable
 public interface FluidVariant extends TransferVariant<Fluid> {
-	Codec<FluidVariant> CODEC = FluidVariantImpl.CODEC;
-	PacketCodec<RegistryByteBuf, FluidVariant> PACKET_CODEC = FluidVariantImpl.PACKET_CODEC;
+	Codec<FluidVariant> CODEC = VariantCodecs.FLUID_CODEC;
+	PacketCodec<RegistryByteBuf, FluidVariant> PACKET_CODEC = VariantCodecs.FLUID_PACKET_CODEC;
 
 	/**
 	 * Retrieve a blank FluidVariant.

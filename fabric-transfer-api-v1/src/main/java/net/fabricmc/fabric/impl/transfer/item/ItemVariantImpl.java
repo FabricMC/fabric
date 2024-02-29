@@ -18,35 +18,17 @@ package net.fabricmc.fabric.impl.transfer.item;
 
 import java.util.Objects;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 
 public class ItemVariantImpl implements ItemVariant {
-	public static final Codec<ItemVariant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Registries.ITEM.getEntryCodec().fieldOf("item").forGetter(ItemVariant::getRegistryEntry),
-			ComponentChanges.CODEC.fieldOf("components").forGetter(ItemVariant::getComponents)
-		).apply(instance, ItemVariantImpl::of)
-	);
-	public static final PacketCodec<RegistryByteBuf, ItemVariant> PACKET_CODEC = PacketCodec.tuple(
-			PacketCodecs.registryEntry(RegistryKeys.ITEM), ItemVariant::getRegistryEntry,
-			ComponentChanges.PACKET_CODEC, ItemVariant::getComponents,
-			ItemVariantImpl::of
-	);
-
 	public static ItemVariant of(Item item, ComponentChanges components) {
 		Objects.requireNonNull(item, "Item may not be null.");
 		Objects.requireNonNull(components, "Components may not be null.");
@@ -59,7 +41,7 @@ public class ItemVariantImpl implements ItemVariant {
 		}
 	}
 
-	private static ItemVariant of(RegistryEntry<Item> item, ComponentChanges components) {
+	public static ItemVariant of(RegistryEntry<Item> item, ComponentChanges components) {
 		return of(item.value(), components);
 	}
 

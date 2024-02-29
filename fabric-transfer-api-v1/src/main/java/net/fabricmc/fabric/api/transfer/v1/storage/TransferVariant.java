@@ -51,7 +51,7 @@ public interface TransferVariant<O> {
 	 * Return true if this variant has a component changes.
 	 */
 	default boolean hasComponents() {
-		return getComponents().isEmpty();
+		return !getComponents().isEmpty();
 	}
 
 	/**

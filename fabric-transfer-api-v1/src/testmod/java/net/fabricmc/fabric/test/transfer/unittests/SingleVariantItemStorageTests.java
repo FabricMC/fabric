@@ -22,6 +22,7 @@ import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
 import java.util.List;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentType;
@@ -33,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
@@ -122,8 +124,15 @@ public class SingleVariantItemStorageTests {
 	}
 
 	public record FluidData(FluidVariant variant, long amount) {
-		public static Codec<FluidData> CODEC = null;
-		public static PacketCodec<RegistryByteBuf, FluidData> PACKET_CODEC = null;
+		public static Codec<FluidData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				FluidVariant.CODEC.fieldOf("variant").forGetter(FluidData::variant),
+				Codec.LONG.fieldOf("amount").forGetter(FluidData::amount)
+		).apply(instance, FluidData::new));
+		public static PacketCodec<RegistryByteBuf, FluidData> PACKET_CODEC = PacketCodec.tuple(
+				FluidVariant.PACKET_CODEC, FluidData::variant,
+				PacketCodecs.VAR_LONG, FluidData::amount,
+				FluidData::new
+		);
 
 		public static FluidData DEFAULT = new FluidData(FluidVariant.blank(), 0);
 	}

@@ -29,6 +29,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
+import net.fabricmc.fabric.impl.transfer.VariantCodecs;
 import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 
 /**
@@ -38,8 +39,8 @@ import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
  */
 @ApiStatus.NonExtendable
 public interface ItemVariant extends TransferVariant<Item> {
-	Codec<ItemVariant> CODEC = ItemVariantImpl.CODEC;
-	PacketCodec<RegistryByteBuf, ItemVariant> PACKET_CODEC = ItemVariantImpl.PACKET_CODEC;
+	Codec<ItemVariant> CODEC = VariantCodecs.ITEM_CODEC;
+	PacketCodec<RegistryByteBuf, ItemVariant> PACKET_CODEC = VariantCodecs.ITEM_PACKET_CODEC;
 
 	/**
 	 * Retrieve a blank ItemVariant.
