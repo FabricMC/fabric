@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.transfer.unittests;
+package net.fabricmc.fabric.test.transfer;
 
 import java.util.Objects;
 

@@ -17,9 +17,12 @@
 package net.fabricmc.fabric.test.transfer.unittests;
 
 import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BUCKET;
-import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
+import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
 
 import java.util.Iterator;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import net.minecraft.fluid.Fluids;
 
@@ -32,13 +35,14 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.FilteringStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
-public class BaseStorageTests {
-	public static void run() {
-		testFilteringStorage();
-		testNonEmptyIteratorWithModifiedView();
+public class BaseStorageTests extends AbstractTransferApiTest {
+	@BeforeAll
+	static void beforeAll() {
+		bootstrap();
 	}
 
-	private static void testFilteringStorage() {
+	@Test
+	public void testFilteringStorage() {
 		SingleVariantStorage<FluidVariant> storage = new SingleVariantStorage<>() {
 			@Override
 			protected FluidVariant getBlankVariant() {
@@ -102,7 +106,8 @@ public class BaseStorageTests {
 	 * Regression test for <a href="https://github.com/FabricMC/fabric/issues/3414">
 	 * {@code nonEmptyIterator} not handling views that become empty during iteration correctly</a>.
 	 */
-	private static void testNonEmptyIteratorWithModifiedView() {
+	@Test
+	public void testNonEmptyIteratorWithModifiedView() {
 		SingleVariantStorage<FluidVariant> storage = SingleFluidStorage.withFixedCapacity(BUCKET, () -> { });
 		storage.variant = FluidVariant.of(Fluids.WATER);
 

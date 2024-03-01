@@ -17,36 +17,60 @@
 package net.fabricmc.fabric.test.transfer.unittests;
 
 import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BUCKET;
-import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
+import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
 
 import java.util.List;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.DataComponentType;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.base.SingleItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer;
 
-public class SingleVariantItemStorageTests {
-	private static final FluidVariant LAVA = FluidVariant.of(Fluids.LAVA);
+public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
+	private static FluidVariant LAVA;
+	public static DataComponentType<FluidData> FLUID;
 
-	public static void run() {
-		testWaterTank();
+	@BeforeAll
+	static void beforeAll() {
+		bootstrap();
+
+		LAVA = FluidVariant.of(Fluids.LAVA);
+		FLUID = Registry.register(
+				Registries.DATA_COMPONENT_TYPE, new Identifier(TransferTestInitializer.MOD_ID, "fluid"),
+				DataComponentType.<FluidData>builder().codec(FluidData.CODEC).packetCodec(FluidData.PACKET_CODEC).build());
 	}
 
-	private static void testWaterTank() {
+	@Test
+	public void testWaterTank() {
 		SimpleInventory inv = new SimpleInventory(new ItemStack(Items.DIAMOND, 2), ItemStack.EMPTY);
 		ContainerItemContext ctx = new InventoryContainerItemContext(inv);
 
@@ -57,7 +81,7 @@ public class SingleVariantItemStorageTests {
 			assertEquals(BUCKET, storage.insert(LAVA, BUCKET, tx));
 			// Insertion should create a new stack.
 			assertEquals(1, inv.getStack(0).getCount());
-			assertEquals(null, inv.getStack(0).getNbt());
+			assertEquals(ComponentChanges.EMPTY, inv.getStack(0).getComponentChanges());
 			assertEquals(1, inv.getStack(1).getCount());
 			assertEquals(LAVA, getFluid(inv.getStack(1)));
 			assertEquals(BUCKET, getAmount(inv.getStack(1)));
@@ -75,7 +99,7 @@ public class SingleVariantItemStorageTests {
 
 		// Make sure custom NBT is kept.
 		Text customName = Text.literal("Lava-containing diamond!");
-		inv.getStack(0).setCustomName(customName);
+		inv.getStack(0).set(DataComponentTypes.CUSTOM_NAME, customName);
 
 		try (Transaction tx = Transaction.openOuter()) {
 			// Test extract along the way.
@@ -90,35 +114,103 @@ public class SingleVariantItemStorageTests {
 		assertEquals(0L, getAmount(inv.getStack(0)));
 	}
 
-	private static FluidVariant getFluid(ItemStack stack) {
-		NbtCompound nbt = stack.getNbt();
+	@Test
+	public void writeNbtTest() {
+		SingleItemStorage storage = new SingleItemStorage() {
+			@Override
+			protected long getCapacity(ItemVariant variant) {
+				return 10;
+			}
+		};
 
-		if (nbt != null && nbt.contains("fluid")) {
-			return FluidVariant.fromNbt(nbt.getCompound("fluid"));
-		} else {
-			return FluidVariant.blank();
+		try (Transaction tx = Transaction.openOuter()) {
+			storage.insert(ItemVariant.of(Items.DIAMOND), 1, tx);
+			tx.commit();
+		}
+
+		NbtCompound nbt = new NbtCompound();
+		storage.writeNbt(nbt, staticDrm());
+		assertEquals("{amount:1L,variant:{components:{},item:\"minecraft:diamond\"}}", nbt.toString());
+	}
+
+	@Test
+	public void readNbtTest() {
+		SingleItemStorage storage = new SingleItemStorage() {
+			@Override
+			protected long getCapacity(ItemVariant variant) {
+				return 10;
+			}
+		};
+
+		NbtCompound variantNbt = new NbtCompound();
+		variantNbt.putString("item", "minecraft:diamond");
+		variantNbt.put("components", new NbtCompound());
+		NbtCompound nbt = new NbtCompound();
+		nbt.putLong("amount", 1);
+		nbt.put("variant", variantNbt);
+
+		storage.readNbt(nbt, staticDrm());
+
+		try (Transaction tx = Transaction.openOuter()) {
+			assertEquals(1L, storage.extract(ItemVariant.of(Items.DIAMOND), 1, tx));
+			tx.commit();
 		}
 	}
 
-	private static long getAmount(ItemStack stack) {
-		NbtCompound nbt = stack.getNbt();
+	@Test
+	public void readInvalidNbtTest() {
+		SingleItemStorage storage = new SingleItemStorage() {
+			@Override
+			protected long getCapacity(ItemVariant variant) {
+				return 10;
+			}
+		};
 
-		if (nbt != null) {
-			return nbt.getLong("amount");
-		} else {
-			return 0;
+		// Test that invalid NBT defaults to empty.
+		NbtCompound variantNbt = new NbtCompound();
+		variantNbt.putString("id", "minecraft:diamond");
+		NbtCompound nbt = new NbtCompound();
+		nbt.putLong("amount", 1);
+		nbt.put("variant", variantNbt);
+
+		storage.readNbt(nbt, staticDrm());
+
+		try (Transaction tx = Transaction.openOuter()) {
+			assertEquals(0L, storage.extract(ItemVariant.of(Items.DIAMOND), 1, tx));
+			tx.commit();
 		}
+	}
+
+	private static FluidVariant getFluid(ItemStack stack) {
+		return stack.getOrDefault(FLUID, FluidData.DEFAULT).variant();
+	}
+
+	private static long getAmount(ItemStack stack) {
+		return stack.getOrDefault(FLUID, FluidData.DEFAULT).amount();
 	}
 
 	private static void setContents(ItemStack stack, FluidVariant newResource, long newAmount) {
 		if (newAmount > 0) {
-			stack.getOrCreateNbt().put("fluid", newResource.toNbt());
-			stack.getOrCreateNbt().putLong("amount", newAmount);
+			FluidData fluidData = new FluidData(newResource, newAmount);
+			stack.set(FLUID, fluidData);
 		} else {
 			// Make sure emptied tanks can stack with tanks without NBT.
-			stack.removeSubNbt("fluid");
-			stack.removeSubNbt("amount");
+			stack.remove(FLUID);
 		}
+	}
+
+	public record FluidData(FluidVariant variant, long amount) {
+		public static Codec<FluidData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				FluidVariant.CODEC.fieldOf("variant").forGetter(FluidData::variant),
+				Codec.LONG.fieldOf("amount").forGetter(FluidData::amount)
+		).apply(instance, FluidData::new));
+		public static PacketCodec<RegistryByteBuf, FluidData> PACKET_CODEC = PacketCodec.tuple(
+				FluidVariant.PACKET_CODEC, FluidData::variant,
+				PacketCodecs.VAR_LONG, FluidData::amount,
+				FluidData::new
+		);
+
+		public static FluidData DEFAULT = new FluidData(FluidVariant.blank(), 0);
 	}
 
 	private static Storage<FluidVariant> createTankStorage(ContainerItemContext ctx) {

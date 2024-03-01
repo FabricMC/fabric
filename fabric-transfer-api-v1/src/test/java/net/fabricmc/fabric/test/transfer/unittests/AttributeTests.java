@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.test.transfer.unittests;
 
-import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
+import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import net.minecraft.fluid.Fluids;
 import net.minecraft.sound.SoundEvents;
@@ -28,13 +31,14 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 /**
  * Test that fluid attributes for vanilla fluids have the correct values.
  */
-public class AttributeTests {
-	public static void run() {
-		testWater();
-		testLava();
+public class AttributeTests extends AbstractTransferApiTest {
+	@BeforeAll
+	static void beforeAll() {
+		bootstrap();
 	}
 
-	private static void testWater() {
+	@Test
+	public void testWater() {
 		FluidVariant water = FluidVariant.of(Fluids.WATER);
 
 		assertEquals(SoundEvents.ITEM_BUCKET_FILL, FluidVariantAttributes.getFillSound(water));
@@ -45,7 +49,8 @@ public class AttributeTests {
 		assertEquals(false, FluidVariantAttributes.isLighterThanAir(water));
 	}
 
-	private static void testLava() {
+	@Test
+	public void testLava() {
 		FluidVariant lava = FluidVariant.of(Fluids.LAVA);
 
 		assertEquals(SoundEvents.ITEM_BUCKET_FILL_LAVA, FluidVariantAttributes.getFillSound(lava));

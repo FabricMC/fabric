@@ -16,24 +16,18 @@
 
 package net.fabricmc.fabric.test.transfer.unittests;
 
-import org.slf4j.LoggerFactory;
+import net.minecraft.Bootstrap;
+import net.minecraft.SharedConstants;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.Registries;
 
-import net.fabricmc.api.ModInitializer;
+public abstract class AbstractTransferApiTest {
+	protected static void bootstrap() {
+		SharedConstants.createGameVersion();
+		Bootstrap.initialize();
+	}
 
-public class UnitTestsInitializer implements ModInitializer {
-	@Override
-	public void onInitialize() {
-		AttributeTests.run();
-		BaseStorageTests.run();
-		FluidItemTests.run();
-		FluidTests.run();
-		FluidVariantTests.run();
-		ItemTests.run();
-		PlayerInventoryStorageTests.run();
-		SingleVariantItemStorageTests.run();
-		TransactionStateTests.run();
-		UnderlyingViewTests.run();
-
-		LoggerFactory.getLogger("fabric-transfer-api-v1 testmod").info("Transfer API unit tests successful.");
+	protected static DynamicRegistryManager staticDrm() {
+		return DynamicRegistryManager.of(Registries.REGISTRIES);
 	}
 }

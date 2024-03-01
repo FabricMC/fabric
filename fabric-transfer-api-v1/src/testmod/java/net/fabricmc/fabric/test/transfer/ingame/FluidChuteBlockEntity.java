@@ -60,12 +60,12 @@ public class FluidChuteBlockEntity extends BlockEntity {
 	@Override
 	protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
 		super.writeNbt(nbt, wrapperLookup);
-		storage.writeNbt(nbt);
+		storage.writeNbt(nbt, wrapperLookup);
 	}
 
 	@Override
 	public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
 		super.readNbt(nbt, wrapperLookup);
-		storage.readNbt(nbt);
+		storage.readNbt(nbt, wrapperLookup);
 	}
 }

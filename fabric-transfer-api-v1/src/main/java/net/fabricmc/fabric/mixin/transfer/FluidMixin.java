@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.component.ComponentChanges;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.sound.SoundEvent;
 
@@ -43,7 +44,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 @SuppressWarnings("unused")
 public class FluidMixin implements FluidVariantCache {
 	@SuppressWarnings("ConstantConditions")
-	private final FluidVariant fabric_cachedFluidVariant = new FluidVariantImpl((Fluid) (Object) this, null);
+	private final FluidVariant fabric_cachedFluidVariant = new FluidVariantImpl((Fluid) (Object) this, ComponentChanges.EMPTY);
 
 	@Override
 	public FluidVariant fabric_getCachedFluidVariant() {

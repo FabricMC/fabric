@@ -19,22 +19,21 @@ package net.fabricmc.fabric.impl.transfer.fluid;
 import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import net.minecraft.component.ComponentChanges;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
 public class FluidVariantImpl implements FluidVariant {
-	public static FluidVariant of(Fluid fluid, @Nullable NbtCompound nbt) {
+	public static FluidVariant of(Fluid fluid, ComponentChanges components) {
 		Objects.requireNonNull(fluid, "Fluid may not be null.");
+		Objects.requireNonNull(components, "Components may not be null.");
 
 		if (!fluid.isStill(fluid.getDefaultState()) && fluid != Fluids.EMPTY) {
 			// Note: the empty fluid is not still, that's why we check for it specifically.
@@ -49,25 +48,27 @@ public class FluidVariantImpl implements FluidVariant {
 			}
 		}
 
-		if (nbt == null || fluid == Fluids.EMPTY) {
+		if (components.isEmpty() || fluid == Fluids.EMPTY) {
 			// Use the cached variant inside the fluid
 			return ((FluidVariantCache) fluid).fabric_getCachedFluidVariant();
 		} else {
 			// TODO explore caching fluid variants for non null tags.
-			return new FluidVariantImpl(fluid, nbt);
+			return new FluidVariantImpl(fluid, components);
 		}
 	}
 
-	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-transfer-api-v1/fluid");
+	public static FluidVariant of(RegistryEntry<Fluid> fluid, ComponentChanges components) {
+		return of(fluid.value(), components);
+	}
 
 	private final Fluid fluid;
-	private final @Nullable NbtCompound nbt;
+	private final ComponentChanges components;
 	private final int hashCode;
 
-	public FluidVariantImpl(Fluid fluid, NbtCompound nbt) {
+	public FluidVariantImpl(Fluid fluid, ComponentChanges components) {
 		this.fluid = fluid;
-		this.nbt = nbt == null ? null : nbt.copy(); // defensive copy
-		this.hashCode = Objects.hash(fluid, nbt);
+		this.components = components;
+		this.hashCode = Objects.hash(fluid, components);
 	}
 
 	@Override
@@ -81,57 +82,13 @@ public class FluidVariantImpl implements FluidVariant {
 	}
 
 	@Override
-	public @Nullable NbtCompound getNbt() {
-		return nbt;
-	}
-
-	@Override
-	public NbtCompound toNbt() {
-		NbtCompound result = new NbtCompound();
-		result.putString("fluid", Registries.FLUID.getId(fluid).toString());
-
-		if (nbt != null) {
-			result.put("tag", nbt.copy());
-		}
-
-		return result;
-	}
-
-	public static FluidVariant fromNbt(NbtCompound compound) {
-		try {
-			Fluid fluid = Registries.FLUID.get(new Identifier(compound.getString("fluid")));
-			NbtCompound nbt = compound.contains("tag") ? compound.getCompound("tag") : null;
-			return of(fluid, nbt);
-		} catch (RuntimeException runtimeException) {
-			LOGGER.debug("Tried to load an invalid FluidVariant from NBT: {}", compound, runtimeException);
-			return FluidVariant.blank();
-		}
-	}
-
-	@Override
-	public void toPacket(PacketByteBuf buf) {
-		if (isBlank()) {
-			buf.writeBoolean(false);
-		} else {
-			buf.writeBoolean(true);
-			buf.writeVarInt(Registries.FLUID.getRawId(fluid));
-			buf.writeNbt(nbt);
-		}
-	}
-
-	public static FluidVariant fromPacket(PacketByteBuf buf) {
-		if (!buf.readBoolean()) {
-			return FluidVariant.blank();
-		} else {
-			Fluid fluid = Registries.FLUID.get(buf.readVarInt());
-			NbtCompound nbt = buf.readNbt();
-			return of(fluid, nbt);
-		}
+	public @Nullable ComponentChanges getComponents() {
+		return components;
 	}
 
 	@Override
 	public String toString() {
-		return "FluidVariant{fluid=" + fluid + ", tag=" + nbt + '}';
+		return "FluidVariant{fluid=" + fluid + ", components=" + components + '}';
 	}
 
 	@Override
@@ -142,7 +99,7 @@ public class FluidVariantImpl implements FluidVariant {
 
 		FluidVariantImpl fluidVariant = (FluidVariantImpl) o;
 		// fail fast with hash code
-		return hashCode == fluidVariant.hashCode && fluid == fluidVariant.fluid && nbtMatches(fluidVariant.nbt);
+		return hashCode == fluidVariant.hashCode && fluid == fluidVariant.fluid && componentsMatches(fluidVariant.components);
 	}
 
 	@Override

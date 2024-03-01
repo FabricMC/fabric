@@ -18,13 +18,10 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.component.ComponentChanges;
 
 /**
- * An immutable association of an immutable object instance (for example {@code Item} or {@code Fluid}) and an optional NBT tag.
+ * An immutable association of an immutable object instance (for example {@code Item} or {@code Fluid}) and data components.
  *
  * <p>This is exposed for convenience for code that needs to be generic across multiple transfer variants,
  * but note that a {@link Storage} is not necessarily bound to {@code TransferVariant}. Its generic parameter can be any immutable object.
@@ -46,18 +43,15 @@ public interface TransferVariant<O> {
 	O getObject();
 
 	/**
-	 * Return the underlying tag.
-	 *
-	 * <p><b>NEVER MUTATE THIS NBT TAG</b>, if you need to mutate it you can use {@link #copyNbt()} to retrieve a copy instead.
+	 * @return The {@link ComponentChanges} of this variant.
 	 */
-	@Nullable
-	NbtCompound getNbt();
+	ComponentChanges getComponents();
 
 	/**
-	 * Return true if this variant has a tag, false otherwise.
+	 * Return true if this variant has a component changes.
 	 */
-	default boolean hasNbt() {
-		return getNbt() != null;
+	default boolean hasComponents() {
+		return !getComponents().isEmpty();
 	}
 
 	/**
@@ -65,8 +59,8 @@ public interface TransferVariant<O> {
 	 *
 	 * <p>Note: True is returned if both tags are {@code null}.
 	 */
-	default boolean nbtMatches(@Nullable NbtCompound other) {
-		return Objects.equals(getNbt(), other);
+	default boolean componentsMatches(ComponentChanges other) {
+		return Objects.equals(getComponents(), other);
 	}
 
 	/**
@@ -75,37 +69,4 @@ public interface TransferVariant<O> {
 	default boolean isOf(O object) {
 		return getObject() == object;
 	}
-
-	/**
-	 * Return a copy of the tag of this variant, or {@code null} if this variant doesn't have a tag.
-	 *
-	 * <p>Note: Use {@link #nbtMatches} if you only need to check for custom tag equality, or {@link #getNbt()} if you don't need to mutate the tag.
-	 */
-	@Nullable
-	default NbtCompound copyNbt() {
-		NbtCompound nbt = getNbt();
-		return nbt == null ? null : nbt.copy();
-	}
-
-	/**
-	 * Return a copy of the tag of this variant, or a new compound if this variant doesn't have a tag.
-	 */
-	default NbtCompound copyOrCreateNbt() {
-		NbtCompound nbt = getNbt();
-		return nbt == null ? new NbtCompound() : nbt.copy();
-	}
-
-	/**
-	 * Save this variant into an NBT compound tag. Subinterfaces should have a matching static {@code fromNbt}.
-	 *
-	 * <p>Note: This is safe to use for persisting data as objects are saved using their full Identifier.
-	 */
-	NbtCompound toNbt();
-
-	/**
-	 * Write this variant into a packet byte buffer. Subinterfaces should have a matching static {@code fromPacket}.
-	 *
-	 * <p>Implementation note: Objects are saved using their raw registry integer id.
-	 */
-	void toPacket(PacketByteBuf buf);
 }

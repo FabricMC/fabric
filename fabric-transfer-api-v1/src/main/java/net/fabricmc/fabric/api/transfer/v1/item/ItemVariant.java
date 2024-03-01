@@ -16,26 +16,34 @@
 
 package net.fabricmc.fabric.api.transfer.v1.item;
 
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import java.util.Objects;
 
+import com.mojang.serialization.Codec;
+import org.jetbrains.annotations.ApiStatus;
+
+import net.minecraft.component.ComponentChanges;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
+import net.fabricmc.fabric.impl.transfer.VariantCodecs;
 import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 
 /**
- * An immutable count-less ItemStack, i.e. an immutable association of an item and an optional NBT compound tag.
+ * An immutable count-less ItemStack, i.e. an immutable association of an item and its data components.
  *
  * <p>Do not implement, use the static {@code of(...)} functions instead.
  */
 @ApiStatus.NonExtendable
 public interface ItemVariant extends TransferVariant<Item> {
+	Codec<ItemVariant> CODEC = VariantCodecs.ITEM_CODEC;
+	PacketCodec<RegistryByteBuf, ItemVariant> PACKET_CODEC = VariantCodecs.ITEM_PACKET_CODEC;
+
 	/**
 	 * Retrieve a blank ItemVariant.
 	 */
@@ -47,28 +55,28 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 * Retrieve an ItemVariant with the item and tag of a stack.
 	 */
 	static ItemVariant of(ItemStack stack) {
-		return of(stack.getItem(), stack.getNbt());
+		return of(stack.getItem(), stack.getComponentChanges());
 	}
 
 	/**
 	 * Retrieve an ItemVariant with an item and without a tag.
 	 */
 	static ItemVariant of(ItemConvertible item) {
-		return of(item, null);
+		return of(item, ComponentChanges.EMPTY);
 	}
 
 	/**
 	 * Retrieve an ItemVariant with an item and an optional tag.
 	 */
-	static ItemVariant of(ItemConvertible item, @Nullable NbtCompound tag) {
-		return ItemVariantImpl.of(item.asItem(), tag);
+	static ItemVariant of(ItemConvertible item, ComponentChanges components) {
+		return ItemVariantImpl.of(item.asItem(), components);
 	}
 
 	/**
 	 * Return true if the item and tag of this variant match those of the passed stack, and false otherwise.
 	 */
 	default boolean matches(ItemStack stack) {
-		return isOf(stack.getItem()) && nbtMatches(stack.getNbt());
+		return isOf(stack.getItem()) && Objects.equals(stack.getComponentChanges(), getComponents());
 	}
 
 	/**
@@ -76,6 +84,10 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 */
 	default Item getItem() {
 		return getObject();
+	}
+
+	default RegistryEntry<Item> getRegistryEntry() {
+		return getItem().getRegistryEntry();
 	}
 
 	/**
@@ -92,25 +104,6 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 */
 	default ItemStack toStack(int count) {
 		if (isBlank()) return ItemStack.EMPTY;
-		ItemStack stack = new ItemStack(getItem(), count);
-		stack.setNbt(copyNbt());
-		return stack;
-	}
-
-	/**
-	 * Deserialize a variant from an NBT compound tag, assuming it was serialized using
-	 * {@link #toNbt}. If an error occurs during deserialization, it will be logged
-	 * with the DEBUG level, and a blank variant will be returned.
-	 */
-	static ItemVariant fromNbt(NbtCompound nbt) {
-		return ItemVariantImpl.fromNbt(nbt);
-	}
-
-	/**
-	 * Write a variant from a packet byte buffer, assuming it was serialized using
-	 * {@link #toPacket}.
-	 */
-	static ItemVariant fromPacket(PacketByteBuf buf) {
-		return ItemVariantImpl.fromPacket(buf);
+		return new ItemStack(getRegistryEntry(), count, getComponents());
 	}
 }

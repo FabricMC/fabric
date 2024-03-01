@@ -18,23 +18,33 @@ package net.fabricmc.fabric.test.transfer.unittests;
 
 import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BUCKET;
 
+import io.netty.buffer.Unpooled;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.DataComponentType;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.dynamic.Codecs;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer;
 
-class FluidTests {
-	public static void run() {
-		testFluidStorage();
-	}
-
-	private static final FluidVariant TAGGED_WATER, TAGGED_WATER_2, WATER, LAVA;
+class FluidTests extends AbstractTransferApiTest {
+	private static FluidVariant TAGGED_WATER, TAGGED_WATER_2, WATER, LAVA;
 	private static int finalCommitCount = 0;
-
+	public static DataComponentType<Integer> TEST;
 	private static SingleSlotStorage<FluidVariant> createWaterStorage() {
 		return new SingleVariantStorage<>() {
 			@Override
@@ -59,16 +69,23 @@ class FluidTests {
 		};
 	}
 
-	static {
-		NbtCompound tag = new NbtCompound();
-		tag.putInt("test", 1);
-		TAGGED_WATER = FluidVariant.of(Fluids.WATER, tag);
-		TAGGED_WATER_2 = FluidVariant.of(Fluids.WATER, tag);
+	@BeforeAll
+	static void beforeAll() {
+		bootstrap();
+
+		ComponentChanges components = ComponentChanges.builder()
+				.add(TEST, 1)
+				.build();
+		TAGGED_WATER = FluidVariant.of(Fluids.WATER, components);
+		TAGGED_WATER_2 = FluidVariant.of(Fluids.WATER, components);
 		WATER = FluidVariant.of(Fluids.WATER);
 		LAVA = FluidVariant.of(Fluids.LAVA);
+		TEST = Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier(TransferTestInitializer.MOD_ID, "test"),
+									DataComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
 	}
 
-	private static void testFluidStorage() {
+	@Test
+	public void testFluidStorage() {
 		SingleSlotStorage<FluidVariant> waterStorage = createWaterStorage();
 
 		// Test content
@@ -134,6 +151,17 @@ class FluidTests {
 		insertWaterWithNesting(waterStorage, true);
 		if (waterStorage.getAmount() != 2 * BUCKET) throw new AssertionError("Outer was committed, so we should still have two buckets");
 		if (finalCommitCount != 1) throw new AssertionError("onFinalCommit() should have been called exactly once.");
+	}
+
+	@Test
+	void testPacketCodec() {
+		FluidVariant variant = FluidVariant.of(Fluids.WATER, ComponentChanges.builder().add(TEST, 1).build());
+		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		RegistryByteBuf rbuf = new RegistryByteBuf(buf, staticDrm());
+		FluidVariant.PACKET_CODEC.encode(rbuf, variant);
+
+		FluidVariant decoded = FluidVariant.PACKET_CODEC.decode(rbuf);
+		Assertions.assertTrue(variant.equals(decoded));
 	}
 
 	private static void insertWaterWithNesting(SingleSlotStorage<FluidVariant> waterStorage, boolean doOuterCommit) {
