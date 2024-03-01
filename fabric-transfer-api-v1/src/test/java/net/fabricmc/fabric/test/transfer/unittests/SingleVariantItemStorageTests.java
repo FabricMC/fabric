@@ -34,6 +34,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -46,6 +47,7 @@ import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.base.SingleItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantItemStorage;
@@ -110,6 +112,73 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		assertEquals(customName, inv.getStack(0).getName());
 		assertEquals(FluidVariant.blank(), getFluid(inv.getStack(0)));
 		assertEquals(0L, getAmount(inv.getStack(0)));
+	}
+
+	@Test
+	public void writeNbtTest() {
+		SingleItemStorage storage = new SingleItemStorage() {
+			@Override
+			protected long getCapacity(ItemVariant variant) {
+				return 10;
+			}
+		};
+
+		try (Transaction tx = Transaction.openOuter()) {
+			storage.insert(ItemVariant.of(Items.DIAMOND), 1, tx);
+			tx.commit();
+		}
+
+		NbtCompound nbt = new NbtCompound();
+		storage.writeNbt(nbt, staticDrm());
+		assertEquals("{amount:1L,variant:{components:{},item:\"minecraft:diamond\"}}", nbt.toString());
+	}
+
+	@Test
+	public void readNbtTest() {
+		SingleItemStorage storage = new SingleItemStorage() {
+			@Override
+			protected long getCapacity(ItemVariant variant) {
+				return 10;
+			}
+		};
+
+		NbtCompound variantNbt = new NbtCompound();
+		variantNbt.putString("item", "minecraft:diamond");
+		variantNbt.put("components", new NbtCompound());
+		NbtCompound nbt = new NbtCompound();
+		nbt.putLong("amount", 1);
+		nbt.put("variant", variantNbt);
+
+		storage.readNbt(nbt, staticDrm());
+
+		try (Transaction tx = Transaction.openOuter()) {
+			assertEquals(1L, storage.extract(ItemVariant.of(Items.DIAMOND), 1, tx));
+			tx.commit();
+		}
+	}
+
+	@Test
+	public void readInvalidNbtTest() {
+		SingleItemStorage storage = new SingleItemStorage() {
+			@Override
+			protected long getCapacity(ItemVariant variant) {
+				return 10;
+			}
+		};
+
+		// Test that invalid NBT defaults to empty.
+		NbtCompound variantNbt = new NbtCompound();
+		variantNbt.putString("id", "minecraft:diamond");
+		NbtCompound nbt = new NbtCompound();
+		nbt.putLong("amount", 1);
+		nbt.put("variant", variantNbt);
+
+		storage.readNbt(nbt, staticDrm());
+
+		try (Transaction tx = Transaction.openOuter()) {
+			assertEquals(0L, storage.extract(ItemVariant.of(Items.DIAMOND), 1, tx));
+			tx.commit();
+		}
 	}
 
 	private static FluidVariant getFluid(ItemStack stack) {

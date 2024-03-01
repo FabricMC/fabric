@@ -31,14 +31,14 @@ import net.fabricmc.fabric.impl.transfer.VariantCodecs;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 
 /**
- * An immutable association of a still fluid and an optional NBT tag.
+ * An immutable association of a still fluid and data components.
  *
  * <p>Do not extend this class. Use {@link #of(Fluid)} and {@link #of(Fluid, ComponentChanges)} to create instances.
  *
  * <p>{@link net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering} can be used for client-side rendering of fluid variants.
  *
  * <p><b>Fluid variants must always be compared with {@code equals}, never by reference!</b>
- * {@code hashCode} is guaranteed to be correct and constant time independently of the size of the NBT.
+ * {@code hashCode} is guaranteed to be correct and constant time independently of the size of the components.
  */
 @ApiStatus.NonExtendable
 public interface FluidVariant extends TransferVariant<Fluid> {
@@ -68,7 +68,7 @@ public interface FluidVariant extends TransferVariant<Fluid> {
 	 *
 	 * <p>The flowing and still variations of {@linkplain net.minecraft.fluid.FlowableFluid flowable fluids}
 	 * are normalized to always refer to the still fluid. For example,
-	 * {@code FluidVariant.of(Fluids.FLOWING_WATER, nbt).getFluid() == Fluids.WATER}.
+	 * {@code FluidVariant.of(Fluids.FLOWING_WATER, ComponentChanges.EMPTY).getFluid() == Fluids.WATER}.
 	 */
 	static FluidVariant of(Fluid fluid, ComponentChanges components) {
 		return FluidVariantImpl.of(fluid, components);

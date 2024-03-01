@@ -21,7 +21,7 @@ import java.util.Objects;
 import net.minecraft.component.ComponentChanges;
 
 /**
- * An immutable association of an immutable object instance (for example {@code Item} or {@code Fluid}) and an optional NBT tag.
+ * An immutable association of an immutable object instance (for example {@code Item} or {@code Fluid}) and data components.
  *
  * <p>This is exposed for convenience for code that needs to be generic across multiple transfer variants,
  * but note that a {@link Storage} is not necessarily bound to {@code TransferVariant}. Its generic parameter can be any immutable object.

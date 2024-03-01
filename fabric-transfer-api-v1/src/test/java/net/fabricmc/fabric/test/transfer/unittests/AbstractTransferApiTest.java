@@ -18,10 +18,16 @@ package net.fabricmc.fabric.test.transfer.unittests;
 
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.Registries;
 
 public abstract class AbstractTransferApiTest {
 	protected static void bootstrap() {
 		SharedConstants.createGameVersion();
 		Bootstrap.initialize();
+	}
+
+	protected static DynamicRegistryManager staticDrm() {
+		return DynamicRegistryManager.of(Registries.REGISTRIES);
 	}
 }

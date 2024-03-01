@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.transfer.VariantCodecs;
 import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 
 /**
- * An immutable count-less ItemStack, i.e. an immutable association of an item and an optional NBT compound tag.
+ * An immutable count-less ItemStack, i.e. an immutable association of an item and its data components.
  *
  * <p>Do not implement, use the static {@code of(...)} functions instead.
  */

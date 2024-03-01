@@ -20,22 +20,28 @@ import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
 
 import java.util.stream.IntStream;
 
+import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentType;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.Direction;
@@ -152,6 +158,19 @@ class ItemTests extends AbstractTransferApiTest {
 			assertEquals(0L, wrapper.insert(ItemVariant.of(oversizedStack), 10, transaction));
 			transaction.commit();
 		}
+	}
+
+	@Test
+	void testPacketCodec() {
+		ItemStack stack = new ItemStack(Items.DIAMOND_PICKAXE);
+		stack.set(DataComponentTypes.CUSTOM_NAME, Text.literal("Custom name"));
+
+		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		RegistryByteBuf rbuf = new RegistryByteBuf(buf, staticDrm());
+		ItemVariant.PACKET_CODEC.encode(rbuf, ItemVariant.of(stack));
+
+		ItemVariant decoded = ItemVariant.PACKET_CODEC.decode(rbuf);
+		Assertions.assertTrue(ItemStack.areEqual(stack, decoded.toStack()));
 	}
 
 	private static boolean stackEquals(ItemStack stack, Item item, int count) {

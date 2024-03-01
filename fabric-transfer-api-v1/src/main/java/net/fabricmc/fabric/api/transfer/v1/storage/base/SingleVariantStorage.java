@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.transfer.v1.storage.base;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -162,15 +163,39 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 		return "SingleVariantStorage[%d %s]".formatted(amount, variant);
 	}
 
+	/**
+	 * Read a {@link SingleVariantStorage} from NBT.
+	 *
+	 * @param storage the {@link SingleVariantStorage} to read into
+	 * @param codec the item variant codec
+	 * @param fallback the fallback item variant, used when the NBT is invalid
+	 * @param nbt the NBT to read from
+	 * @param wrapperLookup the {@link RegistryWrapper.WrapperLookup} instance
+	 * @param <T> the type of the item variant
+	 */
 	public static <T extends TransferVariant<?>> void readNbt(SingleVariantStorage<T> storage, Codec<T> codec, Supplier<T> fallback, NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
 		final RegistryOps<NbtElement> ops = wrapperLookup.getOps(NbtOps.INSTANCE);
-		storage.variant = codec.parse(ops, nbt.getCompound("variant")).mapError(string -> {
-			LOGGER.debug("Tried to load an invalid TransferVariant from NBT: {}", string);
-			return string;
-		}).result().orElseGet(fallback);
+		final DataResult<T> result = codec.parse(ops, nbt.getCompound("variant"));
+
+		if (result.error().isPresent()) {
+			LOGGER.debug("Failed to load an ItemVariant from NBT: {}", result.error().get());
+			storage.variant = fallback.get();
+		} else {
+			storage.variant = result.result().get();
+		}
+
 		storage.amount = nbt.getLong("amount");
 	}
 
+	/**
+	 * Write a {@link SingleVariantStorage} to NBT.
+	 *
+	 * @param storage the {@link SingleVariantStorage} to write from
+	 * @param codec the item variant codec
+	 * @param nbt the NBT to write to
+	 * @param wrapperLookup the {@link RegistryWrapper.WrapperLookup} instance
+	 * @param <T> the type of the item variant
+	 */
 	public static <T extends TransferVariant<?>> void writeNbt(SingleVariantStorage<T> storage, Codec<T> codec, NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
 		final RegistryOps<NbtElement> ops = wrapperLookup.getOps(NbtOps.INSTANCE);
 		nbt.put("variant", Util.getResult(codec.encodeStart(ops, storage.variant), RuntimeException::new));

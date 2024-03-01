@@ -18,12 +18,16 @@ package net.fabricmc.fabric.test.transfer.unittests;
 
 import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BUCKET;
 
+import io.netty.buffer.Unpooled;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentType;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -147,6 +151,17 @@ class FluidTests extends AbstractTransferApiTest {
 		insertWaterWithNesting(waterStorage, true);
 		if (waterStorage.getAmount() != 2 * BUCKET) throw new AssertionError("Outer was committed, so we should still have two buckets");
 		if (finalCommitCount != 1) throw new AssertionError("onFinalCommit() should have been called exactly once.");
+	}
+
+	@Test
+	void testPacketCodec() {
+		FluidVariant variant = FluidVariant.of(Fluids.WATER, ComponentChanges.builder().add(TEST, 1).build());
+		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		RegistryByteBuf rbuf = new RegistryByteBuf(buf, staticDrm());
+		FluidVariant.PACKET_CODEC.encode(rbuf, variant);
+
+		FluidVariant decoded = FluidVariant.PACKET_CODEC.decode(rbuf);
+		Assertions.assertTrue(variant.equals(decoded));
 	}
 
 	private static void insertWaterWithNesting(SingleSlotStorage<FluidVariant> waterStorage, boolean doOuterCommit) {
