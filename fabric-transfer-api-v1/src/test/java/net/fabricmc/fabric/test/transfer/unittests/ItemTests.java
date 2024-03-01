@@ -90,8 +90,7 @@ class ItemTests extends AbstractTransferApiTest {
 
 		if (stack != inv.getStack(0)) throw new AssertionError("Stack should have stayed the same.");
 
-		// Also edit the stack when the item matches, even when the components and the count change.
-		// We expect the stack to change
+		// Also edit the stack when the item matches, even when the NBT and the count change.
 		ItemVariant oldVariant = ItemVariant.of(Items.DIAMOND);
 		ComponentChanges components = ComponentChanges.builder().add(ENERGY, 42).build();
 		ItemVariant newVariant = ItemVariant.of(Items.DIAMOND, components);
@@ -102,8 +101,7 @@ class ItemTests extends AbstractTransferApiTest {
 			tx.commit();
 		}
 
-		if (stack == inv.getStack(0)) throw new AssertionError("Stack should have changed");
-		stack = inv.getStack(0);
+		if (stack != inv.getStack(0)) throw new AssertionError("Stack should have stayed the same.");
 		if (!stackEquals(stack, newVariant, 5)) throw new AssertionError("Failed to update stack NBT or count.");
 	}
 

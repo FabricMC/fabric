@@ -24,6 +24,7 @@ import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.block.enums.ChestType;
+import net.minecraft.component.DataComponentType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
@@ -157,8 +158,12 @@ class InventorySlotWrapper extends SingleStackStorage {
 		if (!original.isEmpty() && original.getItem() == currentStack.getItem()) {
 			// Components have changed, we need to copy the stack.
 			if (!Objects.equals(original.getComponentChanges(), currentStack.getComponentChanges())) {
-				setStack(currentStack.copy());
-				return;
+				// Remove all the existing components and copy the new ones on top.
+				for (DataComponentType<?> type : original.getComponents().getTypes()) {
+					original.set(type, null);
+				}
+
+				original.copyComponentsFrom(currentStack.getComponents());
 			}
 
 			// None is empty and the items and components match: just update the amount, and reuse the original stack.
