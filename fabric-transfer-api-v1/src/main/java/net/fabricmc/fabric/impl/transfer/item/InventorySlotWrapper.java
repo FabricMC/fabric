@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.transfer.item;
 
+import java.util.Objects;
+
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
@@ -153,9 +155,14 @@ class InventorySlotWrapper extends SingleStackStorage {
 		}
 
 		if (!original.isEmpty() && original.getItem() == currentStack.getItem()) {
-			// None is empty and the items match: just update the amount and NBT, and reuse the original stack.
+			// Components have changed, we need to copy the stack.
+			if (!Objects.equals(original.getComponentChanges(), currentStack.getComponentChanges())) {
+				setStack(currentStack.copy());
+				return;
+			}
+
+			// None is empty and the items and components match: just update the amount, and reuse the original stack.
 			original.setCount(currentStack.getCount());
-			original.copyComponentsFrom(currentStack.getComponents());
 			setStack(original);
 		} else {
 			// Otherwise assume everything was taken from original so empty it.
