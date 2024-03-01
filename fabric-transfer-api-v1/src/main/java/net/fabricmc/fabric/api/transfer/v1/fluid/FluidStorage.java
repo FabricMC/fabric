@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.transfer.v1.fluid;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -160,7 +161,8 @@ public final class FluidStorage {
 		// Register empty bottle storage, only water potion is supported!
 		combinedItemApiProvider(Items.GLASS_BOTTLE).register(context -> {
 			return new EmptyItemFluidStorage(context, emptyBottle -> {
-				ItemStack newStack = PotionContentsComponent.createStack(emptyBottle.getItem(), Potions.WATER);
+				ItemStack newStack = emptyBottle.toStack();
+				newStack.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(Potions.WATER));
 				return ItemVariant.of(Items.POTION, newStack.getComponentChanges());
 			}, Fluids.WATER, FluidConstants.BOTTLE);
 		});

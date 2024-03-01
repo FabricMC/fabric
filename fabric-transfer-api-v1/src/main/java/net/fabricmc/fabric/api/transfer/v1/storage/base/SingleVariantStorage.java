@@ -167,7 +167,7 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 		storage.variant = codec.parse(ops, nbt.getCompound("variant")).mapError(string -> {
 			LOGGER.debug("Tried to load an invalid TransferVariant from NBT: {}", string);
 			return string;
-		}).result().orElse(fallback.get());
+		}).result().orElseGet(fallback);
 		storage.amount = nbt.getLong("amount");
 	}
 

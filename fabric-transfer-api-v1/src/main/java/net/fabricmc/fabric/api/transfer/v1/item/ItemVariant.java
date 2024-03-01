@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.transfer.v1.item;
 
+import java.util.Objects;
+
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -74,7 +76,7 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 * Return true if the item and tag of this variant match those of the passed stack, and false otherwise.
 	 */
 	default boolean matches(ItemStack stack) {
-		return ItemStack.areItemsAndNbtEqual(toStack(), stack);
+		return isOf(stack.getItem()) && Objects.equals(stack.getComponentChanges(), getComponents());
 	}
 
 	/**
