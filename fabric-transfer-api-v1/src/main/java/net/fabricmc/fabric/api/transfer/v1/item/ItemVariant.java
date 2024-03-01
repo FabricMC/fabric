@@ -104,8 +104,6 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 */
 	default ItemStack toStack(int count) {
 		if (isBlank()) return ItemStack.EMPTY;
-		ItemStack stack = new ItemStack(getItem(), count);
-		stack.applyChanges(getComponents());
-		return stack;
+		return new ItemStack(getRegistryEntry(), count, getComponents());
 	}
 }
