@@ -21,6 +21,8 @@ import java.util.Set;
 
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenCustomHashMap;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.FurnaceBlockEntity;
@@ -30,16 +32,19 @@ import net.minecraft.util.math.Direction;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.test.transfer.TestUtil;
 
-public class UnderlyingViewTests {
-	public static void run() {
-		testFurnaceSides();
+public class UnderlyingViewTests extends AbstractTransferApiTest {
+	@BeforeAll
+	static void beforeAll() {
+		bootstrap();
 	}
 
 	/**
 	 * Ensure that only 3 slots with different underlying view exist on all sides of a furnace combined.
 	 */
-	private static void testFurnaceSides() {
+	@Test
+	public void testFurnaceSides() {
 		FurnaceBlockEntity furnace = new FurnaceBlockEntity(BlockPos.ORIGIN, Blocks.FURNACE.getDefaultState());
 
 		Set<StorageView<ItemVariant>> viewSet = Collections.newSetFromMap(new Reference2ReferenceOpenCustomHashMap<>(new Hash.Strategy<>() {

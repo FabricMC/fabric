@@ -16,19 +16,24 @@
 
 package net.fabricmc.fabric.test.transfer.unittests;
 
-import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
+import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
-class FluidVariantTests {
-	public static void run() {
-		testFlowing();
+class FluidVariantTests extends AbstractTransferApiTest {
+	@BeforeAll
+	static void beforeAll() {
+		bootstrap();
 	}
 
-	private static void testFlowing() {
+	@Test
+	public void testFlowing() {
 		assertFluidEquals(Fluids.WATER, FluidVariant.of(Fluids.WATER), FluidVariant.of(Fluids.FLOWING_WATER));
 		assertFluidEquals(Fluids.LAVA, FluidVariant.of(Fluids.LAVA), FluidVariant.of(Fluids.FLOWING_LAVA));
 		assertEquals(FluidVariant.of(Fluids.WATER), FluidVariant.of(Fluids.FLOWING_WATER));

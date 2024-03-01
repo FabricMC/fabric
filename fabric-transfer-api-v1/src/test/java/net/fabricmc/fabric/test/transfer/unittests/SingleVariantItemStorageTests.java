@@ -17,12 +17,14 @@
 package net.fabricmc.fabric.test.transfer.unittests;
 
 import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BUCKET;
-import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
+import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
 
 import java.util.List;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentType;
@@ -51,17 +53,22 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer;
 
-public class SingleVariantItemStorageTests {
-	private static final FluidVariant LAVA = FluidVariant.of(Fluids.LAVA);
-	public static final DataComponentType<FluidData> FLUID = Registry.register(
-			Registries.DATA_COMPONENT_TYPE, new Identifier(TransferTestInitializer.MOD_ID, "fluid"),
-			DataComponentType.<FluidData>builder().codec(FluidData.CODEC).packetCodec(FluidData.PACKET_CODEC).build());
+public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
+	private static FluidVariant LAVA;
+	public static DataComponentType<FluidData> FLUID;
 
-	public static void run() {
-		testWaterTank();
+	@BeforeAll
+	static void beforeAll() {
+		bootstrap();
+
+		LAVA = FluidVariant.of(Fluids.LAVA);
+		FLUID = Registry.register(
+				Registries.DATA_COMPONENT_TYPE, new Identifier(TransferTestInitializer.MOD_ID, "fluid"),
+				DataComponentType.<FluidData>builder().codec(FluidData.CODEC).packetCodec(FluidData.PACKET_CODEC).build());
 	}
 
-	private static void testWaterTank() {
+	@Test
+	public void testWaterTank() {
 		SimpleInventory inv = new SimpleInventory(new ItemStack(Items.DIAMOND, 2), ItemStack.EMPTY);
 		ContainerItemContext ctx = new InventoryContainerItemContext(inv);
 

@@ -16,9 +16,12 @@
 
 package net.fabricmc.fabric.test.transfer.unittests;
 
-import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
+import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
 
 import java.util.function.Function;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -29,15 +32,25 @@ import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
-public class PlayerInventoryStorageTests {
-	public static void run() {
+public class PlayerInventoryStorageTests extends AbstractTransferApiTest {
+	@BeforeAll
+	static void beforeAll() {
+		bootstrap();
+	}
+
+	@Test
+	public void testStackingOffer() {
 		// Ensure that offer stacks as expected.
 		testStacking(playerInv -> playerInv::offer);
+	}
+
+	@Test
+	public void testStackingInser() {
 		// Also test that the behavior of insert matches that of offer.
 		testStacking(playerInv -> playerInv::insert);
 	}
 
-	private static void testStacking(Function<PlayerInventoryStorage, InsertionFunction> inserterBuilder) {
+	private void testStacking(Function<PlayerInventoryStorage, InsertionFunction> inserterBuilder) {
 		// A bit hacky... but nothing should try using the null player entity as long as we don't call drop.
 		PlayerInventory inv = new PlayerInventory(null);
 		InsertionFunction inserter = inserterBuilder.apply(PlayerInventoryStorage.of(inv));

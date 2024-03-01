@@ -18,11 +18,13 @@ package net.fabricmc.fabric.test.transfer.unittests;
 
 import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BOTTLE;
 import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BUCKET;
-import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
+import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
 
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.PotionContentsComponent;
@@ -48,17 +50,14 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
-class FluidItemTests {
-	public static void run() {
-		testFluidItemApi();
-		testWaterPotion();
-		testSimpleContentsQuery();
-
-		// Ensure this doesn't throw an error due to the empty stack.
-		assertEquals(null, ContainerItemContext.withConstant(ItemStack.EMPTY).find(FluidStorage.ITEM));
+class FluidItemTests extends AbstractTransferApiTest {
+	@BeforeAll
+	static void beforeAll() {
+		bootstrap();
 	}
 
-	private static void testFluidItemApi() {
+	@Test
+	public void testFluidItemApi() {
 		FluidVariant water = FluidVariant.of(Fluids.WATER);
 		ItemVariant waterBucket = ItemVariant.of(Items.WATER_BUCKET);
 		Inventory testInventory = new FluidItemTestInventory(ItemStack.EMPTY, new ItemStack(Items.BUCKET), new ItemStack(Items.WATER_BUCKET));
@@ -144,7 +143,8 @@ class FluidItemTests {
 		}
 	}
 
-	private static void testWaterPotion() {
+	@Test
+	public void testWaterPotion() {
 		FluidVariant water = FluidVariant.of(Fluids.WATER);
 		Inventory testInventory = new SimpleInventory(new ItemStack(Items.GLASS_BOTTLE));
 
@@ -175,7 +175,8 @@ class FluidItemTests {
 		}
 	}
 
-	private static void testSimpleContentsQuery() {
+	@Test
+	public void testSimpleContentsQuery() {
 		assertEquals(
 				new ResourceAmount<>(FluidVariant.of(Fluids.WATER), BUCKET),
 				StorageUtil.findExtractableContent(
@@ -192,6 +193,12 @@ class FluidItemTests {
 						null
 				)
 		);
+	}
+
+	@Test
+	public void testDoesNotThrow() {
+		// Ensure this doesn't throw an error due to the empty stack.
+		assertEquals(null, ContainerItemContext.withConstant(ItemStack.EMPTY).find(FluidStorage.ITEM));
 	}
 
 	@Nullable

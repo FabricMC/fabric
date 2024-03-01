@@ -16,20 +16,25 @@
 
 package net.fabricmc.fabric.test.transfer.unittests;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.test.transfer.TestUtil;
 
-class TransactionStateTests {
-	public static void run() {
-		testTransactionExceptions();
-		testTransactionLifecycle();
+class TransactionStateTests extends AbstractTransferApiTest {
+	private int callbacksInvoked = 0;
+
+	@BeforeAll
+	static void beforeAll() {
+		bootstrap();
 	}
-
-	private static int callbacksInvoked = 0;
 
 	/**
 	 * Make sure that transaction global state stays valid in case of exceptions.
 	 */
-	private static void testTransactionExceptions() {
+	@Test
+	public void testTransactionExceptions() {
 		// Test exception inside the try.
 		ensureException(() -> {
 			try (Transaction tx = Transaction.openOuter()) {
@@ -96,7 +101,8 @@ class TransactionStateTests {
 		}
 	}
 
-	private static void testTransactionLifecycle() {
+	@Test
+	public void testTransactionLifecycle() {
 		TestUtil.assertEquals(Transaction.Lifecycle.NONE, Transaction.getLifecycle());
 
 		try (Transaction transaction = Transaction.openOuter()) {

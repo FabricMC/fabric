@@ -16,11 +16,13 @@
 
 package net.fabricmc.fabric.test.transfer.unittests;
 
-import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
+import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
 
 import java.util.stream.IntStream;
 
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentType;
@@ -48,19 +50,18 @@ import net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer;
 /**
  * Tests for the item transfer APIs.
  */
-class ItemTests {
-	public static final DataComponentType<Integer> ENERGY = Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier(TransferTestInitializer.MOD_ID, "energy"),
-																DataComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
+class ItemTests extends AbstractTransferApiTest {
+	public static DataComponentType<Integer> ENERGY;
 
-	public static void run() {
-		testStackReference();
-		testInventoryWrappers();
-		testLimitedStackCountInventory();
-		testLimitedStackCountItem();
-		testSimpleInventoryUpdates();
+	@BeforeAll
+	static void beforeAll() {
+		bootstrap();
+		ENERGY = Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier(TransferTestInitializer.MOD_ID, "energy"),
+									DataComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
 	}
 
-	private static void testStackReference() {
+	@Test
+	public void testStackReference() {
 		// Ensure that Inventory wrappers will try to mutate the backing stack as much as possible.
 		// In many cases, MC code captures a reference to the ItemStack so we want to edit that stack directly
 		// and not a copy whenever we can. Obviously this can't be perfect, but we try to cover as many cases as possible.
@@ -98,7 +99,8 @@ class ItemTests {
 		if (!stackEquals(stack, newVariant, 5)) throw new AssertionError("Failed to update stack NBT or count.");
 	}
 
-	private static void testInventoryWrappers() {
+	@Test
+	public void testInventoryWrappers() {
 		ItemVariant emptyBucket = ItemVariant.of(Items.BUCKET);
 		TestSidedInventory testInventory = new TestSidedInventory();
 		checkComparatorOutput(testInventory);
@@ -189,7 +191,8 @@ class ItemTests {
 	/**
 	 * Test insertion when {@link Inventory#getMaxCountPerStack()} is the bottleneck.
 	 */
-	private static void testLimitedStackCountInventory() {
+	@Test
+	public void testLimitedStackCountInventory() {
 		ItemVariant diamond = ItemVariant.of(Items.DIAMOND);
 		LimitedStackCountInventory inventory = new LimitedStackCountInventory(diamond.toStack(), diamond.toStack(), diamond.toStack());
 		InventoryStorage wrapper = InventoryStorage.of(inventory, null);
@@ -207,7 +210,8 @@ class ItemTests {
 	/**
 	 * Test insertion when {@link Item#getMaxCount()} is the bottleneck.
 	 */
-	private static void testLimitedStackCountItem() {
+	@Test
+	public void testLimitedStackCountItem() {
 		ItemVariant diamondPickaxe = ItemVariant.of(Items.DIAMOND_PICKAXE);
 		LimitedStackCountInventory inventory = new LimitedStackCountInventory(5);
 		InventoryStorage wrapper = InventoryStorage.of(inventory, null);
@@ -256,7 +260,8 @@ class ItemTests {
 	/**
 	 * Ensure that SimpleInventory only calls markDirty at the end of a successful transaction.
 	 */
-	private static void testSimpleInventoryUpdates() {
+	@Test
+	public void testSimpleInventoryUpdates() {
 		var simpleInventory = new SimpleInventory(2) {
 			boolean throwOnMarkDirty = true;
 			boolean markDirtyCalled = false;

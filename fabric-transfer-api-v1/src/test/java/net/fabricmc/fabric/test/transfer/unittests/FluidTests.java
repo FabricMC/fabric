@@ -18,6 +18,9 @@ package net.fabricmc.fabric.test.transfer.unittests;
 
 import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BUCKET;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentType;
 import net.minecraft.fluid.Fluids;
@@ -34,15 +37,10 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer;
 
-class FluidTests {
-	public static void run() {
-		testFluidStorage();
-	}
-
-	private static final FluidVariant TAGGED_WATER, TAGGED_WATER_2, WATER, LAVA;
+class FluidTests extends AbstractTransferApiTest {
+	private static FluidVariant TAGGED_WATER, TAGGED_WATER_2, WATER, LAVA;
 	private static int finalCommitCount = 0;
-	public static final DataComponentType<Integer> TEST = Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier(TransferTestInitializer.MOD_ID, "test"),
-																			DataComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
+	public static DataComponentType<Integer> TEST;
 	private static SingleSlotStorage<FluidVariant> createWaterStorage() {
 		return new SingleVariantStorage<>() {
 			@Override
@@ -67,7 +65,10 @@ class FluidTests {
 		};
 	}
 
-	static {
+	@BeforeAll
+	static void beforeAll() {
+		bootstrap();
+
 		ComponentChanges components = ComponentChanges.builder()
 				.add(TEST, 1)
 				.build();
@@ -75,9 +76,12 @@ class FluidTests {
 		TAGGED_WATER_2 = FluidVariant.of(Fluids.WATER, components);
 		WATER = FluidVariant.of(Fluids.WATER);
 		LAVA = FluidVariant.of(Fluids.LAVA);
+		TEST = Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier(TransferTestInitializer.MOD_ID, "test"),
+									DataComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
 	}
 
-	private static void testFluidStorage() {
+	@Test
+	public void testFluidStorage() {
 		SingleSlotStorage<FluidVariant> waterStorage = createWaterStorage();
 
 		// Test content
