@@ -48,7 +48,7 @@ public class FluidVariantImpl implements FluidVariant {
 			}
 		}
 
-		if (components == ComponentChanges.EMPTY || fluid == Fluids.EMPTY) {
+		if (components.isEmpty() || fluid == Fluids.EMPTY) {
 			// Use the cached variant inside the fluid
 			return ((FluidVariantCache) fluid).fabric_getCachedFluidVariant();
 		} else {

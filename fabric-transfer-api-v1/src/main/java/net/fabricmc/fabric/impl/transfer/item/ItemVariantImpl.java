@@ -34,7 +34,7 @@ public class ItemVariantImpl implements ItemVariant {
 		Objects.requireNonNull(components, "Components may not be null.");
 
 		// Only tag-less or empty item variants are cached for now.
-		if (components == ComponentChanges.EMPTY || item == Items.AIR) {
+		if (components.isEmpty() || item == Items.AIR) {
 			return ((ItemVariantCache) item).fabric_getCachedItemVariant();
 		} else {
 			return new ItemVariantImpl(item, components);
