@@ -149,6 +149,9 @@ public interface FabricItem {
 	 * achieved with the vanilla tag system alone. Alternatively, one might want to do the same thing with enchantments
 	 * from other mods, which don't have a similar tag system in general.</p>
 	 *
+	 * <p>Note that this method is only called <em>after</em> the {@link EnchantmentEvents#ALLOW_ENCHANTING} event, and
+	 * only if none of the listeners to that event override the result.</p>
+	 *
 	 * @param stack the current stack
 	 * @param enchantment the enchantment to check
 	 * @param context the context in which the enchantment is being checked

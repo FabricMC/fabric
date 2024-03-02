@@ -37,7 +37,9 @@ public final class EnchantmentEvents {
 	 * with Sharpness (and only Sharpness) under certain specific conditions.</p>
 	 *
 	 * <p>To modify the behavior of your own modded <em>enchantments</em>, use {@link Enchantment#isAcceptableItem(ItemStack)} instead.
-	 * To modify the behavior of your own modded <em>items</em>, use {@link FabricItem#canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)} instead.</p>
+	 * To modify the behavior of your own modded <em>items</em>, use {@link FabricItem#canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)} instead.
+	 * Note that this event triggers <em>before</em> {@link FabricItem#canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)},
+	 * and that method will only be called if no listeners override it.</p>
 	 *
 	 * <p>Note that allowing an enchantment using this event does not guarantee the item will receive that enchantment,
 	 * only that it isn't forbidden from doing so.</p>
