@@ -58,7 +58,7 @@ public final class FabricLootTableProviderImpl {
 		HashMap<Identifier, LootTable> builders = Maps.newHashMap();
 		HashMap<Identifier, ConditionJsonProvider[]> conditionMap = new HashMap<>();
 
-		return registryLookup.thenApply(lookup -> {
+		return registryLookup.thenCompose(lookup -> {
 			provider.accept(lookup, (identifier, builder) -> {
 				ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(builder);
 				conditionMap.put(identifier, conditions);
