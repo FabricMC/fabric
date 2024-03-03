@@ -16,10 +16,14 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -29,7 +33,7 @@ import net.minecraft.util.ActionResult;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 
 @Mixin(EnchantmentHelper.class)
-public class EnchantmentHelperMixin {
+abstract class EnchantmentHelperMixin {
 	@WrapOperation(
 			method = "getPossibleEntries",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/Enchantment;isAcceptableItem(Lnet/minecraft/item/ItemStack;)Z")
@@ -41,5 +45,21 @@ public class EnchantmentHelperMixin {
 				EnchantmentEvents.EnchantingContext.RANDOM_ENCHANTMENT
 		);
 		return result == ActionResult.PASS ? original.call(instance, stack) : result.isAccepted();
+	}
+
+	@ModifyReturnValue(method = "getLevel", at = @At("RETURN"))
+	private static int getIntrinsicLevelIfPresent(int original, Enchantment ench, ItemStack stack) {
+		int intrinsicLevel = stack.getItem().getIntrinsicEnchantments(stack).getLevel(ench);
+		return Math.max(original, intrinsicLevel);
+	}
+
+	// Other injectors require a code reference to EnchantmentHelper$Consumer which would need an AW.
+	@ModifyArgs(
+			method = "forEachEnchantment(Lnet/minecraft/enchantment/EnchantmentHelper$Consumer;Lnet/minecraft/item/ItemStack;)V",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper$Consumer;accept(Lnet/minecraft/enchantment/Enchantment;I)V")
+	)
+	private static void iterateOverIntrinsicEnchantments(Args args, @Local(argsOnly = true) ItemStack stack) {
+		int intrinsicLevel = stack.getItem().getIntrinsicEnchantments(stack).getLevel(args.get(0));
+		args.set(1, Math.max(args.get(1), intrinsicLevel));
 	}
 }

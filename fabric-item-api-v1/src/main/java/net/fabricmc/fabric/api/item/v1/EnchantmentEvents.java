@@ -33,8 +33,8 @@ public class EnchantmentEvents {
 	 * An event that checks whether an {@link Enchantment} can be applied to an {@link ItemStack}, and can override the
 	 *
 	 * <p>This should <i>only</i> be used for <b>vanilla enchantments</b> if the vanilla tag-based system is not sufficient,
-	 * for example if an item should be able to be enchanted with Respiration, but not other helmet enchantments. For modded
-	 * enchantments, override {@link Enchantment#isAcceptableItem(ItemStack)} instead.</p>
+	 * or for enchantments <i>from another mod</i>. For example, one might want an item to be able to be enchanted with Unbreaking,
+	 * but not other Mending. For your own modded enchantments, override {@link Enchantment#isAcceptableItem(ItemStack)} instead.</p>
 	 *
 	 * <p>Note that allowing an enchantment using this event does not guarantee the item will receive that enchantment,
 	 * only that it isn't forbidden from doing so.</p>
@@ -75,6 +75,14 @@ public class EnchantmentEvents {
 		);
 	}
 
+	/*
+	 * There is one context for each vanilla call to Enchantment#isAcceptableItem. The reason why RANDOM_ENCHANTMENT
+	 * feels like a kitchen sink is because it corresponds to the one in EnchantmentHelper, which is shared across multiple
+	 * uses.
+	 *
+	 * This also gets in the way of adding further context (nullable Player and BlockPos have been suggested
+	 * in the past). It's not impossible to do so, but a probably a bit more brittle.
+	 */
 	/**
 	 * An enum that describes the various contexts in which the game checks whether an enchantment can be applied to an item.
 	 */

@@ -20,6 +20,8 @@ import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -137,6 +139,24 @@ public interface FabricItem {
 	 */
 	default @Nullable FoodComponent getFoodComponent(ItemStack stack) {
 		return ((Item) this).getFoodComponent();
+	}
+
+	/**
+	 * Returns a (stack-aware) {@link ItemEnchantmentsComponent} of <i>intrinsic enchantments</i> for this item.
+	 * These enchantments have their usual gameplay effects, but do not produce glint or otherwise show on the item,
+	 * and cannot be removed with a grindstone. For example, a mod that adds an electric multi-tool might want to give
+	 * it a Silk Touch-like effect, without relying on the vanilla system.
+	 *
+	 * <p>By default, having an intrinsic enchantment does not prevent the item from being enchanted with the same one
+	 * by normal means. In such a case, only the highest level of the enchantment will be retained. To prevent the item
+	 * from receiving certain enchantments, use the vanilla tag system or {@link EnchantmentEvents#ALLOW_ENCHANTING}.</p>
+	 *
+	 * @param stack the current stack
+	 * @return a map of all intrinsic {@link Enchantment}s to their level
+	 * @see EnchantmentEvents#ALLOW_ENCHANTING
+	 */
+	default ItemEnchantmentsComponent getIntrinsicEnchantments(ItemStack stack) {
+		return ItemEnchantmentsComponent.DEFAULT;
 	}
 
 	/**
