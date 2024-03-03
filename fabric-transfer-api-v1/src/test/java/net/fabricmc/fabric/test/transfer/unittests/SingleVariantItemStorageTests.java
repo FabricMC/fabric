@@ -130,7 +130,28 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 
 		NbtCompound nbt = new NbtCompound();
 		storage.writeNbt(nbt, staticDrm());
-		assertEquals("{amount:1L,variant:{components:{},item:\"minecraft:diamond\"}}", nbt.toString());
+		assertEquals("{amount:1L,variant:{item:\"minecraft:diamond\"}}", nbt.toString());
+	}
+
+	@Test
+	public void writeNbtWithComponentTest() {
+		SingleItemStorage storage = new SingleItemStorage() {
+			@Override
+			protected long getCapacity(ItemVariant variant) {
+				return 10;
+			}
+		};
+
+		try (Transaction tx = Transaction.openOuter()) {
+			ItemStack stack = new ItemStack(Items.DIAMOND);
+			stack.set(DataComponentTypes.CUSTOM_NAME, Text.literal("test name"));
+			storage.insert(ItemVariant.of(stack), 1, tx);
+			tx.commit();
+		}
+
+		NbtCompound nbt = new NbtCompound();
+		storage.writeNbt(nbt, staticDrm());
+		assertEquals("{amount:1L,variant:{components:{\"minecraft:custom_name\":'\"test name\"'},item:\"minecraft:diamond\"}}", nbt.toString());
 	}
 
 	@Test
