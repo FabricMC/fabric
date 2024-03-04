@@ -142,6 +142,23 @@ public interface FabricItem {
 	}
 
 	/**
+	 * Determines if the item is allowed to receive an {@link Enchantment}. This can be used to manually override what
+	 * enchantments a modded item is able to receive.
+	 *
+	 * <p>For example, one might want a modded item to be able to receive Unbreaking, but not Mending, which cannot be
+	 * achieved with the vanilla tag system alone. Alternatively, one might want to do the same thing with enchantments
+	 * from other mods, which don't have a similar tag system in general.</p>
+	 *
+	 * @param stack the current stack
+	 * @param enchantment the enchantment to check
+	 * @param context the context in which the enchantment is being checked
+	 * @return whether the enchantment is allowed to apply to the stack
+	 */
+	default boolean canBeEnchantedWith(ItemStack stack, Enchantment enchantment, EnchantingContext context) {
+		return enchantment.isAcceptableItem(stack);
+	}
+
+	/**
 	 * Returns a (stack-aware) {@link ItemEnchantmentsComponent} of <i>intrinsic enchantments</i> for this item.
 	 * These enchantments have their usual gameplay effects, but do not produce glint or otherwise show on the item,
 	 * and cannot be removed with a grindstone. For example, a mod that adds an electric multi-tool might want to give
@@ -152,7 +169,7 @@ public interface FabricItem {
 	 * from receiving certain enchantments, use the vanilla tag system or {@link EnchantmentEvents#ALLOW_ENCHANTING}.</p>
 	 *
 	 * @param stack the current stack
-	 * @return a map of all intrinsic {@link Enchantment}s to their level
+	 * @return an {@link ItemEnchantmentsComponent} describing the intrinsic enchantments
 	 * @see EnchantmentEvents#ALLOW_ENCHANTING
 	 */
 	default ItemEnchantmentsComponent getIntrinsicEnchantments(ItemStack stack) {

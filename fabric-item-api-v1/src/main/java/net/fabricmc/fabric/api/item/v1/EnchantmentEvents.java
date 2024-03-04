@@ -17,10 +17,8 @@
 package net.fabricmc.fabric.api.item.v1;
 
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -30,16 +28,21 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public class EnchantmentEvents {
 	/**
-	 * An event that checks whether an {@link Enchantment} can be applied to an {@link ItemStack}, and can override the
+	 * An event that allowed overriding whether an {@link Enchantment} can be applied to an {@link ItemStack}.
 	 *
-	 * <p>This should <i>only</i> be used for <b>vanilla enchantments</b> if the vanilla tag-based system is not sufficient,
-	 * or for enchantments <i>from another mod</i>. For example, one might want an item to be able to be enchanted with Unbreaking,
-	 * but not other Mending. For your own modded enchantments, override {@link Enchantment#isAcceptableItem(ItemStack)} instead.</p>
+	 * <p>This should only be used to modify the behavior of <i>external</i> items with regards to <i>external</i> enchantments,
+	 * where 'external' means either vanilla or from another mod. For instance, a mod might allow enchanting a pickaxe
+	 * with Sharpness (and only Sharpness) under certain specific conditions.</p>
+	 *
+	 * <p>To modify the behavior of your own modded <i>enchantments</i>, use {@link Enchantment#isAcceptableItem(ItemStack)} instead.
+	 * To modify the behavior of your own modded <i>items</i>, use {@link FabricItem#canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)} instead.</p>
 	 *
 	 * <p>Note that allowing an enchantment using this event does not guarantee the item will receive that enchantment,
 	 * only that it isn't forbidden from doing so.</p>
 	 *
 	 * @see AllowEnchanting#allowEnchanting(Enchantment, ItemStack, EnchantingContext)
+	 * @see Enchantment#isAcceptableItem(ItemStack)
+	 * @see FabricItem#canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)
 	 */
 	public static final Event<AllowEnchanting> ALLOW_ENCHANTING = EventFactory.createArrayBacked(
 			AllowEnchanting.class,
@@ -73,39 +76,5 @@ public class EnchantmentEvents {
 				ItemStack target,
 				EnchantingContext enchantingContext
 		);
-	}
-
-	/*
-	 * There is one context for each vanilla call to Enchantment#isAcceptableItem. The reason why RANDOM_ENCHANTMENT
-	 * feels like a kitchen sink is because it corresponds to the one in EnchantmentHelper, which is shared across multiple
-	 * uses.
-	 *
-	 * This also gets in the way of adding further context (nullable Player and BlockPos have been suggested
-	 * in the past). It's not impossible to do so, but a probably a bit more brittle.
-	 */
-	/**
-	 * An enum that describes the various contexts in which the game checks whether an enchantment can be applied to an item.
-	 */
-	public enum EnchantingContext {
-		/**
-		 * When generating a random enchantment for the item. This includes the enchanting table, random
-		 * mob equipment, and the {@code enchant_with_levels} loot function.
-		 *
-		 * @see EnchantmentHelper#generateEnchantments(Random, ItemStack, int, boolean)
-		 */
-		RANDOM_ENCHANTMENT,
-		/**
-		 * When trying to apply an enchantment in an anvil.
-		 */
-		ANVIL,
-		/**
-		 * When using the {@code /enchant} command.
-		 */
-		ENCHANT_COMMAND,
-		/**
-		 * When randomly enchanting an item using the {@code enchant_randomly} loot function without a list of enchantments
-		 * to choose from.
-		 */
-		LOOT_RANDOM_ENCHANTMENT
 	}
 }

@@ -18,9 +18,12 @@ package net.fabricmc.fabric.test.item;
 
 import net.minecraft.component.DataComponentType;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.network.codec.PacketCodecs;
@@ -36,6 +39,7 @@ import net.minecraft.util.dynamic.Codecs;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
+import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
@@ -61,12 +65,10 @@ public class CustomDamageTest implements ModInitializer {
 		FuelRegistry.INSTANCE.add(WEIRD_PICK, 200);
 		FabricBrewingRecipeRegistry.registerPotionRecipe(Potions.WATER, Ingredient.ofItems(WEIRD_PICK), Potions.AWKWARD);
 		EnchantmentEvents.ALLOW_ENCHANTING.register(((enchantment, target, enchantingContext) -> {
-			if (target.isOf(WEIRD_PICK)) {
-				if (enchantment == Enchantments.SHARPNESS) {
-					return ActionResult.SUCCESS;
-				} else if (enchantment == Enchantments.FORTUNE) {
-					return ActionResult.FAIL;
-				}
+			if (target.isOf(Items.DIAMOND_PICKAXE)
+					&& enchantment == Enchantments.SHARPNESS
+					&& EnchantmentHelper.hasSilkTouch(target)) {
+				return ActionResult.SUCCESS;
 			}
 
 			return ActionResult.PASS;
@@ -105,9 +107,14 @@ public class CustomDamageTest implements ModInitializer {
 		}
 
 		@Override
+		public boolean canBeEnchantedWith(ItemStack stack, Enchantment enchantment, EnchantingContext context) {
+			return context == EnchantingContext.ANVIL && enchantment == Enchantments.FIRE_ASPECT
+				|| enchantment != Enchantments.FORTUNE && super.canBeEnchantedWith(stack, enchantment, context);
+		}
+
+		@Override
 		public ItemEnchantmentsComponent getIntrinsicEnchantments(ItemStack stack) {
 			if (stack.isDamaged()) {
-				System.out.println("Damaged, adding silk touch");
 				return INTRINSIC_ENCHANTMENTS;
 			} else {
 				return super.getIntrinsicEnchantments(stack);

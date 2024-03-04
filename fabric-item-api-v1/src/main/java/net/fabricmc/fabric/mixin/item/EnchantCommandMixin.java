@@ -16,31 +16,32 @@
 
 package net.fabricmc.fabric.mixin.item;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.EnchantCommand;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.ActionResult;
 
+import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 
 @Mixin(EnchantCommand.class)
 abstract class EnchantCommandMixin {
-	@WrapOperation(
+	@Redirect(
 			method = "execute",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/Enchantment;isAcceptableItem(Lnet/minecraft/item/ItemStack;)Z")
 	)
-	private static boolean callAllowEnchantingEvent(Enchantment instance, ItemStack stack, Operation<Boolean> original, ServerCommandSource source) {
+	private static boolean callAllowEnchantingEvent(Enchantment instance, ItemStack stack) {
 		ActionResult result = EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
 				instance,
 				stack,
-				EnchantmentEvents.EnchantingContext.ENCHANT_COMMAND
+				EnchantingContext.ENCHANT_COMMAND
 		);
-		return result == ActionResult.PASS ? original.call(instance, stack) : result.isAccepted();
+		return result == ActionResult.PASS
+				? stack.canBeEnchantedWith(instance, EnchantingContext.ENCHANT_COMMAND)
+				: result.isAccepted();
 	}
 }
