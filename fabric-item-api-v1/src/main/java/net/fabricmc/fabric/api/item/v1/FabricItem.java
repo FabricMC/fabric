@@ -166,11 +166,11 @@ public interface FabricItem {
 	 *
 	 * <p>By default, having an intrinsic enchantment does not prevent the item from being enchanted with the same one
 	 * by normal means. In such a case, only the highest level of the enchantment will be retained. To prevent the item
-	 * from receiving certain enchantments, use the vanilla tag system or {@link EnchantmentEvents#ALLOW_ENCHANTING}.</p>
+	 * from receiving certain enchantments, use {@link #canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)}.</p>
 	 *
 	 * @param stack the current stack
 	 * @return an {@link ItemEnchantmentsComponent} describing the intrinsic enchantments
-	 * @see EnchantmentEvents#ALLOW_ENCHANTING
+	 * @see #canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)
 	 */
 	default ItemEnchantmentsComponent getIntrinsicEnchantments(ItemStack stack) {
 		return ItemEnchantmentsComponent.DEFAULT;

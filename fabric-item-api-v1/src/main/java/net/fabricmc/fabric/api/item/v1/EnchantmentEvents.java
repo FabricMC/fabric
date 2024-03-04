@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public class EnchantmentEvents {
 	/**
-	 * An event that allowed overriding whether an {@link Enchantment} can be applied to an {@link ItemStack}.
+	 * An event that allows overriding whether an {@link Enchantment} can be applied to an {@link ItemStack}.
 	 *
 	 * <p>This should only be used to modify the behavior of <i>external</i> items with regards to <i>external</i> enchantments,
 	 * where 'external' means either vanilla or from another mod. For instance, a mod might allow enchanting a pickaxe
