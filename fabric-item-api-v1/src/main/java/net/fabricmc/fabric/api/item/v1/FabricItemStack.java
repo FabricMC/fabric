@@ -22,7 +22,8 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
+
+import net.fabricmc.fabric.api.util.TriState;
 
 /*
  * Fabric-provided extensions for {@link ItemStack}.
@@ -64,13 +65,11 @@ public interface FabricItemStack {
 	 * @see FabricItem#canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)
 	 */
 	default boolean canBeEnchantedWith(Enchantment enchantment, EnchantingContext context) {
-		ActionResult result = EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
+		TriState result = EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
 				enchantment,
 				(ItemStack) this,
 				context
 		);
-		return result == ActionResult.PASS
-				? ((ItemStack) this).getItem().canBeEnchantedWith((ItemStack) this, enchantment, context)
-				: result.isAccepted();
+		return result.orElseGet(() -> ((ItemStack) this).getItem().canBeEnchantedWith((ItemStack) this, enchantment, context));
 	}
 }

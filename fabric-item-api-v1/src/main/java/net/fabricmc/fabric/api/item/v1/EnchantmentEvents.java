@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.item.v1;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.util.TriState;
 
 /**
  * Events relating to enchantments, allowing for finer control of what enchantments can apply to different items.
@@ -48,14 +48,14 @@ public class EnchantmentEvents {
 			AllowEnchanting.class,
 			callbacks -> (enchantment, target, context) -> {
 				for (AllowEnchanting callback : callbacks) {
-					ActionResult result = callback.allowEnchanting(enchantment, target, context);
+					TriState result = callback.allowEnchanting(enchantment, target, context);
 
-					if (result != ActionResult.PASS) {
+					if (result != TriState.DEFAULT) {
 						return result;
 					}
 				}
 
-				return ActionResult.PASS;
+				return TriState.DEFAULT;
 			}
 	);
 
@@ -67,11 +67,11 @@ public class EnchantmentEvents {
 		 * @param enchantment the enchantment that may be applied
 		 * @param target the target item
 		 * @param enchantingContext the enchanting context in which this check is made
-		 * @return {@link ActionResult#SUCCESS} if the enchantment may be applied, {@link ActionResult#FAIL} if it
-		 * may not, {@link ActionResult#PASS} to fall back to other callbacks/vanilla behavior
+		 * @return {@link TriState#TRUE} if the enchantment may be applied, {@link TriState#FALSE} if it
+		 * may not, {@link TriState#DEFAULT} to fall back to other callbacks/vanilla behavior
 		 * @see EnchantingContext
 		 */
-		ActionResult allowEnchanting(
+		TriState allowEnchanting(
 				Enchantment enchantment,
 				ItemStack target,
 				EnchantingContext enchantingContext
