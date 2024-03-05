@@ -67,7 +67,7 @@ public interface FabricItemStack {
 		ActionResult result = EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
 				enchantment,
 				(ItemStack) this,
-				EnchantingContext.ANVIL
+				context
 		);
 		return result == ActionResult.PASS
 				? ((ItemStack) this).getItem().canBeEnchantedWith((ItemStack) this, enchantment, context)
