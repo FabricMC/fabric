@@ -32,7 +32,6 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.Codecs;
@@ -43,6 +42,7 @@ import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
+import net.fabricmc.fabric.api.util.TriState;
 
 public class CustomDamageTest implements ModInitializer {
 	public static final DataComponentType<Integer> WEIRD = Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier("fabric-item-api-v1-testmod", "weird"),
@@ -68,10 +68,10 @@ public class CustomDamageTest implements ModInitializer {
 			if (target.isOf(Items.DIAMOND_PICKAXE)
 					&& enchantment == Enchantments.SHARPNESS
 					&& EnchantmentHelper.hasSilkTouch(target)) {
-				return ActionResult.SUCCESS;
+				return TriState.TRUE;
 			}
 
-			return ActionResult.PASS;
+			return TriState.DEFAULT;
 		}));
 	}
 
