@@ -28,10 +28,8 @@ import net.minecraft.screen.AnvilScreenHandler;
 import net.minecraft.screen.ForgingScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.util.ActionResult;
 
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
-import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 
 @Mixin(AnvilScreenHandler.class)
 abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
@@ -47,13 +45,6 @@ abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
 			)
 	)
 	private boolean callAllowEnchantingEvent(Enchantment instance, ItemStack stack) {
-		ActionResult result = EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
-				instance,
-				stack,
-				EnchantingContext.ANVIL
-		);
-		return result == ActionResult.PASS
-				? stack.canBeEnchantedWith(instance, EnchantingContext.ANVIL)
-				: result.isAccepted();
+		return stack.canBeEnchantedWith(instance, EnchantingContext.ANVIL);
 	}
 }

@@ -27,10 +27,8 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
 
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
-import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 
 @Mixin(EnchantmentHelper.class)
 abstract class EnchantmentHelperMixin {
@@ -39,14 +37,7 @@ abstract class EnchantmentHelperMixin {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/Enchantment;isAcceptableItem(Lnet/minecraft/item/ItemStack;)Z")
 	)
 	private static boolean useCustomEnchantingChecks(Enchantment instance, ItemStack stack) {
-		ActionResult result = EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
-				instance,
-				stack,
-				EnchantingContext.RANDOM_ENCHANTMENT
-		);
-		return result == ActionResult.PASS
-				? stack.canBeEnchantedWith(instance, EnchantingContext.RANDOM_ENCHANTMENT)
-				: result.isAccepted();
+		return stack.canBeEnchantedWith(instance, EnchantingContext.RANDOM_ENCHANTMENT);
 	}
 
 	@ModifyReturnValue(method = "getLevel", at = @At("RETURN"))

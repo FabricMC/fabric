@@ -23,10 +23,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.function.EnchantRandomlyLootFunction;
-import net.minecraft.util.ActionResult;
 
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
-import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 
 @Mixin(EnchantRandomlyLootFunction.class)
 abstract class EnchantRandomlyLootFunctionMixin {
@@ -35,13 +33,6 @@ abstract class EnchantRandomlyLootFunctionMixin {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/Enchantment;isAcceptableItem(Lnet/minecraft/item/ItemStack;)Z")
 	)
 	private static boolean callAllowEnchantingEvent(Enchantment instance, ItemStack stack) {
-		ActionResult result = EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
-				instance,
-				stack,
-				EnchantingContext.LOOT_RANDOM_ENCHANTMENT
-		);
-		return result == ActionResult.PASS
-				? stack.canBeEnchantedWith(instance, EnchantingContext.LOOT_RANDOM_ENCHANTMENT)
-				: result.isAccepted();
+		return stack.canBeEnchantedWith(instance, EnchantingContext.LOOT_RANDOM_ENCHANTMENT);
 	}
 }
