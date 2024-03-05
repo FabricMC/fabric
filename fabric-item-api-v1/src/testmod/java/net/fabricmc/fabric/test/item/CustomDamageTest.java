@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.test.item;
 
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.nbt.NbtCompound;
@@ -29,20 +32,13 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
+import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
+import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.test.item.mixin.BrewingRecipeRegistryAccessor;
 
 public class CustomDamageTest implements ModInitializer {
-	public static final Item WEIRD_PICK = new WeirdPick();
-
-	@Override
-	public void onInitialize() {
-		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "weird_pickaxe"), WEIRD_PICK);
-		FuelRegistry.INSTANCE.add(WEIRD_PICK, 200);
-		BrewingRecipeRegistryAccessor.callRegisterPotionRecipe(Potions.WATER, WEIRD_PICK, Potions.AWKWARD);
-	}
-
 	public static final CustomDamageHandler WEIRD_DAMAGE_HANDLER = (stack, amount, entity, breakCallback) -> {
 		// If sneaking, apply all damage to vanilla. Otherwise, increment a tag on the stack by one and don't apply any damage
 		if (entity.isSneaking()) {
@@ -53,6 +49,24 @@ public class CustomDamageTest implements ModInitializer {
 			return 0;
 		}
 	};
+	public static final Item WEIRD_PICK = new WeirdPick();
+
+
+	@Override
+	public void onInitialize() {
+		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "weird_pickaxe"), WEIRD_PICK);
+		FuelRegistry.INSTANCE.add(WEIRD_PICK, 200);
+		BrewingRecipeRegistryAccessor.callRegisterPotionRecipe(Potions.WATER, WEIRD_PICK, Potions.AWKWARD);
+		EnchantmentEvents.ALLOW_ENCHANTING.register(((enchantment, target, enchantingContext) -> {
+			if (target.isOf(Items.DIAMOND_PICKAXE)
+					&& enchantment == Enchantments.SHARPNESS
+					&& EnchantmentHelper.hasSilkTouch(target)) {
+				return TriState.TRUE;
+			}
+
+			return TriState.DEFAULT;
+		}));
+	}
 
 	public static class WeirdPick extends PickaxeItem {
 		protected WeirdPick() {
@@ -75,6 +89,21 @@ public class CustomDamageTest implements ModInitializer {
 			}
 
 			return ItemStack.EMPTY;
+		}
+
+		@Override
+		public boolean canBeEnchantedWith(ItemStack stack, Enchantment enchantment, EnchantingContext context) {
+			return context == EnchantingContext.ANVIL && enchantment == Enchantments.FIRE_ASPECT
+				|| enchantment != Enchantments.FORTUNE && super.canBeEnchantedWith(stack, enchantment, context);
+		}
+
+		@Override
+		public ItemEnchantmentsComponent getIntrinsicEnchantments(ItemStack stack) {
+			if (stack.isDamaged()) {
+				return INTRINSIC_ENCHANTMENTS;
+			} else {
+				return super.getIntrinsicEnchantments(stack);
+			}
 		}
 	}
 }
