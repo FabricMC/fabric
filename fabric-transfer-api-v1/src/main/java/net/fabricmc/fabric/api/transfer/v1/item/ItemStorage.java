@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.transfer.v1.item;
 
 import java.util.List;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Blocks;
@@ -43,11 +42,7 @@ import net.fabricmc.fabric.mixin.transfer.DoubleInventoryAccessor;
 
 /**
  * Access to {@link Storage Storage&lt;ItemVariant&gt;} instances.
- *
- * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 public final class ItemStorage {
 	/**
 	 * Sided block access to item variant storages.

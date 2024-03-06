@@ -141,11 +141,6 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 		return false;
 	}
 
-	@Inject(method = "onDisconnected", at = @At("HEAD"))
-	private void handleDisconnection(Text reason, CallbackInfo ci) {
-		this.addon.handleDisconnect();
-	}
-
 	@Override
 	public ServerConfigurationNetworkAddon getAddon() {
 		return addon;

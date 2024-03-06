@@ -30,8 +30,11 @@ import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.impl.itemgroup.FabricItemGroup;
+
 public class FabricCreativeGuiComponents {
 	private static final Identifier BUTTON_TEX = new Identifier("fabric", "textures/gui/creative_buttons.png");
+	private static final double TABS_PER_PAGE = FabricItemGroup.TABS_PER_PAGE;
 	public static final Set<ItemGroup> COMMON_GROUPS = Set.of(ItemGroups.SEARCH, ItemGroups.INVENTORY, ItemGroups.HOTBAR).stream()
 			.map(Registries.ITEM_GROUP::getOrThrow)
 			.collect(Collectors.toSet());
@@ -49,21 +52,21 @@ public class FabricCreativeGuiComponents {
 		}
 
 		@Override
-		public void render(DrawContext drawContext, int mouseX, int mouseY, float float_1) {
-			this.hovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
-			this.visible = extensions.fabric_isButtonVisible(type);
+		protected void renderWidget(DrawContext drawContext, int mouseX, int mouseY, float delta) {
 			this.active = extensions.fabric_isButtonEnabled(type);
+			this.visible = extensions.fabric_isButtonVisible(type);
 
-			if (this.visible) {
-				int u = active && this.isHovered() ? 22 : 0;
-				int v = active ? 0 : 12;
+			if (!this.visible) {
+				return;
+			}
 
-				drawContext.drawTexture(BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 11 : 0), v, 11, 12);
+			int u = active && this.isHovered() ? 22 : 0;
+			int v = active ? 0 : 12;
+			drawContext.drawTexture(BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 11 : 0), v, 11, 12);
 
-				if (this.hovered) {
-					int pageCount = (int) Math.ceil((ItemGroups.getGroupsToDisplay().size() - COMMON_GROUPS.size()) / 9D);
-					drawContext.drawTooltip(MinecraftClient.getInstance().textRenderer, Text.translatable("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, pageCount), mouseX, mouseY);
-				}
+			if (this.isHovered()) {
+				int pageCount = (int) Math.ceil((ItemGroups.getGroupsToDisplay().size() - COMMON_GROUPS.size()) / TABS_PER_PAGE);
+				drawContext.drawTooltip(MinecraftClient.getInstance().textRenderer, Text.translatable("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, pageCount), mouseX, mouseY);
 			}
 		}
 	}

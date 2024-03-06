@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-data-attachment-api-v1-testmod",
+  "name": "Fabric Data Attachment API (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-data-attachment-api-v1": "*",
+    "fabric-lifecycle-events-v1": "*",
+    "fabric-biome-api-v1": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.attachment.AttachmentTestMod"
+    ],
+    "fabric-gametest": [
+      "net.fabricmc.fabric.test.attachment.gametest.AttachmentCopyTests",
+      "net.fabricmc.fabric.test.attachment.gametest.BlockEntityTests"
+    ]
+  },
+  "mixins": [
+    "fabric-data-attachment-api-v1-testmod.mixins.json"
+  ]
+}

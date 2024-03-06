@@ -3,5 +3,7 @@
   "pack.source.fabricmod": "Mod Fabric",
   "pack.source.builtinMod": "wbudowana: %s",
   "pack.name.fabricMod": "Mod Fabric \"%s\"",
-  "pack.name.fabricMods": "Mody Fabric"
+  "pack.name.fabricMods": "Mody Fabric",
+  "pack.name.fabricMod.subPack": "Mod Fabric \"%s\" (%s)",
+  "commands.datapack.fabric.internal": "Nie można włączyć lub wyłączyć wewnętrznej paczki Fabric \"%s\"."
 }

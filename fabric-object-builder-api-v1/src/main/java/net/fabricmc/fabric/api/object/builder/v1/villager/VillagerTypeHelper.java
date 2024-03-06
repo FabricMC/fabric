@@ -21,10 +21,10 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 import net.minecraft.world.biome.Biome;
@@ -56,7 +56,7 @@ public final class VillagerTypeHelper {
 	 */
 	public static VillagerType register(Identifier id) {
 		Objects.requireNonNull(id, "Id of villager type cannot be null");
-		return Registry.register(Registries.VILLAGER_TYPE, new Identifier(id.toString()), new VillagerType(id.toString()));
+		return Registry.register(Registries.VILLAGER_TYPE, id, new VillagerType(id.toString()));
 	}
 
 	/**

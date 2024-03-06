@@ -32,9 +32,11 @@ import net.minecraft.util.thread.ThreadExecutor;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
-import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
+import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
+import net.fabricmc.fabric.impl.networking.payload.TypedPayload;
+import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkHandlerAccessor;
 
 /**
@@ -71,7 +73,7 @@ public final class ClientConfigurationNetworking {
 	 * @see ClientConfigurationNetworking#registerReceiver(Identifier, ConfigurationChannelHandler)
 	 */
 	public static boolean registerGlobalReceiver(Identifier channelName, ConfigurationChannelHandler channelHandler) {
-		return ClientNetworkingImpl.CONFIGURATION.registerGlobalReceiver(channelName, channelHandler);
+		return ClientNetworkingImpl.CONFIGURATION.registerGlobalReceiver(channelName, wrapUntyped(channelHandler));
 	}
 
 	/**
@@ -88,29 +90,7 @@ public final class ClientConfigurationNetworking {
 	 * @see ClientConfigurationNetworking#registerReceiver(PacketType, ConfigurationPacketHandler)
 	 */
 	public static <T extends FabricPacket> boolean registerGlobalReceiver(PacketType<T> type, ConfigurationPacketHandler<T> handler) {
-		return registerGlobalReceiver(type.getId(), new ConfigurationChannelHandlerProxy<T>() {
-			@Override
-			public ConfigurationPacketHandler<T> getOriginalHandler() {
-				return handler;
-			}
-
-			@Override
-			public void receive(MinecraftClient client, ClientConfigurationNetworkHandler networkHandler, PacketByteBuf buf, PacketSender sender) {
-				T packet = type.read(buf);
-
-				if (client.isOnThread()) {
-					// Do not submit to the render thread if we're already running there.
-					// Normally, packets are handled on the network IO thread - though it is
-					// not guaranteed (for example, with 1.19.4 S2C packet bundling)
-					// Since we're handling it right now, connection check is redundant.
-					handler.receive(packet, sender);
-				} else {
-					client.execute(() -> {
-						if (((ClientCommonNetworkHandlerAccessor) networkHandler).getConnection().isOpen()) handler.receive(packet, sender);
-					});
-				}
-			}
-		});
+		return ClientNetworkingImpl.CONFIGURATION.registerGlobalReceiver(type.getId(), wrapTyped(type, handler));
 	}
 
 	/**
@@ -126,7 +106,7 @@ public final class ClientConfigurationNetworking {
 	 */
 	@Nullable
 	public static ClientConfigurationNetworking.ConfigurationChannelHandler unregisterGlobalReceiver(Identifier channelName) {
-		return ClientNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(channelName);
+		return unwrapUntyped(ClientNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(channelName));
 	}
 
 	/**
@@ -142,10 +122,8 @@ public final class ClientConfigurationNetworking {
 	 * @see ClientConfigurationNetworking#unregisterReceiver(PacketType)
 	 */
 	@Nullable
-	@SuppressWarnings("unchecked")
 	public static <T extends FabricPacket> ClientConfigurationNetworking.ConfigurationPacketHandler<T> unregisterGlobalReceiver(PacketType<T> type) {
-		ConfigurationChannelHandler handler = ClientNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(type.getId());
-		return handler instanceof ConfigurationChannelHandlerProxy<?> proxy ? (ConfigurationPacketHandler<T>) proxy.getOriginalHandler() : null;
+		return unwrapTyped(ClientNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(type.getId()));
 	}
 
 	/**
@@ -179,7 +157,7 @@ public final class ClientConfigurationNetworking {
 		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
 
 		if (addon != null) {
-			return addon.registerChannel(channelName, channelHandler);
+			return addon.registerChannel(channelName, wrapUntyped(channelHandler));
 		}
 
 		throw new IllegalStateException("Cannot register receiver while not configuring!");
@@ -201,29 +179,13 @@ public final class ClientConfigurationNetworking {
 	 * @see ClientPlayConnectionEvents#INIT
 	 */
 	public static <T extends FabricPacket> boolean registerReceiver(PacketType<T> type, ConfigurationPacketHandler<T> handler) {
-		return registerReceiver(type.getId(), new ConfigurationChannelHandlerProxy<T>() {
-			@Override
-			public ConfigurationPacketHandler<T> getOriginalHandler() {
-				return handler;
-			}
+		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
 
-			@Override
-			public void receive(MinecraftClient client, ClientConfigurationNetworkHandler networkHandler, PacketByteBuf buf, PacketSender sender) {
-				T packet = type.read(buf);
+		if (addon != null) {
+			return addon.registerChannel(type.getId(), wrapTyped(type, handler));
+		}
 
-				if (client.isOnThread()) {
-					// Do not submit to the render thread if we're already running there.
-					// Normally, packets are handled on the network IO thread - though it is
-					// not guaranteed (for example, with 1.19.4 S2C packet bundling)
-					// Since we're handling it right now, connection check is redundant.
-					handler.receive(packet, sender);
-				} else {
-					client.execute(() -> {
-						if (((ClientCommonNetworkHandlerAccessor) networkHandler).getConnection().isOpen()) handler.receive(packet, sender);
-					});
-				}
-			}
-		});
+		throw new IllegalStateException("Cannot register receiver while not configuring!");
 	}
 
 	/**
@@ -240,7 +202,7 @@ public final class ClientConfigurationNetworking {
 		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
 
 		if (addon != null) {
-			return addon.unregisterChannel(channelName);
+			return unwrapUntyped(addon.unregisterChannel(channelName));
 		}
 
 		throw new IllegalStateException("Cannot unregister receiver while not configuring!");
@@ -257,10 +219,14 @@ public final class ClientConfigurationNetworking {
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
 	@Nullable
-	@SuppressWarnings("unchecked")
 	public static <T extends FabricPacket> ClientConfigurationNetworking.ConfigurationPacketHandler<T> unregisterReceiver(PacketType<T> type) {
-		ConfigurationChannelHandler handler = unregisterReceiver(type.getId());
-		return handler instanceof ConfigurationChannelHandlerProxy<?> proxy ? (ConfigurationPacketHandler<T>) proxy.getOriginalHandler() : null;
+		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
+
+		if (addon != null) {
+			return unwrapTyped(addon.unregisterChannel(type.getId()));
+		}
+
+		throw new IllegalStateException("Cannot unregister receiver while not configuring!");
 	}
 
 	/**
@@ -394,6 +360,48 @@ public final class ClientConfigurationNetworking {
 	private ClientConfigurationNetworking() {
 	}
 
+	private static ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> wrapUntyped(ConfigurationChannelHandler actualHandler) {
+		return new ResolvablePayload.Handler<>(null, actualHandler, (client, handler, payload, responseSender) -> {
+			actualHandler.receive(client, handler, ((UntypedPayload) payload).buffer(), responseSender);
+		});
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T extends FabricPacket> ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> wrapTyped(PacketType<T> type, ConfigurationPacketHandler<T> actualHandler) {
+		return new ResolvablePayload.Handler<>(type, actualHandler, (client, handler, payload, responseSender) -> {
+			T packet = (T) ((TypedPayload) payload).packet();
+
+			if (client.isOnThread()) {
+				// Do not submit to the render thread if we're already running there.
+				// Normally, packets are handled on the network IO thread - though it is
+				// not guaranteed (for example, with 1.19.4 S2C packet bundling)
+				// Since we're handling it right now, connection check is redundant.
+				actualHandler.receive(packet, responseSender);
+			} else {
+				client.execute(() -> {
+					if (((ClientCommonNetworkHandlerAccessor) handler).getConnection().isOpen()) {
+						actualHandler.receive(packet, responseSender);
+					}
+				});
+			}
+		});
+	}
+
+	@Nullable
+	private static ConfigurationChannelHandler unwrapUntyped(@Nullable ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> handler) {
+		if (handler == null) return null;
+		if (handler.actual() instanceof ConfigurationChannelHandler actual) return actual;
+		return null;
+	}
+
+	@Nullable
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	private static <T extends FabricPacket> ConfigurationPacketHandler<T> unwrapTyped(@Nullable ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler> handler) {
+		if (handler == null) return null;
+		if (handler.actual() instanceof ConfigurationPacketHandler actual) return actual;
+		return null;
+	}
+
 	@FunctionalInterface
 	public interface ConfigurationChannelHandler {
 		/**
@@ -419,14 +427,6 @@ public final class ClientConfigurationNetworking {
 		 * @param responseSender the packet sender
 		 */
 		void receive(MinecraftClient client, ClientConfigurationNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender);
-	}
-
-	/**
-	 * An internal packet handler that works as a proxy between old and new API.
-	 * @param <T> the type of the packet
-	 */
-	private interface ConfigurationChannelHandlerProxy<T extends FabricPacket> extends ConfigurationChannelHandler {
-		ConfigurationPacketHandler<T> getOriginalHandler();
 	}
 
 	/**

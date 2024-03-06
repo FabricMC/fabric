@@ -28,7 +28,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
-import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
@@ -51,6 +50,8 @@ abstract class ClientLoginNetworkHandlerMixin implements NetworkHandlerExtension
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddon(CallbackInfo ci) {
 		this.addon = new ClientLoginNetworkAddon((ClientLoginNetworkHandler) (Object) this, this.client);
+		// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
+		this.addon.lateInit();
 	}
 
 	@Inject(method = "onQueryRequest", at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", remap = false, shift = At.Shift.AFTER), cancellable = true)
@@ -62,16 +63,6 @@ abstract class ClientLoginNetworkHandlerMixin implements NetworkHandlerExtension
 				payload.data().skipBytes(payload.data().readableBytes());
 			}
 		}
-	}
-
-	@Inject(method = "onDisconnected", at = @At("HEAD"))
-	private void invokeLoginDisconnectEvent(Text reason, CallbackInfo ci) {
-		this.addon.handleDisconnect();
-	}
-
-	@Inject(method = "onSuccess", at = @At("HEAD"))
-	private void handleConfigurationTransition(CallbackInfo ci) {
-		addon.handleConfigurationTransition();
 	}
 
 	@Inject(method = "onSuccess", at = @At("TAIL"))

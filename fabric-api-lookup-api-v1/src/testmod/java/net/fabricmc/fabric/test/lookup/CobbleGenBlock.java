@@ -16,16 +16,22 @@
 
 package net.fabricmc.fabric.test.lookup;
 
+import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.util.math.BlockPos;
 
 public class CobbleGenBlock extends BlockWithEntity {
 	public CobbleGenBlock(Settings settings) {
 		super(settings);
+	}
+
+	@Override
+	protected MapCodec<? extends BlockWithEntity> getCodec() {
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Nullable

@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.recipe.ingredient;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.dynamic.Codecs;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
@@ -35,9 +37,18 @@ import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 public class IngredientMixin implements FabricIngredient {
 	@Inject(method = "createCodec", at = @At("RETURN"), cancellable = true)
 	private static void injectCodec(boolean allowEmpty, CallbackInfoReturnable<Codec<Ingredient>> cir) {
-		final Codec<CustomIngredient> customIngredientCodec = allowEmpty ? CustomIngredientImpl.ALLOW_EMPTY_INGREDIENT_CODECS : CustomIngredientImpl.DISALLOW_EMPTY_INGREDIENT_CODECS;
-		Codec<Ingredient> ingredientCodec = customIngredientCodec.xmap(CustomIngredient::toVanilla, FabricIngredient::getCustomIngredient);
-		cir.setReturnValue(CustomIngredientImpl.first(cir.getReturnValue(), ingredientCodec));
+		Codec<CustomIngredient> customIngredientCodec = CustomIngredientImpl.CODEC.dispatch(
+				CustomIngredientImpl.TYPE_KEY,
+				CustomIngredient::getSerializer,
+				serializer -> serializer.getCodec(allowEmpty));
+
+		cir.setReturnValue(Codecs.either(customIngredientCodec, cir.getReturnValue()).xmap(
+				either -> either.map(CustomIngredient::toVanilla, ingredient -> ingredient),
+				ingredient -> {
+					CustomIngredient customIngredient = ingredient.getCustomIngredient();
+					return customIngredient == null ? Either.right(ingredient) : Either.left(customIngredient);
+				}
+		));
 	}
 
 	@Inject(

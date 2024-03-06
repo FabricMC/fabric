@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.event.interaction;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Blocks;
 
@@ -29,16 +29,10 @@ public class PlayerBreakBlockTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PlayerBlockBreakEvents.BEFORE.register(((world, player, pos, state, entity) -> {
-			return state.getBlock() != Blocks.BEDROCK;
-		}));
+		PlayerBlockBreakEvents.BEFORE.register(((world, player, pos, state, entity) -> state.getBlock() != Blocks.BEDROCK));
 
-		PlayerBlockBreakEvents.CANCELED.register(((world, player, pos, state, entity) -> {
-			LOGGER.info("Block break event canceled at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
-		}));
+		PlayerBlockBreakEvents.CANCELED.register(((world, player, pos, state, entity) -> LOGGER.info("Block break event canceled at {}, {}, {} (client-side = {})", pos.getX(), pos.getY(), pos.getZ(), world.isClient())));
 
-		PlayerBlockBreakEvents.AFTER.register(((world, player, pos, state, entity) -> {
-			LOGGER.info("Block broken at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
-		}));
+		PlayerBlockBreakEvents.AFTER.register(((world, player, pos, state, entity) -> LOGGER.info("Block broken at {}, {}, {} (client-side = {})", pos.getX(), pos.getY(), pos.getZ(), world.isClient())));
 	}
 }

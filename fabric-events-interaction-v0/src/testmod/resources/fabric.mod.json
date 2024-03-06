@@ -12,14 +12,15 @@
     "main": [
       "net.fabricmc.fabric.test.event.interaction.AttackBlockTests",
       "net.fabricmc.fabric.test.event.interaction.PlayerBreakBlockTests",
-      "net.fabricmc.fabric.test.event.interaction.PlayerPickBlockTests",
       "net.fabricmc.fabric.test.event.interaction.UseEntityTests"
     ],
     "fabric-gametest": [
       "net.fabricmc.fabric.test.event.interaction.FakePlayerTests"
     ],
     "client": [
-      "net.fabricmc.fabric.test.client.event.interaction.ClientPreAttackTests"
+      "net.fabricmc.fabric.test.client.event.interaction.ClientPreAttackTests",
+      "net.fabricmc.fabric.test.client.event.interaction.ClientPlayerBlockBreakTests",
+      "net.fabricmc.fabric.test.client.event.interaction.PlayerPickBlockTests"
     ]
   }
 }

@@ -26,11 +26,15 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.network.NetworkState;
 import net.minecraft.util.Identifier;
 
 public final class GlobalReceiverRegistry<H> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalReceiverRegistry.class);
+
 	private final NetworkState state;
 
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -82,6 +86,7 @@ public final class GlobalReceiverRegistry<H> {
 		}
 	}
 
+	@Nullable
 	public H unregisterGlobalReceiver(Identifier channelName) {
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
 
@@ -134,7 +139,11 @@ public final class GlobalReceiverRegistry<H> {
 		lock.lock();
 
 		try {
-			this.trackedAddons.add(addon);
+			if (this.trackedAddons.add(addon)) {
+				addon.registerChannels(handlers);
+			}
+
+			this.logTrackedAddonSize();
 		} finally {
 			lock.unlock();
 		}
@@ -145,9 +154,19 @@ public final class GlobalReceiverRegistry<H> {
 		lock.lock();
 
 		try {
+			this.logTrackedAddonSize();
 			this.trackedAddons.remove(addon);
 		} finally {
 			lock.unlock();
+		}
+	}
+
+	/**
+	 * In practice, trackedAddons should never contain more than the number of players.
+	 */
+	private void logTrackedAddonSize() {
+		if (LOGGER.isTraceEnabled() && this.trackedAddons.size() > 1) {
+			LOGGER.trace("{} receiver registry tracks {} addon instances", state.getId(), trackedAddons.size());
 		}
 	}
 
@@ -156,6 +175,8 @@ public final class GlobalReceiverRegistry<H> {
 		lock.lock();
 
 		try {
+			this.logTrackedAddonSize();
+
 			for (AbstractNetworkAddon<H> addon : this.trackedAddons) {
 				addon.registerChannel(channelName, handler);
 			}
@@ -169,6 +190,8 @@ public final class GlobalReceiverRegistry<H> {
 		lock.lock();
 
 		try {
+			this.logTrackedAddonSize();
+
 			for (AbstractNetworkAddon<H> addon : this.trackedAddons) {
 				addon.unregisterChannel(channelName);
 			}

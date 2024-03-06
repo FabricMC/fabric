@@ -4,11 +4,11 @@ plugins {
 	id "idea"
 	id "maven-publish"
 	id 'jacoco'
-	id "fabric-loom" version "1.4.1" apply false
+	id "fabric-loom" version "1.5.4" apply false
 	id "com.diffplug.spotless" version "6.20.0"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "me.modmuss50.remotesign" version "0.4.0" apply false
-	id "me.modmuss50.mod-publish-plugin" version "0.3.4"
+	id "me.modmuss50.mod-publish-plugin" version "0.4.5"
 }
 
 def ENV = System.getenv()
@@ -16,6 +16,11 @@ def ENV = System.getenv()
 version = project.version + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
 logger.lifecycle("Building Fabric: " + version)
 
+def metaProjects = [
+	'deprecated',
+	'fabric-api-bom',
+	'fabric-api-catalog'
+]
 
 import net.fabricmc.loom.util.gradle.SourceSetHelper
 import groovy.json.JsonSlurper
@@ -132,7 +137,7 @@ allprojects {
 		setupRepositories(repositories)
 	}
 
-	if (it.name == "deprecated") {
+	if (metaProjects.contains(it.name)) {
 		return
 	}
 
@@ -152,6 +157,9 @@ allprojects {
 
 	loom {
 		splitEnvironmentSourceSets()
+		mixin {
+			useLegacyMixinAp = true
+		}
 	}
 
 	sourceSets {
@@ -200,7 +208,7 @@ allprojects {
 	}
 
 	allprojects.each { p ->
-		if (project.name == "deprecated") {
+		if (metaProjects.contains(project.name)) {
 			return
 		}
 
@@ -258,6 +266,10 @@ allprojects {
 	spotless {
 		java {
 			licenseHeaderFile(rootProject.file("HEADER"))
+			removeUnusedImports()
+			importOrder('java', 'javax', '', 'net.minecraft', 'net.fabricmc')
+			indentWithTabs()
+			trimTrailingWhitespace()
 		}
 	}
 
@@ -328,7 +340,7 @@ remapTestmodJar {
 	def testModJarTasks = []
 
 	subprojects {
-		if (it.name == "deprecated" || !(it.file("src/testmod").exists() || it.file("src/testmodClient").exists())) {
+		if (metaProjects.contains(it.name) || !(it.file("src/testmod").exists() || it.file("src/testmodClient").exists())) {
 			return
 		}
 
@@ -370,7 +382,7 @@ javadoc {
 	}
 
 	allprojects.each {
-		if (it.name == "deprecated") {
+		if (metaProjects.contains(it.name)) {
 			return
 		}
 
@@ -450,7 +462,7 @@ tasks.register('coverage', JacocoReport) {
 
 	// Add all source as input
 	allprojects { p ->
-		if (p.path.startsWith(":deprecated")) {
+		if (p.path.startsWith(":deprecated") || metaProjects.contains(p.name)) {
 			return
 		}
 		sourceSets p.sourceSets.main, p.sourceSets.client, p.sourceSets.testmod, p.sourceSets.testmodClient
@@ -588,7 +600,7 @@ def addPomMetadataInformation(Project project, MavenPom pom) {
 }
 
 subprojects {
-	if (it.name == "deprecated") {
+	if (metaProjects.contains(it.name)) {
 		return
 	}
 
@@ -659,7 +671,7 @@ publishing {
 				def depsNode = asNode().appendNode("dependencies")
 				subprojects.each {
 					// The maven BOM containing all of the deprecated modules is added manually below.
-					if (it.path.startsWith(":deprecated")) {
+					if (it.path.startsWith(":deprecated") || metaProjects.contains(it.name)) {
 						return
 					}
 
@@ -701,7 +713,7 @@ void setupRepositories(RepositoryHandler repositories) {
 }
 
 subprojects.each {
-	if (it.name == "deprecated") {
+	if (metaProjects.contains(it.name)) {
 		return
 	}
 
@@ -714,7 +726,7 @@ def devOnlyModules = ["fabric-gametest-api-v1",]
 dependencies {
 	afterEvaluate {
 		subprojects.each {
-			if (it.name == "deprecated") {
+			if (metaProjects.contains(it.name)) {
 				return
 			}
 
@@ -730,7 +742,7 @@ dependencies {
 remapJar {
 	afterEvaluate {
 		subprojects.each {
-			if (it.name in devOnlyModules || it.name == "deprecated") {
+			if (it.name in devOnlyModules || metaProjects.contains(it.name)) {
 				return
 			}
 

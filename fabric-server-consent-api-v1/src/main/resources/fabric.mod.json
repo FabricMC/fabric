@@ -17,8 +17,8 @@
   ],
   "description": "Consent API for servers.",
   "depends": {
-    "fabricloader": ">=0.14.21",
-    "minecraft": ">=1.20.1",
+    "fabricloader": ">=0.15.1",
+    "minecraft": ">=1.20.4",
     "fabric-networking-api-v1": "*"
   },
   "entrypoints": {

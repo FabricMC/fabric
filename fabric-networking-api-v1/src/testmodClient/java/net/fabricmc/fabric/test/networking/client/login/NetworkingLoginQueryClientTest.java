@@ -19,16 +19,23 @@ package net.fabricmc.fabric.test.networking.client.login;
 import java.util.concurrent.CompletableFuture;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.test.networking.play.NetworkingPlayPacketTest;
+import net.fabricmc.fabric.test.networking.login.NetworkingLoginQueryTest;
 
 public final class NetworkingLoginQueryClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// Send a dummy response to the server in return, by registering here we essentially say we understood the server's query
-		ClientLoginNetworking.registerGlobalReceiver(NetworkingPlayPacketTest.TEST_CHANNEL, (client, handler, buf, listenerAdder) -> {
+		ClientLoginNetworking.registerGlobalReceiver(NetworkingLoginQueryTest.GLOBAL_TEST_CHANNEL, (client, handler, buf, listenerAdder) -> {
 			return CompletableFuture.completedFuture(PacketByteBufs.empty());
+		});
+
+		ClientLoginConnectionEvents.QUERY_START.register((handler, client) -> {
+			ClientLoginNetworking.registerReceiver(NetworkingLoginQueryTest.LOCAL_TEST_CHANNEL, (client1, handler1, buf, listenerAdder) -> {
+				return CompletableFuture.completedFuture(PacketByteBufs.empty());
+			});
 		});
 	}
 }

@@ -94,7 +94,7 @@ public class BlockEntityTypeBuilderTest implements ModInitializer {
 				}
 
 				Text posText = Text.translatable("chat.coordinates", pos.getX(), pos.getY(), pos.getZ());
-				Text message = Text.translatable("text.fabric-object-builder-api-v1-testmod.block_entity_type_success", posText, BLOCK_ENTITY_TYPE_ID);
+				Text message = Text.stringifiedTranslatable("text.fabric-object-builder-api-v1-testmod.block_entity_type_success", posText, BLOCK_ENTITY_TYPE_ID);
 
 				player.sendMessage(message, false);
 			}

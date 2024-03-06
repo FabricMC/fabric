@@ -1,0 +1,7 @@
+{
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Ce client a reçu une entrée de registre qui lui est inconnue.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Ce client a reçu %d entrées de registre qui lui sont inconnues.\n",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Ce problème est généralement dû à une différence entre le jeu de mods du client et celui du serveur.",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Voir les logs du client pour plus de détails.\nLes namespaces d'entrée de registre pourraient être liés :\n\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "Et %d de plus..."
+}

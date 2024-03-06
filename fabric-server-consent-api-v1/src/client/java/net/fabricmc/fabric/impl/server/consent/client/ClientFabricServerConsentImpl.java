@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.impl.server.consent.client;
 
-import static net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl.FLAGS_CHANNEL;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +30,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.server.consent.v1.client.ClientFabricServerConsentFlagsCallback;
 import net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl;
+import net.fabricmc.fabric.impl.server.consent.IllegalFlagsCustomPayload;
 
 public final class ClientFabricServerConsentImpl implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(FabricServerConsentImpl.class);
@@ -40,7 +39,7 @@ public final class ClientFabricServerConsentImpl implements ClientModInitializer
 
 	@Override
 	public void onInitializeClient() {
-		ClientPlayNetworking.registerGlobalReceiver(FLAGS_CHANNEL, (client, handler, buf, responseSender) -> {
+		ClientPlayNetworking.registerGlobalReceiver(IllegalFlagsCustomPayload.ID, (client, handler, buf, responseSender) -> {
 			illegalFlags = buf.readCollection(ArrayList::new, PacketByteBuf::readIdentifier);
 			client.execute(() -> {
 				try {

@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.networking.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import io.netty.util.concurrent.Future;
@@ -51,9 +50,11 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 		super(ClientNetworkingImpl.LOGIN, "ClientLoginNetworkAddon for Client");
 		this.handler = handler;
 		this.client = client;
+	}
 
+	@Override
+	protected void invokeInitEvent() {
 		ClientLoginConnectionEvents.INIT.invoker().onLoginStart(this.handler, this.client);
-		this.receiver.startSession(this);
 	}
 
 	public boolean handlePacket(LoginQueryRequestS2CPacket packet) {
@@ -65,11 +66,6 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 		this.logger.debug("Handling inbound login response with id {} and channel with name {}", queryId, channelName);
 
 		if (this.firstResponse) {
-			// Register global handlers
-			for (Map.Entry<Identifier, ClientLoginNetworking.LoginQueryRequestHandler> entry : ClientNetworkingImpl.LOGIN.getHandlers().entrySet()) {
-				ClientLoginNetworking.registerReceiver(entry.getKey(), entry.getValue());
-			}
-
 			ClientLoginConnectionEvents.QUERY_START.invoker().onLoginQueryStart(this.handler, this.client);
 			this.firstResponse = false;
 		}
@@ -86,7 +82,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 		try {
 			CompletableFuture<@Nullable PacketByteBuf> future = handler.receive(this.client, this.handler, buf, futureListeners::add);
 			future.thenAccept(result -> {
-				LoginQueryResponseC2SPacket packet = new LoginQueryResponseC2SPacket(queryId, new PacketByteBufLoginQueryResponse(result));
+				LoginQueryResponseC2SPacket packet = new LoginQueryResponseC2SPacket(queryId, result == null ? null : new PacketByteBufLoginQueryResponse(result));
 				GenericFutureListener<? extends Future<? super Void>> listener = null;
 
 				for (GenericFutureListener<? extends Future<? super Void>> each : futureListeners) {
@@ -114,11 +110,6 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 	@Override
 	protected void invokeDisconnectEvent() {
 		ClientLoginConnectionEvents.DISCONNECT.invoker().onLoginDisconnect(this.handler, this.client);
-		this.receiver.endSession(this);
-	}
-
-	public void handleConfigurationTransition() {
-		this.receiver.endSession(this);
 	}
 
 	@Override

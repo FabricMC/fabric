@@ -16,39 +16,29 @@
 
 package net.fabricmc.fabric.mixin.gametest.server;
 
-import java.io.File;
-import java.nio.file.Path;
-
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
-import joptsimple.OptionSpec;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.util.ApiServices;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.Main;
-import net.minecraft.server.dedicated.EulaReader;
-import net.minecraft.server.dedicated.ServerPropertiesLoader;
 import net.minecraft.world.level.storage.LevelStorage;
-import net.minecraft.world.level.storage.LevelSummary;
 
 import net.fabricmc.fabric.impl.gametest.FabricGameTestHelper;
 
 @Mixin(Main.class)
 public class MainMixin {
-	@Redirect(method = "main", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/EulaReader;isEulaAgreedTo()Z"))
-	private static boolean isEulaAgreedTo(EulaReader reader) {
-		return FabricGameTestHelper.ENABLED || reader.isEulaAgreedTo();
+	@ModifyExpressionValue(method = "main", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/EulaReader;isEulaAgreedTo()Z"))
+	private static boolean isEulaAgreedTo(boolean isEulaAgreedTo) {
+		return FabricGameTestHelper.ENABLED || isEulaAgreedTo;
 	}
 
 	// Inject after resourcePackManager is stored
-	@Inject(method = "main", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", shift = At.Shift.BY, by = 2, target = "Lnet/minecraft/resource/VanillaDataPackProvider;createManager(Lnet/minecraft/world/level/storage/LevelStorage$Session;)Lnet/minecraft/resource/ResourcePackManager;"))
-	private static void main(String[] args, CallbackInfo info, OptionParser optionParser, OptionSpec optionSpec, OptionSpec optionSpec2, OptionSpec optionSpec3, OptionSpec optionSpec4, OptionSpec optionSpec5, OptionSpec optionSpec6, OptionSpec optionSpec7, OptionSpec optionSpec8, OptionSpec optionSpec9, OptionSpec optionSpec10, OptionSpec optionSpec11, OptionSpec optionSpec12, OptionSpec optionSpec13, OptionSpec optionSpec14, OptionSpec optionSpec15, OptionSet optionSet, Path path2, ServerPropertiesLoader serverPropertiesLoader, Path path3, EulaReader eulaReader, File file, ApiServices apiServices, String string, LevelStorage levelStorage, LevelStorage.Session session, LevelSummary levelSummary, boolean bl, ResourcePackManager resourcePackManager) {
+	@Inject(method = "main", cancellable = true, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/resource/VanillaDataPackProvider;createManager(Lnet/minecraft/world/level/storage/LevelStorage$Session;)Lnet/minecraft/resource/ResourcePackManager;"))
+	private static void main(String[] args, CallbackInfo info, @Local LevelStorage.Session session, @Local ResourcePackManager resourcePackManager) {
 		if (FabricGameTestHelper.ENABLED) {
 			FabricGameTestHelper.runHeadlessServer(session, resourcePackManager);
 			info.cancel();  // Do not progress in starting the normal dedicated server

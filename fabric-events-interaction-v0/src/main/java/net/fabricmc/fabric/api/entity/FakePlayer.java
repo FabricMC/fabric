@@ -31,7 +31,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
-import net.minecraft.scoreboard.AbstractTeam;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -126,7 +126,7 @@ public class FakePlayer extends ServerPlayerEntity {
 
 	@Nullable
 	@Override
-	public AbstractTeam getScoreboardTeam() {
+	public Team getScoreboardTeam() {
 		// Scoreboard team is checked using the gameprofile name by default, which we don't want.
 		return null;
 	}

@@ -39,7 +39,7 @@ public class BoxBlockEntity extends LootableContainerBlockEntity implements Exte
 	}
 
 	@Override
-	protected DefaultedList<ItemStack> getInvStackList() {
+	protected DefaultedList<ItemStack> method_11282() {
 		return items;
 	}
 

@@ -8,7 +8,7 @@ import groovy.json.JsonSlurper
  */
 
 subprojects {
-	if (it.name == "deprecated") {
+	if (it.name == "deprecated" || it.name == "fabric-api-bom" || it.name == "fabric-api-catalog") {
 		return
 	}
 
@@ -72,6 +72,14 @@ class ValidateModuleTask extends DefaultTask {
 				break
 			default:
 				throw new GradleException("Module ${project} has an invalid module lifecycle ${json.custom.get('fabric-api:module-lifecycle')}")
+		}
+
+		if (json.depends == null) {
+			throw new GradleException("Module ${project} does not have a depends value!")
+		}
+
+		if (json.depends.fabricloader != ">=${project.loader_version}") {
+			throw new GradleException("Module ${project} does not have a valid fabricloader value! Got \"${json.depends.fabricloader}\" but expected \">=${project.loader_version}\"")
 		}
 	}
 }

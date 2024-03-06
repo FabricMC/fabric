@@ -1,15 +1,21 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.item",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AbstractFurnaceBlockEntityMixin",
     "ArmorItemMixin",
+    "BlockItemMixin",
     "BrewingStandBlockEntityMixin",
+    "CatEntityMixin",
+    "CookingRecipeJsonBuilderMixin",
+    "FoxEntityMixin",
+    "HungerManagerMixin",
     "ItemMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "RecipeMixin"
+    "RecipeMixin",
+    "WolfEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

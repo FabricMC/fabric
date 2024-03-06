@@ -25,6 +25,7 @@ import net.minecraft.server.network.ServerPlayerConfigurationTask;
 
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 
@@ -95,7 +96,7 @@ public class CommonPacketsImpl {
 
 		@Override
 		public void sendPacket(Consumer<Packet<?>> sender) {
-			addon.sendPacket(addon.createRegisterPayload());
+			addon.sendPacket(new CommonRegisterPayload(addon.getNegotiatedVersion(), CommonRegisterPayload.PLAY_PHASE, ServerPlayNetworking.getGlobalReceivers()));
 		}
 
 		@Override

@@ -32,25 +32,17 @@ import com.google.gson.reflect.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.listener.ClientCommonPacketListener;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.DedicatedServerModInitializer;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class FabricServerConsentImpl implements DedicatedServerModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(FabricServerConsentImpl.class);
 
 	private static final Gson GSON = new GsonBuilder().registerTypeAdapter(Identifier.class, new IdentifierTypeAdapter()).setPrettyPrinting().create();
-
-	public static final String SOME_UNIVERSAL_NAMESPACE = "noconsent";
-
-	public static final Identifier FLAGS_CHANNEL = new Identifier(SOME_UNIVERSAL_NAMESPACE, "flags");
 
 	public static boolean enabled;
 	public static List<Identifier> illegalFlags;
@@ -98,10 +90,7 @@ public final class FabricServerConsentImpl implements DedicatedServerModInitiali
 	public void onInitializeServer() {
 		if (enabled) {
 			ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
-				PacketByteBuf buf = PacketByteBufs.create();
-				buf.writeCollection(illegalFlags, PacketByteBuf::writeIdentifier);
-				Packet<ClientCommonPacketListener> packet = ServerPlayNetworking.createS2CPacket(FLAGS_CHANNEL, buf);
-				handler.sendPacket(packet);
+				handler.sendPacket(new CustomPayloadS2CPacket(new IllegalFlagsCustomPayload(illegalFlags)));
 			});
 		}
 	}

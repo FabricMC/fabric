@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.event.lifecycle;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -53,6 +53,14 @@ public final class ServerLifecycleTests implements ModInitializer {
 
 		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
 			LOGGER.info("SyncDataPackContents received for {}", joined ? "join" : "reload");
+		});
+
+		ServerLifecycleEvents.BEFORE_SAVE.register((server, flush, force) -> {
+			LOGGER.info("Starting Save with settings: Flush:{} Force:{}", flush, force);
+		});
+
+		ServerLifecycleEvents.AFTER_SAVE.register((server, flush, force) -> {
+			LOGGER.info("Save Finished with settings: Flush:{} Force:{}", flush, force);
 		});
 	}
 }

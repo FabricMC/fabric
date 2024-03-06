@@ -16,19 +16,13 @@
 
 package net.fabricmc.fabric.api.transfer.v1.storage;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 /**
  * A view of a single stored resource in a {@link Storage}, for use with {@link Storage#iterator}.
  *
  * @param <T> The type of the stored resource.
- *
- * <b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 public interface StorageView<T> {
 	/**
 	 * Try to extract a resource from this view.

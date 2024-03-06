@@ -19,8 +19,8 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 

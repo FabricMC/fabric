@@ -28,9 +28,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.registry.Registries;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
@@ -153,16 +153,16 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 			throw new IllegalArgumentException("Must register at least one BlockEntityType instance with a BlockEntityApiProvider.");
 		}
 
-		BlockApiProvider<A, C> nullCheckedProvider = (world, pos, state, blockEntity, context) -> {
-			if (blockEntity == null) {
-				return null;
-			} else {
-				return provider.find(blockEntity, context);
-			}
-		};
-
 		for (BlockEntityType<?> blockEntityType : blockEntityTypes) {
 			Objects.requireNonNull(blockEntityType, "Encountered null block entity type while registering a block entity API provider mapping.");
+
+			BlockApiProvider<A, C> nullCheckedProvider = (world, pos, state, blockEntity, context) -> {
+				if (blockEntity == null || blockEntity.getType() != blockEntityType) {
+					return null;
+				} else {
+					return provider.find(blockEntity, context);
+				}
+			};
 
 			Block[] blocks = ((BlockEntityTypeAccessor) blockEntityType).getBlocks().toArray(new Block[0]);
 			registerForBlocks(nullCheckedProvider, blocks);

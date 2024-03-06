@@ -24,9 +24,9 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.loot.LootManager;
 import net.minecraft.recipe.RecipeManager;
+import net.minecraft.registry.tag.TagManagerLoader;
 import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.server.function.FunctionLoader;
-import net.minecraft.registry.tag.TagManagerLoader;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;

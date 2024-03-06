@@ -19,11 +19,15 @@ package net.fabricmc.fabric.test.transfer.unittests;
 import static net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants.BUCKET;
 import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
 
+import java.util.Iterator;
+
 import net.minecraft.fluid.Fluids;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.FilteringStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -31,6 +35,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 public class BaseStorageTests {
 	public static void run() {
 		testFilteringStorage();
+		testNonEmptyIteratorWithModifiedView();
 	}
 
 	private static void testFilteringStorage() {
@@ -91,5 +96,25 @@ public class BaseStorageTests {
 		}
 
 		assertEquals(BUCKET, StorageUtil.simulateExtract(storage, lava, BUCKET, null));
+	}
+
+	/**
+	 * Regression test for <a href="https://github.com/FabricMC/fabric/issues/3414">
+	 * {@code nonEmptyIterator} not handling views that become empty during iteration correctly</a>.
+	 */
+	private static void testNonEmptyIteratorWithModifiedView() {
+		SingleVariantStorage<FluidVariant> storage = SingleFluidStorage.withFixedCapacity(BUCKET, () -> { });
+		storage.variant = FluidVariant.of(Fluids.WATER);
+
+		Iterator<StorageView<FluidVariant>> iterator = storage.nonEmptyIterator();
+		storage.amount = BUCKET;
+		// Iterator should have a next element now
+		assertEquals(true, iterator.hasNext());
+		assertEquals(storage, iterator.next());
+
+		iterator = storage.nonEmptyIterator();
+		storage.amount = 0;
+		// Iterator should not have a next element...
+		assertEquals(false, iterator.hasNext());
 	}
 }

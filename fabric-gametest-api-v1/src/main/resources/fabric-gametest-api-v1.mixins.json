@@ -1,12 +1,13 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.gametest",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_17",
   "mixins": [
     "ArgumentTypesMixin",
     "CommandManagerMixin",
     "MinecraftServerMixin",
     "StructureTemplateManagerMixin",
+    "TestCommandMixin",
     "TestFunctionsMixin",
     "TestServerMixin"
   ],

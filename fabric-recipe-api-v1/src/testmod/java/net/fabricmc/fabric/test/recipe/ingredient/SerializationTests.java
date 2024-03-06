@@ -19,8 +19,10 @@ package net.fabricmc.fabric.test.recipe.ingredient;
 import java.util.List;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
 import net.minecraft.item.Items;
@@ -31,7 +33,7 @@ import net.minecraft.test.TestContext;
 import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
-import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AllIngredient;
+import net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients;
 
 public class SerializationTests {
 	/**
@@ -64,19 +66,29 @@ public class SerializationTests {
 	}
 
 	/**
-	 * Check that we can serialise a custom ingredient.
+	 * Check that we can serialise and deserialize a custom ingredient.
 	 */
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testCustomIngredientSerialization(TestContext context) {
-		String ingredientJson = """
-				{"ingredients":[{"item":"minecraft:stone"}],"fabric:type":"fabric:all"}
-				""".trim();
+		for (boolean allowEmpty : List.of(false, true)) {
+			String ingredientJson = """
+					{"ingredients":[{"item":"minecraft:stone"}],"fabric:type":"fabric:all"}
+					""".trim();
 
-		var ingredient = new AllIngredient(List.of(
-				Ingredient.ofItems(Items.STONE)
-		));
-		String json = ingredient.toVanilla().toJson(false).toString();
-		context.assertTrue(json.equals(ingredientJson), "Unexpected json: " + json);
+			Ingredient ingredient = DefaultCustomIngredients.all(
+					Ingredient.ofItems(Items.STONE)
+			);
+			Codec<Ingredient> ingredientCodec = allowEmpty ? Ingredient.ALLOW_EMPTY_CODEC : Ingredient.DISALLOW_EMPTY_CODEC;
+			JsonObject json = Util.getResult(ingredientCodec.encodeStart(JsonOps.INSTANCE, ingredient), IllegalStateException::new).getAsJsonObject();
+			context.assertTrue(json.toString().equals(ingredientJson), "Unexpected json: " + json);
+			// Make sure that we can deserialize it
+			Ingredient deserialized = Util.getResult(
+					ingredientCodec.parse(JsonOps.INSTANCE, json), JsonParseException::new
+			);
+			context.assertTrue(deserialized.getCustomIngredient() != null, "Custom ingredient was not deserialized");
+			context.assertTrue(deserialized.getCustomIngredient().getSerializer() == ingredient.getCustomIngredient().getSerializer(), "Serializer did not match");
+		}
+
 		context.complete();
 	}
 }

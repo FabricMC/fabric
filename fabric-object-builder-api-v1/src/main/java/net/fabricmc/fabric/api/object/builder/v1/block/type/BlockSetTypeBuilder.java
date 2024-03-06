@@ -31,6 +31,9 @@ import net.minecraft.util.Identifier;
  */
 public final class BlockSetTypeBuilder {
 	private boolean openableByHand = true;
+	private boolean openableByWindCharge = true;
+	private boolean buttonActivatedByArrows = true;
+	private BlockSetType.ActivationRule pressurePlateActivationRule = BlockSetType.ActivationRule.EVERYTHING;
 	private BlockSoundGroup soundGroup = BlockSoundGroup.WOOD;
 	private SoundEvent doorCloseSound = SoundEvents.BLOCK_WOODEN_DOOR_CLOSE;
 	private SoundEvent doorOpenSound = SoundEvents.BLOCK_WOODEN_DOOR_OPEN;
@@ -50,6 +53,42 @@ public final class BlockSetTypeBuilder {
 	 */
 	public BlockSetTypeBuilder openableByHand(boolean openableByHand) {
 		this.openableByHand = openableByHand;
+		return this;
+	}
+
+	/**
+	 * Sets whether this block set type's door and trapdoor can be opened by wind charge.
+	 *
+	 * <p>Defaults to {@code true}.
+	 *
+	 * @return this builder for chaining
+	 */
+	public BlockSetTypeBuilder openableByWindCharge(boolean openableByWindCharge) {
+		this.openableByWindCharge = openableByWindCharge;
+		return this;
+	}
+
+	/**
+	 * Sets whether this block set type's button can be activated by an arrow.
+	 *
+	 * <p>Defaults to {@code true}.
+	 *
+	 * @return this builder for chaining
+	 */
+	public BlockSetTypeBuilder buttonActivatedByArrows(boolean buttonActivatedByArrows) {
+		this.buttonActivatedByArrows = buttonActivatedByArrows;
+		return this;
+	}
+
+	/**
+	 * Sets this block set type's pressure plate {@link BlockSetType.ActivationRule}.
+	 *
+	 * <p>Defaults to {@link BlockSetType.ActivationRule#EVERYTHING}.
+	 *
+	 * @return this builder for chaining
+	 */
+	public BlockSetTypeBuilder pressurePlateActivationRule(BlockSetType.ActivationRule activationRule) {
+		this.pressurePlateActivationRule = activationRule;
 		return this;
 	}
 
@@ -171,6 +210,9 @@ public final class BlockSetTypeBuilder {
 	public static BlockSetTypeBuilder copyOf(BlockSetTypeBuilder builder) {
 		BlockSetTypeBuilder copy = new BlockSetTypeBuilder();
 		copy.openableByHand(builder.openableByHand);
+		copy.openableByWindCharge(builder.openableByWindCharge);
+		copy.buttonActivatedByArrows(builder.buttonActivatedByArrows);
+		copy.pressurePlateActivationRule(builder.pressurePlateActivationRule);
 		copy.soundGroup(builder.soundGroup);
 		copy.doorCloseSound(builder.doorCloseSound);
 		copy.doorOpenSound(builder.doorOpenSound);
@@ -193,6 +235,9 @@ public final class BlockSetTypeBuilder {
 	public static BlockSetTypeBuilder copyOf(BlockSetType setType) {
 		BlockSetTypeBuilder copy = new BlockSetTypeBuilder();
 		copy.openableByHand(setType.canOpenByHand());
+		copy.openableByWindCharge(setType.canOpenByWindCharge());
+		copy.buttonActivatedByArrows(setType.canButtonBeActivatedByArrows());
+		copy.pressurePlateActivationRule(setType.pressurePlateSensitivity());
 		copy.soundGroup(setType.soundType());
 		copy.doorCloseSound(setType.doorClose());
 		copy.doorOpenSound(setType.doorOpen());
@@ -230,6 +275,6 @@ public final class BlockSetTypeBuilder {
 	 * @return the built {@link BlockSetType}
 	 */
 	public BlockSetType build(Identifier id) {
-		return new BlockSetType(id.toString(), openableByHand, soundGroup, doorCloseSound, doorOpenSound, trapdoorCloseSound, trapdoorOpenSound, pressurePlateClickOffSound, pressurePlateClickOnSound, buttonClickOffSound, buttonClickOnSound);
+		return new BlockSetType(id.toString(), openableByHand, openableByWindCharge, buttonActivatedByArrows, pressurePlateActivationRule, soundGroup, doorCloseSound, doorOpenSound, trapdoorCloseSound, trapdoorOpenSound, pressurePlateClickOffSound, pressurePlateClickOnSound, buttonClickOffSound, buttonClickOnSound);
 	}
 }

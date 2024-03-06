@@ -18,8 +18,6 @@ package net.fabricmc.fabric.api.transfer.v1.fluid;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
@@ -39,11 +37,7 @@ import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
 /**
  * Helper functions to work with fluid storages.
- *
- * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 public final class FluidStorageUtil {
 	/**
 	 * Try to make the item in a player hand "interact" with a fluid storage.
@@ -111,7 +105,7 @@ public final class FluidStorageUtil {
 						if (!fill && handItem == Items.POTION) sound = SoundEvents.ITEM_BOTTLE_EMPTY;
 					}
 
-					player.playSound(sound, SoundCategory.BLOCKS, 1, 1);
+					player.getWorld().playSound(player, player.getX(), player.getEyeY(), player.getZ(), sound, SoundCategory.PLAYERS, 1, 1);
 
 					return true;
 				}

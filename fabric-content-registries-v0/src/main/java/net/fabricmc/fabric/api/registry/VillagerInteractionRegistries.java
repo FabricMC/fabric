@@ -31,9 +31,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerProfession;
 
 import net.fabricmc.fabric.impl.content.registry.util.ImmutableCollectionUtils;
-import net.fabricmc.fabric.mixin.content.registry.VillagerEntityAccessor;
 import net.fabricmc.fabric.mixin.content.registry.FarmerWorkTaskAccessor;
 import net.fabricmc.fabric.mixin.content.registry.GiveGiftsToHeroTaskAccessor;
+import net.fabricmc.fabric.mixin.content.registry.VillagerEntityAccessor;
 
 /**
  * Registries for modifying villager interactions that

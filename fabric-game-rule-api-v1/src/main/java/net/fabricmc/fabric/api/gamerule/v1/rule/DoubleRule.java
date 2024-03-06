@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.api.gamerule.v1.rule;
 
 import com.mojang.brigadier.context.CommandContext;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -113,7 +113,12 @@ public final class DoubleRule extends GameRules.Rule<DoubleRule> implements Vali
 		try {
 			final double d = Double.parseDouble(value);
 
-			return this.inBounds(d);
+			if (!this.inBounds(d)) {
+				return false;
+			}
+
+			this.value = d;
+			return true;
 		} catch (NumberFormatException ignored) {
 			return false;
 		}

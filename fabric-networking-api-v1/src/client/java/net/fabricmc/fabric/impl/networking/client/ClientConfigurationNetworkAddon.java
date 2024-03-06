@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.networking.client;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
@@ -29,17 +28,18 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.C2SConfigurationChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufPayload;
+import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
+import net.fabricmc.fabric.impl.networking.payload.ResolvedPayload;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkHandlerAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientConfigurationNetworkHandlerAccessor;
 
-public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ClientConfigurationNetworking.ConfigurationChannelHandler> {
+public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ClientConfigurationNetworkAddon.Handler> {
 	private final ClientConfigurationNetworkHandler handler;
 	private final MinecraftClient client;
 	private boolean sentInitialRegisterPacket;
@@ -51,17 +51,10 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkState.CONFIGURATION);
-
-		// Register global receivers and attach to session
-		this.receiver.startSession(this);
 	}
 
 	@Override
-	public void lateInit() {
-		for (Map.Entry<Identifier, ClientConfigurationNetworking.ConfigurationChannelHandler> entry : this.receiver.getHandlers().entrySet()) {
-			this.registerChannel(entry.getKey(), entry.getValue());
-		}
-
+	protected void invokeInitEvent() {
 		ClientConfigurationConnectionEvents.INIT.invoker().onConfigurationInit(this.handler, this.client);
 	}
 
@@ -70,8 +63,8 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	@Override
-	protected void receiveRegistration(boolean register, PacketByteBuf buf) {
-		super.receiveRegistration(register, buf);
+	protected void receiveRegistration(boolean register, ResolvablePayload resolvable) {
+		super.receiveRegistration(register, resolvable);
 
 		if (register && !this.sentInitialRegisterPacket) {
 			this.sendInitialChannelRegistrationPacket();
@@ -79,19 +72,9 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 		}
 	}
 
-	/**
-	 * Handles an incoming packet.
-	 *
-	 * @param payload the payload to handle
-	 * @return true if the packet has been handled
-	 */
-	public boolean handle(PacketByteBufPayload payload) {
-		return this.handle(payload.id(), payload.data());
-	}
-
 	@Override
-	protected void receive(ClientConfigurationNetworking.ConfigurationChannelHandler handler, PacketByteBuf buf) {
-		handler.receive(this.client, this.handler, buf, this);
+	protected void receive(Handler handler, ResolvedPayload payload) {
+		handler.receive(this.client, this.handler, payload, this);
 	}
 
 	// impl details
@@ -153,7 +136,6 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 	@Override
 	protected void invokeDisconnectEvent() {
 		ClientConfigurationConnectionEvents.DISCONNECT.invoker().onConfigurationDisconnect(this.handler, this.client);
-		this.receiver.endSession(this);
 	}
 
 	@Override
@@ -163,5 +145,9 @@ public final class ClientConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	public ChannelInfoHolder getChannelInfoHolder() {
 		return (ChannelInfoHolder) ((ClientCommonNetworkHandlerAccessor) handler).getConnection();
+	}
+
+	public interface Handler {
+		void receive(MinecraftClient client, ClientConfigurationNetworkHandler handler, ResolvedPayload payload, PacketSender responseSender);
 	}
 }

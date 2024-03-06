@@ -20,8 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 
@@ -55,11 +53,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  * (This is just for illustration purposes! In practice, Fabric API already registers storages for most buckets,
  * and it is inefficient to have one storage registered per fluid
  * so Fabric API has a storage that accepts any fluid with a corresponding full bucket).
- *
- * <p><b>Experimental feature</b>, we reserve the right to remove or change it without further notice.
- * The transfer API is a complex addition, and we want to be able to correct possible design mistakes.
  */
-@ApiStatus.Experimental
 public final class EmptyItemFluidStorage implements InsertionOnlyStorage<FluidVariant> {
 	private final ContainerItemContext context;
 	private final Item emptyItem;

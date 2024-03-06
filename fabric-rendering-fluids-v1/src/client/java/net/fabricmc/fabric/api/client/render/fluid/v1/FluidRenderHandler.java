@@ -20,13 +20,14 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderingImpl;
 
 /**
  * Interface for handling the rendering of a FluidState.
@@ -67,14 +68,13 @@ public interface FluidRenderHandler {
 	}
 
 	/**
-	 * Tessellate your fluid. This method will be invoked before the default
-	 * fluid renderer. By default, it will call the default fluid renderer. Call
-	 * {@code FluidRenderHandler.super.renderFluid} if you want to render over
-	 * the default fluid renderer.
-	 *
-	 * <p>Note that this method must *only* return {@code true} if at least one
-	 * face is tessellated. If no faces are tessellated this method must return
-	 * {@code false}.
+	 * Tessellate your fluid. By default, this method will call the default
+	 * fluid renderer. Call {@code FluidRenderHandler.super.renderFluid} if
+	 * you want to render over the default fluid renderer. This is the
+	 * intended way to render default geometry; calling
+	 * {@link FluidRenderer#render} is not supported. When rendering default
+	 * geometry, the current handler will be used instead of looking up
+	 * a new one for the passed fluid state.
 	 *
 	 * @param pos The position in the world, of the fluid to render.
 	 * @param world The world the fluid is in
@@ -83,7 +83,7 @@ public interface FluidRenderHandler {
 	 * @param fluidState The fluid state being rendered.
 	 */
 	default void renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
-		((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).renderFluid(pos, world, vertexConsumer, blockState, fluidState);
+		FluidRenderingImpl.renderDefault(this, world, pos, vertexConsumer, blockState, fluidState);
 	}
 
 	/**
