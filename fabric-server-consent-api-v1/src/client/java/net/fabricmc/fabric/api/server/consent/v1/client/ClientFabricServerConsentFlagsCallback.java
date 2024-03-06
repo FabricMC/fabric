@@ -21,7 +21,7 @@ import java.util.List;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -41,5 +41,5 @@ public interface ClientFabricServerConsentFlagsCallback {
 		}
 	});
 
-	void onFlagsSent(MinecraftClient client, ClientPlayNetworkHandler handler, List<Identifier> flags);
+	void onFlagsSent(MinecraftClient client, ClientConfigurationNetworkHandler handler, List<Identifier> flags);
 }

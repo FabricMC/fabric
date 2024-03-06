@@ -26,6 +26,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.server.consent.v1.client.ClientFabricServerConsent;
 import net.fabricmc.fabric.api.server.consent.v1.client.ClientFabricServerConsentFlagsCallback;
+import net.fabricmc.fabric.impl.server.consent.client.ClientFabricServerConsentImpl;
 
 public class ClientServerConsentTest implements ClientModInitializer {
 	public static final String MOD_ID = "fabric-server-consent-api-v1-testmod";
@@ -36,7 +37,7 @@ public class ClientServerConsentTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientFabricServerConsentFlagsCallback.FLAGS_SENT.register((client, handler, flags) -> {
-			flags.forEach(flag -> client.player.sendMessage(Text.of("Illegal flag: " + flag)));
+			flags.forEach(flag -> ClientFabricServerConsentImpl.LOGGER.info("Illegal flag: " + flag));
 		});
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {

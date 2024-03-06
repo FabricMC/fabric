@@ -27,7 +27,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.server.consent.v1.client.ClientFabricServerConsentFlagsCallback;
 import net.fabricmc.fabric.impl.server.consent.FabricServerConsentImpl;
 import net.fabricmc.fabric.impl.server.consent.IllegalFlagsCustomPayload;
@@ -39,7 +39,7 @@ public final class ClientFabricServerConsentImpl implements ClientModInitializer
 
 	@Override
 	public void onInitializeClient() {
-		ClientPlayNetworking.registerGlobalReceiver(IllegalFlagsCustomPayload.ID, (client, handler, buf, responseSender) -> {
+		ClientConfigurationNetworking.registerGlobalReceiver(IllegalFlagsCustomPayload.ID, (client, handler, buf, responseSender) -> {
 			illegalFlags = buf.readCollection(ArrayList::new, PacketByteBuf::readIdentifier);
 			client.execute(() -> {
 				try {
