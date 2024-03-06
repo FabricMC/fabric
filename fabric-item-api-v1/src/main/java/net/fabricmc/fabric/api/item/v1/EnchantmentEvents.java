@@ -26,16 +26,18 @@ import net.fabricmc.fabric.api.util.TriState;
 /**
  * Events relating to enchantments, allowing for finer control of what enchantments can apply to different items.
  */
-public class EnchantmentEvents {
+public final class EnchantmentEvents {
+	private EnchantmentEvents() { }
+
 	/**
 	 * An event that allows overriding whether an {@link Enchantment} can be applied to an {@link ItemStack}.
 	 *
-	 * <p>This should only be used to modify the behavior of <i>external</i> items with regards to <i>external</i> enchantments,
+	 * <p>This should only be used to modify the behavior of <em>external</em> items with regards to <em>external</em> enchantments,
 	 * where 'external' means either vanilla or from another mod. For instance, a mod might allow enchanting a pickaxe
 	 * with Sharpness (and only Sharpness) under certain specific conditions.</p>
 	 *
-	 * <p>To modify the behavior of your own modded <i>enchantments</i>, use {@link Enchantment#isAcceptableItem(ItemStack)} instead.
-	 * To modify the behavior of your own modded <i>items</i>, use {@link FabricItem#canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)} instead.</p>
+	 * <p>To modify the behavior of your own modded <em>enchantments</em>, use {@link Enchantment#isAcceptableItem(ItemStack)} instead.
+	 * To modify the behavior of your own modded <em>items</em>, use {@link FabricItem#canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)} instead.</p>
 	 *
 	 * <p>Note that allowing an enchantment using this event does not guarantee the item will receive that enchantment,
 	 * only that it isn't forbidden from doing so.</p>

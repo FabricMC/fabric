@@ -159,7 +159,7 @@ public interface FabricItem {
 	}
 
 	/**
-	 * Returns a (stack-aware) {@link ItemEnchantmentsComponent} of <i>intrinsic enchantments</i> for this item.
+	 * Returns a (stack-aware) {@link ItemEnchantmentsComponent} of <em>intrinsic enchantments</em> for this item.
 	 * These enchantments have their usual gameplay effects, but do not produce glint or otherwise show on the item,
 	 * and cannot be removed with a grindstone. For example, a mod that adds an electric multi-tool might want to give
 	 * it a Silk Touch-like effect, without relying on the vanilla system.
