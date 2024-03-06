@@ -164,10 +164,10 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		public void generate(RecipeExporter exporter) {
 			offerPlanksRecipe2(exporter, SIMPLE_BLOCK, ItemTags.ACACIA_LOGS, 1);
 
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.LEATHER, 4).input(Items.ITEM_FRAME)
+			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND_ORE, 4).input(Items.ITEM_FRAME)
 					.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
 					.offerTo(withConditions(exporter, DefaultResourceConditions.itemsRegistered(Blocks.DIAMOND_BLOCK)));
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.LEATHER_BOOTS, 4).input(Items.ITEM_FRAME, 2)
+			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.EMERALD, 4).input(Items.ITEM_FRAME, 2)
 					.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
 					.offerTo(withConditions(exporter, DefaultResourceConditions.registryContains(BiomeKeys.PLAINS, BiomeKeys.BADLANDS)));
 

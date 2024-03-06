@@ -13,7 +13,7 @@
     "HopperBlockEntityMixin",
     "ItemMixin",
     "JukeboxBlockEntityMixin",
-    "LootableContainerBlockEntityMixin",
+    "LockableContainerBlockEntityMixin",
     "SimpleInventoryMixin"
   ]
 }

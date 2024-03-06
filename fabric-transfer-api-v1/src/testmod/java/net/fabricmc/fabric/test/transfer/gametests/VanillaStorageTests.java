@@ -119,6 +119,10 @@ public class VanillaStorageTests {
 		context.setBlockState(comparatorPos, Blocks.COMPARATOR.getDefaultState().with(ComparatorBlock.FACING, Direction.WEST));
 
 		try (Transaction transaction = Transaction.openOuter()) {
+			if (world.getBlockTickScheduler().isQueued(context.getAbsolutePos(comparatorPos), Blocks.COMPARATOR)) {
+				throw new GameTestException("Comparator should not have a tick scheduled.");
+			}
+
 			storage.insert(variant, 1000000, transaction);
 
 			// uncommitted insert should not schedule an update

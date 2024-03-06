@@ -163,7 +163,7 @@ class InventorySlotWrapper extends SingleStackStorage {
 					original.set(type, null);
 				}
 
-				original.copyComponentsFrom(currentStack.getComponents());
+				original.applyComponentsFrom(currentStack.getComponents());
 			}
 
 			// None is empty and the items and components match: just update the amount, and reuse the original stack.

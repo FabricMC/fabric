@@ -320,12 +320,12 @@ transitive-extendable	method	net/minecraft/data/MetadataProvider	getName	()Ljava
 transitive-extendable	method	net/minecraft/data/SnbtProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/client/ModelProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/dev/NbtProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/report/BiomeParametersProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/report/BlockListProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/report/CommandSyntaxProvider	getName	()Ljava/lang/String;
-transitive-extendable	method	net/minecraft/data/report/DynamicRegistriesProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/report/ItemListProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/report/RegistryDumpProvider	getName	()Ljava/lang/String;
-transitive-extendable	method	net/minecraft/data/server/BiomeParametersProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/server/DynamicRegistriesProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/server/advancement/AdvancementProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/server/loottable/LootTableProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/server/recipe/RecipeProvider	getName	()Ljava/lang/String;

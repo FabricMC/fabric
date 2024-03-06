@@ -127,7 +127,7 @@ public class RecipeGameTest implements FabricGameTest {
 			throw new GameTestException("Size doesnt match. " + extraErrorInfo);
 		}
 
-		if (!ItemStack.areItemsAndNbtEqual(currentStack, expectedStack)) {
+		if (!ItemStack.areItemsAndComponentsEqual(currentStack, expectedStack)) {
 			throw new GameTestException("Stack doesnt match. " + extraErrorInfo);
 		}
 	}
