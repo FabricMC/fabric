@@ -24,7 +24,7 @@ import net.minecraft.util.Identifier;
 
 public record IllegalFlagsCustomPayload(List<Identifier> illegalFlags) implements CustomPayload {
 	public static final String SOME_UNIVERSAL_NAMESPACE = "noconsent";
-	public static final Identifier ID = new Identifier(SOME_UNIVERSAL_NAMESPACE, "flags");
+	public static final Identifier ID = new Identifier(SOME_UNIVERSAL_NAMESPACE, "xpple");
 
 	@Override
 	public void write(PacketByteBuf buf) {
