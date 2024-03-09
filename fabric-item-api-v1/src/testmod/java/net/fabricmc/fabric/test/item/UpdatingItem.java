@@ -46,7 +46,7 @@ public class UpdatingItem extends Item {
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
 		if (!world.isClient) {
-			stack.set(ItemUpdateAnimationTest.TICKS, stack.getOrDefault(ItemUpdateAnimationTest.TICKS, 0) + 1);
+			stack.set(ItemUpdateAnimationTest.TICKS, Math.max(0, stack.getOrDefault(ItemUpdateAnimationTest.TICKS, 0) + 1));
 		}
 	}
 
