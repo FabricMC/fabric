@@ -122,8 +122,14 @@ public final class DefaultCustomIngredients {
 	}
 
 	/**
-	 * Creates an ingredient that matches the passed template stack, including {@link ItemStack#getComponentChanges()}.
+	 * Creates an ingredient that matches the components specified in the passed item stack.
 	 * Note that the count of the stack is ignored.
+	 *
+	 * <p>This does not check for the default component of the item stack that remains unchanged.
+	 * For example, an undamaged pickaxe matches any pickaxes (regardless of damage), because having
+	 * zero damage is the default, but a pickaxe with 1 damage would only match another pickaxe
+	 * with 1 damage. To only match the default value, use the other methods and explicitly specify
+	 * the default value.
 	 *
 	 * @see #components(Ingredient, ComponentChanges)
 	 */
