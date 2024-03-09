@@ -144,7 +144,7 @@ public class IngredientMatchTests {
 		ItemStack requiredDataStack = new ItemStack(Items.DIAMOND_PICKAXE);
 		requiredDataStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(requiredData));
 		ItemStack extraDataStack = new ItemStack(Items.DIAMOND_PICKAXE);
-		requiredDataStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(extraData));
+		extraDataStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(extraData));
 		assertEquals(true, customDataIngredient.test(requiredDataStack));
 		assertEquals(false, customDataIngredient.test(extraDataStack));
 
