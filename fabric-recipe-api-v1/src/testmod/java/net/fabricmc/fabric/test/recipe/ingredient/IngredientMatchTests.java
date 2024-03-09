@@ -109,7 +109,7 @@ public class IngredientMatchTests {
 		assertEquals(true, undamagedIngredient.test(renamedUndamagedDiamondPickaxe));
 		assertEquals(false, noNameUndamagedIngredient.test(renamedUndamagedDiamondPickaxe));
 
-		assertEquals(2, undamagedIngredient.getMatchingStacks().length);
+		assertEquals(3, undamagedIngredient.getMatchingStacks().length);
 		ItemStack result0 = undamagedIngredient.getMatchingStacks()[0];
 		ItemStack result1 = undamagedIngredient.getMatchingStacks()[1];
 
