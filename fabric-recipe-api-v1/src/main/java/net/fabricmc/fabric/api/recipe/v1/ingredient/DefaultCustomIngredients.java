@@ -102,10 +102,21 @@ public final class DefaultCustomIngredients {
 	 * Creates an ingredient that wraps another ingredient to also check for matching components.
 	 *
 	 * <p>Use {@link ComponentChanges#builder()} to add or remove components.
-	 * Added components are checked to match on the target stack.
-	 * Removed components are checked to not exist in the target stack
+	 * Added components are checked to match on the target stack, either as the default or
+	 * the item stack-specific override.
+	 * Removed components are checked to not exist in the target stack.
+	 * The check is "non-strict"; components that are neither added nor removed are ignored.
 	 *
-	 * @throws IllegalArgumentException if {@link ComponentChanges#isEmpty} is true
+	 * <p>The JSON format is as follows:
+	 * <pre>{@code
+	 * {
+	 *     "fabric:type": "fabric:components",
+	 *     "base": // base ingredient,
+	 *     "components": // components to be checked
+	 * }
+	 * }</pre>
+	 *
+	 * @throws IllegalArgumentException if there are no components to check
 	 */
 	public static Ingredient components(Ingredient base, ComponentChanges components) {
 		Objects.requireNonNull(base, "Base ingredient cannot be null");
@@ -132,6 +143,7 @@ public final class DefaultCustomIngredients {
 	 * the default value.
 	 *
 	 * @see #components(Ingredient, ComponentChanges)
+	 * @throws IllegalArgumentException if {@code stack} has no changed components
 	 */
 	public static Ingredient components(ItemStack stack) {
 		Objects.requireNonNull(stack, "Stack cannot be null");
