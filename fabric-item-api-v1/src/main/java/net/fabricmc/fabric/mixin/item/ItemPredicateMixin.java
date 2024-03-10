@@ -16,12 +16,14 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import java.util.Map;
+
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.predicate.item.EnchantmentPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
@@ -32,14 +34,11 @@ abstract class ItemPredicateMixin {
 			method = "test",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/predicate/item/EnchantmentPredicate;test(Lnet/minecraft/component/type/ItemEnchantmentsComponent;)Z",
+					target = "Lnet/minecraft/predicate/item/EnchantmentPredicate;test(Ljava/util/Map;)Z",
 					ordinal = 0
 			)
 	)
-	private boolean checkForIntrinsicEnchantments(
-			EnchantmentPredicate instance, ItemEnchantmentsComponent itemEnchantmentsComponent,
-			Operation<Boolean> original, ItemStack stack
-	) {
-		return original.call(instance, itemEnchantmentsComponent) || instance.test(stack.getItem().getIntrinsicEnchantments(stack));
+	private boolean checkForIntrinsicEnchantments(EnchantmentPredicate instance, Map<Enchantment, Integer> enchantments, Operation<Boolean> original, ItemStack stack) {
+		return original.call(instance, enchantments) || instance.test(stack.getItem().getIntrinsicEnchantments(stack));
 	}
 }

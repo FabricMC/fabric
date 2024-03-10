@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
