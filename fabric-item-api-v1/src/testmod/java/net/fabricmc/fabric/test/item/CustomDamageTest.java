@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.test.item;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
@@ -32,6 +37,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
+import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
@@ -49,8 +55,8 @@ public class CustomDamageTest implements ModInitializer {
 			return 0;
 		}
 	};
+	// Declare damage handler before Item instance otherwise it will be null during init
 	public static final Item WEIRD_PICK = new WeirdPick();
-
 
 	@Override
 	public void onInitialize() {
@@ -67,6 +73,8 @@ public class CustomDamageTest implements ModInitializer {
 			return TriState.DEFAULT;
 		}));
 	}
+
+	public static final Object2IntMap<Enchantment> INTRINSIC_ENCHANTMENTS = Object2IntMaps.singleton(Enchantments.SILK_TOUCH, 1);
 
 	public static class WeirdPick extends PickaxeItem {
 		protected WeirdPick() {
@@ -98,7 +106,7 @@ public class CustomDamageTest implements ModInitializer {
 		}
 
 		@Override
-		public ItemEnchantmentsComponent getIntrinsicEnchantments(ItemStack stack) {
+		public Object2IntMap<Enchantment> getIntrinsicEnchantments(ItemStack stack) {
 			if (stack.isDamaged()) {
 				return INTRINSIC_ENCHANTMENTS;
 			} else {

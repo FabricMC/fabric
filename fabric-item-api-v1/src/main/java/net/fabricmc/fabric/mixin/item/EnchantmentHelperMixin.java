@@ -20,13 +20,9 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -35,14 +31,12 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 
 @Mixin(EnchantmentHelper.class)
 abstract class EnchantmentHelperMixin {
-	@Unique
-	private static final ThreadLocal<ItemStack> CURRENT_STACK = new ThreadLocal<>();
-
 	@Redirect(
 			method = "getPossibleEntries",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentTarget;isAcceptableItem(Lnet/minecraft/item/Item;)Z")
@@ -57,26 +51,17 @@ abstract class EnchantmentHelperMixin {
 		return Math.max(original, intrinsicLevel);
 	}
 
-	@WrapOperation(
+	@Redirect(
 			method = "forEachEnchantment(Lnet/minecraft/enchantment/EnchantmentHelper$Consumer;Lnet/minecraft/item/ItemStack;)V",
 			at = @At(value = "INVOKE", target = "Ljava/util/Optional;ifPresent(Ljava/util/function/Consumer;)V", remap = false)
 	)
 	private static void setCurrentStack(
-			Optional<Enchantment> instance, Consumer<? super Enchantment> action, Operation<Void> original,
-			@Local(argsOnly = true) ItemStack stack // local to avoid unnecessary AW
+			Optional<Enchantment> instance, Consumer<? super Enchantment> action,
+			EnchantmentHelper.Consumer consumer, ItemStack stack, @Local NbtCompound compound
 	) {
-		CURRENT_STACK.set(stack);
-		original.call(instance, action);
-		CURRENT_STACK.remove();
-	}
-
-	@ModifyArg(
-			method = "method_17883",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper$Consumer;accept(Lnet/minecraft/enchantment/Enchantment;I)V")
-	)
-	private static int iterateOverIntrinsicEnchantments(Enchantment enchantment, int original) {
-		ItemStack stack = CURRENT_STACK.get();
-		int intrinsicLevel = stack.getItem().getIntrinsicEnchantments(stack).getOrDefault(enchantment, 0);
-		return Math.max(original, intrinsicLevel);
+		instance.ifPresent(ench -> {
+			int intrinsicLevel = stack.getItem().getIntrinsicEnchantments(stack).getOrDefault(ench, 0);
+			consumer.accept(ench, Math.max(intrinsicLevel, EnchantmentHelper.getLevelFromNbt(compound)));
+		});
 	}
 }
