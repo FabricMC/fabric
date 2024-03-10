@@ -51,7 +51,7 @@ public class UpdatingItem extends Item {
 	}
 
 	@Override
-	public boolean allowNbtUpdateAnimation(PlayerEntity player, Hand hand, ItemStack originalStack, ItemStack updatedStack) {
+	public boolean allowComponentsUpdateAnimation(PlayerEntity player, Hand hand, ItemStack originalStack, ItemStack updatedStack) {
 		return allowUpdateAnimation;
 	}
 

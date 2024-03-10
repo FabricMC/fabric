@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 /**
  * Base implementation of a fixed-capacity "continuous" storage for item-provided storage APIs.
- * The item may not change, so the data has to be stored in the NBT of the stacks.
+ * The item may not change, so the data has to be stored in the components of the stacks.
  * This can be used for example to implement portable fluid tanks, fluid-containing jetpacks, and so on...
  * Continuous here means that they can store any integer amount between 0 and the capacity, unlike buckets or bottles.
  *
@@ -35,11 +35,11 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  * <ul>
  *    <li>You must override {@link #getBlankResource()}, for example {@code return FluidVariant.blank();} for fluids.</li>
  *    <li>You must override {@link #getResource(ItemVariant)} and {@link #getAmount(ItemVariant)}.
- *    Generally you will read the resource and the amount from the NBT of the item variant.</li>
+ *    Generally you will read the resource and the amount from the components of the item variant.</li>
  *    <li>You must override {@link #getCapacity(TransferVariant)} to set the capacity of your storage.</li>
  *    <li>You must override {@link #getUpdatedVariant}. It is used to change the resource and the amount of the item variant.
- *    Generally you will copy the NBT, modify it, and then create a new variant from that.
- *    Copying the NBT instead of recreating it from scratch is important to keep custom names or enchantments.</li>
+ *    Generally you will copy the components, modify it, and then create a new variant from that.
+ *    Copying the components instead of recreating it from scratch is important to keep custom names or enchantments.</li>
  *    <li>You may also override {@link #canInsert} and {@link #canExtract} if you want to restrict insertion and/or extraction.</li>
  * </ul>
  *
@@ -66,12 +66,12 @@ public abstract class SingleVariantItemStorage<T extends TransferVariant<?>> imp
 	protected abstract T getBlankResource();
 
 	/**
-	 * Return the current resource by reading the NBT of the passed variant.
+	 * Return the current resource by reading the components of the passed variant.
 	 */
 	protected abstract T getResource(ItemVariant currentVariant);
 
 	/**
-	 * Return the current amount by reading the NBT of the passed variant.
+	 * Return the current amount by reading the components of the passed variant.
 	 */
 	protected abstract long getAmount(ItemVariant currentVariant);
 
@@ -84,11 +84,12 @@ public abstract class SingleVariantItemStorage<T extends TransferVariant<?>> imp
 	/**
 	 * Return an updated variant with new resource and amount.
 	 * Implementors should generally convert the passed {@code currentVariant} to a stack,
-	 * then edit the NBT of the stack so it contains the correct resource and amount.
+	 * then edit the components of the stack so it contains the correct resource and amount.
 	 *
-	 * <p>When the new amount is 0, it is recommended that the sub-NBTs corresponding to the resource and amount
-	 * be removed, for example using {@link ItemStack#removeSubNbt}, so that newly-crafted containers can stack with
-	 * emptied containers.
+	 * <p>When the new amount is 0, it is recommended that the components corresponding to the resource and amount
+	 * be removed, so that newly-crafted containers can stack with emptied containers.
+	 * If a custom item is used, this means {@linkplain ItemStack#set setting} it to the default as specified in {@link Item.Settings#component};
+	 * if a vanilla item is used, this means {@linkplain ItemStack#remove removing} the said component.
 	 *
 	 * @param currentVariant Variant to which the modification should be applied.
 	 * @param newResource Resource that should be contained in the returned variant.

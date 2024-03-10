@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 /**
  * Base implementation of a fluid storage for an empty item.
  * The empty item can be filled with an exact amount of some fluid to yield a full item instead.
- * The default behavior is to copy the NBT from the empty item to the full item,
+ * The default behavior is to copy the components from the empty item to the full item,
  * however there is a second constructor that allows customizing the mapping.
  *
  * <p>For example, an empty bucket could be registered to accept exactly 81000 droplets of water and turn into a water bucket, like that:
@@ -67,7 +67,7 @@ public final class EmptyItemFluidStorage implements InsertionOnlyStorage<FluidVa
 	 *
 	 * @param context The current context.
 	 * @param fullItem The new item after a successful fill operation.
-	 * @param insertableFluid The fluid that can be inserted. Fluid variant NBT is ignored.
+	 * @param insertableFluid The fluid that can be inserted. Fluid variant components are ignored.
 	 * @param insertableAmount The amount of fluid that can be inserted.
 	 */
 	public EmptyItemFluidStorage(ContainerItemContext context, Item fullItem, Fluid insertableFluid, long insertableAmount) {
@@ -76,12 +76,12 @@ public final class EmptyItemFluidStorage implements InsertionOnlyStorage<FluidVa
 
 	/**
 	 * Create a new instance, with a custom mapping function.
-	 * The mapping function allows customizing how the NBT of the full item depends on the NBT of the empty item.
-	 * The default behavior with the other constructor is to just copy the full NBT.
+	 * The mapping function allows customizing how the components of the full item depends on the components of the empty item.
+	 * The default behavior with the other constructor is to just copy the full components.
 	 *
 	 * @param context The current context.
 	 * @param emptyToFullMapping A function mapping the empty item variant, to the variant that should be used for the full item.
-	 * @param insertableFluid The fluid that can be inserted. Fluid variant NBT is ignored on insertion.
+	 * @param insertableFluid The fluid that can be inserted. Fluid variant components are ignored on insertion.
 	 * @param insertableAmount The amount of fluid that can be inserted.
 	 * @see #EmptyItemFluidStorage(ContainerItemContext, Item, Fluid, long)
 	 */
