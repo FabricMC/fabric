@@ -22,11 +22,14 @@ import java.util.function.UnaryOperator;
 
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.recipe.Ingredient;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AllIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AnyIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.ComponentsIngredient;
+import net.fabricmc.fabric.impl.recipe.ingredient.builtin.CustomDataIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.DifferenceIngredient;
 
 /**
@@ -149,6 +152,39 @@ public final class DefaultCustomIngredients {
 		Objects.requireNonNull(stack, "Stack cannot be null");
 
 		return components(Ingredient.ofItems(stack.getItem()), stack.getComponentChanges());
+	}
+
+	/**
+	 * Creates an ingredient that wraps another ingredient to also check for stack's {@linkplain
+	 * net.minecraft.component.DataComponentTypes#CUSTOM_DATA custom data}.
+	 * This check is non-strict; the ingredient custom data must be a subset of the stack custom data.
+	 * This is useful for mods that still rely on NBT-based custom data instead of custom components,
+	 * such as those requiring vanilla compatibility or interacting with another data packs.
+	 *
+	 * <p>Passing a {@code null} or empty {@code nbt} is <strong>not</strong> allowed, as it would always match.
+	 * For strict matching, use {@link #components(Ingredient, UnaryOperator)} like this instead:
+	 *
+	 * <pre>{@code
+	 * components(base, builder -> builder.add(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt)));
+	 * // or, to check for absence of custom data:
+	 * components(base, builder -> builder.remove(DataComponentTypes.CUSTOM_DATA));
+	 * }</pre>
+	 *
+	 * <p>See {@link NbtHelper#matches} for how matching works.
+	 *
+	 * <p>The JSON format is as follows:
+	 * <pre>{@code
+	 * {
+	 *    "fabric:type": "fabric:custom_data",
+	 *    "base": // base ingredient,
+	 *    "nbt": // NBT tag to match, either in JSON directly or a string representation
+	 * }
+	 * }</pre>
+	 *
+	 * @throws IllegalArgumentException if {@code nbt} is {@code null} or empty
+	 */
+	public static Ingredient customData(Ingredient base, NbtCompound nbt) {
+		return new CustomDataIngredient(base, nbt).toVanilla();
 	}
 
 	private DefaultCustomIngredients() {
