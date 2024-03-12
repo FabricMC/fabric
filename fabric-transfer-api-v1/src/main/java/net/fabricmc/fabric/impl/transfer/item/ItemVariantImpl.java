@@ -88,7 +88,7 @@ public class ItemVariantImpl implements ItemVariant {
 
 		ItemVariantImpl ItemVariant = (ItemVariantImpl) o;
 		// fail fast with hash code
-		return hashCode == ItemVariant.hashCode && item == ItemVariant.item && componentsMatches(ItemVariant.components);
+		return hashCode == ItemVariant.hashCode && item == ItemVariant.item && componentsMatch(ItemVariant.components);
 	}
 
 	@Override
