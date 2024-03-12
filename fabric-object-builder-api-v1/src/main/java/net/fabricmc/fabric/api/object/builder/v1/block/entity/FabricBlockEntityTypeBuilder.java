@@ -26,6 +26,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.datafixer.TypeReferences;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 
 /**
@@ -73,7 +75,11 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 	}
 
 	public BlockEntityType<T> build() {
-		return build(null);
+		return build((Type<?>) null);
+	}
+
+	public BlockEntityType<T> build(String id) {
+		return build(Util.getChoiceType(TypeReferences.BLOCK_ENTITY, id));
 	}
 
 	public BlockEntityType<T> build(Type<?> type) {

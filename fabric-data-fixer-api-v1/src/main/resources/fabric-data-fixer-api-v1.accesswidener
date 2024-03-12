@@ -4,3 +4,4 @@ transitive-accessible field net/minecraft/datafixer/DataFixTypes typeReference L
 
 # methods for creating fixes
 transitive-accessible method net/minecraft/datafixer/Schemas replacing (Ljava/util/Map;)Ljava/util/function/UnaryOperator;
+transitive-accessible method net/minecraft/datafixer/schema/Schema100 targetItems (Lcom/mojang/datafixers/schemas/Schema;)Lcom/mojang/datafixers/types/templates/TypeTemplate;

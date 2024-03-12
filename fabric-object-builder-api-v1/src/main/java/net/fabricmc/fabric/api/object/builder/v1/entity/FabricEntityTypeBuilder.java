@@ -20,7 +20,9 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableSet;
+import com.mojang.logging.LogUtils;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import net.minecraft.block.Block;
 import net.minecraft.datafixer.TypeReferences;
@@ -49,6 +51,8 @@ import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
  * @param <T> Entity class.
  */
 public class FabricEntityTypeBuilder<T extends Entity> {
+	private static final Logger LOGGER = LogUtils.getLogger();
+
 	private SpawnGroup spawnGroup;
 	private EntityType.EntityFactory<T> factory;
 	private boolean saveable = true;
@@ -285,7 +289,11 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 */
 	public EntityType<T> build(String id) {
 		if (this.saveable) {
-			Util.getChoiceType(TypeReferences.ENTITY_TREE, id);
+			try {
+				Util.getChoiceType(TypeReferences.ENTITY_TREE, id);
+			} catch (Exception e) {
+				LOGGER.warn("Entity not registered in schema.", e);
+			}
 		}
 
 		return new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates, this.requiredFeatures);
