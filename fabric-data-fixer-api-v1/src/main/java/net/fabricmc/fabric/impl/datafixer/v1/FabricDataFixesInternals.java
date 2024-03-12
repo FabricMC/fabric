@@ -37,8 +37,11 @@ import net.minecraft.datafixer.Schemas;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
+import net.fabricmc.fabric.api.datafixer.v1.DataFixerEntrypoint;
 import net.fabricmc.fabric.api.datafixer.v1.SchemaRegistry;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
 
 public abstract class FabricDataFixesInternals {
@@ -47,6 +50,7 @@ public abstract class FabricDataFixesInternals {
 	protected static final String DATA_VERSIONS_KEY = "_FabricDataVersions";
 	public static final String METADATA_VERSION_KEY = "fabric-data-fixer-api-v1:version";
 	public static final String METADATA_KEY_KEY = "fabric-data-fixer-api-v1:key";
+	private static final String ENTRYPOINT_KEY = "fabric-data-fixer";
 
 	public record DataFixerEntry(DataFixer dataFixer, int currentVersion, @Nullable String key) {
 	}
@@ -81,12 +85,35 @@ public abstract class FabricDataFixesInternals {
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	public static int getModDataVersion(NbtCompound nbt, String modId, @Nullable String key) {
 		String nbtKey = modId;
+
 		if (key != null) {
 			nbtKey += ('_' + key);
 		}
 
 		NbtCompound dataVersions = nbt.getCompound(DATA_VERSIONS_KEY);
 		return dataVersions.getInt(nbtKey);
+	}
+
+	private static List<DataFixerEntrypoint> getEntrypoints() {
+		List<EntrypointContainer<DataFixerEntrypoint>> dataFixerEntrypoints = FabricLoader.getInstance()
+				.getEntrypointContainers(ENTRYPOINT_KEY, DataFixerEntrypoint.class);
+		return dataFixerEntrypoints.stream().map(EntrypointContainer::getEntrypoint).toList();
+	}
+
+	public static void registerBlockEntities(SchemaRegistry registry, Schema schema) {
+		List<DataFixerEntrypoint> entrypoints = getEntrypoints();
+
+		for (DataFixerEntrypoint entrypoint : entrypoints) {
+			entrypoint.onRegisterBlockEntities(registry, schema);
+		}
+	}
+
+	public static void registerEntities(SchemaRegistry registry, Schema schema) {
+		List<DataFixerEntrypoint> entrypoints = getEntrypoints();
+
+		for (DataFixerEntrypoint entrypoint : entrypoints) {
+			entrypoint.onRegisterEntities(registry, schema);
+		}
 	}
 
 	private static FabricDataFixesInternals instance;
@@ -125,10 +152,6 @@ public abstract class FabricDataFixesInternals {
 	public abstract Dynamic<NbtElement> updateWithAllFixers(DataFixTypes dataFixTypes, Dynamic<NbtElement> element);
 
 	public abstract NbtCompound addModDataVersions(NbtCompound nbt);
-
-	public abstract void registerBlockEntities(SchemaRegistry registry, Schema schema);
-
-	public abstract void registerEntities(SchemaRegistry registry, Schema schema);
 
 	public abstract void freeze();
 

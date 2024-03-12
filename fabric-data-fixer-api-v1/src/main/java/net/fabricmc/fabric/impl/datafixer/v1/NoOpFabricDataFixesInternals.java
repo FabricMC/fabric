@@ -32,7 +32,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
 import net.fabricmc.fabric.api.datafixer.v1.EmptySchema;
-import net.fabricmc.fabric.api.datafixer.v1.SchemaRegistry;
 
 public final class NoOpFabricDataFixesInternals extends FabricDataFixesInternals {
 	// From QSL.
@@ -65,14 +64,6 @@ public final class NoOpFabricDataFixesInternals extends FabricDataFixesInternals
 	@Override
 	public NbtCompound addModDataVersions(NbtCompound nbt) {
 		return nbt;
-	}
-
-	@Override
-	public void registerBlockEntities(SchemaRegistry registry, Schema schema) {
-	}
-
-	@Override
-	public void registerEntities(SchemaRegistry registry, Schema schema) {
 	}
 
 	@Override

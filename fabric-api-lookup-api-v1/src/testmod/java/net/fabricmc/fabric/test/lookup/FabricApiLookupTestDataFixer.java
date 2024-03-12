@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.lookup;
 
-
-
 import com.mojang.datafixers.schemas.Schema;
 
 import net.minecraft.datafixer.schema.Schema100;

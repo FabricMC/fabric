@@ -35,15 +35,8 @@ import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
-import net.fabricmc.fabric.api.datafixer.v1.DataFixerEntrypoint;
-import net.fabricmc.fabric.api.datafixer.v1.SchemaRegistry;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
-
 public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals {
 	// From QSL.
-	private static final String ENTRYPOINT_KEY = "fabric-data-fixer";
-
 	private final Schema latestVanillaSchema;
 
 	private Map<String, List<DataFixerEntry>> modDataFixers;
@@ -116,30 +109,6 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 
 		nbt.put(DATA_VERSIONS_KEY, dataVersions);
 		return nbt;
-	}
-
-	private static List<DataFixerEntrypoint> getEntrypoints() {
-		List<EntrypointContainer<DataFixerEntrypoint>> dataFixerEntrypoints = FabricLoader.getInstance()
-				.getEntrypointContainers(ENTRYPOINT_KEY, DataFixerEntrypoint.class);
-		return dataFixerEntrypoints.stream().map(EntrypointContainer::getEntrypoint).toList();
-	}
-
-	@Override
-	public void registerBlockEntities(SchemaRegistry registry, Schema schema) {
-		List<DataFixerEntrypoint> entrypoints = getEntrypoints();
-
-		for (DataFixerEntrypoint entrypoint : entrypoints) {
-			entrypoint.onRegisterBlockEntities(registry, schema);
-		}
-	}
-
-	@Override
-	public void registerEntities(SchemaRegistry registry, Schema schema) {
-		List<DataFixerEntrypoint> entrypoints = getEntrypoints();
-
-		for (DataFixerEntrypoint entrypoint : entrypoints) {
-			entrypoint.onRegisterEntities(registry, schema);
-		}
 	}
 
 	@Override
