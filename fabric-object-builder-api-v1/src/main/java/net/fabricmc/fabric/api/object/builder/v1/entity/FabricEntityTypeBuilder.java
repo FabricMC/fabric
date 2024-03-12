@@ -38,6 +38,7 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
@@ -287,11 +288,11 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 *
 	 * @return a new {@link EntityType}
 	 */
-	public EntityType<T> build(String id) {
+	public EntityType<T> build(Identifier id) {
 		if (this.saveable) {
 			try {
-				Util.getChoiceType(TypeReferences.ENTITY_TREE, id);
-			} catch (Exception e) {
+				Util.getChoiceType(TypeReferences.ENTITY_TREE, id.toString());
+			} catch (IllegalArgumentException | NullPointerException e) {
 				LOGGER.warn("Entity not registered in schema.", e);
 			}
 		}

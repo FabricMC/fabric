@@ -7,10 +7,5 @@ moduleDependencies(project, [
 
 testDependencies(project, [
 	':fabric-rendering-v1',
-	':fabric-object-builder-api-v1',
-	':fabric-data-fixer-api-v1'
+	':fabric-object-builder-api-v1'
 ])
-
-loom {
-	accessWidenerPath = file('src/testmod/resources/fabric-api-lookup-api-v1-testmod.accesswidener')
-}

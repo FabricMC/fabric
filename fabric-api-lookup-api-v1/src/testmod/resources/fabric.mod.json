@@ -14,10 +14,6 @@
     ],
     "client": [
       "net.fabricmc.fabric.test.lookup.client.FabricApiLookupTestClient"
-    ],
-    "fabric-data-fixer": [
-      "net.fabricmc.fabric.test.lookup.FabricApiLookupTestDataFixer"
     ]
-  },
-  "accessWidener": "fabric-api-lookup-api-v1-testmod.accesswidener"
+  }
 }

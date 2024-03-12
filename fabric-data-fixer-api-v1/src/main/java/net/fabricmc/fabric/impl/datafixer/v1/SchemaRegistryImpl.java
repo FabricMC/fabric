@@ -18,11 +18,13 @@ package net.fabricmc.fabric.impl.datafixer.v1;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.types.templates.TypeTemplate;
+import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 
 import net.minecraft.util.Identifier;
@@ -30,15 +32,19 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.datafixer.v1.SchemaRegistry;
 
 public class SchemaRegistryImpl implements SchemaRegistry {
-	private final Map<String, Supplier<TypeTemplate>> registry = new Object2ReferenceOpenHashMap<>();
-
+	private final Map<String, Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>>> registry = new Object2ReferenceOpenHashMap<>();
 	@Override
 	public void register(Identifier id, Supplier<TypeTemplate> template) {
-		this.registry.put(id.toString(), template);
+		this.registry.put(id.toString(), Either.left(template));
 	}
 
 	@Override
-	public Map<String, Supplier<TypeTemplate>> get() {
+	public void register(Identifier id, Function<String, TypeTemplate> template) {
+		this.registry.put(id.toString(), Either.right(template));
+	}
+
+	@Override
+	public ImmutableMap<String, Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>>> get() {
 		return ImmutableMap.copyOf(this.registry);
 	}
 
@@ -48,7 +54,7 @@ public class SchemaRegistryImpl implements SchemaRegistry {
 	}
 
 	@Override
-	public List<Supplier<TypeTemplate>> getValues() {
+	public ImmutableList<Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>>> getValues() {
 		return ImmutableList.copyOf(this.registry.values());
 	}
 }

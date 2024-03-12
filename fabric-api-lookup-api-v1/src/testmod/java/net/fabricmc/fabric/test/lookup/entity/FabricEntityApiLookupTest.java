@@ -41,7 +41,7 @@ public class FabricEntityApiLookupTest {
 			.entityFactory(InspectablePigEntity::new)
 			.dimensions(EntityDimensions.changing(0.9F, 0.9F))
 			.trackRangeChunks(10)
-			.build(new Identifier(FabricApiLookupTest.MOD_ID, "inspectable_pig").toString());
+			.build();
 
 	public static void onInitialize() {
 		Registry.register(Registries.ENTITY_TYPE, new Identifier(FabricApiLookupTest.MOD_ID, "inspectable_pig"), INSPECTABLE_PIG);

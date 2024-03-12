@@ -17,10 +17,13 @@
 package net.fabricmc.fabric.impl.datafixer.v1;
 
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.TypeTemplate;
+import com.mojang.datafixers.util.Either;
 
 import net.minecraft.datafixer.schema.IdentifierNormalizingSchema;
 
@@ -41,10 +44,14 @@ public class FabricSchema1903 extends IdentifierNormalizingSchema {
 		this.registeredBlockEntities = new SchemaRegistryImpl();
 		FabricDataFixesInternals.registerBlockEntities(this.registeredBlockEntities, schema);
 
-		Map<String, Supplier<TypeTemplate>> modRegistry = this.registeredBlockEntities.get();
+		ImmutableMap<String, Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>>> modRegistry = this.registeredBlockEntities.get();
 
-		for (Map.Entry<String, Supplier<TypeTemplate>> entry : modRegistry.entrySet()) {
-			schema.register(map, entry.getKey(), entry.getValue());
+		for (Map.Entry<String, Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>>> entry : modRegistry.entrySet()) {
+			Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>> value = entry.getValue();
+
+			value.ifLeft(supplier -> schema.register(map, entry.getKey(), supplier));
+
+			value.ifRight(function -> schema.register(map, entry.getKey(), function));
 		}
 
 		return map;
@@ -57,10 +64,14 @@ public class FabricSchema1903 extends IdentifierNormalizingSchema {
 		this.registeredEntities = new SchemaRegistryImpl();
 		FabricDataFixesInternals.registerEntities(this.registeredEntities, schema);
 
-		Map<String, Supplier<TypeTemplate>> modRegistry = this.registeredEntities.get();
+		ImmutableMap<String, Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>>> modRegistry = this.registeredEntities.get();
 
-		for (Map.Entry<String, Supplier<TypeTemplate>> entry : modRegistry.entrySet()) {
-			schema.register(map, entry.getKey(), entry.getValue());
+		for (Map.Entry<String, Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>>> entry : modRegistry.entrySet()) {
+			Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>> value = entry.getValue();
+
+			value.ifLeft(supplier -> schema.register(map, entry.getKey(), supplier));
+
+			value.ifRight(function -> schema.register(map, entry.getKey(), function));
 		}
 
 		return map;

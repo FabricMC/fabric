@@ -17,19 +17,24 @@
 package net.fabricmc.fabric.api.datafixer.v1;
 
 import java.util.List;
-import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.types.templates.TypeTemplate;
+import com.mojang.datafixers.util.Either;
 
 import net.minecraft.util.Identifier;
 
 public interface SchemaRegistry {
 	void register(Identifier id, Supplier<TypeTemplate> template);
 
-	Map<String, Supplier<TypeTemplate>> get();
+	void register(Identifier id, Function<String, TypeTemplate> template);
+
+	ImmutableMap<String, Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>>> get();
 
 	List<String> getKeys();
 
-	List<Supplier<TypeTemplate>> getValues();
+	ImmutableList<Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>>> getValues();
 }

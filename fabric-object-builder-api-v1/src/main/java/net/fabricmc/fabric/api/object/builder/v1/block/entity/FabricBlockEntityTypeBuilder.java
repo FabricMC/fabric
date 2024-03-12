@@ -29,6 +29,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.datafixer.TypeReferences;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 
@@ -82,11 +83,11 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 		return build((Type<?>) null);
 	}
 
-	public BlockEntityType<T> build(String id) {
+	public BlockEntityType<T> build(Identifier id) {
 		Type<?> type = null;
 
 		try {
-			type = Util.getChoiceType(TypeReferences.BLOCK_ENTITY, id);
+			type = Util.getChoiceType(TypeReferences.BLOCK_ENTITY, id.toString());
 		} catch (IllegalArgumentException | NullPointerException e) {
 			LOGGER.warn("Block entity not registered in schema.", e);
 		}
