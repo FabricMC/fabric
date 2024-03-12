@@ -17,7 +17,6 @@
     "HungerManagerMixin",
     "ItemMixin",
     "ItemPredicateMixin",
-    "ItemSettingsMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
     "RecipeMixin",
