@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.mojang.datafixers.types.Type;
-
 import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -31,8 +31,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.datafixer.TypeReferences;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
-
-import org.slf4j.Logger;
 
 /**
  * Fabric's version of BlockEntityType.Builder with additional convenience methods.
