@@ -20,13 +20,10 @@
 package net.fabricmc.fabric.impl.datafixer.v1;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
 
 import com.mojang.datafixers.DataFixUtils;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
-import com.mojang.datafixers.types.templates.TypeTemplate;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import org.jetbrains.annotations.Contract;
@@ -40,6 +37,7 @@ import net.minecraft.datafixer.Schemas;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
+import net.fabricmc.fabric.api.datafixer.v1.SchemaRegistry;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
 
@@ -123,9 +121,9 @@ public abstract class FabricDataFixesInternals {
 
 	public abstract NbtCompound addModDataVersions(NbtCompound nbt);
 
-	public abstract void registerBlockEntities(Map<String, Supplier<TypeTemplate>> registry, Schema schema);
+	public abstract void registerBlockEntities(SchemaRegistry registry, Schema schema);
 
-	public abstract void registerEntities(Map<String, Supplier<TypeTemplate>> registry, Schema schema);
+	public abstract void registerEntities(SchemaRegistry registry, Schema schema);
 
 	public abstract void freeze();
 

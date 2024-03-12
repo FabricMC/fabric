@@ -27,13 +27,23 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.datafixer.schema.Schema1904;
 
+import net.fabricmc.fabric.api.datafixer.v1.SchemaRegistry;
 import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
+import net.fabricmc.fabric.impl.datafixer.v1.SchemaRegistryImpl;
 
 @Mixin(Schema1904.class)
 public class Schema1904Mixin {
 	@ModifyReturnValue(method = "registerEntities", at = @At("RETURN"))
 	private Map<String, Supplier<TypeTemplate>> registerModdedEntities(Map<String, Supplier<TypeTemplate>> original, Schema schema) {
-		FabricDataFixesInternals.get().registerEntities(original, schema);
+		SchemaRegistry registry = new SchemaRegistryImpl();
+		FabricDataFixesInternals.get().registerEntities(registry, schema);
+
+		Map<String, Supplier<TypeTemplate>> modRegistry = registry.get();
+
+		for (Map.Entry<String, Supplier<TypeTemplate>> entry : modRegistry.entrySet()) {
+			schema.register(original, entry.getKey(), entry.getValue());
+		}
+
 		return original;
 	}
 }

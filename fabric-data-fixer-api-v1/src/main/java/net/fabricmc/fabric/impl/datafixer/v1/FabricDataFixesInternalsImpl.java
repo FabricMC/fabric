@@ -23,11 +23,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
-import com.mojang.datafixers.types.templates.TypeTemplate;
 import com.mojang.serialization.Dynamic;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import org.jetbrains.annotations.Nullable;
@@ -37,6 +35,9 @@ import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
+import net.fabricmc.fabric.api.datafixer.v1.DataFixerEntrypoint;
+import net.fabricmc.fabric.api.datafixer.v1.SchemaRegistry;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
 public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals {
@@ -119,12 +120,12 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 
 	private static List<DataFixerEntrypoint> getEntrypoints() {
 		List<EntrypointContainer<DataFixerEntrypoint>> dataFixerEntrypoints = FabricLoader.getInstance()
-			.getEntrypointContainers(ENTRYPOINT_KEY, DataFixerEntrypoint.class);
+				.getEntrypointContainers(ENTRYPOINT_KEY, DataFixerEntrypoint.class);
 		return dataFixerEntrypoints.stream().map(EntrypointContainer::getEntrypoint).toList();
 	}
 
 	@Override
-	public void registerBlockEntities(Map<String, Supplier<TypeTemplate>> registry, Schema schema) {
+	public void registerBlockEntities(SchemaRegistry registry, Schema schema) {
 		List<DataFixerEntrypoint> entrypoints = getEntrypoints();
 
 		for (DataFixerEntrypoint entrypoint : entrypoints) {
@@ -133,10 +134,10 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 	}
 
 	@Override
-	public void registerEntities(Map<String, Supplier<TypeTemplate>> registry, Schema schema) {
+	public void registerEntities(SchemaRegistry registry, Schema schema) {
 		List<DataFixerEntrypoint> entrypoints = getEntrypoints();
 
-		for (DataFixerEntrypiont entrypoint : entrypoints) {
+		for (DataFixerEntrypoint entrypoint : entrypoints) {
 			entrypoint.onRegisterEntities(registry, schema);
 		}
 	}

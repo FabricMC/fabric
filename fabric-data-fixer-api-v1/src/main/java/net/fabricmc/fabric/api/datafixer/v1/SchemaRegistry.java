@@ -16,10 +16,20 @@
 
 package net.fabricmc.fabric.api.datafixer.v1;
 
-import com.mojang.datafixers.schemas.Schema;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
-public interface DataFixerEntrypoint {
-	void onRegisterBlockEntities(SchemaRegistry registry, Schema schema);
+import com.mojang.datafixers.types.templates.TypeTemplate;
 
-	void onRegisterEntities(SchemaRegistry registry, Schema schema);
+import net.minecraft.util.Identifier;
+
+public interface SchemaRegistry {
+	void register(Identifier id, Supplier<TypeTemplate> template);
+
+	Map<String, Supplier<TypeTemplate>> get();
+
+	List<String> getKeys();
+
+	List<Supplier<TypeTemplate>> getValues();
 }

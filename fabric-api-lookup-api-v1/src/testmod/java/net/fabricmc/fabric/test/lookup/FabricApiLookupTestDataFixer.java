@@ -16,27 +16,25 @@
 
 package net.fabricmc.fabric.test.lookup;
 
-import java.util.Map;
-import java.util.function.Supplier;
+
 
 import com.mojang.datafixers.schemas.Schema;
-import com.mojang.datafixers.types.templates.TypeTemplate;
 
 import net.minecraft.datafixer.schema.Schema100;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datafixer.v1.DataFixerEntrypoint;
+import net.fabricmc.fabric.api.datafixer.v1.SchemaRegistry;
 
 public class FabricApiLookupTestDataFixer implements DataFixerEntrypoint {
 	@Override
-	public void onRegisterBlockEntities(Map<String, Supplier<TypeTemplate>> registry, Schema schema) {
+	public void onRegisterBlockEntities(SchemaRegistry registry, Schema schema) {
 	}
 
 	@Override
-	public void onRegisterEntities(Map<String, Supplier<TypeTemplate>> registry, Schema schema) {
-		schema.register(
-				registry,
-				new Identifier(FabricApiLookupTest.MOD_ID, "inspectable_pig").toString(),
+	public void onRegisterEntities(SchemaRegistry registry, Schema schema) {
+		registry.register(
+				new Identifier(FabricApiLookupTest.MOD_ID, "inspectable_pig"),
 				() -> Schema100.targetItems(schema)
 		);
 	}
