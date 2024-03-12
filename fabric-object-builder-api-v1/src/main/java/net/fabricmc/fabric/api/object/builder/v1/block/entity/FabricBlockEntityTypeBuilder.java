@@ -22,6 +22,8 @@ import java.util.List;
 
 import com.mojang.datafixers.types.Type;
 
+import com.mojang.logging.LogUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -30,6 +32,8 @@ import net.minecraft.datafixer.TypeReferences;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 
+import org.slf4j.Logger;
+
 /**
  * Fabric's version of BlockEntityType.Builder with additional convenience methods.
  *
@@ -37,6 +41,8 @@ import net.minecraft.util.math.BlockPos;
  * in Fabric Transitive Access Wideners (v1).
  */
 public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
+	private static final Logger LOGGER = LogUtils.getLogger();
+
 	private final Factory<? extends T> factory;
 	private final List<Block> blocks;
 
@@ -79,10 +85,18 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 	}
 
 	public BlockEntityType<T> build(String id) {
-		return build(Util.getChoiceType(TypeReferences.BLOCK_ENTITY, id));
+		Type<?> type = null;
+
+		try {
+			type = Util.getChoiceType(TypeReferences.BLOCK_ENTITY, id);
+		} catch (IllegalArgumentException e) {
+			LOGGER.warn("Block entity not registered in schema.", e);
+		}
+
+		return build(type);
 	}
 
-	public BlockEntityType<T> build(Type<?> type) {
+	private BlockEntityType<T> build(Type<?> type) {
 		return BlockEntityType.Builder.<T>create(factory::create, blocks.toArray(new Block[0]))
 				.build(type);
 	}
