@@ -97,7 +97,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 			tx.commit();
 		}
 
-		// Make sure custom NBT is kept.
+		// Make sure other components are kept.
 		Text customName = Text.literal("Lava-containing diamond!");
 		inv.getStack(0).set(DataComponentTypes.CUSTOM_NAME, customName);
 
@@ -215,7 +215,9 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 			FluidData fluidData = new FluidData(newResource, newAmount);
 			stack.set(FLUID, fluidData);
 		} else {
-			// Make sure emptied tanks can stack with tanks without NBT.
+			// Make sure emptied tanks can stack with tanks without components.
+			// Note: because we use a vanilla item (diamond), we need to remove;
+			// a custom item should instead set the fluid to the default value as specified in the item settings.
 			stack.remove(FLUID);
 		}
 	}
@@ -258,7 +260,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 
 			@Override
 			protected ItemVariant getUpdatedVariant(ItemVariant currentVariant, FluidVariant newResource, long newAmount) {
-				// Operate on the stack directly to keep any other NBT data such as a custom name or enchant.
+				// Operate on the stack directly to keep any other components such as a custom name or enchant.
 				ItemStack stack = currentVariant.toStack();
 				setContents(stack, newResource, newAmount);
 				return ItemVariant.of(stack);

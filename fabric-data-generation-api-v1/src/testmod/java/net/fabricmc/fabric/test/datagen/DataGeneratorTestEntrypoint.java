@@ -53,7 +53,6 @@ import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
@@ -189,7 +188,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			// - 9 damaged pickaxes should not match.
 			// - 9 undamaged pickaxes should match.
 			// - 1 undamaged pickaxe + 8 damaged pickaxes should match (regardless of the position).
-			// - 1 undamaged renamed pickaxe + 8 damaged pickaxes should match (NBT is not strictly matched here).
+			// - 1 undamaged renamed pickaxe + 8 damaged pickaxes should match (components are not strictly matched here).
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND_BLOCK)
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
@@ -207,17 +206,6 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.criterion("has_pickaxe", conditionsFromItem(Items.DIAMOND_PICKAXE))
-					.offerTo(exporter);
-
-			// Test strict NBT
-			// To test: try renaming an apple to "Golden Apple" in creative with an anvil.
-			// That should match the recipe and give a golden apple. Any other NBT should not match.
-			ItemStack appleWithGoldenName = new ItemStack(Items.APPLE);
-			appleWithGoldenName.set(DataComponentTypes.CUSTOM_NAME, Text.literal("Golden Apple"));
-			appleWithGoldenName.set(DataComponentTypes.REPAIR_COST, 0);
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLDEN_APPLE)
-					.input(DefaultCustomIngredients.components(appleWithGoldenName))
-					.criterion("has_apple", conditionsFromItem(Items.APPLE))
 					.offerTo(exporter);
 
 			// Test AND

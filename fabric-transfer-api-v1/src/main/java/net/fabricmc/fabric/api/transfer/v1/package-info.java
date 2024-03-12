@@ -45,7 +45,7 @@
  *
  * <p><h2>Fluid transfer</h2>
  * A {@code Storage<FluidVariant>} is any object that can store fluids. It is just a {@code Storage<T>}, where {@code T} is
- * {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant FluidVariant}, the immutable combination of a {@code Fluid} and additional NBT data.
+ * {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant FluidVariant}, the immutable combination of a {@code Fluid} and additional components.
  * Instances can be accessed through the API lookups defined in {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage FluidStorage}.
  * </p>
  *
@@ -53,8 +53,8 @@
  * {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants FluidConstants} contains a few helpful constants to work with droplets.
  *
  * <p>Client-side {@linkplain net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering fluid variant rendering} will use regular fluid rendering by default,
- * ignoring the additional NBT data.
- * {@code Fluid}s that wish to render differently depending on the stored NBT data can register a
+ * ignoring the additional components.
+ * {@code Fluid}s that wish to render differently depending on the stored components can register a
  * {@link net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRenderHandler FluidVariantRenderHandler}.
  *
  * <p><h2>Item transfer</h2>

@@ -27,7 +27,7 @@ import net.minecraft.component.ComponentChanges;
  * but note that a {@link Storage} is not necessarily bound to {@code TransferVariant}. Its generic parameter can be any immutable object.
  *
  * <p><b>Transfer variants must always be compared with {@code equals}, never by reference!</b>
- * {@code hashCode} is guaranteed to be correct and constant time independently of the size of the NBT.
+ * {@code hashCode} is guaranteed to be correct and constant time independently of the size of the components.
  *
  * @param <O> The type of the immutable object instance, for example {@code Item} or {@code Fluid}.
  */
@@ -59,7 +59,7 @@ public interface TransferVariant<O> {
 	 *
 	 * <p>Note: True is returned if both tags are {@code null}.
 	 */
-	default boolean componentsMatches(ComponentChanges other) {
+	default boolean componentsMatch(ComponentChanges other) {
 		return Objects.equals(getComponents(), other);
 	}
 
