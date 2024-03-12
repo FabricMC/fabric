@@ -87,7 +87,7 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 
 		try {
 			type = Util.getChoiceType(TypeReferences.BLOCK_ENTITY, id);
-		} catch (IllegalArgumentException e) {
+		} catch (IllegalArgumentException | NullPointerException e) {
 			LOGGER.warn("Block entity not registered in schema.", e);
 		}
 
