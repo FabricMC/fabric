@@ -30,9 +30,6 @@ import com.mojang.datafixers.DataFixerBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Range;
 
-import net.minecraft.SharedConstants;
-import net.minecraft.util.Util;
-
 import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 import net.fabricmc.loader.api.ModContainer;
 
@@ -83,7 +80,7 @@ public class FabricDataFixerBuilder extends DataFixerBuilder {
 	 * <p>This will build either an {@linkplain #buildUnoptimized() unoptimized fixer} or an
 	 * {@linkplain #buildOptimized(Set, Executor)}  optimized fixer}, depending on the vanilla game's settings.
 	 *
-	 * @param types the set of required {@link com.mojang.datafixers.DSL.TypeReference}s, only used if the game is using optimized data fixers
+	 * @param types          the set of required {@link com.mojang.datafixers.DSL.TypeReference}s, only used if the game is using optimized data fixers
 	 * @param executorGetter the executor supplier, only invoked if the game is using optimized data fixers
 	 * @return the newly built data fixer
 	 */

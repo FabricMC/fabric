@@ -19,16 +19,13 @@
 
 package net.fabricmc.fabric.impl.datafixer.v1;
 
+import java.util.List;
+
 import com.mojang.datafixers.DataFixUtils;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.logging.LogUtils;
-
 import com.mojang.serialization.Dynamic;
-
-import net.minecraft.nbt.NbtElement;
-
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -38,13 +35,11 @@ import net.minecraft.SharedConstants;
 import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.datafixer.Schemas;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
 
-import java.util.List;
-
-@ApiStatus.Internal
 public abstract class FabricDataFixesInternals {
 	// From QSL.
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -73,6 +68,7 @@ public abstract class FabricDataFixesInternals {
 		if (key == null) {
 			return null;
 		}
+
 		if (key.getType() != CustomValue.CvType.NUMBER) {
 			throw new RuntimeException("Key is not set in the fabric.mod.json file; set it or pass explicitly");
 		}

@@ -33,15 +33,11 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
-
-import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternalsImpl;
-
-import net.minecraft.SharedConstants;
-
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import net.minecraft.SharedConstants;
 import net.minecraft.nbt.NbtCompound;
 
 import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
@@ -145,9 +141,9 @@ public final class FabricDataFixes {
 	 * the {@code fabric.mod.json} file of {@code mod}. To specify the version
 	 * manually, use the other overloads.
 	 *
-	 * @param mod            the mod container
-	 * @param dataFixer      the data fixer
-	 * @throws RuntimeException if the version field does not exist or is not a number
+	 * @param mod       the mod container
+	 * @param dataFixer the data fixer
+	 * @throws RuntimeException         if the version field does not exist or is not a number
 	 * @throws IllegalArgumentException if the data fixer for {@code mod} is already registered
 	 */
 	public static void registerFixer(ModContainer mod, DataFixer dataFixer) {
@@ -158,7 +154,7 @@ public final class FabricDataFixes {
 	/**
 	 * Builds and registers a new data fixer.
 	 *
-	 * @param mod              the mod container
+	 * @param mod     the mod container
 	 * @param builder the data fixer builder
 	 * @throws IllegalArgumentException if the data fixer for {@code mod} is already registered
 	 */
@@ -170,7 +166,7 @@ public final class FabricDataFixes {
 	/**
 	 * Builds and registers a new data fixer.
 	 *
-	 * @param mod              the mod container
+	 * @param mod     the mod container
 	 * @param builder the data fixer builder
 	 * @throws IllegalArgumentException if the data fixer for {@code mod} is already registered
 	 */
@@ -218,8 +214,8 @@ public final class FabricDataFixes {
 	/**
 	 * Gets a mod's data version from a {@link NbtCompound}.
 	 *
-	 * @param nbt the NBT compound
-	 * @param modId    the mod ID
+	 * @param nbt   the NBT compound
+	 * @param modId the mod ID
 	 * @return the mod's data version, or {@code 0} if the NBT has no data for that mod
 	 */
 	@Contract(pure = true)
@@ -231,8 +227,8 @@ public final class FabricDataFixes {
 	/**
 	 * Gets a mod's data version from a {@link NbtCompound}.
 	 *
-	 * @param nbt the NBT compound
-	 * @param modId    the mod ID
+	 * @param nbt   the NBT compound
+	 * @param modId the mod ID
 	 * @return the mod's data version, or {@code 0} if the NBT has no data for that mod
 	 */
 	@Contract(pure = true)

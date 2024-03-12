@@ -28,16 +28,13 @@ import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtOps;
 
-@ApiStatus.Internal
 public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals {
 	// From QSL.
 	private final Schema latestVanillaSchema;
@@ -79,6 +76,7 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 
 		for (Map.Entry<String, List<DataFixerEntry>> entry : this.modDataFixers.entrySet()) {
 			List<DataFixerEntry> dataFixerEntries = entry.getValue();
+
 			for (DataFixerEntry dataFixerEntry : dataFixerEntries) {
 				int modDataVersion = FabricDataFixesInternals.getModDataVersion(compound, entry.getKey(), dataFixerEntry.key());
 
@@ -100,9 +98,11 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 			for (DataFixerEntry entry : entries.getValue()) {
 				String finalEntryKey = entries.getKey();
 				String entryKey = entry.key();
+
 				if (entryKey != null) {
 					finalEntryKey += ('_' + entryKey);
 				}
+
 				dataVersions.putInt(finalEntryKey, entry.currentVersion());
 			}
 		}

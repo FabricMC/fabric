@@ -22,34 +22,25 @@ import java.util.Objects;
 
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.logging.LogUtils;
-
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-
-import net.minecraft.registry.RegistryKey;
-
-import net.minecraft.registry.RegistryKeys;
-
 import org.slf4j.Logger;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.datafixer.schema.IdentifierNormalizingSchema;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.TheEndBiomeCreator;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
 import net.fabricmc.fabric.api.datafixer.v1.FabricDataFixerBuilder;
 import net.fabricmc.fabric.api.datafixer.v1.FabricDataFixes;
 import net.fabricmc.fabric.api.datafixer.v1.SimpleFixes;
@@ -135,7 +126,7 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 
 		if (structureDataVersion != CURRENT_DATA_VERSION) {
 			throw new AssertionError(
-				String.format(Locale.ROOT, "Expected structure data version %d, got %d", CURRENT_DATA_VERSION, structureDataVersion)
+					String.format(Locale.ROOT, "Expected structure data version %d, got %d", CURRENT_DATA_VERSION, structureDataVersion)
 			);
 		}
 

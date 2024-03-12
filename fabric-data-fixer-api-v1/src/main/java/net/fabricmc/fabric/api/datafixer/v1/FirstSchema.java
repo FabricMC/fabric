@@ -31,8 +31,10 @@ import org.jetbrains.annotations.Range;
  */
 public class FirstSchema extends Schema {
 	// From QSL.
+
 	/**
 	 * Creates a schema.
+	 *
 	 * @param versionKey the data version key
 	 */
 	public FirstSchema(@Range(from = 0, to = Integer.MAX_VALUE) int versionKey) {

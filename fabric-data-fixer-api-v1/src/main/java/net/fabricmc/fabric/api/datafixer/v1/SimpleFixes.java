@@ -19,6 +19,8 @@
 
 package net.fabricmc.fabric.api.datafixer.v1;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Map;
 import java.util.Objects;
 
@@ -26,6 +28,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.DataFix;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.datafixer.Schemas;
 import net.minecraft.datafixer.TypeReferences;
@@ -35,10 +38,6 @@ import net.minecraft.datafixer.fix.GameEventRenamesFix;
 import net.minecraft.datafixer.fix.ItemNameFix;
 import net.minecraft.datafixer.schema.IdentifierNormalizingSchema;
 import net.minecraft.util.Identifier;
-
-import org.jetbrains.annotations.NotNull;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Provides methods to add common {@link DataFix}es to {@link DataFixerBuilder}s.

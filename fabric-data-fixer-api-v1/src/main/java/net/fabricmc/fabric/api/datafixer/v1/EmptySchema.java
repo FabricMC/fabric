@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Range;
  */
 public final class EmptySchema extends FirstSchema {
 	// From QSL.
+
 	/**
 	 * Constructs an empty schema.
 	 *
