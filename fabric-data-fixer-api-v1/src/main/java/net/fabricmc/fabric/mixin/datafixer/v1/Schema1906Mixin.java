@@ -40,7 +40,7 @@ public class Schema1906Mixin {
 
 		Map<String, Supplier<TypeTemplate>> modRegistry = registry.get();
 
-		for (var entry : modRegistry.entrySet()) {
+		for (Map.Entry<String, Supplier<TypeTemplate>> entry : modRegistry.entrySet()) {
 			schema.register(original, entry.getKey(), entry.getValue());
 		}
 
