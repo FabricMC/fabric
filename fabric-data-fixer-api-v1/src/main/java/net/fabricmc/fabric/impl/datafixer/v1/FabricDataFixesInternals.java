@@ -80,8 +80,13 @@ public abstract class FabricDataFixesInternals {
 	@Contract(pure = true)
 	@Range(from = 0, to = Integer.MAX_VALUE)
 	public static int getModDataVersion(NbtCompound nbt, String modId, @Nullable String key) {
+		String nbtKey = modId;
+		if (key != null) {
+			nbtKey += ('_' + key);
+		}
+
 		NbtCompound dataVersions = nbt.getCompound(DATA_VERSIONS_KEY);
-		return dataVersions.getInt(modId);
+		return dataVersions.getInt(nbtKey);
 	}
 
 	private static FabricDataFixesInternals instance;
