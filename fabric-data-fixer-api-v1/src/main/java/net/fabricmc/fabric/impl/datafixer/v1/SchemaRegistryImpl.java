@@ -30,7 +30,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.datafixer.v1.SchemaRegistry;
 
 public class SchemaRegistryImpl implements SchemaRegistry {
-	private Map<String, Supplier<TypeTemplate>> registry = new Object2ReferenceOpenHashMap<>();
+	private final Map<String, Supplier<TypeTemplate>> registry = new Object2ReferenceOpenHashMap<>();
 
 	@Override
 	public void register(Identifier id, Supplier<TypeTemplate> template) {
