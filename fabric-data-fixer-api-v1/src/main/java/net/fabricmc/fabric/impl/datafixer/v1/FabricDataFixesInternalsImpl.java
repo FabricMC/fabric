@@ -23,9 +23,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
+import com.mojang.datafixers.types.templates.TypeTemplate;
 import com.mojang.serialization.Dynamic;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import org.jetbrains.annotations.Nullable;
@@ -35,8 +37,12 @@ import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
+import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
+
 public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals {
 	// From QSL.
+	private static final String ENTRYPOINT_KEY = "fabric-data-fixer";
+
 	private final Schema latestVanillaSchema;
 
 	private Map<String, List<DataFixerEntry>> modDataFixers;
@@ -109,6 +115,30 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 
 		nbt.put(DATA_VERSIONS_KEY, dataVersions);
 		return nbt;
+	}
+
+	private static List<DataFixerEntrypoint> getEntrypoints() {
+		List<EntrypointContainer<DataFixerEntrypoint>> dataFixerEntrypoints = FabricLoader.getInstance()
+			.getEntrypointContainers(ENTRYPOINT_KEY, DataFixerEntrypoint.class);
+		return dataFixerEntrypoints.stream().map(EntrypointContainer::getEntrypoint).toList();
+	}
+
+	@Override
+	public void registerBlockEntities(Map<String, Supplier<TypeTemplate>> registry, Schema schema) {
+		List<DataFixerEntrypoint> entrypoints = getEntrypoints();
+
+		for (DataFixerEntrypoint entrypoint : entrypoints) {
+			entrypoint.onRegisterBlockEntities(registry, schema);
+		}
+	}
+
+	@Override
+	public void registerEntities(Map<String, Supplier<TypeTemplate>> registry, Schema schema) {
+		List<DataFixerEntrypoint> entrypoints = getEntrypoints();
+
+		for (DataFixerEntrypiont entrypoint : entrypoints) {
+			entrypoint.onRegisterEntities(registry, schema);
+		}
 	}
 
 	@Override

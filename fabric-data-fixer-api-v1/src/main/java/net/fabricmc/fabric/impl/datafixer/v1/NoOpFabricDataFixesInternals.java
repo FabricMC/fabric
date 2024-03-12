@@ -20,9 +20,12 @@
 package net.fabricmc.fabric.impl.datafixer.v1;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
+import com.mojang.datafixers.types.templates.TypeTemplate;
 import com.mojang.serialization.Dynamic;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -64,6 +67,14 @@ public final class NoOpFabricDataFixesInternals extends FabricDataFixesInternals
 	@Override
 	public NbtCompound addModDataVersions(NbtCompound nbt) {
 		return nbt;
+	}
+
+	@Override
+	public void registerBlockEntities(Map<String, Supplier<TypeTemplate>> registry, Schema schema) {
+	}
+
+	@Override
+	public void registerEntities(Map<String, Supplier<TypeTemplate>> registry, Schema schema) {
 	}
 
 	@Override

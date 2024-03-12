@@ -27,13 +27,13 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.datafixer.schema.Schema1906;
 
-import net.fabricmc.fabric.api.datafixer.v1.DataFixerEvents;
+import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 
 @Mixin(Schema1906.class)
 public class Schema1906Mixin {
 	@ModifyReturnValue(method = "registerBlockEntities", at = @At("RETURN"))
 	private Map<String, Supplier<TypeTemplate>> registerModdedBlockEntities(Map<String, Supplier<TypeTemplate>> original, Schema schema) {
-		DataFixerEvents.REGISTER_BLOCK_ENTITIES.invoker().onRegisterBlockEntities(original, schema);
+		FabricDataFixesInternals.get().registerBlockEntities(original, schema);
 		return original;
 	}
 }

@@ -20,10 +20,13 @@
 package net.fabricmc.fabric.impl.datafixer.v1;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 import com.mojang.datafixers.DataFixUtils;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
+import com.mojang.datafixers.types.templates.TypeTemplate;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import org.jetbrains.annotations.Contract;
@@ -119,6 +122,10 @@ public abstract class FabricDataFixesInternals {
 	public abstract Dynamic<NbtElement> updateWithAllFixers(DataFixTypes dataFixTypes, Dynamic<NbtElement> element);
 
 	public abstract NbtCompound addModDataVersions(NbtCompound nbt);
+
+	public abstract void registerBlockEntities(Map<String, Supplier<TypeTemplate>> registry, Schema schema);
+
+	public abstract void registerEntities(Map<String, Supplier<TypeTemplate>> registry, Schema schema);
 
 	public abstract void freeze();
 
