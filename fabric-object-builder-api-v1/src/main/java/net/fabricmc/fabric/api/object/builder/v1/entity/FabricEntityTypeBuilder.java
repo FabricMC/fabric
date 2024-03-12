@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.datafixer.TypeReferences;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
@@ -35,6 +36,7 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.util.Util;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 
@@ -273,7 +275,18 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @return a new {@link EntityType}
 	 */
 	public EntityType<T> build() {
-		// Modded DFU is a dream, currently not possible without screwing it up.
+		return build(null);
+	}
+
+	/**
+	 * Creates the entity type.
+	 *
+	 * @return a new {@link EntityType}
+	 */
+	public EntityType<T> build(String id) {
+		if (this.saveable) {
+			Util.getChoiceType(TypeReferences.ENTITY_TREE, id);
+		}
 
 		return new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates, this.requiredFeatures);
 	}
