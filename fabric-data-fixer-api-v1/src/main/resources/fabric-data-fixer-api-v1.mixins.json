@@ -4,7 +4,9 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "DataFixTypesMixin",
-    "NbtHelperMixin"
+    "NbtHelperMixin",
+    "Schema1904Mixin",
+    "Schema1906Mixin"
   ],
   "injectors": {
     "defaultRequire": 1
