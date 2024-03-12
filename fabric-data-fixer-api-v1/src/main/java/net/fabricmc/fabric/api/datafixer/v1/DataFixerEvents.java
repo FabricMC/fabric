@@ -36,9 +36,11 @@ public final class DataFixerEvents {
 	public static final Event<RegisterBlockEntities> REGISTER_BLOCK_ENTITIES = EventFactory.createArrayBacked(RegisterBlockEntities.class, callbacks -> (registry, schema) -> {
 		List<EntrypointContainer<DataFixerEntrypoint>> dataFixerEntrypoints = FabricLoader.getInstance().getEntrypointContainers(ENTRYPOINT_KEY, DataFixerEntrypoint.class);
 		List<DataFixerEntrypoint> entrypoints = dataFixerEntrypoints.stream().map(EntrypointContainer::getEntrypoint).toList();
+
 		for (DataFixerEntrypoint entrypoint : entrypoints) {
 			entrypoint.onRegisterBlockEntities(registry, schema);
 		}
+
 		for (RegisterBlockEntities callback : callbacks) {
 			callback.onRegisterBlockEntities(registry, schema);
 		}
@@ -50,9 +52,11 @@ public final class DataFixerEvents {
 	public static final Event<RegisterEntities> REGISTER_ENTITIES = EventFactory.createArrayBacked(RegisterEntities.class, callbacks -> (registry, schema) -> {
 		List<EntrypointContainer<DataFixerEntrypoint>> dataFixerEntrypoints = FabricLoader.getInstance().getEntrypointContainers(ENTRYPOINT_KEY, DataFixerEntrypoint.class);
 		List<DataFixerEntrypoint> entrypoints = dataFixerEntrypoints.stream().map(EntrypointContainer::getEntrypoint).toList();
+
 		for (DataFixerEntrypoint entrypoint : entrypoints) {
 			entrypoint.onRegisterEntities(registry, schema);
 		}
+
 		for (RegisterEntities callback : callbacks) {
 			callback.onRegisterEntities(registry, schema);
 		}

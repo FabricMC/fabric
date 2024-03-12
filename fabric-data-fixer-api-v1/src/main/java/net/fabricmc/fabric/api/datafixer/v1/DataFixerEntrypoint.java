@@ -23,7 +23,6 @@ import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.TypeTemplate;
 
 public interface DataFixerEntrypoint {
-
 	void onRegisterBlockEntities(Map<String, Supplier<TypeTemplate>> registry, Schema schema);
 
 	void onRegisterEntities(Map<String, Supplier<TypeTemplate>> registry, Schema schema);
