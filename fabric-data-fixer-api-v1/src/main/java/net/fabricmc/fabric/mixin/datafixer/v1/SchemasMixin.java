@@ -43,8 +43,7 @@ public class SchemasMixin {
 							value = "CONSTANT",
 							args = "intValue=1803"
 					)
-			),
-			remap = false
+			)
 	)
 	private static void addFabricFixers(DataFixerBuilder builder, CallbackInfo ci) {
 		FabricSchema1903 schema = (FabricSchema1903) builder.addSchema(1903, FabricSchema1903::new);
