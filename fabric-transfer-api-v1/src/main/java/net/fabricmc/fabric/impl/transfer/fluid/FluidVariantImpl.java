@@ -99,7 +99,7 @@ public class FluidVariantImpl implements FluidVariant {
 
 		FluidVariantImpl fluidVariant = (FluidVariantImpl) o;
 		// fail fast with hash code
-		return hashCode == fluidVariant.hashCode && fluid == fluidVariant.fluid && componentsMatches(fluidVariant.components);
+		return hashCode == fluidVariant.hashCode && fluid == fluidVariant.fluid && componentsMatch(fluidVariant.components);
 	}
 
 	@Override

@@ -59,7 +59,7 @@ public interface TransferVariant<O> {
 	 *
 	 * <p>Note: True is returned if both tags are {@code null}.
 	 */
-	default boolean componentsMatches(ComponentChanges other) {
+	default boolean componentsMatch(ComponentChanges other) {
 		return Objects.equals(getComponents(), other);
 	}
 
