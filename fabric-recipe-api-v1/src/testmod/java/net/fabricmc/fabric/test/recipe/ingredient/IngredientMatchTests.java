@@ -29,6 +29,7 @@ import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
 import net.minecraft.test.TestContext;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients;
@@ -154,6 +155,44 @@ public class IngredientMatchTests {
 		renamedDamagedDiamondPickaxe.setDamage(10);
 		assertEquals(true, damagedPickaxeIngredient.test(renamedUndamagedDiamondPickaxe));
 		assertEquals(true, damagedPickaxeIngredient.test(renamedDamagedDiamondPickaxe));
+
+		context.complete();
+	}
+
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void testCustomDataIngredient(TestContext context) {
+		final NbtCompound requiredNbt = Util.make(new NbtCompound(), nbt -> {
+			nbt.putInt("keyA", 1);
+		});
+		final NbtCompound acceptedNbt = Util.make(requiredNbt.copy(), nbt -> {
+			nbt.putInt("keyB", 2);
+		});
+		final NbtCompound rejectedNbt1 = Util.make(new NbtCompound(), nbt -> {
+			nbt.putInt("keyA", -1);
+		});
+		final NbtCompound rejectedNbt2 = Util.make(new NbtCompound(), nbt -> {
+			nbt.putInt("keyB", 2);
+		});
+
+		final Ingredient baseIngredient = Ingredient.ofItems(Items.STICK);
+		final Ingredient customDataIngredient = DefaultCustomIngredients.customData(baseIngredient, requiredNbt);
+
+		ItemStack stack = new ItemStack(Items.STICK);
+		assertEquals(false, customDataIngredient.test(stack));
+		stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(requiredNbt));
+		assertEquals(true, customDataIngredient.test(stack));
+		// This is a non-strict matching
+		stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(acceptedNbt));
+		assertEquals(true, customDataIngredient.test(stack));
+		stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(rejectedNbt1));
+		assertEquals(false, customDataIngredient.test(stack));
+		stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(rejectedNbt2));
+		assertEquals(false, customDataIngredient.test(stack));
+
+		ItemStack[] matchingStacks = customDataIngredient.getMatchingStacks();
+		assertEquals(1, matchingStacks.length);
+		assertEquals(Items.STICK, matchingStacks[0].getItem());
+		assertEquals(NbtComponent.of(requiredNbt), matchingStacks[0].get(DataComponentTypes.CUSTOM_DATA));
 
 		context.complete();
 	}
