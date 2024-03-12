@@ -1,0 +1,6 @@
+accessWidener v2 named
+
+transitive-accessible field net/minecraft/datafixer/DataFixTypes typeReference Lcom/mojang/datafixers/DSL$TypeReference;
+
+# methods for creating fixes
+transitive-accessible method net/minecraft/datafixer/Schemas replacing (Ljava/util/Map;)Ljava/util/function/UnaryOperator;
