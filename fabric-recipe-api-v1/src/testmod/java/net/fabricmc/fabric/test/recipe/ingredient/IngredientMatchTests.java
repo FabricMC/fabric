@@ -20,8 +20,10 @@ import java.util.Objects;
 
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
@@ -90,7 +92,7 @@ public class IngredientMatchTests {
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testComponentIngredient(TestContext context) {
-		final Ingredient baseIngredient = Ingredient.ofItems(Items.DIAMOND_PICKAXE, Items.NETHERITE_PICKAXE);
+		final Ingredient baseIngredient = Ingredient.ofItems(Items.DIAMOND_PICKAXE, Items.NETHERITE_PICKAXE, Items.STICK);
 		final Ingredient undamagedIngredient = DefaultCustomIngredients.components(
 				baseIngredient,
 				builder -> builder.add(DataComponentTypes.DAMAGE, 0)
@@ -107,7 +109,7 @@ public class IngredientMatchTests {
 		assertEquals(true, undamagedIngredient.test(renamedUndamagedDiamondPickaxe));
 		assertEquals(false, noNameUndamagedIngredient.test(renamedUndamagedDiamondPickaxe));
 
-		assertEquals(2, undamagedIngredient.getMatchingStacks().length);
+		assertEquals(3, undamagedIngredient.getMatchingStacks().length);
 		ItemStack result0 = undamagedIngredient.getMatchingStacks()[0];
 		ItemStack result1 = undamagedIngredient.getMatchingStacks()[1];
 
@@ -125,6 +127,33 @@ public class IngredientMatchTests {
 		ItemStack damagedDiamondPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
 		damagedDiamondPickaxe.setDamage(10);
 		assertEquals(false, undamagedIngredient.test(damagedDiamondPickaxe));
+
+		// Checking for DAMAGE component requires the item is damageable in the first place
+		assertEquals(false, undamagedIngredient.test(new ItemStack(Items.STICK)));
+
+		// Custom data is strictly matched, like any other component with multiple fields
+		final NbtCompound requiredData = new NbtCompound();
+		requiredData.putInt("keyA", 1);
+		final NbtCompound extraData = requiredData.copy();
+		extraData.putInt("keyB", 2);
+
+		final Ingredient customDataIngredient = DefaultCustomIngredients.components(
+				baseIngredient,
+				builder -> builder.add(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(requiredData))
+		);
+		ItemStack requiredDataStack = new ItemStack(Items.DIAMOND_PICKAXE);
+		requiredDataStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(requiredData));
+		ItemStack extraDataStack = new ItemStack(Items.DIAMOND_PICKAXE);
+		extraDataStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(extraData));
+		assertEquals(true, customDataIngredient.test(requiredDataStack));
+		assertEquals(false, customDataIngredient.test(extraDataStack));
+
+		// Default value is ignored in components(ItemStack)
+		final Ingredient damagedPickaxeIngredient = DefaultCustomIngredients.components(renamedUndamagedDiamondPickaxe);
+		ItemStack renamedDamagedDiamondPickaxe = renamedUndamagedDiamondPickaxe.copy();
+		renamedDamagedDiamondPickaxe.setDamage(10);
+		assertEquals(true, damagedPickaxeIngredient.test(renamedUndamagedDiamondPickaxe));
+		assertEquals(true, damagedPickaxeIngredient.test(renamedDamagedDiamondPickaxe));
 
 		context.complete();
 	}

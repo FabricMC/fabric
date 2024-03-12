@@ -52,7 +52,7 @@ public class CustomDamageTest implements ModInitializer {
 		if (entity.isSneaking()) {
 			return amount;
 		} else {
-			stack.set(WEIRD, stack.getOrDefault(WEIRD, 0) + 1);
+			stack.set(WEIRD, Math.max(0, stack.getOrDefault(WEIRD, 0) + 1));
 			return 0;
 		}
 	};

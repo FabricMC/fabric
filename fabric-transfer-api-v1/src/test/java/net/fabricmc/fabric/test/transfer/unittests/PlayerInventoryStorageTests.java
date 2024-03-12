@@ -45,7 +45,7 @@ public class PlayerInventoryStorageTests extends AbstractTransferApiTest {
 	}
 
 	@Test
-	public void testStackingInser() {
+	public void testStackingInsert() {
 		// Also test that the behavior of insert matches that of offer.
 		testStacking(playerInv -> playerInv::insert);
 	}
@@ -69,14 +69,14 @@ public class PlayerInventoryStorageTests extends AbstractTransferApiTest {
 		try (Transaction tx = Transaction.openOuter()) {
 			assertEquals(1L, inserter.insert(stone, 1, tx));
 
-			// Should have went into the main stack
+			// Should have gone into the main stack
 			assertEquals(64, inv.main.get(3).getCount());
 		}
 
 		try (Transaction tx = Transaction.openOuter()) {
 			assertEquals(2L, inserter.insert(stone, 2, tx));
 
-			// Should have went into the main and offhand stacks.
+			// Should have gone into the main and offhand stacks.
 			assertEquals(64, inv.main.get(3).getCount());
 			assertEquals(63, inv.offHand.get(0).getCount());
 		}

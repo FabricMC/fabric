@@ -42,8 +42,8 @@ import net.fabricmc.fabric.impl.item.FabricItemInternals;
  */
 public interface FabricItem {
 	/**
-	 * When the NBT of an item stack in the main hand or off hand changes, vanilla runs an "update animation".
-	 * This function is called on the client side when the NBT or count of the stack has changed, but not the item,
+	 * When the components of an item stack in the main hand or off hand changes, vanilla runs an "update animation".
+	 * This function is called on the client side when the components or count of the stack has changed, but not the item,
 	 * and returning false cancels this animation.
 	 *
 	 * @param player   the current player; this may be safely cast to {@link net.minecraft.client.network.ClientPlayerEntity} in client-only code
@@ -52,13 +52,13 @@ public interface FabricItem {
 	 * @param newStack the new stack, also of this item
 	 * @return true to run the vanilla animation, false to cancel it.
 	 */
-	default boolean allowNbtUpdateAnimation(PlayerEntity player, Hand hand, ItemStack oldStack, ItemStack newStack) {
+	default boolean allowComponentsUpdateAnimation(PlayerEntity player, Hand hand, ItemStack oldStack, ItemStack newStack) {
 		return true;
 	}
 
 	/**
-	 * When the NBT of the selected stack changes, block breaking progress is reset.
-	 * This function is called when the NBT of the selected stack has changed,
+	 * When the components of the selected stack changes, block breaking progress is reset.
+	 * This function is called when the components of the selected stack has changed,
 	 * and returning true allows the block breaking progress to continue.
 	 *
 	 * @param player   the player breaking the block

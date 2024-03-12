@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 /**
  * Base implementation of a fluid storage for a full item.
  * The full item contains some fixed amount of a fluid variant, which can be extracted entirely to yield an empty item.
- * The default behavior is to copy the NBT from the full item to the empty item,
+ * The default behavior is to copy the components from the full item to the empty item,
  * however there is a second constructor that allows customizing the mapping.
  *
  * <p>This is used similarly to {@link EmptyItemFluidStorage}.
@@ -57,8 +57,8 @@ public final class FullItemFluidStorage implements ExtractionOnlyStorage<FluidVa
 
 	/**
 	 * Create a new instance, with a custom mapping function.
-	 * The mapping function allows customizing how the NBT of the empty item depends on the NBT of the full item.
-	 * The default behavior with the other constructor is to just copy the full NBT.
+	 * The mapping function allows customizing how the components of the empty item depends on the components of the full item.
+	 * The default behavior with the other constructor is to just copy the full components.
 	 *
 	 * @param context The current context.
 	 * @param fullToEmptyMapping A function mapping the full item variant, to the variant that should be used

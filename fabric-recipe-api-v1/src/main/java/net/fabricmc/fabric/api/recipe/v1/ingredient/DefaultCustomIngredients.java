@@ -102,10 +102,21 @@ public final class DefaultCustomIngredients {
 	 * Creates an ingredient that wraps another ingredient to also check for matching components.
 	 *
 	 * <p>Use {@link ComponentChanges#builder()} to add or remove components.
-	 * Added components are checked to match on the target stack.
-	 * Removed components are checked to not exist in the target stack
+	 * Added components are checked to match on the target stack, either as the default or
+	 * the item stack-specific override.
+	 * Removed components are checked to not exist in the target stack.
+	 * The check is "non-strict"; components that are neither added nor removed are ignored.
 	 *
-	 * @throws IllegalArgumentException if {@link ComponentChanges#isEmpty} is true
+	 * <p>The JSON format is as follows:
+	 * <pre>{@code
+	 * {
+	 *     "fabric:type": "fabric:components",
+	 *     "base": // base ingredient,
+	 *     "components": // components to be checked
+	 * }
+	 * }</pre>
+	 *
+	 * @throws IllegalArgumentException if there are no components to check
 	 */
 	public static Ingredient components(Ingredient base, ComponentChanges components) {
 		Objects.requireNonNull(base, "Base ingredient cannot be null");
@@ -122,10 +133,17 @@ public final class DefaultCustomIngredients {
 	}
 
 	/**
-	 * Creates an ingredient that matches the passed template stack, including {@link ItemStack#getComponentChanges()}.
+	 * Creates an ingredient that matches the components specified in the passed item stack.
 	 * Note that the count of the stack is ignored.
 	 *
+	 * <p>This does not check for the default component of the item stack that remains unchanged.
+	 * For example, an undamaged pickaxe matches any pickaxes (regardless of damage), because having
+	 * zero damage is the default, but a pickaxe with 1 damage would only match another pickaxe
+	 * with 1 damage. To only match the default value, use the other methods and explicitly specify
+	 * the default value.
+	 *
 	 * @see #components(Ingredient, ComponentChanges)
+	 * @throws IllegalArgumentException if {@code stack} has no changed components
 	 */
 	public static Ingredient components(ItemStack stack) {
 		Objects.requireNonNull(stack, "Stack cannot be null");

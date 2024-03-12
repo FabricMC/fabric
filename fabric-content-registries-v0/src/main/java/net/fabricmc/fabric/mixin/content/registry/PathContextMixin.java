@@ -32,19 +32,19 @@ import net.minecraft.world.CollisionView;
 import net.fabricmc.fabric.api.registry.LandPathNodeTypesRegistry;
 
 @Mixin(PathContext.class)
-public abstract class class_9316Mixin {
+public abstract class PathContextMixin {
 	@Shadow
-	public abstract BlockState method_57623(BlockPos blockPos);
+	public abstract BlockState getBlockState(BlockPos blockPos);
 
 	@Shadow
-	public abstract CollisionView method_57621();
+	public abstract CollisionView getWorld();
 
 	/**
 	 * Overrides the node type for the specified position, if the position is found as neighbor block in a path.
 	 */
 	@Inject(method = "getNodeType", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/BlockPos$Mutable;set(III)Lnet/minecraft/util/math/BlockPos$Mutable;"), cancellable = true)
-	private void method_57622(int x, int y, int z, CallbackInfoReturnable<PathNodeType> cir, @Local BlockPos pos) {
-		final PathNodeType neighborNodeType = LandPathNodeTypesRegistry.getPathNodeType(method_57623(pos), method_57621(), pos, true);
+	private void onGetNodeType(int x, int y, int z, CallbackInfoReturnable<PathNodeType> cir, @Local BlockPos pos) {
+		final PathNodeType neighborNodeType = LandPathNodeTypesRegistry.getPathNodeType(getBlockState(pos), getWorld(), pos, true);
 
 		if (neighborNodeType != null) {
 			cir.setReturnValue(neighborNodeType);

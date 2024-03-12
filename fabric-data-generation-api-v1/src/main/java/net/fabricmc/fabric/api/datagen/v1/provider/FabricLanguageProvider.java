@@ -52,8 +52,8 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 
 /**
- * Extend this class and implement {@link FabricLanguageProvider#generateTranslations(TranslationBuilder)}.
- * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricDataOutput, String, CompletableFuture)} FabricLanguageProvider} to declare what language code is being generated if it isn't {@code en_us}.
+ * Extend this class and implement {@link FabricLanguageProvider#generateTranslations}.
+ * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricDataOutput, String, CompletableFuture) FabricLanguageProvider} to declare what language code is being generated if it isn't {@code en_us}.
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
@@ -117,7 +117,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	}
 
 	/**
-	 * A consumer used by {@link FabricLanguageProvider#generateTranslations(TranslationBuilder)}.
+	 * A consumer used by {@link FabricLanguageProvider#generateTranslations}.
 	 */
 	@ApiStatus.NonExtendable
 	@FunctionalInterface

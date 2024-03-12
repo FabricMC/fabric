@@ -35,7 +35,7 @@ import net.minecraft.util.profiler.Profiler;
 
 /**
  * Except as noted below, the properties exposed here match the parameters passed to
- * {@link WorldRenderer#render(MatrixStack, float, long, boolean, Camera, GameRenderer, LightmapTextureManager, Matrix4f)}.
+ * {@link WorldRenderer#render}.
  */
 public interface WorldRenderContext {
 	/**
