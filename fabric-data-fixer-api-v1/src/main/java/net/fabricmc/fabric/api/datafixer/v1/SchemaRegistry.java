@@ -16,12 +16,13 @@
 
 package net.fabricmc.fabric.api.datafixer.v1;
 
-import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.TypeTemplate;
 import com.mojang.datafixers.util.Either;
 
@@ -32,9 +33,15 @@ public interface SchemaRegistry {
 
 	void register(Identifier id, Function<String, TypeTemplate> template);
 
+	void addSchema(BiFunction<Integer, Schema, Schema> factory);
+
+	Supplier<TypeTemplate> remove(Identifier id);
+
 	ImmutableMap<String, Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>>> get();
 
-	List<String> getKeys();
+	ImmutableList<String> getKeys();
 
 	ImmutableList<Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>>> getValues();
+
+	ImmutableList<BiFunction<Integer, Schema, Schema>> getFutureSchemas();
 }

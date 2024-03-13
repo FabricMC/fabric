@@ -18,14 +18,18 @@ package net.fabricmc.fabric.impl.datafixer.v1;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.TypeTemplate;
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import net.minecraft.util.Identifier;
 
@@ -33,6 +37,8 @@ import net.fabricmc.fabric.api.datafixer.v1.SchemaRegistry;
 
 public class SchemaRegistryImpl implements SchemaRegistry {
 	private final Map<String, Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>>> registry = new Object2ReferenceOpenHashMap<>();
+	private final List<BiFunction<Integer, Schema, Schema>> subVersionSchemas = new ObjectArrayList<>();
+
 	@Override
 	public void register(Identifier id, Supplier<TypeTemplate> template) {
 		this.registry.put(id.toString(), Either.left(template));
@@ -44,17 +50,39 @@ public class SchemaRegistryImpl implements SchemaRegistry {
 	}
 
 	@Override
+	public void addSchema(BiFunction<Integer, Schema, Schema> factory) {
+		this.subVersionSchemas.add(factory);
+	}
+
+	@Override
+	public Supplier<TypeTemplate> remove(Identifier id) {
+		Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>> found = this.registry.get(id.toString());
+		AtomicReference<Supplier<TypeTemplate>> supplier = new AtomicReference<>();
+
+		found.ifLeft(supplier::set);
+		found.ifRight(function -> supplier.set(() -> function.apply(id.toString())));
+
+		this.registry.remove(id.toString());
+		return supplier.get();
+	}
+
+	@Override
 	public ImmutableMap<String, Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>>> get() {
 		return ImmutableMap.copyOf(this.registry);
 	}
 
 	@Override
-	public List<String> getKeys() {
+	public ImmutableList<String> getKeys() {
 		return ImmutableList.copyOf(this.registry.keySet());
 	}
 
 	@Override
 	public ImmutableList<Either<Supplier<TypeTemplate>, Function<String, TypeTemplate>>> getValues() {
 		return ImmutableList.copyOf(this.registry.values());
+	}
+
+	@Override
+	public ImmutableList<BiFunction<Integer, Schema, Schema>> getFutureSchemas() {
+		return ImmutableList.copyOf(this.subVersionSchemas);
 	}
 }

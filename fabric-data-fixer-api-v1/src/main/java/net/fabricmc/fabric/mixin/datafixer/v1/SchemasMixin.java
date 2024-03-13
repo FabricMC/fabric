@@ -16,7 +16,11 @@
 
 package net.fabricmc.fabric.mixin.datafixer.v1;
 
+import java.util.List;
+import java.util.function.BiFunction;
+
 import com.mojang.datafixers.DataFixerBuilder;
+import com.mojang.datafixers.schemas.Schema;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -27,7 +31,7 @@ import net.minecraft.datafixer.Schemas;
 import net.minecraft.datafixer.TypeReferences;
 import net.minecraft.datafixer.fix.ChoiceTypesFix;
 
-import net.fabricmc.fabric.impl.datafixer.v1.FabricSchema1903;
+import net.fabricmc.fabric.impl.datafixer.v1.FabricSubSchema;
 
 @Mixin(Schemas.class)
 public class SchemasMixin {
@@ -41,12 +45,13 @@ public class SchemasMixin {
 			slice = @Slice(
 					from = @At(
 							value = "CONSTANT",
-							args = "intValue=1803"
+							args = "intValue=3820", // match latest schema version
+							shift = At.Shift.BEFORE
 					)
 			)
 	)
 	private static void addFabricFixers(DataFixerBuilder builder, CallbackInfo ci) {
-		FabricSchema1903 schema = (FabricSchema1903) builder.addSchema(1903, FabricSchema1903::new);
+		FabricSubSchema schema = (FabricSubSchema) builder.addSchema(3820, 1, FabricSubSchema::new);
 
 		for (String id : schema.registeredBlockEntities.getKeys()) {
 			builder.addFixer(new ChoiceTypesFix(schema, "Add Fabric block entity " + id, TypeReferences.BLOCK_ENTITY));
@@ -54,6 +59,14 @@ public class SchemasMixin {
 
 		for (String id : schema.registeredEntities.getKeys()) {
 			builder.addFixer(new ChoiceTypesFix(schema, "Add Fabric entity " + id, TypeReferences.ENTITY));
+		}
+
+		int registeredBlockEntitiesSize = schema.registeredBlockEntities.get().size();
+		List<BiFunction<Integer, Schema, Schema>> subSchemas = schema.registeredEntities.getFutureSchemas();
+
+		for (int i = 0; i < registeredBlockEntitiesSize; i++) {
+			BiFunction<Integer, Schema, Schema> subSchema = subSchemas.get(i);
+			builder.addSchema(3820, i + 2, subSchema);
 		}
 
 		schema.registeredBlockEntities = null;

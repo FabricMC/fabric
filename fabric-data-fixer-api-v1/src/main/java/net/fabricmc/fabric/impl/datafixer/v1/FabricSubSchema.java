@@ -29,11 +29,11 @@ import net.minecraft.datafixer.schema.IdentifierNormalizingSchema;
 
 import net.fabricmc.fabric.api.datafixer.v1.SchemaRegistry;
 
-public class FabricSchema1903 extends IdentifierNormalizingSchema {
+public class FabricSubSchema extends IdentifierNormalizingSchema {
 	public SchemaRegistry registeredBlockEntities;
 	public SchemaRegistry registeredEntities;
 
-	public FabricSchema1903(int versionKey, Schema parent) {
+	public FabricSubSchema(int versionKey, Schema parent) {
 		super(versionKey, parent);
 	}
 
