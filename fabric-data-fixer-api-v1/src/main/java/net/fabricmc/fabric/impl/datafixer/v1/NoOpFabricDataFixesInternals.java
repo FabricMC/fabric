@@ -21,7 +21,6 @@ package net.fabricmc.fabric.impl.datafixer.v1;
 
 import java.util.List;
 
-import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
 import org.jetbrains.annotations.Nullable;
@@ -32,6 +31,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
 import net.fabricmc.fabric.api.datafixer.v1.EmptySchema;
+import net.fabricmc.fabric.api.datafixer.v1.FabricDataFixerUpper;
 
 public final class NoOpFabricDataFixesInternals extends FabricDataFixesInternals {
 	// From QSL.
@@ -43,7 +43,7 @@ public final class NoOpFabricDataFixesInternals extends FabricDataFixesInternals
 	}
 
 	@Override
-	public void registerFixer(String modId, @Range(from = 0, to = Integer.MAX_VALUE) int currentVersion, @Nullable String key, DataFixer dataFixer) {
+	public void registerFixer(String modId, @Range(from = 0, to = Integer.MAX_VALUE) int currentVersion, @Nullable String key, FabricDataFixerUpper dataFixer) {
 	}
 
 	@Override

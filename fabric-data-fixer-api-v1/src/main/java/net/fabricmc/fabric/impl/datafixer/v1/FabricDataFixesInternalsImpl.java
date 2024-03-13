@@ -20,10 +20,10 @@
 package net.fabricmc.fabric.impl.datafixer.v1;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
@@ -35,6 +35,8 @@ import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
+import net.fabricmc.fabric.api.datafixer.v1.FabricDataFixerUpper;
+
 public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals {
 	// From QSL.
 	private final Schema latestVanillaSchema;
@@ -42,16 +44,19 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 	private Map<String, List<DataFixerEntry>> modDataFixers;
 	private boolean frozen;
 
+	private final CombinedDataFixer combinedDataFixer;
+
 	public FabricDataFixesInternalsImpl(Schema latestVanillaSchema) {
 		this.latestVanillaSchema = latestVanillaSchema;
 
 		this.modDataFixers = new Object2ReferenceOpenHashMap<>();
+		this.combinedDataFixer = new CombinedDataFixerUpper(this.modDataFixers);
 		this.frozen = false;
 	}
 
 	@Override
 	public void registerFixer(String modId, @Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
-			@Nullable String key, DataFixer dataFixer) {
+			@Nullable String key, FabricDataFixerUpper dataFixer) {
 		this.modDataFixers.computeIfAbsent(modId, modIdx -> new ObjectArrayList<>())
 				.add(new DataFixerEntry(dataFixer, currentVersion, key));
 	}
@@ -70,20 +75,19 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 	public Dynamic<NbtElement> updateWithAllFixers(DataFixTypes dataFixTypes, Dynamic<NbtElement> current) {
 		NbtCompound compound = (NbtCompound) current.getValue();
 
+		Map<DataFixerEntry, Integer> fixers = new HashMap<>();
+
 		for (Map.Entry<String, List<DataFixerEntry>> entry : this.modDataFixers.entrySet()) {
 			List<DataFixerEntry> dataFixerEntries = entry.getValue();
 
 			for (DataFixerEntry dataFixerEntry : dataFixerEntries) {
 				int modDataVersion = FabricDataFixesInternals.getModDataVersion(compound, entry.getKey(), dataFixerEntry.key());
 
-				current = dataFixerEntry.dataFixer()
-						.update(dataFixTypes.typeReference,
-								current,
-								modDataVersion, dataFixerEntry.currentVersion());
+				fixers.put(dataFixerEntry, modDataVersion);
 			}
 		}
 
-		return current;
+		return this.combinedDataFixer.update(dataFixTypes.typeReference, current, fixers);
 	}
 
 	@Override

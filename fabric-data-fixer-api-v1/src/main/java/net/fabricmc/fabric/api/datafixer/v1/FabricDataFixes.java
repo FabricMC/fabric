@@ -75,7 +75,7 @@ public final class FabricDataFixes {
 	 */
 	public static void registerFixer(String modId,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
-			DataFixer dataFixer) {
+			FabricDataFixerUpper dataFixer) {
 		registerFixer(modId, currentVersion, null, dataFixer);
 	}
 
@@ -90,7 +90,7 @@ public final class FabricDataFixes {
 	 */
 	public static void registerFixer(String modId,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
-			@Nullable String key, DataFixer dataFixer) {
+			@Nullable String key, FabricDataFixerUpper dataFixer) {
 		Objects.requireNonNull(modId, "modId cannot be null");
 		//noinspection ConstantConditions
 		Preconditions.checkArgument(currentVersion >= 0, "currentVersion must be positive");
@@ -113,7 +113,7 @@ public final class FabricDataFixes {
 	 */
 	public static void registerFixer(ModContainer mod,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
-			DataFixer dataFixer) {
+			FabricDataFixerUpper dataFixer) {
 		registerFixer(mod, currentVersion, null, dataFixer);
 	}
 
@@ -129,7 +129,7 @@ public final class FabricDataFixes {
 	public static void registerFixer(ModContainer mod,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
 			@Nullable String key,
-			DataFixer dataFixer) {
+			FabricDataFixerUpper dataFixer) {
 		Objects.requireNonNull(mod, "mod cannot be null");
 
 		registerFixer(mod.getMetadata().getId(), currentVersion, key, dataFixer);
@@ -146,7 +146,7 @@ public final class FabricDataFixes {
 	 * @throws RuntimeException         if the version field does not exist or is not a number
 	 * @throws IllegalArgumentException if the data fixer for {@code mod} is already registered
 	 */
-	public static void registerFixer(ModContainer mod, DataFixer dataFixer) {
+	public static void registerFixer(ModContainer mod, FabricDataFixerUpper dataFixer) {
 		Objects.requireNonNull(mod, "mod cannot be null");
 		registerFixer(mod.getMetadata().getId(), FabricDataFixesInternals.getDataVersionFromMetadata(mod), FabricDataFixesInternals.getKeyFromMetadata(mod), dataFixer);
 	}
@@ -189,10 +189,10 @@ public final class FabricDataFixes {
 	 * @param modId the mod ID
 	 * @return the mod's data fixer, or empty optional if the mod hasn't registered one
 	 */
-	public static Optional<List<Optional<DataFixer>>> getFixers(String modId) {
+	public static Optional<List<Optional<FabricDataFixerUpper>>> getFixers(String modId) {
 		Objects.requireNonNull(modId, "modId cannot be null");
 
-		List<Optional<DataFixer>> fixers = new ArrayList<>();
+		List<Optional<FabricDataFixerUpper>> fixers = new ArrayList<>();
 
 		List<FabricDataFixesInternals.DataFixerEntry> entries = FabricDataFixesInternals.get().getFixerEntries(modId);
 

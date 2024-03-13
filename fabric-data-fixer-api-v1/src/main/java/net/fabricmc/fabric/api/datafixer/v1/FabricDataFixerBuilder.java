@@ -25,7 +25,6 @@ import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 import com.mojang.datafixers.DSL;
-import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Range;
@@ -85,8 +84,8 @@ public class FabricDataFixerBuilder extends DataFixerBuilder {
 	 * @return the newly built data fixer
 	 */
 	@Contract(value = "_, _ -> new")
-	public DataFixer build(Set<DSL.TypeReference> types, Supplier<Executor> executorGetter) {
+	public FabricDataFixerUpper build(Set<DSL.TypeReference> types, Supplier<Executor> executorGetter) {
 		Objects.requireNonNull(executorGetter, "executorGetter cannot be null");
-		return types.isEmpty() ? this.buildUnoptimized() : this.buildOptimized(types, executorGetter.get());
+		return (FabricDataFixerUpper) (types.isEmpty() ? this.buildUnoptimized() : this.buildOptimized(types, executorGetter.get()));
 	}
 }
