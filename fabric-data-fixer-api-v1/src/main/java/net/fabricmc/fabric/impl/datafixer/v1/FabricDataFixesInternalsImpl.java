@@ -19,7 +19,6 @@
 
 package net.fabricmc.fabric.impl.datafixer.v1;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +27,7 @@ import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
@@ -52,11 +52,7 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 	@Override
 	public void registerFixer(String modId, @Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
 			@Nullable String key, DataFixer dataFixer) {
-		if (this.modDataFixers.containsKey(modId)) {
-			throw new IllegalArgumentException("Mod '" + modId + "' has already registered a data fixer");
-		}
-
-		this.modDataFixers.computeIfAbsent(modId, modIdx -> new ArrayList<>())
+		this.modDataFixers.computeIfAbsent(modId, modIdx -> new ObjectArrayList<>())
 				.add(new DataFixerEntry(dataFixer, currentVersion, key));
 	}
 
