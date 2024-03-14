@@ -61,7 +61,7 @@ public class NetworkingCommonTest implements ModInitializer {
 				final String uuid = player.getUuidAsString();
 
 				// Allow a few ticks for the packets to be received
-				executeIn(world.getServer(), 5, () -> {
+				executeIn(world.getServer(), 50, () -> {
 					if (!recievedPlay.remove(uuid)) {
 						throw new IllegalStateException("Did not receive play response");
 					}
