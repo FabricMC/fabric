@@ -46,7 +46,7 @@ public final class ConventionalEntityTypeTags {
 	/**
 	 * Entities should be included in this tag if they are not allowed to be teleported in any way.
 	 * This is more for mods that allow teleporting entities within the same dimension. Any mod that is
-	 * teleporting entities to new dimensions should be checking canChangeDimensions method on the entity itself.
+	 * teleporting entities to new dimensions should be checking canUsePortals method on the entity itself.
 	 */
 	public static final TagKey<EntityType<?>> TELEPORTING_NOT_SUPPORTED = register("teleporting_not_supported");
 
