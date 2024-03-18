@@ -49,4 +49,15 @@ public interface FabricItemStack {
 	default @Nullable FoodComponent getFoodComponent() {
 		return ((ItemStack) this).getItem().getFoodComponent(((ItemStack) this));
 	}
+
+	/**
+	 * Determines if this item should act like shears.
+	 *
+	 * <p>See {@link FabricItem#isShears(ItemStack)} for a more in-depth description.
+	 *
+	 * @return {@code true} if this stack should behave like shears
+	 */
+	default boolean isShears() {
+		return ((ItemStack) this).getItem().isShears((ItemStack) this);
+	}
 }
