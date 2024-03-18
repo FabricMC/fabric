@@ -84,7 +84,7 @@ public class SingleVariantItemStorageTests {
 			tx.commit();
 		}
 
-		// Check custom name.
+		// Check custom name.It
 		assertEquals(customName, inv.getStack(0).getName());
 		assertEquals(FluidVariant.blank(), getFluid(inv.getStack(0)));
 		assertEquals(0L, getAmount(inv.getStack(0)));
