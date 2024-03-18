@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-server-consent-api-v1-testmod",
+  "name": "Fabric Server Consent API (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "client",
+  "license": "Apache-2.0",
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.test.server.consent.client.ClientServerConsentTest"
+    ]
+  }
+}
