@@ -57,7 +57,7 @@ public class HopperBlockEntityMixin {
 		if (targetInventory != null) return;
 
 		// Otherwise inject our transfer logic.
-		Direction direction = ((HopperBlockEntityMixin) (Object) blockEntity).facing.getOpposite();
+		Direction direction = ((HopperBlockEntityMixin) (Object) blockEntity).facing;
 		BlockPos targetPos = pos.offset(direction);
 		Storage<ItemVariant> target = ItemStorage.SIDED.find(world, targetPos, direction.getOpposite());
 
