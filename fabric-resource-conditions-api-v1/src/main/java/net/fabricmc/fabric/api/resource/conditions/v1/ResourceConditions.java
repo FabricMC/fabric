@@ -85,6 +85,22 @@ public final class ResourceConditions {
 	 * The key ({@value}) Fabric uses to identify resource conditions in a JSON object.
 	 */
 	public static final String CONDITIONS_KEY = "fabric:load_conditions";
+
+	/**
+	 * The key ({@value}) Fabric uses to identify if custom overlays are in a pack.mcmeta file.
+	 */
+	public static final String OVERLAYS_KEY = "fabric:overlays";
+
+	/**
+	 * The key ({@value}) Fabric uses to identify custom overlays in a custom overlay object.
+	 */
+	public static final String ENTRIES_KEY = "entries";
+
+	/**
+	 * The key ({@value}) identifying the overlay directory in a condition object.
+	 */
+	public static final String DIRECTORY_KEY = "directory";
+
 	/**
 	 * The key ({@value}) identifying the resource condition's identifier inside a condition object.
 	 */
@@ -166,7 +182,7 @@ public final class ResourceConditions {
 		Predicate<JsonObject> jrc = get(conditionId);
 
 		if (jrc == null) {
-			throw new JsonParseException("Unknown recipe condition: " + conditionId);
+			throw new JsonParseException("Unknown resource condition: " + conditionId);
 		} else {
 			return jrc.test(condition);
 		}
