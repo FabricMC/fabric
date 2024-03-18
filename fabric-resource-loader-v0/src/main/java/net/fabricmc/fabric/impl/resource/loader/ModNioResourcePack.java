@@ -98,7 +98,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 
 		if (paths.isEmpty()) return null;
 
-		String packId = subPath == null ? id : id + "_" + subPath;
+		String packId = subPath != null && modBundled ? id + "_" + subPath : id;
 		Text displayName = subPath == null
 				? Text.translatable("pack.name.fabricMod", mod.getMetadata().getName())
 				: Text.translatable("pack.name.fabricMod.subPack", mod.getMetadata().getName(), Text.translatable("resourcePack." + subPath + ".name"));
