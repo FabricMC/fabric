@@ -16,14 +16,13 @@
 
 package net.fabricmc.fabric.mixin.transfer;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HopperBlock;
 import net.minecraft.block.entity.Hopper;
 import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.inventory.Inventory;
@@ -42,27 +41,29 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
  */
 @Mixin(HopperBlockEntity.class)
 public class HopperBlockEntityMixin {
+	@Shadow
+	private Direction facing;
+
 	@Inject(
 			at = @At(
 					value = "INVOKE_ASSIGN",
-					target = "Lnet/minecraft/block/entity/HopperBlockEntity;getOutputInventory(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)Lnet/minecraft/inventory/Inventory;"
+					target = "Lnet/minecraft/block/entity/HopperBlockEntity;getOutputInventory(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/entity/HopperBlockEntity;)Lnet/minecraft/inventory/Inventory;"
 			),
-			method = "insert(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/inventory/Inventory;)Z",
-			locals = LocalCapture.CAPTURE_FAILHARD,
+			method = "insert",
 			cancellable = true
 	)
-	private static void hookInsert(World world, BlockPos pos, BlockState state, Inventory inventory, CallbackInfoReturnable<Boolean> cir, Inventory targetInventory) {
+	private static void hookInsert(World world, BlockPos pos, HopperBlockEntity blockEntity, CallbackInfoReturnable<Boolean> cir, @Local Inventory targetInventory) {
 		// Let vanilla handle the transfer if it found an inventory.
 		if (targetInventory != null) return;
 
 		// Otherwise inject our transfer logic.
-		Direction direction = state.get(HopperBlock.FACING);
+		Direction direction = ((HopperBlockEntityMixin) (Object) blockEntity).facing;
 		BlockPos targetPos = pos.offset(direction);
 		Storage<ItemVariant> target = ItemStorage.SIDED.find(world, targetPos, direction.getOpposite());
 
 		if (target != null) {
 			long moved = StorageUtil.move(
-					InventoryStorage.of(inventory, direction),
+					InventoryStorage.of(blockEntity, direction),
 					target,
 					iv -> true,
 					1,
@@ -75,13 +76,12 @@ public class HopperBlockEntityMixin {
 	@Inject(
 			at = @At(
 					value = "INVOKE_ASSIGN",
-					target = "Lnet/minecraft/block/entity/HopperBlockEntity;getInputInventory(Lnet/minecraft/world/World;Lnet/minecraft/block/entity/Hopper;)Lnet/minecraft/inventory/Inventory;"
+					target = "Lnet/minecraft/block/entity/HopperBlockEntity;getInputInventory(Lnet/minecraft/world/World;Lnet/minecraft/block/entity/Hopper;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)Lnet/minecraft/inventory/Inventory;"
 			),
 			method = "extract(Lnet/minecraft/world/World;Lnet/minecraft/block/entity/Hopper;)Z",
-			locals = LocalCapture.CAPTURE_FAILHARD,
 			cancellable = true
 	)
-	private static void hookExtract(World world, Hopper hopper, CallbackInfoReturnable<Boolean> cir, Inventory inputInventory) {
+	private static void hookExtract(World world, Hopper hopper, CallbackInfoReturnable<Boolean> cir, @Local Inventory inputInventory) {
 		// Let vanilla handle the transfer if it found an inventory.
 		if (inputInventory != null) return;
 
