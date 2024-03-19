@@ -28,7 +28,6 @@ import net.minecraft.server.network.ServerCommonNetworkHandler;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
-import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
 
 @Mixin(ServerCommonNetworkHandler.class)
 public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerExtensions {
@@ -38,11 +37,10 @@ public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerE
 
 		boolean handled;
 
-		if (getAddon() instanceof ServerPlayNetworkAddon addon) {
-			handled = addon.handle(payload);
-		} else if (getAddon() instanceof ServerConfigurationNetworkAddon addon) {
+		if (getAddon() instanceof ServerConfigurationNetworkAddon addon) {
 			handled = addon.handle(payload);
 		} else {
+			// Play should be handled in ServerPlayNetworkHandlerMixin
 			throw new IllegalStateException("Unknown addon");
 		}
 

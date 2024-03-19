@@ -45,12 +45,12 @@ public class ClientPlayerInteractionManagerMixin {
 	@Redirect(
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/item/ItemStack;areItemsAndNbtEqual(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z"
+					target = "Lnet/minecraft/item/ItemStack;areItemsAndComponentsEqual(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z"
 			),
 			method = "isCurrentlyBreaking"
 	)
 	private boolean fabricItemContinueBlockBreakingInject(ItemStack stack, ItemStack otherStack) {
-		boolean stackUnchanged = ItemStack.areItemsAndNbtEqual(stack, this.selectedStack);
+		boolean stackUnchanged = ItemStack.areItemsAndComponentsEqual(stack, this.selectedStack);
 
 		if (!stackUnchanged) {
 			// The stack changed and vanilla is about to cancel block breaking progress. Check if the item wants to continue block breaking instead.

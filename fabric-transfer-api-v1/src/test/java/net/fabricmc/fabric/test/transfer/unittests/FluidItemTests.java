@@ -189,7 +189,7 @@ class FluidItemTests extends AbstractTransferApiTest {
 				null,
 				StorageUtil.findExtractableContent(
 						ContainerItemContext.withConstant(new ItemStack(Items.WATER_BUCKET)).find(FluidStorage.ITEM),
-						FluidVariant::hasComponents, // Only allow NBT -> won't match anything.
+						FluidVariant::hasComponents, // Only allow components -> won't match anything.
 						null
 				)
 		);

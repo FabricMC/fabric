@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.util.hit.HitResult;
 
@@ -27,7 +28,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Mods should use these events to introduce custom rendering during {@link WorldRenderer#render(net.minecraft.client.util.math.MatrixStack, float, long, boolean, net.minecraft.client.render.Camera, net.minecraft.client.render.GameRenderer, net.minecraft.client.render.LightmapTextureManager, net.minecraft.util.math.Matrix4f)}
+ * Mods should use these events to introduce custom rendering during {@link WorldRenderer#render}
  * without adding complicated and conflict-prone injections there.  Using these events also enables 3rd-party renderers
  * that make large-scale changes to rendering maintain compatibility by calling any broken event invokers directly.
  *
@@ -107,7 +108,7 @@ public final class WorldRenderEvents {
 	 *
 	 * <p>Use for global block entity render setup, or
 	 * to append block-related quads to the entity consumers using the
-	 * {@VertexConsumerProvider} from the provided context. This
+	 * {@link VertexConsumerProvider} from the provided context. This
 	 * will generally give better (if not perfect) results
 	 * for non-terrain translucency vs. drawing directly later on.
 	 */

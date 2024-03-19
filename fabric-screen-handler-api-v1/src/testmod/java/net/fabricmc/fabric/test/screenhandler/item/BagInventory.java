@@ -27,7 +27,9 @@ final class BagInventory implements ImplementedInventory {
 
 	BagInventory(ItemStack stack) {
 		this.stack = stack;
-		stack.getOrDefault(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(items));
+		ContainerComponent container = stack.get(DataComponentTypes.CONTAINER);
+
+		if (container != null) container.copyTo(items);
 	}
 
 	@Override

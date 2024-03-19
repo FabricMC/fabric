@@ -34,7 +34,7 @@ import net.minecraft.world.World;
 
 public class UpdatingItem extends Item {
 	private static final EntityAttributeModifier PLUS_FIVE = new EntityAttributeModifier(
-			ATTACK_DAMAGE_MODIFIER_ID, "updating item", 5, EntityAttributeModifier.Operation.ADDITION);
+			ATTACK_DAMAGE_MODIFIER_ID, "updating item", 5, EntityAttributeModifier.Operation.ADD_VALUE);
 
 	private final boolean allowUpdateAnimation;
 
@@ -46,12 +46,12 @@ public class UpdatingItem extends Item {
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
 		if (!world.isClient) {
-			stack.set(ItemUpdateAnimationTest.TICKS, stack.getOrDefault(ItemUpdateAnimationTest.TICKS, 0) + 1);
+			stack.set(ItemUpdateAnimationTest.TICKS, Math.max(0, stack.getOrDefault(ItemUpdateAnimationTest.TICKS, 0) + 1));
 		}
 	}
 
 	@Override
-	public boolean allowNbtUpdateAnimation(PlayerEntity player, Hand hand, ItemStack originalStack, ItemStack updatedStack) {
+	public boolean allowComponentsUpdateAnimation(PlayerEntity player, Hand hand, ItemStack originalStack, ItemStack updatedStack) {
 		return allowUpdateAnimation;
 	}
 

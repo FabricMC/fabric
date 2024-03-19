@@ -31,7 +31,7 @@ import net.minecraft.util.Hand;
 import net.fabricmc.fabric.api.item.v1.FabricItem;
 
 /**
- * Allow canceling the held item update animation if {@link FabricItem#allowNbtUpdateAnimation} returns false.
+ * Allow canceling the held item update animation if {@link FabricItem#allowComponentsUpdateAnimation} returns false.
  */
 @Mixin(HeldItemRenderer.class)
 public class HeldItemRendererMixin {
@@ -51,7 +51,7 @@ public class HeldItemRendererMixin {
 		ItemStack newMainStack = client.player.getMainHandStack();
 
 		if (mainHand.getItem() == newMainStack.getItem()) {
-			if (!mainHand.getItem().allowNbtUpdateAnimation(client.player, Hand.MAIN_HAND, mainHand, newMainStack)) {
+			if (!mainHand.getItem().allowComponentsUpdateAnimation(client.player, Hand.MAIN_HAND, mainHand, newMainStack)) {
 				mainHand = newMainStack;
 			}
 		}
@@ -60,7 +60,7 @@ public class HeldItemRendererMixin {
 		ItemStack newOffStack = client.player.getOffHandStack();
 
 		if (offHand.getItem() == newOffStack.getItem()) {
-			if (!offHand.getItem().allowNbtUpdateAnimation(client.player, Hand.OFF_HAND, offHand, newOffStack)) {
+			if (!offHand.getItem().allowComponentsUpdateAnimation(client.player, Hand.OFF_HAND, offHand, newOffStack)) {
 				offHand = newOffStack;
 			}
 		}
