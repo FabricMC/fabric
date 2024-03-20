@@ -25,7 +25,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.CombinedDynamicRegistries;
+import net.minecraft.registry.ServerDynamicRegistryType;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.DataPackContents;
@@ -43,7 +44,7 @@ public class DataPackContentsMixin {
 			method = "refresh",
 			at = @At("HEAD")
 	)
-	public void hookRefresh(DynamicRegistryManager dynamicRegistryManager, CallbackInfo ci) {
+	public void hookRefresh(CallbackInfo ci) {
 		ResourceConditionsImpl.LOADED_TAGS.remove();
 		ResourceConditionsImpl.CURRENT_REGISTRIES.remove();
 	}
@@ -52,8 +53,8 @@ public class DataPackContentsMixin {
 			method = "reload",
 			at = @At("HEAD")
 	)
-	private static void hookReload(ResourceManager manager, DynamicRegistryManager.Immutable dynamicRegistryManager, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, int functionPermissionLevel, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<DataPackContents>> cir) {
+	private static void hookReload(ResourceManager manager, CombinedDynamicRegistries<ServerDynamicRegistryType> combinedDynamicRegistries, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, int functionPermissionLevel, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<DataPackContents>> cir) {
 		ResourceConditionsImpl.CURRENT_FEATURES.set(enabledFeatures);
-		ResourceConditionsImpl.CURRENT_REGISTRIES.set(dynamicRegistryManager);
+		ResourceConditionsImpl.CURRENT_REGISTRIES.set(combinedDynamicRegistries.getCombinedRegistryManager());
 	}
 }

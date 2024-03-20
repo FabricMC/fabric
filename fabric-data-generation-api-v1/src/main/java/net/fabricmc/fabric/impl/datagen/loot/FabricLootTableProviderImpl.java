@@ -59,12 +59,12 @@ public final class FabricLootTableProviderImpl {
 		HashMap<Identifier, ConditionJsonProvider[]> conditionMap = new HashMap<>();
 
 		return registryLookup.thenCompose(lookup -> {
-			provider.accept(lookup, (identifier, builder) -> {
+			provider.accept(lookup, (registryKey, builder) -> {
 				ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(builder);
-				conditionMap.put(identifier, conditions);
+				conditionMap.put(registryKey.getValue(), conditions);
 
-				if (builders.put(identifier, builder.type(lootContextType).build()) != null) {
-					throw new IllegalStateException("Duplicate loot table " + identifier);
+				if (builders.put(registryKey.getValue(), builder.type(lootContextType).build()) != null) {
+					throw new IllegalStateException("Duplicate loot table " + registryKey.getValue());
 				}
 			});
 
@@ -72,7 +72,7 @@ public final class FabricLootTableProviderImpl {
 			final List<CompletableFuture<?>> futures = new ArrayList<>();
 
 			for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
-				JsonObject tableJson = (JsonObject) Util.getResult(LootTable.CODEC.encodeStart(ops, entry.getValue()), IllegalStateException::new);
+				JsonObject tableJson = (JsonObject) Util.getResult(LootTable.field_50021.encodeStart(ops, entry.getValue()), IllegalStateException::new);
 				ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
 				futures.add(DataProvider.writeToPath(writer, tableJson, getOutputPath(fabricDataOutput, entry.getKey())));
 			}
