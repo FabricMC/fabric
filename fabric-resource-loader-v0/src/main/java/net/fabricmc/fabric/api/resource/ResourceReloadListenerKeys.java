@@ -36,7 +36,6 @@ public final class ResourceReloadListenerKeys {
 	public static final Identifier RECIPES = new Identifier("minecraft:recipes");
 	public static final Identifier ADVANCEMENTS = new Identifier("minecraft:advancements");
 	public static final Identifier FUNCTIONS = new Identifier("minecraft:functions");
-	public static final Identifier LOOT_TABLES = new Identifier("minecraft:loot_tables");
 
 	private ResourceReloadListenerKeys() { }
 }

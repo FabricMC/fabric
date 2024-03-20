@@ -68,6 +68,7 @@ import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryBuilder;
 import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -402,7 +403,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		public void accept(RegistryWrapper.WrapperLookup registryLookup, BiConsumer<Identifier, LootTable.Builder> consumer) {
+		public void accept(RegistryWrapper.WrapperLookup registryLookup, BiConsumer<RegistryKey<LootTable>, LootTable.Builder> consumer) {
 			withConditions(consumer, ALWAYS_LOADED).accept(
 					LootTables.PIGLIN_BARTERING_GAMEPLAY,
 					LootTable.builder().pool(
@@ -434,7 +435,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 	private static class TestPredicateProvider extends FabricCodecDataProvider<LootCondition> {
 		private TestPredicateProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-			super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, "predicates", LootConditionTypes.CODEC);
+			super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, "predicates", LootConditionTypes.field_50031);
 		}
 
 		@Override

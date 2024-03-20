@@ -76,13 +76,7 @@ public class UpdatingItem extends Item {
 	}
 
 	@Override
-	public boolean isSuitableFor(ItemStack stack, BlockState state) {
-		// Suitable for everything for 15 seconds every 30 seconds.
-		return isEnabled(stack);
-	}
-
-	@Override
-	public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
-		return isEnabled(stack) ? 20 : super.getMiningSpeedMultiplier(stack, state);
+	public float method_58404(ItemStack stack, BlockState state) {
+		return isEnabled(stack) ? 20 : super.method_58404(stack, state);
 	}
 }

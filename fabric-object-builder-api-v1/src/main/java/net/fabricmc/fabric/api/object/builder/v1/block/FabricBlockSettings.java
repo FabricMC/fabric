@@ -26,10 +26,11 @@ import net.minecraft.block.MapColor;
 import net.minecraft.block.enums.Instrument;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.EntityType;
+import net.minecraft.loot.LootTable;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.mixin.object.builder.AbstractBlockAccessor;
 import net.fabricmc.fabric.mixin.object.builder.AbstractBlockSettingsAccessor;
@@ -407,7 +408,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	}
 
 	@Deprecated
-	public FabricBlockSettings drops(Identifier dropTableId) {
+	public FabricBlockSettings drops(RegistryKey<LootTable> dropTableId) {
 		((AbstractBlockSettingsAccessor) this).setLootTableId(dropTableId);
 		return this;
 	}

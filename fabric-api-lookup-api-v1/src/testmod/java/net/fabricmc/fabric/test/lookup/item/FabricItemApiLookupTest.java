@@ -55,7 +55,7 @@ public class FabricItemApiLookupTest {
 			Item item = stack.getItem();
 
 			if (item instanceof ToolItem) {
-				return () -> Text.literal("Tool mining level: " + ((ToolItem) item).getMaterial().getMiningLevel());
+				return () -> Text.literal("Tool mining level: " + ((ToolItem) item).getMaterial());
 			} else {
 				return null;
 			}

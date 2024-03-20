@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -38,15 +35,5 @@ public interface FabricItemStack {
 	 */
 	default ItemStack getRecipeRemainder() {
 		return ((ItemStack) this).getItem().getRecipeRemainder((ItemStack) this);
-	}
-
-	/**
-	 * Stack-aware version of {@link Item#getFoodComponent()}.
-	 * See {@link FabricItem#getFoodComponent(ItemStack)} for a more in depth description.
-	 *
-	 * @return this item stack's {@link FoodComponent}, or {@code null} if none was set
-	 */
-	default @Nullable FoodComponent getFoodComponent() {
-		return ((ItemStack) this).getItem().getFoodComponent(((ItemStack) this));
 	}
 }
