@@ -5,21 +5,15 @@
   "mixins": [
     "AbstractFurnaceBlockEntityMixin",
     "AnvilScreenHandlerMixin",
-    "BlockItemMixin",
     "BrewingStandBlockEntityMixin",
-    "CatEntityMixin",
-    "CookingRecipeJsonBuilderMixin",
     "EnchantCommandMixin",
     "EnchantmentHelperMixin",
     "EnchantRandomlyLootFunctionMixin",
-    "FoxEntityMixin",
-    "HungerManagerMixin",
     "ItemMixin",
     "ItemSettingsMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "RecipeMixin",
-    "WolfEntityMixin"
+    "RecipeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

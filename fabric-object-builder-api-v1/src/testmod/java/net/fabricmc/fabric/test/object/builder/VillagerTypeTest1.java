@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.item.Item;
@@ -67,7 +68,7 @@ public class VillagerTypeTest1 implements ModInitializer {
 			builder.pool(
 					FOOD_POOL_ID,
 					5,
-					Registries.ITEM.stream().filter(item -> item.getFoodComponent() != null).map(
+					Registries.ITEM.stream().filter(item -> item.getDefaultStack().contains(DataComponentTypes.FOOD)).map(
 							item -> new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.NETHERITE_INGOT), new ItemStack(item), 3, 4, 0.15F))
 					).toList()
 			);

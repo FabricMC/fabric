@@ -23,11 +23,7 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -59,21 +55,5 @@ public abstract class ItemStackMixin implements FabricItemStack {
 		}
 
 		original.call(instance, amount, random, serverPlayerEntity, runnable);
-	}
-
-	@Redirect(
-			method = "isSuitableFor",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/item/Item;isSuitableFor(Lnet/minecraft/block/BlockState;)Z"
-			)
-	)
-	public boolean hookIsSuitableFor(Item item, BlockState state) {
-		return item.isSuitableFor((ItemStack) (Object) this, state);
-	}
-
-	@Inject(method = "isFood", at = @At("HEAD"), cancellable = true)
-	public void isStackAwareFood(CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(this.getFoodComponent() != null);
 	}
 }

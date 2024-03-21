@@ -12,8 +12,7 @@
     "main": [
       "net.fabricmc.fabric.test.item.CustomDamageTest",
       "net.fabricmc.fabric.test.item.ItemUpdateAnimationTest",
-      "net.fabricmc.fabric.test.item.ArmorKnockbackResistanceTest",
-      "net.fabricmc.fabric.test.item.FoodGameInitializer"
+      "net.fabricmc.fabric.test.item.ArmorKnockbackResistanceTest"
     ],
     "client": [
       "net.fabricmc.fabric.test.item.client.TooltipTests"
@@ -21,8 +20,7 @@
     "fabric-gametest" : [
       "net.fabricmc.fabric.test.item.gametest.BrewingStandGameTest",
       "net.fabricmc.fabric.test.item.gametest.FurnaceGameTest",
-      "net.fabricmc.fabric.test.item.gametest.RecipeGameTest",
-      "net.fabricmc.fabric.test.item.gametest.FoodGameTest"
+      "net.fabricmc.fabric.test.item.gametest.RecipeGameTest"
     ]
   }
 }

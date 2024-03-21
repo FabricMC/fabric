@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.resource.conditions;
 
-import net.minecraft.loot.LootDataType;
-import net.minecraft.loot.LootManager;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
@@ -70,6 +68,7 @@ public class ConditionalResourcesTest {
 		context.complete();
 	}
 
+	/* TODO 1.20.5
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void conditionalPredicates(TestContext context) {
 		// Predicates are internally handled as a kind of loot data,
@@ -101,5 +100,5 @@ public class ConditionalResourcesTest {
 		}
 
 		context.complete();
-	}
+	}*/
 }
