@@ -20,7 +20,6 @@ import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
@@ -159,24 +158,6 @@ public interface FabricItem {
 	 */
 	default boolean canBeEnchantedWith(ItemStack stack, Enchantment enchantment, EnchantingContext context) {
 		return enchantment.isAcceptableItem(stack);
-	}
-
-	/**
-	 * Returns a (stack-aware) {@link ItemEnchantmentsComponent} of <em>intrinsic enchantments</em> for this item.
-	 * These enchantments have their usual gameplay effects, but do not produce glint or otherwise show on the item,
-	 * and cannot be removed with a grindstone. For example, a mod that adds an electric multi-tool might want to give
-	 * it a Silk Touch-like effect, without relying on the vanilla system.
-	 *
-	 * <p>By default, having an intrinsic enchantment does not prevent the item from being enchanted with the same one
-	 * by normal means. In such a case, only the highest level of the enchantment will be retained. To prevent the item
-	 * from receiving certain enchantments, use {@link #canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)}.</p>
-	 *
-	 * @param stack the current stack
-	 * @return an {@link ItemEnchantmentsComponent} describing the intrinsic enchantments
-	 * @see #canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)
-	 */
-	default ItemEnchantmentsComponent getIntrinsicEnchantments(ItemStack stack) {
-		return ItemEnchantmentsComponent.DEFAULT;
 	}
 
 	/**

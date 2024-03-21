@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.test.item;
 
 import net.minecraft.component.DataComponentType;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -33,7 +32,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.Codecs;
 
 import net.fabricmc.api.ModInitializer;
@@ -75,14 +73,6 @@ public class CustomDamageTest implements ModInitializer {
 		}));
 	}
 
-	public static final ItemEnchantmentsComponent INTRINSIC_ENCHANTMENTS = Util.make(
-			new ItemEnchantmentsComponent.Builder(ItemEnchantmentsComponent.DEFAULT),
-			builder -> {
-				builder.set(Enchantments.SILK_TOUCH, 1);
-				builder.set(Enchantments.FIRE_ASPECT, 1);
-			}
-	).build();
-
 	public static class WeirdPick extends PickaxeItem {
 		protected WeirdPick() {
 			super(ToolMaterials.GOLD, new Item.Settings().customDamage(WEIRD_DAMAGE_HANDLER));
@@ -110,15 +100,6 @@ public class CustomDamageTest implements ModInitializer {
 		public boolean canBeEnchantedWith(ItemStack stack, Enchantment enchantment, EnchantingContext context) {
 			return context == EnchantingContext.ANVIL && enchantment == Enchantments.FIRE_ASPECT
 				|| enchantment != Enchantments.FORTUNE && super.canBeEnchantedWith(stack, enchantment, context);
-		}
-
-		@Override
-		public ItemEnchantmentsComponent getIntrinsicEnchantments(ItemStack stack) {
-			if (stack.isDamaged()) {
-				return INTRINSIC_ENCHANTMENTS;
-			} else {
-				return super.getIntrinsicEnchantments(stack);
-			}
 		}
 	}
 }

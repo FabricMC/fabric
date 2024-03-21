@@ -16,11 +16,8 @@
 
 package net.fabricmc.fabric.mixin.item;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.enchantment.Enchantment;
@@ -37,20 +34,5 @@ abstract class EnchantmentHelperMixin {
 	)
 	private static boolean useCustomEnchantingChecks(Enchantment instance, ItemStack stack) {
 		return stack.canBeEnchantedWith(instance, EnchantingContext.RANDOM_ENCHANTMENT);
-	}
-
-	@ModifyReturnValue(method = "getLevel", at = @At("RETURN"))
-	private static int getIntrinsicLevelIfPresent(int original, Enchantment ench, ItemStack stack) {
-		int intrinsicLevel = stack.getItem().getIntrinsicEnchantments(stack).getLevel(ench);
-		return Math.max(original, intrinsicLevel);
-	}
-
-	@ModifyArg(
-			method = "forEachEnchantment(Lnet/minecraft/enchantment/EnchantmentHelper$Consumer;Lnet/minecraft/item/ItemStack;)V",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper$Consumer;accept(Lnet/minecraft/enchantment/Enchantment;I)V")
-	)
-	private static int iterateOverIntrinsicEnchantments(Enchantment enchantment, int original, @Local(argsOnly = true) ItemStack stack) {
-		int intrinsicLevel = stack.getItem().getIntrinsicEnchantments(stack).getLevel(enchantment);
-		return Math.max(original, intrinsicLevel);
 	}
 }
