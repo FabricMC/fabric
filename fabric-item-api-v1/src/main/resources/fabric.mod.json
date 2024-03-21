@@ -22,6 +22,7 @@
       "environment": "client"
     }
   ],
+  "accessWidener": "fabric-item-api-v1.accesswidener",
   "depends": {
     "fabricloader": ">=0.15.1",
     "fabric-api-base": "*"
