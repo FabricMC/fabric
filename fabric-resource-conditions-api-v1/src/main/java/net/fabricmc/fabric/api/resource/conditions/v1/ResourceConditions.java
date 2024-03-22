@@ -25,23 +25,9 @@ public class ResourceConditions {
 	private static final Map<Identifier, ResourceConditionType<?>> REGISTERED_CONDITIONS = new ConcurrentHashMap<>();
 
 	public static final String CONDITIONS_KEY = "fabric:load_conditions";
-<<<<<<< Updated upstream
-	/**
-	 * The key ({@value}) identifying the resource condition's identifier inside a condition object.
-	 */
-	public static final String CONDITION_ID_KEY = "condition";
 
-	/**
-	 * Register a new resource condition.
-	 *
-	 * @throws IllegalArgumentException If a resource condition is already registered with the same name.
-	 */
-	public static void register(Identifier identifier, Predicate<JsonObject> condition) {
-		Objects.requireNonNull(identifier, "Identifier may not be null.");
-=======
 
 	public static void register(ResourceConditionType<?> condition) {
->>>>>>> Stashed changes
 		Objects.requireNonNull(condition, "Condition may not be null.");
 
 		if (REGISTERED_CONDITIONS.put(condition.id(), condition) != null) {
@@ -61,25 +47,8 @@ public class ResourceConditions {
 		return new NotResourceCondition(condition);
 	}
 
-<<<<<<< Updated upstream
-	/**
-	 * Check if the passed condition object matches.
-	 *
-	 * @throws RuntimeException If some condition failed to parse.
-	 */
-	public static boolean conditionMatches(JsonObject condition) throws RuntimeException {
-		Identifier conditionId = new Identifier(JsonHelper.getString(condition, CONDITION_ID_KEY));
-		Predicate<JsonObject> jrc = get(conditionId);
-
-		if (jrc == null) {
-			throw new JsonParseException("Unknown recipe condition: " + conditionId);
-		} else {
-			return jrc.test(condition);
-		}
-=======
 	public static ResourceCondition and(ResourceCondition... conditions) {
 		return new AndResourceCondition(List.of(conditions));
->>>>>>> Stashed changes
 	}
 
 	public static ResourceCondition or(ResourceCondition... conditions) {
