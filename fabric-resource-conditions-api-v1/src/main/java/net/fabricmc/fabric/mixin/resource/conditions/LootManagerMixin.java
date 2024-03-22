@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.resource.conditions;
 
 import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -25,6 +26,12 @@ import java.util.concurrent.Executor;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
+
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,7 +46,6 @@ import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 /**
@@ -70,15 +76,19 @@ public class LootManagerMixin {
 			JsonObject obj = json.getAsJsonObject();
 
 			if (obj.has(ResourceConditions.CONDITIONS_KEY)) {
-				boolean matched = ResourceConditions.objectMatchesConditions(obj);
+				DataResult<List<ResourceCondition>> conditions = ResourceCondition.CONDITIONS_CODEC.parse(JsonOps.INSTANCE, obj);
+				if (conditions.result().isPresent()) {
+					boolean matched = ResourceConditionsImpl.conditionsMet(conditions.result().get(), true);
+					if (!matched) {
+						ci.cancel();
+					}
 
-				if (!matched) {
-					ci.cancel();
-				}
-
-				if (ResourceConditionsImpl.LOGGER.isDebugEnabled()) {
-					String verdict = matched ? "Allowed" : "Rejected";
-					ResourceConditionsImpl.LOGGER.debug("{} resource of type {} with id {}", verdict, lootDataType.getId(), id);
+					if (ResourceConditionsImpl.LOGGER.isDebugEnabled()) {
+						String verdict = matched ? "Allowed" : "Rejected";
+						ResourceConditionsImpl.LOGGER.debug("{} resource of type {} with id {}", verdict, lootDataType.getId(), id);
+					}
+				} else {
+					ResourceConditionsImpl.LOGGER.error("Failed to parse resource conditions for file of type {} with id {}, skipping: {}", lootDataType.getId(), id, conditions.error().get().message());
 				}
 			}
 		}

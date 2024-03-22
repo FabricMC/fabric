@@ -17,6 +17,9 @@
 package net.fabricmc.fabric.mixin.datagen;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,7 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.data.DataProvider;
 
-import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 
 @Mixin(DataProvider.class)

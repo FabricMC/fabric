@@ -27,6 +27,8 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
+
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
@@ -39,7 +41,6 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
-import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 public final class FabricLootTableProviderImpl {
@@ -52,10 +53,10 @@ public final class FabricLootTableProviderImpl {
 			LootContextType lootContextType,
 			FabricDataOutput fabricDataOutput) {
 		HashMap<Identifier, LootTable> builders = Maps.newHashMap();
-		HashMap<Identifier, ConditionJsonProvider[]> conditionMap = new HashMap<>();
+		HashMap<Identifier, ResourceCondition[]> conditionMap = new HashMap<>();
 
 		provider.accept((identifier, builder) -> {
-			ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(builder);
+			ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(builder);
 			conditionMap.put(identifier, conditions);
 
 			if (builders.put(identifier, builder.type(lootContextType).build()) != null) {
@@ -67,7 +68,7 @@ public final class FabricLootTableProviderImpl {
 
 		for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
 			JsonObject tableJson = (JsonObject) Util.getResult(LootTable.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue()), IllegalStateException::new);
-			ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
+			ResourceCondition.addConditions(tableJson, conditionMap.remove(entry.getKey()));
 
 			futures.add(DataProvider.writeToPath(writer, tableJson, getOutputPath(fabricDataOutput, entry.getKey())));
 		}

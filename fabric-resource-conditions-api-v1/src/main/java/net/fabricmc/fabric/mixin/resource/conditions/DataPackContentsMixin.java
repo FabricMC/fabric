@@ -19,6 +19,8 @@ package net.fabricmc.fabric.mixin.resource.conditions;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

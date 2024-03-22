@@ -25,6 +25,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
+
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.advancement.Advancement;
@@ -42,7 +45,6 @@ import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 /**
@@ -67,7 +69,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	/**
 	 * Return a new exporter that applies the specified conditions to any recipe json provider it receives.
 	 */
-	protected RecipeExporter withConditions(RecipeExporter exporter, ConditionJsonProvider... conditions) {
+	protected RecipeExporter withConditions(RecipeExporter exporter, ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 		return new RecipeExporter() {
 			@Override
@@ -97,14 +99,15 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 				}
 
 				JsonObject recipeJson = Util.getResult(Recipe.CODEC.encodeStart(JsonOps.INSTANCE, recipe), IllegalStateException::new).getAsJsonObject();
-				ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(recipe);
-				ConditionJsonProvider.write(recipeJson, conditions);
+				ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(recipe);
+				ResourceCondition.addConditions(recipeJson, conditions);
 
 				list.add(DataProvider.writeToPath(writer, recipeJson, recipesPathResolver.resolveJson(identifier)));
 
 				if (advancement != null) {
 					JsonObject advancementJson = Util.getResult(Advancement.CODEC.encodeStart(JsonOps.INSTANCE, advancement.value()), IllegalStateException::new).getAsJsonObject();
-					ConditionJsonProvider.write(advancementJson, conditions);
+
+					ResourceCondition.addConditions(advancementJson, conditions);
 					list.add(DataProvider.writeToPath(writer, advancementJson, advancementsPathResolver.resolveJson(getRecipeIdentifier(advancement.id()))));
 				}
 			}

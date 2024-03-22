@@ -28,6 +28,8 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
+
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.data.DataOutput;
@@ -38,7 +40,6 @@ import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 /**
@@ -65,7 +66,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	/**
 	 * Return a new exporter that applies the specified conditions to any advancement it receives.
 	 */
-	protected Consumer<AdvancementEntry> withConditions(Consumer<AdvancementEntry> exporter, ConditionJsonProvider... conditions) {
+	protected Consumer<AdvancementEntry> withConditions(Consumer<AdvancementEntry> exporter, ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 		return advancement -> {
 			FabricDataGenHelper.addConditions(advancement, conditions);
@@ -88,7 +89,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 			}
 
 			JsonObject advancementJson = Util.getResult(Advancement.CODEC.encodeStart(JsonOps.INSTANCE, advancement.value()), IllegalStateException::new).getAsJsonObject();
-			ConditionJsonProvider.write(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
+			ResourceCondition.addConditions(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
 
 			futures.add(DataProvider.writeToPath(writer, advancementJson, getOutputPath(advancement)));
 		}
