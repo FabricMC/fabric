@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.loot.v2;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -37,9 +37,9 @@ public final class LootTableEvents {
 	 * This event can be used to replace loot tables.
 	 * If a loot table is replaced, the iteration will stop for that loot table.
 	 */
-	public static final Event<Replace> REPLACE = EventFactory.createArrayBacked(Replace.class, listeners -> (resourceManager, lootManager, id, original, source) -> {
+	public static final Event<Replace> REPLACE = EventFactory.createArrayBacked(Replace.class, listeners -> (key, original, source) -> {
 		for (Replace listener : listeners) {
-			@Nullable LootTable replaced = listener.replaceLootTable(resourceManager, lootManager, id, original, source);
+			@Nullable LootTable replaced = listener.replaceLootTable(key, original, source);
 
 			if (replaced != null) {
 				return replaced;
@@ -66,9 +66,9 @@ public final class LootTableEvents {
 	 *
 	 * <pre>
 	 * {@code
-	 * LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
+	 * LootTableEvents.MODIFY.register((key, tableBuilder, source) -> {
 	 *     // If the loot table is for the cobblestone block and it is not overridden by a user:
-	 *     if (Blocks.COBBLESTONE.getLootTableId().equals(id) && source.isBuiltin()) {
+	 *     if (Blocks.COBBLESTONE.getLootTableId().equals(key) && source.isBuiltin()) {
 	 *         // Create a new loot pool that will hold the diamonds.
 	 *         LootPool.Builder pool = LootPool.builder()
 	 *             // Add diamonds...
@@ -83,9 +83,9 @@ public final class LootTableEvents {
 	 * }
 	 * </pre>
 	 */
-	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (resourceManager, lootManager, id, tableBuilder, source) -> {
+	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (key, tableBuilder, source) -> {
 		for (Modify listener : listeners) {
-			listener.modifyLootTable(resourceManager, lootManager, id, tableBuilder, source);
+			listener.modifyLootTable(key, tableBuilder, source);
 		}
 	});
 
@@ -102,28 +102,24 @@ public final class LootTableEvents {
 		/**
 		 * Replaces loot tables.
 		 *
-		 * @param resourceManager the server resource manager
-		 * @param lootManager     the loot manager
-		 * @param id              the loot table ID
+		 * @param key              the loot table key
 		 * @param original        the original loot table
 		 * @param source          the source of the original loot table
 		 * @return the new loot table, or null if it wasn't replaced
 		 */
 		@Nullable
-		LootTable replaceLootTable(ResourceManager resourceManager, LootManager lootManager, Identifier id, LootTable original, LootTableSource source);
+		LootTable replaceLootTable(RegistryKey<LootTable> key, LootTable original, LootTableSource source);
 	}
 
 	public interface Modify {
 		/**
 		 * Called when a loot table is loading to modify loot tables.
 		 *
-		 * @param resourceManager the server resource manager
-		 * @param lootManager     the loot manager
-		 * @param id              the loot table ID
+		 * @param key              the loot table key
 		 * @param tableBuilder    a builder of the loot table being loaded
 		 * @param source          the source of the loot table
 		 */
-		void modifyLootTable(ResourceManager resourceManager, LootManager lootManager, Identifier id, LootTable.Builder tableBuilder, LootTableSource source);
+		void modifyLootTable(RegistryKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source);
 	}
 
 	public interface Loaded {
@@ -131,8 +127,8 @@ public final class LootTableEvents {
 		 * Called when all loot tables have been loaded and {@link LootTableEvents#REPLACE} and {@link LootTableEvents#MODIFY} have been invoked.
 		 *
 		 * @param resourceManager the server resource manager
-		 * @param lootManager     the loot manager
+		 * @param lootRegistry     the loot registry
 		 */
-		void onLootTablesLoaded(ResourceManager resourceManager, LootManager lootManager);
+		void onLootTablesLoaded(ResourceManager resourceManager, Registry<LootTable> lootRegistry);
 	}
 }

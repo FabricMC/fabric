@@ -16,24 +16,23 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-
-import com.google.common.collect.ImmutableMap;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.loot.LootDataKey;
-import net.minecraft.loot.LootManager;
+import net.minecraft.loot.LootDataType;
 import net.minecraft.loot.LootTable;
+import net.minecraft.registry.MutableRegistry;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.ReloadableRegistries;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceReloader;
-import net.minecraft.util.profiler.Profiler;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
@@ -43,58 +42,43 @@ import net.fabricmc.fabric.impl.loot.LootUtil;
 /**
  * Implements the events from {@link LootTableEvents}.
  */
-@Mixin(LootManager.class)
+@Mixin(ReloadableRegistries.class)
 abstract class LootManagerMixin {
-	@Shadow
-	private Map<LootDataKey<?>, ?> keyToValue;
+	@ModifyArg(method = "method_58286", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/MutableRegistry;add(Lnet/minecraft/registry/RegistryKey;Ljava/lang/Object;Lnet/minecraft/registry/entry/RegistryEntryInfo;)Lnet/minecraft/registry/entry/RegistryEntry$Reference;"), index = 1)
+	private static Object modifyLootTable(Object value, @Local(argsOnly = true) Identifier id) {
+		if (!(value instanceof LootTable table)) return value;
 
-	@Inject(method = "reload", at = @At("RETURN"), cancellable = true)
-	private void reload(ResourceReloader.Synchronizer synchronizer, ResourceManager manager, Profiler prepareProfiler, Profiler applyProfiler, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
-		//noinspection DataFlowIssue
-		LootManager lootManager = (LootManager) (Object) this;
-		cir.setReturnValue(cir.getReturnValue().thenRun(() -> applyLootTableEvents(manager, lootManager)));
+		if (table == LootTable.EMPTY) {
+			// This is a special table and cannot be modified.
+			return value;
+		}
+
+		RegistryKey<LootTable> key = RegistryKey.of(RegistryKeys.LOOT_TABLE, id);
+		// Populated inside JsonDataLoaderMixin
+		LootTableSource source = LootUtil.SOURCES.get().getOrDefault(id, LootTableSource.DATA_PACK);
+		// Invoke the REPLACE event for the current loot table.
+		LootTable replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(key, table, source);
+
+		if (replacement != null) {
+			// Set the loot table to MODIFY to be the replacement loot table.
+			// The MODIFY event will also see it as a replaced loot table via the source.
+			table = replacement;
+			source = LootTableSource.REPLACED;
+		}
+
+		// Turn the current table into a modifiable builder and invoke the MODIFY event.
+		LootTable.Builder builder = FabricLootTableBuilder.copyOf(table);
+		LootTableEvents.MODIFY.invoker().modifyLootTable(key, builder, source);
+
+		return builder.build();
 	}
 
-	@Unique
-	private void applyLootTableEvents(ResourceManager resourceManager, LootManager lootManager) {
-		// The builder for the new LootManager.tables map with modified loot tables.
-		// We're using an immutable map to match vanilla.
-		ImmutableMap.Builder<LootDataKey<?>, Object> newTables = ImmutableMap.builder();
+	@SuppressWarnings("unchecked")
+	@Inject(method = "method_58279", at = @At("RETURN"))
+	private static void onLootTablesLoaded(LootDataType lootDataType, ResourceManager resourceManager, RegistryOps registryOps, CallbackInfoReturnable<MutableRegistry> cir) {
+		if (lootDataType != LootDataType.LOOT_TABLES) return;
 
-		this.keyToValue.forEach((dataKey, entry) -> {
-			if (dataKey == LootManager.EMPTY_LOOT_TABLE) {
-				// This is a special table and cannot be modified.
-				// Vanilla also warns about that.
-				newTables.put(dataKey, entry);
-				return;
-			}
-
-			if (!(entry instanceof LootTable table)) {
-				// We only want to modify loot tables
-				newTables.put(dataKey, entry);
-				return;
-			}
-
-			LootTableSource source = LootUtil.determineSource(dataKey.id(), resourceManager);
-			// Invoke the REPLACE event for the current loot table.
-			LootTable replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(resourceManager, lootManager, dataKey.id(), table, source);
-
-			if (replacement != null) {
-				// Set the loot table to MODIFY to be the replacement loot table.
-				// The MODIFY event will also see it as a replaced loot table via the source.
-				table = replacement;
-				source = LootTableSource.REPLACED;
-			}
-
-			// Turn the current table into a modifiable builder and invoke the MODIFY event.
-			LootTable.Builder builder = FabricLootTableBuilder.copyOf(table);
-			LootTableEvents.MODIFY.invoker().modifyLootTable(resourceManager, lootManager, dataKey.id(), builder, source);
-
-			// Turn the builder back into a loot table and store it in the new table.
-			newTables.put(dataKey, builder.build());
-		});
-
-		this.keyToValue = newTables.build();
-		LootTableEvents.ALL_LOADED.invoker().onLootTablesLoaded(resourceManager, lootManager);
+		LootTableEvents.ALL_LOADED.invoker().onLootTablesLoaded(resourceManager, (Registry<LootTable>) cir.getReturnValue());
+		LootUtil.SOURCES.remove();
 	}
 }
