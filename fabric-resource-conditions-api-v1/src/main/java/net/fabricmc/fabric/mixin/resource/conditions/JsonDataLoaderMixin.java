@@ -17,10 +17,19 @@
 package net.fabricmc.fabric.mixin.resource.conditions;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
+
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
+
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -30,7 +39,6 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
 
-import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 /**
@@ -56,17 +64,20 @@ public class JsonDataLoaderMixin extends SinglePreparationResourceReloaderMixin 
 
 			if (resourceData.isJsonObject()) {
 				JsonObject obj = resourceData.getAsJsonObject();
-
 				if (obj.has(ResourceConditions.CONDITIONS_KEY)) {
-					boolean matched = ResourceConditions.objectMatchesConditions(obj);
+					DataResult<List<ResourceCondition>> conditions = ResourceCondition.CONDITIONS_CODEC.parse(JsonOps.INSTANCE, obj);
+					if (conditions.result().isPresent()) {
+						boolean matched = ResourceConditionsImpl.conditionsMet(conditions.result().get(), true);
+						if (!matched) {
+							it.remove();
+						}
 
-					if (!matched) {
-						it.remove();
-					}
-
-					if (debugLogEnabled) {
-						String verdict = matched ? "Allowed" : "Rejected";
-						ResourceConditionsImpl.LOGGER.debug("{} resource of type {} with id {}", verdict, dataType, entry.getKey());
+						if (debugLogEnabled) {
+							String verdict = matched ? "Allowed" : "Rejected";
+							ResourceConditionsImpl.LOGGER.debug("{} resource of type {} with id {}", verdict, dataType, entry.getKey());
+						}
+					} else {
+						ResourceConditionsImpl.LOGGER.error("Failed to parse resource conditions for file of type {} with id {}, skipping: {}", dataType, entry.getKey(), conditions.error().get().message());
 					}
 				}
 			}
