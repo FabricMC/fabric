@@ -43,7 +43,7 @@ import net.fabricmc.fabric.impl.loot.LootUtil;
  * Implements the events from {@link LootTableEvents}.
  */
 @Mixin(ReloadableRegistries.class)
-abstract class LootManagerMixin {
+abstract class ReloadableRegistriesMixin {
 	@ModifyArg(method = "method_58286", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/MutableRegistry;add(Lnet/minecraft/registry/RegistryKey;Ljava/lang/Object;Lnet/minecraft/registry/entry/RegistryEntryInfo;)Lnet/minecraft/registry/entry/RegistryEntry$Reference;"), index = 1)
 	private static Object modifyLootTable(Object value, @Local(argsOnly = true) Identifier id) {
 		if (!(value instanceof LootTable table)) return value;
