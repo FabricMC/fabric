@@ -55,6 +55,7 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 			return null;
 		});
 	}
+
 	private final Identifier identifier;
 	private final Class<A> apiClass;
 	private final Class<C> contextClass;

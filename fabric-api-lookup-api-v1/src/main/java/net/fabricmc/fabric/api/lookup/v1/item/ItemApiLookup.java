@@ -142,7 +142,7 @@ public interface ItemApiLookup<A, C> {
 	}
 
 	@SuppressWarnings("unchecked")
-	default void registerSelf(ItemConvertible @NotNull ... items) {
+	default void registerSelf(ItemConvertible @NotNull... items) {
 		for (ItemConvertible itemConvertible : items) {
 			Item item = itemConvertible.asItem();
 
@@ -159,7 +159,7 @@ public interface ItemApiLookup<A, C> {
 		registerForItems((itemStack, context) -> (A) itemStack.getItem(), items);
 	}
 
-	default void registerForItems(@NotNull ItemApiProvider<A, C> provider, ItemConvertible @NotNull ... items) {
+	default void registerForItems(@NotNull ItemApiProvider<A, C> provider, ItemConvertible @NotNull... items) {
 		Objects.requireNonNull(provider, "ItemApiProvider may not be null.");
 
 		if (items.length == 0) {
