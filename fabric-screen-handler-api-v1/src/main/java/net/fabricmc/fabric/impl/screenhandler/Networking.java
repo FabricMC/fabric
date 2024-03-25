@@ -103,6 +103,7 @@ public final class Networking implements ModInitializer {
 		private void write(RegistryByteBuf buf) {
 			buf.writeIdentifier(this.identifier);
 			buf.writeByte(this.syncId);
+			TextCodecs.REGISTRY_PACKET_CODEC.encode(buf, this.title);
 			this.innerCodec.encode(buf, this.data);
 		}
 
