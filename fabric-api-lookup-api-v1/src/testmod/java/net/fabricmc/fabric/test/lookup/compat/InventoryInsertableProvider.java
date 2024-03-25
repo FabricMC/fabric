@@ -27,7 +27,7 @@ import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.test.lookup.api.ItemInsertable;
 
-public class InventoryInsertableProvider implements BiFunction<BlockEntity, @NotNull Direction,ItemInsertable> {
+public class InventoryInsertableProvider implements BiFunction<BlockEntity, @NotNull Direction, ItemInsertable> {
 	@Override
 	public @Nullable ItemInsertable apply(BlockEntity blockEntity, @NotNull Direction context) {
 		if (blockEntity instanceof Inventory) {

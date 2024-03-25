@@ -53,32 +53,29 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 	public static <A, C> BlockApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
 		return (BlockApiLookup<A, C>) LOOKUPS.getLookup(lookupId, apiClass, contextClass);
 	}
-	@ApiStatus.Internal
-	public static <A,C>  Event<BlockApiProvider<A,C>> newEvent() {
+
+	public static <A, C> Event<BlockApiProvider<A, C>> newEvent() {
 		return EventFactory.createArrayBacked(BlockApiProvider.class, providers -> (world, pos, state, blockEntity, context) -> {
 			for (BlockApiProvider<A, C> provider : providers) {
 				A api = provider.find(world, pos, state, blockEntity, context);
-				if (api!=null)return api;
+				if (api != null) return api;
 			}
+
 			return null;
 		});
 	}
+
 	private final Identifier identifier;
 	private final Class<A> apiClass;
 	private final Class<C> contextClass;
-	/**
-	 * @deprecated see {@link #blockSpecific}
-	 */
-	@Deprecated(forRemoval = true)
-	private final ApiProviderMap<Block, BlockApiProvider<A, C>> providerMap = ApiProviderMap.create();
-	private final Event<BlockApiProvider<A,C>> preliminary = newEvent();
-	private final ApiProviderMap<Block,Event<BlockApiProvider<A,C>>> blockSpecific = ApiProviderMap.create();
+	private final Event<BlockApiProvider<A, C>> preliminary = newEvent();
+	private final ApiProviderMap<Block, Event<BlockApiProvider<A, C>>> blockSpecific = ApiProviderMap.create();
 	/**
 	 * It can't reflect phase order.
 	 */
 	@ApiStatus.Experimental
-	private final Multimap<Block,BlockApiProvider<A, C>> blockSpecificProviders = Multimaps.synchronizedMultimap(MultimapBuilder.hashKeys().arrayListValues().build());
-	private final Event<BlockApiProvider<A,C>> fallback = newEvent();
+	private final Multimap<Block, BlockApiProvider<A, C>> blockSpecificProviders = Multimaps.synchronizedMultimap(MultimapBuilder.hashKeys().arrayListValues().build());
+	private final Event<BlockApiProvider<A, C>> fallback = newEvent();
 	/**
 	 * It can't reflect phase order.
 	 */
@@ -110,12 +107,13 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 				throw new IllegalArgumentException(errorMessage);
 			}
 		}
-		BlockApiLookup.registerForBlockEntities(this,(blockEntity, context) -> (A) blockEntity, blockEntityTypes );
+
+		BlockApiLookup.registerForBlockEntities(this, (blockEntity, context) -> (A) blockEntity, blockEntityTypes);
 	}
 
 	@Override
 	public void registerFallback(@NotNull BlockApiProvider<A, C> fallbackProvider) {
-BlockApiLookup.super.registerFallback(fallbackProvider);
+		BlockApiLookup.super.registerFallback(fallbackProvider);
 		fallbackProviders.add(fallbackProvider);
 	}
 
@@ -137,11 +135,11 @@ BlockApiLookup.super.registerFallback(fallbackProvider);
 	@SuppressWarnings("removal")//though just override while no invoke, idea still warns
 	@Override
 	@Deprecated(forRemoval = true)
-
 	public @Nullable BlockApiProvider<A, C> getProvider(Block block) {
 		for (BlockApiProvider<A, C> provider : blockSpecificProviders.get(block)) {
 			return provider;
 		}
+
 		return null;
 	}
 
@@ -158,15 +156,19 @@ BlockApiLookup.super.registerFallback(fallbackProvider);
 	public @UnmodifiableView Map<Block, Event<BlockApiProvider<A, C>>> blockSpecific() {
 		return blockSpecific.asMap();
 	}
+
 	@Override
 	public @NotNull Event<BlockApiProvider<A, C>> getSpecificFor(Block block) {
-		var event = blockSpecific.get(block);
-		if (event==null){
-			event=newEvent();
-			blockSpecific.putIfAbsent(block,event);
+		Event<BlockApiProvider<A, C>> event = blockSpecific.get(block);
+
+		if (event == null) {
+			event = newEvent();
+			blockSpecific.putIfAbsent(block, event);
 		}
+
 		return event;
 	}
+
 	@Override
 	public Event<BlockApiProvider<A, C>> fallback() {
 		return fallback;
@@ -174,9 +176,9 @@ BlockApiLookup.super.registerFallback(fallbackProvider);
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <B extends BlockEntity> void registerForBlockEntity(@NotNull BlockEntityType<? extends B> blockEntityType, @NotNull BiFunction<? super B, ? super C,? extends @Nullable A> provider) {
+	public <B extends BlockEntity> void registerForBlockEntity(@NotNull BlockEntityType<? extends B> blockEntityType, @NotNull BiFunction<? super B, ? super C, ? extends @Nullable A> provider) {
 		for (Block block : ((BlockEntityTypeAccessor) blockEntityType).getBlocks().toArray(new Block[0])) {
-			getSpecificFor(block).register((world, pos, state, blockEntity, context) -> provider.apply((B)blockEntity,context));
+			getSpecificFor(block).register((world, pos, state, blockEntity, context) -> provider.apply((B) blockEntity, context));
 		}
 	}
 }

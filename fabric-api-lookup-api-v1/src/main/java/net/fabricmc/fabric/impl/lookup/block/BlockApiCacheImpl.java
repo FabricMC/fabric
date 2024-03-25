@@ -84,13 +84,14 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 
 		if (cachedProviders != null) {
 			A instance = cachedProviders.invoker().find(world, pos, state, cachedBlockEntity, context);
+
 			if (instance != null) {
 				return instance;
 			}
 		}
 
 		// Query the fallback providers
-		return lookup.fallback().invoker().find(world,pos,state,cachedBlockEntity,context);
+		return lookup.fallback().invoker().find(world, pos, state, cachedBlockEntity, context);
 	}
 
 	@Override

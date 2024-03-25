@@ -69,8 +69,8 @@ public class FabricApiLookupTest implements ModInitializer {
 		InventoryExtractableProvider extractableProvider = new InventoryExtractableProvider();
 		InventoryInsertableProvider insertableProvider = new InventoryInsertableProvider();
 
-		BlockApiLookup.registerForBlockEntities(ItemApis.INSERTABLE,insertableProvider, BlockEntityType.CHEST, BlockEntityType.DISPENSER, BlockEntityType.DROPPER, BlockEntityType.HOPPER);
-		BlockApiLookup.registerForBlockEntities(ItemApis.EXTRACTABLE,extractableProvider, BlockEntityType.CHEST, BlockEntityType.DISPENSER, BlockEntityType.DROPPER, BlockEntityType.HOPPER);
+		BlockApiLookup.registerForBlockEntities(ItemApis.INSERTABLE, insertableProvider, BlockEntityType.CHEST, BlockEntityType.DISPENSER, BlockEntityType.DROPPER, BlockEntityType.HOPPER);
+		BlockApiLookup.registerForBlockEntities(ItemApis.EXTRACTABLE, extractableProvider, BlockEntityType.CHEST, BlockEntityType.DISPENSER, BlockEntityType.DROPPER, BlockEntityType.HOPPER);
 		ItemApis.EXTRACTABLE.registerSelf(COBBLE_GEN_BLOCK_ENTITY_TYPE);
 
 		testLookupRegistry();

@@ -29,7 +29,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 
-public final class ApiProviderHashMap<K, V> implements ApiProviderMap<K, V>, @UnmodifiableView Map<K,V> {
+public final class ApiProviderHashMap<K, V> implements ApiProviderMap<K, V>, @UnmodifiableView Map<K, V> {
 	private volatile Map<K, V> lookups = new Reference2ReferenceOpenHashMap<>();
 
 	@Override
@@ -59,6 +59,7 @@ public final class ApiProviderHashMap<K, V> implements ApiProviderMap<K, V>, @Un
 
 		return lookups.get(key);
 	}
+
 	@Override
 	public @Nullable V put(K key, V value) {
 		throw new UnsupportedOperationException();
@@ -88,7 +89,6 @@ public final class ApiProviderHashMap<K, V> implements ApiProviderMap<K, V>, @Un
 	public @NotNull Collection<V> values() {
 		return Collections.unmodifiableCollection(lookups.values());
 	}
-
 
 	@Override
 	public @NotNull Set<Entry<K, V>> entrySet() {

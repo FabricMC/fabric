@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.lookup.custom.ApiProviderHashMap;
  * @param <V> The value type of the map.
  */
 @ApiStatus.NonExtendable
-public interface ApiProviderMap<K, V>  {
+public interface ApiProviderMap<K, V> {
 	/**
 	 * Create a new instance.
 	 */
@@ -58,7 +58,7 @@ public interface ApiProviderMap<K, V>  {
 	 *
 	 * @throws NullPointerException If the key or the provider is null.
 	 */
-@Nullable	V putIfAbsent(K key, V provider);
+	@Nullable V putIfAbsent(K key, V provider);
 
-	@UnmodifiableView Map<K,V> asMap();
+	@UnmodifiableView Map<K, V> asMap();
 }
