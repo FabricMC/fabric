@@ -47,7 +47,7 @@ import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
@@ -215,14 +215,14 @@ public final class FabricDataGenHelper {
 	/**
 	 * Used to keep track of conditions associated to generated objects.
 	 */
-	private static final Map<Object, ConditionJsonProvider[]> CONDITIONS_MAP = new IdentityHashMap<>();
+	private static final Map<Object, ResourceCondition[]> CONDITIONS_MAP = new IdentityHashMap<>();
 
-	public static void addConditions(Object object, ConditionJsonProvider[] conditions) {
+	public static void addConditions(Object object, ResourceCondition[] conditions) {
 		CONDITIONS_MAP.merge(object, conditions, ArrayUtils::addAll);
 	}
 
 	@Nullable
-	public static ConditionJsonProvider[] consumeConditions(Object object) {
+	public static ResourceCondition[] consumeConditions(Object object) {
 		return CONDITIONS_MAP.remove(object);
 	}
 }
