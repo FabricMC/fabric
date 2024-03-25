@@ -79,7 +79,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 		for (Map.Entry<RegistryKey<LootTable>, LootTable.Builder> entry : lootTables.entrySet()) {
 			RegistryKey<LootTable> registryKey = entry.getKey();
 
-			if (registryKey.equals(LootTables.EMPTY)) {
+			if (registryKey == LootTables.EMPTY) {
 				continue;
 			}
 
