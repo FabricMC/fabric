@@ -22,8 +22,8 @@ import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiFunction;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Multimaps;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -74,7 +74,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 	 * It can't reflect phase order.
 	 */
 	@ApiStatus.Experimental
-	private final Multimap<Block, BlockApiProvider<A, C>> blockSpecificProviders = Multimaps.synchronizedMultimap(MultimapBuilder.hashKeys().arrayListValues().build());
+	private final Multimap<Block, BlockApiProvider<A, C>> blockSpecificProviders = Multimaps.synchronizedMultimap(HashMultimap.create());
 	private final Event<BlockApiProvider<A, C>> fallback = newEvent();
 	/**
 	 * It can't reflect phase order.

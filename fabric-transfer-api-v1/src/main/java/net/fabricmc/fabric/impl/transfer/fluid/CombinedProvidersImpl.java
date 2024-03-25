@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.transfer.fluid;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
@@ -67,7 +68,7 @@ public class CombinedProvidersImpl {
 
 		@Override
 		@Nullable
-		public Storage<FluidVariant> find(ItemStack itemStack, ContainerItemContext context) {
+		public Storage<FluidVariant> find(@NotNull ItemStack itemStack, ContainerItemContext context) {
 			if (!context.getItemVariant().matches(itemStack)) {
 				String errorMessage = String.format(
 						"Query stack %s and ContainerItemContext variant %s don't match.",

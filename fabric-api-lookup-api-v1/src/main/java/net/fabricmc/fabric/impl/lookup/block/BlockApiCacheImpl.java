@@ -80,10 +80,13 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 			lastState = state;
 		}
 
-		// Query the provider
+		// Query the preliminary provider
+		A instance = lookup.preliminary().invoker().find(world, pos, state, cachedBlockEntity, context);
+		if (instance != null) return instance;
 
+		// Query the providers
 		if (cachedProviders != null) {
-			A instance = cachedProviders.invoker().find(world, pos, state, cachedBlockEntity, context);
+			instance = cachedProviders.invoker().find(world, pos, state, cachedBlockEntity, context);
 
 			if (instance != null) {
 				return instance;

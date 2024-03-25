@@ -214,8 +214,12 @@ public interface BlockApiLookup<A, C> {
 
 		A api = preliminary().invoker().find(world, pos, state, blockEntity, context);
 		if (api != null) return api;
-		api = getSpecificFor(state.getBlock()).invoker().find(world, pos, state, blockEntity, context);
-		if (api != null) return api;
+
+		if (blockSpecific().containsKey(state.getBlock())) {
+			api = getSpecificFor(state.getBlock()).invoker().find(world, pos, state, blockEntity, context);
+			if (api != null) return api;
+		}
+
 		return fallback().invoker().find(world, pos, state, blockEntity, context);
 	}
 
@@ -319,10 +323,14 @@ public interface BlockApiLookup<A, C> {
 
 	@Nullable BlockApiProvider<A, C> getProvider(Block block);
 
+	/**
+	 * It is queried before {@link #blockSpecific()} and {@link #fallback()}.
+	 */
 	Event<BlockApiProvider<A, C>> preliminary();
 
 	/**
-	 * This is for query existing providers. To register new providers, see {@link #getSpecificFor(Block)}.
+	 * <p>It's queried after {@link #preliminary()} while before {@link #fallback()}.</p>
+	 * <p>This is for query existing providers. To register new providers, see {@link #getSpecificFor(Block)}.</p>
 	 *
 	 * @return The map that stores providers for different blocks. If a block doesn't have any specific provider, there is no entry about it in the map ({@code blockSpecific().get(block) == null}).
 	 */
@@ -335,6 +343,9 @@ public interface BlockApiLookup<A, C> {
 	 */
 	@NotNull Event<BlockApiProvider<A, C>> getSpecificFor(Block block);
 
+	/**
+	 * It's queried after {@link #preliminary()} and {@link #blockSpecific()}.
+	 */
 	Event<BlockApiProvider<A, C>> fallback();
 
 	@FunctionalInterface
