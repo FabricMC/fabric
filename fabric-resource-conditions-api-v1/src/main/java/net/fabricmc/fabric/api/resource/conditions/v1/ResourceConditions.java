@@ -72,36 +72,12 @@ public class ResourceConditions {
 		return new FeaturesEnabledResourceCondition(features);
 	}
 
-	public static <T> ResourceCondition registryContains(RegistryKey<T> entries) {
+	@SafeVarargs
+	public static <T> ResourceCondition registryContains(RegistryKey<T>... entries) {
 		return new RegistryContainsResourceCondition(entries);
-	}
-
-	public static ResourceCondition registryContains(Identifier registry, Identifier... entries) {
-		return new RegistryContainsResourceCondition(registry, entries);
-	}
-
-	public static ResourceCondition registryContains(Identifier registry, RegistryKey<?>... entries) {
-		return new RegistryContainsResourceCondition(registry, entries);
 	}
 
 	public static <T> ResourceCondition registryContains(RegistryKey<Registry<T>> registry, Identifier... entries) {
 		return new RegistryContainsResourceCondition(registry.getValue(), entries);
-	}
-
-	@SafeVarargs
-	public static <T> ResourceCondition registryContains(RegistryKey<Registry<T>> registry, RegistryKey<T>... entries) {
-		return new RegistryContainsResourceCondition(registry.getValue(), entries);
-	}
-
-	static {
-		ResourceConditions.register(ResourceConditionType.TRUE);
-		ResourceConditions.register(ResourceConditionType.NOT);
-		ResourceConditions.register(ResourceConditionType.AND);
-		ResourceConditions.register(ResourceConditionType.OR);
-		ResourceConditions.register(ResourceConditionType.ALL_MODS_LOADED);
-		ResourceConditions.register(ResourceConditionType.ANY_MODS_LOADED);
-		ResourceConditions.register(ResourceConditionType.TAGS_POPULATED);
-		ResourceConditions.register(ResourceConditionType.FEATURES_ENABLED);
-		ResourceConditions.register(ResourceConditionType.REGISTRY_CONTAINS);
 	}
 }

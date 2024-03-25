@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditionTypes;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
 
@@ -14,7 +15,7 @@ public record NotResourceCondition(ResourceCondition condition) implements Resou
 
 	@Override
 	public ResourceConditionType<?> getType() {
-		return ResourceConditionType.NOT;
+		return DefaultResourceConditionTypes.NOT;
 	}
 
 	@Override

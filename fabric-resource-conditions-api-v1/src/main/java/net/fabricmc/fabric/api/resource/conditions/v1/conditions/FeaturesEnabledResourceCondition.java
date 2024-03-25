@@ -3,6 +3,7 @@ package net.fabricmc.fabric.api.resource.conditions.v1.conditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditionTypes;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
@@ -24,7 +25,7 @@ public record FeaturesEnabledResourceCondition(List<Identifier> features) implem
 	}
 	@Override
 	public ResourceConditionType<?> getType() {
-		return ResourceConditionType.FEATURES_ENABLED;
+		return DefaultResourceConditionTypes.FEATURES_ENABLED;
 	}
 
 	@Override

@@ -27,6 +27,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditionTypes;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
@@ -153,6 +154,6 @@ public final class ResourceConditionsImpl {
 
 
 	static {
-		ResourceConditionType.init();
+		DefaultResourceConditionTypes.init();
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditionTypes;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
@@ -18,7 +19,7 @@ public record AndResourceCondition(List<ResourceCondition> conditions) implement
 
 	@Override
 	public ResourceConditionType<?> getType() {
-		return ResourceConditionType.AND;
+		return DefaultResourceConditionTypes.AND;
 	}
 
 	@Override

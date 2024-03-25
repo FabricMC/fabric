@@ -169,7 +169,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					.offerTo(withConditions(exporter, ResourceConditions.registryContains(RegistryKeys.ITEM, new Identifier("diamond_block"))));
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.EMERALD, 4).input(Items.ITEM_FRAME, 2)
 					.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
-					.offerTo(withConditions(exporter, ResourceConditions.registryContains(RegistryKeys.BIOME, BiomeKeys.PLAINS, BiomeKeys.BADLANDS)));
+					.offerTo(withConditions(exporter, ResourceConditions.registryContains(BiomeKeys.PLAINS, BiomeKeys.BADLANDS)));
 
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));

@@ -3,6 +3,7 @@ package net.fabricmc.fabric.api.resource.conditions.v1.conditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditionTypes;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
@@ -26,10 +27,6 @@ public record RegistryContainsResourceCondition(Identifier registry, List<Identi
 		this(registry, List.of(entries));
 	}
 
-	public RegistryContainsResourceCondition(Identifier registry, RegistryKey<?>... entries) {
-		this(registry, Arrays.stream(entries).map(RegistryKey::getValue).toList());
-	}
-
 	@SafeVarargs
 	public <T> RegistryContainsResourceCondition(RegistryKey<T>... entries) {
 		this(entries[0].getRegistry(), Arrays.stream(entries).map(RegistryKey::getValue).toList());
@@ -37,7 +34,7 @@ public record RegistryContainsResourceCondition(Identifier registry, List<Identi
 
 	@Override
 	public ResourceConditionType<?> getType() {
-		return ResourceConditionType.REGISTRY_CONTAINS;
+		return DefaultResourceConditionTypes.REGISTRY_CONTAINS;
 	}
 
 	@Override

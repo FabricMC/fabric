@@ -23,22 +23,9 @@ public interface ResourceConditionType<T extends ResourceCondition> {
 		Optional.ofNullable(ResourceConditions.getConditionType(id)).map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Unknown resource condition key: "+ id )),
 		ResourceConditionType::id
 	);
-	ResourceConditionType<TrueResourceCondition> TRUE = ResourceConditionType.create("true", TrueResourceCondition.CODEC);
-	ResourceConditionType<NotResourceCondition> NOT = ResourceConditionType.create("not", NotResourceCondition.CODEC);
-	ResourceConditionType<OrResourceCondition> OR = ResourceConditionType.create("or", OrResourceCondition.CODEC);
-	ResourceConditionType<AndResourceCondition> AND = ResourceConditionType.create("and", AndResourceCondition.CODEC);
-	ResourceConditionType<AllModsLoadedResourceCondition> ALL_MODS_LOADED = ResourceConditionType.create("all_mods_loaded", AllModsLoadedResourceCondition.CODEC);
-	ResourceConditionType<AnyModsLoadedResourceCondition> ANY_MODS_LOADED = ResourceConditionType.create("any_mods_loaded", AnyModsLoadedResourceCondition.CODEC);
-	ResourceConditionType<TagsPopulatedResourceCondition> TAGS_POPULATED = ResourceConditionType.create("tags_populated", TagsPopulatedResourceCondition.CODEC);
-	ResourceConditionType<FeaturesEnabledResourceCondition> FEATURES_ENABLED = ResourceConditionType.create("features_enabled", FeaturesEnabledResourceCondition.CODEC);
-	ResourceConditionType<RegistryContainsResourceCondition> REGISTRY_CONTAINS = ResourceConditionType.create("registry_contains", RegistryContainsResourceCondition.CODEC);
 
 	Identifier id();
 	Codec<T> codec();
-
-	private static <T extends ResourceCondition> ResourceConditionType<T> create(String name, Codec<T> codec) {
-		return create(new Identifier("fabric", name), codec);
-	}
 	static <T extends ResourceCondition> ResourceConditionType<T> create(Identifier id, Codec<T> codec) {
 		return new ResourceConditionType<>() {
 			@Override
@@ -52,8 +39,4 @@ public interface ResourceConditionType<T extends ResourceCondition> {
 			}
 		};
 	}
-
-    static void init() {
-
-    }
 }
