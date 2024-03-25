@@ -23,6 +23,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
@@ -36,13 +37,13 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 	 * blockEntityCacheValid maintains whether the cache is valid or not.
 	 */
 	private boolean blockEntityCacheValid = false;
-	private BlockEntity cachedBlockEntity = null;
+	private @Nullable BlockEntity cachedBlockEntity = null;
 	/**
 	 * We also cache the BlockApiProvider at the target position. We check if the block state has changed to invalidate the cache.
 	 * lastState maintains for which block state the cachedProvider is valid.
 	 */
-	private BlockState lastState = null;
-	private BlockApiLookup.BlockApiProvider<A, C> cachedProvider = null;
+	private @Nullable BlockState lastState = null;
+	private @Nullable Event<BlockApiLookup.BlockApiProvider<A, C>> cachedProviders = null;
 
 	public BlockApiCacheImpl(BlockApiLookupImpl<A, C> lookup, ServerWorld world, BlockPos pos) {
 		((ServerWorldCache) world).fabric_registerCache(pos, this);
@@ -55,7 +56,7 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 		blockEntityCacheValid = false;
 		cachedBlockEntity = null;
 		lastState = null;
-		cachedProvider = null;
+		cachedProviders = null;
 	}
 
 	@Nullable
@@ -75,31 +76,21 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 
 		// Get provider
 		if (lastState != state) {
-			cachedProvider = lookup.getProvider(state.getBlock());
+			cachedProviders = lookup.getSpecificFor(state.getBlock());
 			lastState = state;
 		}
 
 		// Query the provider
-		A instance = null;
 
-		if (cachedProvider != null) {
-			instance = cachedProvider.find(world, pos, state, cachedBlockEntity, context);
-		}
-
-		if (instance != null) {
-			return instance;
-		}
-
-		// Query the fallback providers
-		for (BlockApiLookup.BlockApiProvider<A, C> fallbackProvider : lookup.getFallbackProviders()) {
-			instance = fallbackProvider.find(world, pos, state, cachedBlockEntity, context);
-
+		if (cachedProviders != null) {
+			A instance = cachedProviders.invoker().find(world, pos, state, cachedBlockEntity, context);
 			if (instance != null) {
 				return instance;
 			}
 		}
 
-		return null;
+		// Query the fallback providers
+		return lookup.fallback().invoker().find(world,pos,state,cachedBlockEntity,context);
 	}
 
 	@Override

@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.api.lookup.v1.custom;
 
+import java.util.Map;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import net.fabricmc.fabric.impl.lookup.custom.ApiProviderHashMap;
 
@@ -32,7 +35,7 @@ import net.fabricmc.fabric.impl.lookup.custom.ApiProviderHashMap;
  * @param <V> The value type of the map.
  */
 @ApiStatus.NonExtendable
-public interface ApiProviderMap<K, V> {
+public interface ApiProviderMap<K, V>  {
 	/**
 	 * Create a new instance.
 	 */
@@ -55,5 +58,7 @@ public interface ApiProviderMap<K, V> {
 	 *
 	 * @throws NullPointerException If the key or the provider is null.
 	 */
-	V putIfAbsent(K key, V provider);
+@Nullable	V putIfAbsent(K key, V provider);
+
+	@UnmodifiableView Map<K,V> asMap();
 }
