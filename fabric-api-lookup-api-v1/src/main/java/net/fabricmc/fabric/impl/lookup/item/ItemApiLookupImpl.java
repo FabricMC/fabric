@@ -95,7 +95,7 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 	@SuppressWarnings("removal") // IDE always warns
 	@Override
 	@Deprecated(forRemoval = true)
-	public @Nullable ItemApiProvider<A, C> getProvider(Item item) {
+	public @Nullable ItemApiProvider<A, C> getProvider(@NotNull Item item) {
 		for (ItemApiProvider<A, C> provider : itemSpecificProviders.get(item)) {
 			return provider;
 		}
@@ -109,7 +109,7 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 	}
 
 	@Override
-	public Map<Item, Event<ItemApiProvider<A, C>>> itemSpecific() {
+	public Map<@NotNull Item, @NotNull Event<ItemApiProvider<A, C>>> itemSpecific() {
 		return itemSpecific.asMap();
 	}
 

@@ -193,14 +193,31 @@ public interface EntityApiLookup<A, C> {
 	 * Queries should go through {@link #find}, only use this to inspect registered providers!
 	 */
 	@Deprecated(forRemoval = true)
-	@Nullable EntityApiProvider<A, C> getProvider(EntityType<?> entityType);
+	@Nullable EntityApiProvider<A, C> getProvider(@NotNull EntityType<?> entityType);
 
+	/**
+	 * It is queried before {@link #typeSpecific()} and {@link #fallback()}.
+	 */
 	Event<EntityApiProvider<A, C>> preliminary();
 
-	@UnmodifiableView Map<EntityType<?>, Event<EntityApiProvider<A, C>>> typeSpecific();
+	/**
+	 * <p>It's queried after {@link #preliminary()} while before {@link #fallback()}.</p>
+	 * <p>This is for query existing providers. To register new providers, see {@link #getSpecificFor}.</p>
+	 *
+	 * @return The map that stores providers for different entity types. If an entity type doesn't have any specific provider, there is no entry about it in the map ({@code blockSpecific().get(entityType) == null}).
+	 */
+	@UnmodifiableView Map<@NotNull EntityType<?>, @NotNull Event<EntityApiProvider<A, C>>> typeSpecific();
 
+	/**
+	 * This is for registering new providers. To query existing providers, see {@link #typeSpecific()}.
+	 *
+	 * @return The event for registering providers for the entity type. If there has not been any provider for it yet, a new event will be created and put into {@link #typeSpecific()}.
+	 */
 	@NotNull Event<EntityApiProvider<A, C>> getSpecificFor(EntityType<?> type);
 
+	/**
+	 * It's queried after {@link #preliminary()} and {@link #typeSpecific()}.
+	 */
 	Event<EntityApiProvider<A, C>> fallback();
 
 	interface EntityApiProvider<A, C> {

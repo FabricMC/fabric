@@ -156,12 +156,12 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 	}
 
 	@Override
-	public @UnmodifiableView Map<Block, Event<BlockApiProvider<A, C>>> blockSpecific() {
+	public @UnmodifiableView Map<@NotNull Block, @NotNull Event<BlockApiProvider<A, C>>> blockSpecific() {
 		return blockSpecific.asMap();
 	}
 
 	@Override
-	public @NotNull Event<BlockApiProvider<A, C>> getSpecificFor(Block block) {
+	public @NotNull Event<BlockApiProvider<A, C>> getSpecificFor(@NotNull Block block) {
 		Event<BlockApiProvider<A, C>> event = blockSpecific.get(block);
 
 		if (event == null) {

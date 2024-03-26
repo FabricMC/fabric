@@ -330,18 +330,18 @@ public interface BlockApiLookup<A, C> {
 
 	/**
 	 * <p>It's queried after {@link #preliminary()} while before {@link #fallback()}.</p>
-	 * <p>This is for query existing providers. To register new providers, see {@link #getSpecificFor(Block)}.</p>
+	 * <p>This is for query existing providers. To register new providers, see {@link #getSpecificFor}.</p>
 	 *
 	 * @return The map that stores providers for different blocks. If a block doesn't have any specific provider, there is no entry about it in the map ({@code blockSpecific().get(block) == null}).
 	 */
-	@UnmodifiableView Map<Block, Event<BlockApiProvider<A, C>>> blockSpecific();
+	@UnmodifiableView Map<@NotNull Block, @NotNull Event<BlockApiProvider<A, C>>> blockSpecific();
 
 	/**
 	 * This is for registering new providers. To query existing providers, see {@link #blockSpecific()}.
 	 *
-	 * @return The event for registering providers for the block. If there has not been any provider yet, a new event will be created and put into {@link #blockSpecific()}.
+	 * @return The event for registering providers for the block. If there has not been any provider for it yet, a new event will be created and put into {@link #blockSpecific()}.
 	 */
-	@NotNull Event<BlockApiProvider<A, C>> getSpecificFor(Block block);
+	@NotNull Event<BlockApiProvider<A, C>> getSpecificFor(@NotNull Block block);
 
 	/**
 	 * It's queried after {@link #preliminary()} and {@link #blockSpecific()}.

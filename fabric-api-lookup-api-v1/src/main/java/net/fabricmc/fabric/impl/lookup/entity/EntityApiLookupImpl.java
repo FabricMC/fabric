@@ -147,7 +147,7 @@ public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
 	@SuppressWarnings("removal")
 	@Override
 	@Deprecated(forRemoval = true)
-	public @Nullable EntityApiProvider<A, C> getProvider(EntityType<?> entityType) {
+	public @Nullable EntityApiProvider<A, C> getProvider(@NotNull EntityType<?> entityType) {
 		for (EntityApiProvider<A, C> provider : typeSpecificProviders.get(entityType)) {
 			return provider;
 		}
@@ -161,7 +161,7 @@ public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
 	}
 
 	@Override
-	public @UnmodifiableView Map<EntityType<?>, Event<EntityApiProvider<A, C>>> typeSpecific() {
+	public @UnmodifiableView Map<@NotNull EntityType<?>, @NotNull Event<EntityApiProvider<A, C>>> typeSpecific() {
 		return typeSpecific.asMap();
 	}
 

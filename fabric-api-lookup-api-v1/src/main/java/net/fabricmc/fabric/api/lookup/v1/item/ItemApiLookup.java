@@ -142,7 +142,7 @@ public interface ItemApiLookup<A, C> {
 	}
 
 	@SuppressWarnings("unchecked")
-	default void registerSelf(ItemConvertible @NotNull... items) {
+	default void registerSelf(ItemConvertible... items) {
 		for (ItemConvertible itemConvertible : items) {
 			Item item = itemConvertible.asItem();
 
@@ -159,7 +159,7 @@ public interface ItemApiLookup<A, C> {
 		registerForItems((itemStack, context) -> (A) itemStack.getItem(), items);
 	}
 
-	default void registerForItems(@NotNull ItemApiProvider<A, C> provider, ItemConvertible @NotNull... items) {
+	default void registerForItems(@NotNull ItemApiProvider<A, C> provider, ItemConvertible... items) {
 		Objects.requireNonNull(provider, "ItemApiProvider may not be null.");
 
 		if (items.length == 0) {
@@ -200,17 +200,35 @@ public interface ItemApiLookup<A, C> {
 	/**
 	 * Return the provider for the passed item (registered with one of the {@code register} functions), or null if none was registered (yet).
 	 * Queries should go through {@link #find}, only use this to inspect registered providers!
+	 *
 	 * @deprecated see {@link #getSpecificFor(Item)}
 	 */
 	@Deprecated(forRemoval = true)
-	@Nullable ItemApiProvider<A, C> getProvider(Item item);
+	@Nullable ItemApiProvider<A, C> getProvider(@NotNull Item item);
 
+	/**
+	 * It is queried before {@link #itemSpecific()} and {@link #fallback()}.
+	 */
 	Event<ItemApiProvider<A, C>> preliminary();
 
-	Map<Item, Event<ItemApiProvider<A, C>>> itemSpecific();
+	/**
+	 * <p>It's queried after {@link #preliminary()} while before {@link #fallback()}.</p>
+	 * <p>This is for query existing providers. To register new providers, see {@link #getSpecificFor}.</p>
+	 *
+	 * @return The map that stores providers for different items. If an item doesn't have any specific provider, there is no entry about it in the map ({@code blockSpecific().get(item) == null}).
+	 */
+	Map<@NotNull Item, @NotNull Event<ItemApiProvider<A, C>>> itemSpecific();
 
+	/**
+	 * This is for registering new providers. To query existing providers, see {@link #itemSpecific()}.
+	 *
+	 * @return The event for registering providers for the item. If there has not been any provider for it yet, a new event will be created and put into {@link #itemSpecific()}.
+	 */
 	@NotNull Event<ItemApiProvider<A, C>> getSpecificFor(@NotNull Item item);
 
+	/**
+	 * It's queried after {@link #preliminary()} and {@link #itemSpecific()}.
+	 */
 	Event<ItemApiProvider<A, C>> fallback();
 
 	@FunctionalInterface
