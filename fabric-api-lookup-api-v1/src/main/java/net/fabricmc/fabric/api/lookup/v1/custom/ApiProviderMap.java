@@ -49,8 +49,7 @@ public interface ApiProviderMap<K, V> {
 	 *
 	 * @throws NullPointerException If the key is null.
 	 */
-	@Nullable
-	V get(K key);
+	@Nullable V get(K key);
 
 	/**
 	 * If the specified key is not already associated with a provider,

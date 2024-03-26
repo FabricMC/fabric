@@ -200,9 +200,10 @@ public interface ItemApiLookup<A, C> {
 	/**
 	 * Return the provider for the passed item (registered with one of the {@code register} functions), or null if none was registered (yet).
 	 * Queries should go through {@link #find}, only use this to inspect registered providers!
+	 * @deprecated see {@link #getSpecificFor(Item)}
 	 */
-	@Nullable
-	ItemApiProvider<A, C> getProvider(Item item);
+	@Deprecated(forRemoval = true)
+	@Nullable ItemApiProvider<A, C> getProvider(Item item);
 
 	Event<ItemApiProvider<A, C>> preliminary();
 

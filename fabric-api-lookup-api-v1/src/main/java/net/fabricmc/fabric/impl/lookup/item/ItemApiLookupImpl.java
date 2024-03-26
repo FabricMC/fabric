@@ -60,9 +60,6 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 	private final Class<A> apiClass;
 	private final Class<C> contextClass;
 	private final Event<ItemApiProvider<A, C>> preliminary = newEvent();
-	/**
-	 * It can't reflect phase order.
-	 */
 	private final ApiProviderMap<Item, Event<ItemApiProvider<A, C>>> itemSpecific = ApiProviderMap.create();
 	/**
 	 * It can't reflect phase order.
@@ -93,10 +90,10 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 		return contextClass;
 	}
 
+	@SuppressWarnings("removal") // ide always warns
 	@Override
-	@Nullable
 	@Deprecated(forRemoval = true)
-	public ItemApiProvider<A, C> getProvider(Item item) {
+	public @Nullable ItemApiProvider<A, C> getProvider(Item item) {
 		for (ItemApiProvider<A, C> provider : itemSpecificProviders.get(item)) {
 			return provider;
 		}
