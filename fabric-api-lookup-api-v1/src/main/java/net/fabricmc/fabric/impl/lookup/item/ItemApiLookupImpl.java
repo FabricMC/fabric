@@ -16,20 +16,23 @@
 
 package net.fabricmc.fabric.impl.lookup.item;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.registry.Registries;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
@@ -43,87 +46,35 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 		return (ItemApiLookup<A, C>) LOOKUPS.getLookup(lookupId, apiClass, contextClass);
 	}
 
+	public static <A, C> Event<ItemApiProvider<A, C>> newEvent() {
+		return EventFactory.createArrayBacked(ItemApiProvider.class, providers -> (itemStack, context) -> {
+			for (ItemApiProvider<A, C> provider : providers) {
+				A api = provider.find(itemStack, context);
+				if (api != null) return api;
+			}
+
+			return null;
+		});
+	}
+
 	private final Identifier identifier;
 	private final Class<A> apiClass;
 	private final Class<C> contextClass;
-	private final ApiProviderMap<Item, ItemApiProvider<A, C>> providerMap = ApiProviderMap.create();
-	private final List<ItemApiProvider<A, C>> fallbackProviders = new CopyOnWriteArrayList<>();
+	private final Event<ItemApiProvider<A, C>> preliminary = newEvent();
+	private final ApiProviderMap<Item, Event<ItemApiProvider<A, C>>> itemSpecific = ApiProviderMap.create();
+	/**
+	 * It can't reflect phase order.<br/>
+	 * It's just for {@link #getProvider}. It should be removed in the future.
+	 */
+	@ApiStatus.Experimental
+	private final Multimap<Item, ItemApiProvider<A, C>> itemSpecificProviders = Multimaps.synchronizedMultimap(ArrayListMultimap.create());
+	private final Event<ItemApiProvider<A, C>> fallback = newEvent();
 
 	@SuppressWarnings("unchecked")
 	private ItemApiLookupImpl(Identifier identifier, Class<?> apiClass, Class<?> contextClass) {
 		this.identifier = identifier;
 		this.apiClass = (Class<A>) apiClass;
 		this.contextClass = (Class<C>) contextClass;
-	}
-
-	@Override
-	public @Nullable A find(ItemStack itemStack, C context) {
-		Objects.requireNonNull(itemStack, "ItemStack may not be null.");
-
-		@Nullable
-		ItemApiProvider<A, C> provider = providerMap.get(itemStack.getItem());
-
-		if (provider != null) {
-			A instance = provider.find(itemStack, context);
-
-			if (instance != null) {
-				return instance;
-			}
-		}
-
-		for (ItemApiProvider<A, C> fallbackProvider : fallbackProviders) {
-			A instance = fallbackProvider.find(itemStack, context);
-
-			if (instance != null) {
-				return instance;
-			}
-		}
-
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void registerSelf(ItemConvertible... items) {
-		for (ItemConvertible itemConvertible : items) {
-			Item item = itemConvertible.asItem();
-
-			if (!apiClass.isAssignableFrom(item.getClass())) {
-				String errorMessage = String.format(
-						"Failed to register self-implementing items. API class %s is not assignable from item class %s.",
-						apiClass.getCanonicalName(),
-						item.getClass().getCanonicalName()
-				);
-				throw new IllegalArgumentException(errorMessage);
-			}
-		}
-
-		registerForItems((itemStack, context) -> (A) itemStack.getItem(), items);
-	}
-
-	@Override
-	public void registerForItems(ItemApiProvider<A, C> provider, ItemConvertible... items) {
-		Objects.requireNonNull(provider, "ItemApiProvider may not be null.");
-
-		if (items.length == 0) {
-			throw new IllegalArgumentException("Must register at least one ItemConvertible instance with an ItemApiProvider.");
-		}
-
-		for (ItemConvertible itemConvertible : items) {
-			Item item = itemConvertible.asItem();
-			Objects.requireNonNull(item, "Item convertible in item form may not be null.");
-
-			if (providerMap.putIfAbsent(item, provider) != null) {
-				LOGGER.warn("Encountered duplicate API provider registration for item: " + Registries.ITEM.getId(item));
-			}
-		}
-	}
-
-	@Override
-	public void registerFallback(ItemApiProvider<A, C> fallbackProvider) {
-		Objects.requireNonNull(fallbackProvider, "ItemApiProvider may not be null.");
-
-		fallbackProviders.add(fallbackProvider);
 	}
 
 	@Override
@@ -141,9 +92,41 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 		return contextClass;
 	}
 
+	@SuppressWarnings("removal") // IDE always warns
 	@Override
-	@Nullable
-	public ItemApiProvider<A, C> getProvider(Item item) {
-		return providerMap.get(item);
+	@Deprecated(forRemoval = true)
+	public @Nullable ItemApiProvider<A, C> getProvider(@NotNull Item item) {
+		for (ItemApiProvider<A, C> provider : itemSpecificProviders.get(item)) {
+			return provider;
+		}
+
+		return null;
+	}
+
+	@Override
+	public Event<ItemApiProvider<A, C>> preliminary() {
+		return preliminary;
+	}
+
+	@Override
+	public Map<@NotNull Item, @NotNull Event<ItemApiProvider<A, C>>> itemSpecific() {
+		return itemSpecific.asMap();
+	}
+
+	@Override
+	public @NotNull Event<ItemApiProvider<A, C>> getSpecificFor(@NotNull Item item) {
+		Event<ItemApiProvider<A, C>> event = itemSpecific.get(item);
+
+		if (event == null) {
+			itemSpecific.putIfAbsent(item, newEvent());
+			event = Objects.requireNonNull(itemSpecific.get(item));
+		}
+
+		return event;
+	}
+
+	@Override
+	public Event<ItemApiProvider<A, C>> fallback() {
+		return fallback;
 	}
 }

@@ -37,7 +37,7 @@
  *     <li>It also allows registering APIs for blocks, because for the query to work the API must be registered first.
  *     Registration primarily happens through {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#registerSelf registerSelf()},
  *     {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#registerForBlocks registerForBlocks()}
- *     and {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#registerForBlockEntities registerForBlockEntities()}.</li>
+ *     and {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#registerForBlockEntities(net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup, java.util.function.BiFunction, net.minecraft.block.entity.BlockEntityType[]) registerForBlockEntities}.</li>
  * 	   <li>{@code BlockApiLookup} instances can be accessed through {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#get BlockApiLookup#get()}.
  *     For optimal performance, it is better to store them in a {@code public static final} field instead of querying them multiple times.</li>
  *     <li>See {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup BlockApiLookup} for example code.</li>

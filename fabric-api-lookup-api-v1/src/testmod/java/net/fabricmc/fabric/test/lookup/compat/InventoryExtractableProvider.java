@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.lookup.compat;
 
+import java.util.function.BiFunction;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,12 +25,11 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.util.math.Direction;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.test.lookup.api.ItemExtractable;
 
-public class InventoryExtractableProvider implements BlockApiLookup.BlockEntityApiProvider<ItemExtractable, @NotNull Direction> {
+public class InventoryExtractableProvider implements BiFunction<BlockEntity, @NotNull Direction, ItemExtractable> {
 	@Override
-	public @Nullable ItemExtractable find(BlockEntity blockEntity, @NotNull Direction context) {
+	public @Nullable ItemExtractable apply(BlockEntity blockEntity, @NotNull Direction context) {
 		if (blockEntity instanceof Inventory) {
 			return new WrappedInventory((Inventory) blockEntity);
 		}

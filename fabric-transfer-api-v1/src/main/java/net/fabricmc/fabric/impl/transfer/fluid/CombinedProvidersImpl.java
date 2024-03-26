@@ -17,8 +17,11 @@
 package net.fabricmc.fabric.impl.transfer.fluid;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
@@ -34,6 +37,8 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 
 public class CombinedProvidersImpl {
+	private static final Map<Item, Provider> ITEM_SPECIFIC = new HashMap<>();
+
 	public static Event<FluidStorage.CombinedItemApiProvider> createEvent(boolean invokeFallback) {
 		return EventFactory.createArrayBacked(FluidStorage.CombinedItemApiProvider.class, listeners -> context -> {
 			List<Storage<FluidVariant>> storages = new ArrayList<>();
@@ -67,7 +72,7 @@ public class CombinedProvidersImpl {
 
 		@Override
 		@Nullable
-		public Storage<FluidVariant> find(ItemStack itemStack, ContainerItemContext context) {
+		public Storage<FluidVariant> find(@NotNull ItemStack itemStack, ContainerItemContext context) {
 			if (!context.getItemVariant().matches(itemStack)) {
 				String errorMessage = String.format(
 						"Query stack %s and ContainerItemContext variant %s don't match.",
@@ -82,23 +87,20 @@ public class CombinedProvidersImpl {
 	}
 
 	public static Event<FluidStorage.CombinedItemApiProvider> getOrCreateItemEvent(Item item) {
-		ItemApiLookup.ItemApiProvider<Storage<FluidVariant>, ContainerItemContext> existingProvider = FluidStorage.ITEM.getProvider(item);
+		Provider provider = ITEM_SPECIFIC.get(item);
 
-		if (existingProvider == null) {
-			FluidStorage.ITEM.registerForItems(new Provider(), item);
-			// The provider might not be new Provider() if a concurrent registration happened, re-query.
-			existingProvider = FluidStorage.ITEM.getProvider(item);
+		if (provider == null) {
+			synchronized (ITEM_SPECIFIC) {
+				provider = ITEM_SPECIFIC.get(item);
+
+				if (provider == null) {
+					provider = new Provider();
+					ITEM_SPECIFIC.putIfAbsent(item, provider);
+					FluidStorage.ITEM.getSpecificFor(item).register(provider);
+				}
+			}
 		}
 
-		if (existingProvider instanceof Provider registeredProvider) {
-			return registeredProvider.event;
-		} else {
-			String errorMessage = String.format(
-					"An incompatible provider was already registered for item %s. Provider: %s.",
-					item,
-					existingProvider
-			);
-			throw new IllegalStateException(errorMessage);
-		}
+		return provider.event;
 	}
 }
