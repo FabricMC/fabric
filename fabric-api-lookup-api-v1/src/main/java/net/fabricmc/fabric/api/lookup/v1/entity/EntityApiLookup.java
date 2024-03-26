@@ -16,15 +16,19 @@
 
 package net.fabricmc.fabric.api.lookup.v1.entity;
 
+import java.util.Map;
 import java.util.function.BiFunction;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
 
 /**
@@ -97,6 +101,19 @@ public interface EntityApiLookup<A, C> {
 		return EntityApiLookupImpl.get(lookupId, apiClass, contextClass);
 	}
 
+	@SuppressWarnings("unchecked")
+	static <A, C> EntityApiLookup<A, C> getUnchecked(Identifier lookupId, Class<?> apiClass, Class<?> contextClass) {
+		return get(lookupId, (Class<A>) apiClass, (Class<C>) contextClass);
+	}
+
+	@SuppressWarnings("unchecked")
+	@SafeVarargs
+	static <A, C, E extends Entity> void registerForEntityTypes(EntityApiLookup<A, C> lookup, BiFunction<? super E, ? super C, ? extends A> provider, EntityType<? extends E>... entityTypes) {
+		for (EntityType<? extends E> entityType : entityTypes) {
+			lookup.getSpecificFor(entityType).register((entity, context) -> provider.apply((E) entity, context));
+		}
+	}
+
 	/**
 	 * Attempt to retrieve an API from an entity.
 	 *
@@ -104,8 +121,17 @@ public interface EntityApiLookup<A, C> {
 	 * @param context additional context for the query, defined by type parameter C.
 	 * @return The retrieved API, or {@code null} if no API was found.
 	 */
-	@Nullable
-	A find(Entity entity, C context);
+	default @Nullable A find(@NotNull Entity entity, C context) {
+		A api = preliminary().invoker().find(entity, context);
+		if (api != null) return api;
+
+		if (typeSpecific().containsKey(entity.getType())) {
+			api = getSpecificFor(entity.getType()).invoker().find(entity, context);
+			if (api != null) return api;
+		}
+
+		return fallback().invoker().find(entity, context);
+	}
 
 	/**
 	 * Expose the API for the passed entities that directly implements it.
@@ -115,7 +141,10 @@ public interface EntityApiLookup<A, C> {
 	 * @param entityTypes the entity types for which the API are exposed to.
 	 * @throws IllegalArgumentException if the entity is not an instance of the API class.
 	 */
-	void registerSelf(EntityType<?>... entityTypes);
+	@SuppressWarnings("unchecked")
+	default void registerSelf(EntityType<?>... entityTypes) {
+		registerForTypes((entity, context) -> (A) entity, entityTypes);
+	}
 
 	/**
 	 * Expose the API for instances of the entity type.
@@ -130,21 +159,19 @@ public interface EntityApiLookup<A, C> {
 		registerForTypes((entity, context) -> provider.apply((T) entity, context), entityType);
 	}
 
-	/**
-	 * Expose the API for instances of the entity types.
-	 * This overload allows for registering multiple entity types at once,
-	 * but due to how generics work in java, the provider has to cast to the correct type if necessary.
-	 *
-	 * @param provider    the provider.
-	 * @param entityTypes the entity types for which the API are exposed to.
-	 */
-	void registerForTypes(EntityApiProvider<A, C> provider, EntityType<?>... entityTypes);
+	default void registerForTypes(@NotNull EntityApiProvider<A, C> provider, EntityType<?>... entityTypes) {
+		if (entityTypes.length == 0) {
+			throw new IllegalArgumentException("Must register at least one EntityType instance with an EntityApiProvider.");
+		}
 
-	/**
-	 * Expose the API for all queries: the provider will be invoked if no object was found using the entity providers.
-	 * May have big performance impact on all queries, use cautiously.
-	 */
-	void registerFallback(EntityApiProvider<A, C> fallbackProvider);
+		for (EntityType<?> entityType : entityTypes) {
+			getSpecificFor(entityType).register(provider);
+		}
+	}
+
+	default void registerFallback(@NotNull EntityApiProvider<A, C> fallbackProvider) {
+		fallback().register(fallbackProvider);
+	}
 
 	/**
 	 * Return the identifier of this lookup.
@@ -165,8 +192,16 @@ public interface EntityApiLookup<A, C> {
 	 * Returns the provider for the passed entity type (registered with one of the {@code register} functions), or null if none was registered (yet).
 	 * Queries should go through {@link #find}, only use this to inspect registered providers!
 	 */
-	@Nullable
-	EntityApiProvider<A, C> getProvider(EntityType<?> entityType);
+	@Deprecated(forRemoval = true)
+	@Nullable EntityApiProvider<A, C> getProvider(EntityType<?> entityType);
+
+	Event<EntityApiProvider<A, C>> preliminary();
+
+	@UnmodifiableView Map<EntityType<?>, Event<EntityApiProvider<A, C>>> typeSpecific();
+
+	@NotNull Event<EntityApiProvider<A, C>> getSpecificFor(EntityType<?> type);
+
+	Event<EntityApiProvider<A, C>> fallback();
 
 	interface EntityApiProvider<A, C> {
 		/**
@@ -175,7 +210,6 @@ public interface EntityApiLookup<A, C> {
 		 * @param entity  the entity.
 		 * @param context additional context for the query.
 		 */
-		@Nullable
-		A find(Entity entity, C context);
+		@Nullable A find(@NotNull Entity entity, C context);
 	}
 }

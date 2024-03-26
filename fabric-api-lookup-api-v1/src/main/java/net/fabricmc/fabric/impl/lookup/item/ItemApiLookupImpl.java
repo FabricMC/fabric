@@ -17,8 +17,9 @@
 package net.fabricmc.fabric.impl.lookup.item;
 
 import java.util.Map;
+import java.util.Objects;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import org.jetbrains.annotations.ApiStatus;
@@ -62,10 +63,11 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 	private final Event<ItemApiProvider<A, C>> preliminary = newEvent();
 	private final ApiProviderMap<Item, Event<ItemApiProvider<A, C>>> itemSpecific = ApiProviderMap.create();
 	/**
-	 * It can't reflect phase order.
+	 * It can't reflect phase order.<br/>
+	 * It's just for {@link #getProvider}. It should be removed in the future.
 	 */
 	@ApiStatus.Experimental
-	private final Multimap<Item, ItemApiProvider<A, C>> itemSpecificProviders = Multimaps.synchronizedMultimap(HashMultimap.create());
+	private final Multimap<Item, ItemApiProvider<A, C>> itemSpecificProviders = Multimaps.synchronizedMultimap(ArrayListMultimap.create());
 	private final Event<ItemApiProvider<A, C>> fallback = newEvent();
 
 	@SuppressWarnings("unchecked")
@@ -90,7 +92,7 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 		return contextClass;
 	}
 
-	@SuppressWarnings("removal") // ide always warns
+	@SuppressWarnings("removal") // IDE always warns
 	@Override
 	@Deprecated(forRemoval = true)
 	public @Nullable ItemApiProvider<A, C> getProvider(Item item) {
@@ -116,8 +118,8 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 		Event<ItemApiProvider<A, C>> event = itemSpecific.get(item);
 
 		if (event == null) {
-			event = newEvent();
-			itemSpecific.putIfAbsent(item, event);
+			itemSpecific.putIfAbsent(item, newEvent());
+			event = Objects.requireNonNull(itemSpecific.get(item));
 		}
 
 		return event;

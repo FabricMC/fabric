@@ -17,40 +17,63 @@
 package net.fabricmc.fabric.impl.lookup.entity;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
-import net.minecraft.registry.Registries;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup;
 
 public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-lookup-api-v1/entity");
-	private static final ApiLookupMap<EntityApiLookup<?, ?>> LOOKUPS = ApiLookupMap.<EntityApiLookup<?, ?>>create(EntityApiLookupImpl::new);
-	private static final Map<Class<?>, Set<EntityType<?>>> REGISTERED_SELVES = new HashMap<>();
+	private static final ApiLookupMap<EntityApiLookup<?, ?>> LOOKUPS = ApiLookupMap.create(EntityApiLookupImpl::new);
+	private static final SetMultimap<Class<?>, EntityType<?>> REGISTERED_SELVES = MultimapBuilder.hashKeys().linkedHashSetValues().build();
 	private static boolean checkEntityLookup = true;
+
+	public static <A, C> Event<EntityApiProvider<A, C>> newEvent() {
+		return EventFactory.createArrayBacked(EntityApiProvider.class, providers -> (entity, context) -> {
+			for (EntityApiProvider<A, C> provider : providers) {
+				A api = provider.find(entity, context);
+				if (api != null) return api;
+			}
+
+			return null;
+		});
+	}
 
 	private final Identifier identifier;
 	private final Class<A> apiClass;
 	private final Class<C> contextClass;
-	private final ApiProviderMap<EntityType<?>, EntityApiProvider<A, C>> providerMap = ApiProviderMap.create();
-	private final List<EntityApiProvider<A, C>> fallbackProviders = new CopyOnWriteArrayList<>();
+	private final Event<EntityApiProvider<A, C>> preliminary = newEvent();
+	private final ApiProviderMap<EntityType<?>, Event<EntityApiProvider<A, C>>> typeSpecific = ApiProviderMap.create();
+	/**
+	 * It can't reflect phase order.<br/>
+	 * It's just for {@link #getProvider}. It should be removed in the future.
+	 */
+	@ApiStatus.Experimental
+	private final Multimap<EntityType<?>, EntityApiProvider<A, C>> typeSpecificProviders = Multimaps.synchronizedMultimap(ArrayListMultimap.create());
+	private final Event<EntityApiProvider<A, C>> fallback = newEvent();
 
 	private EntityApiLookupImpl(Identifier identifier, Class<A> apiClass, Class<C> contextClass) {
 		this.identifier = identifier;
@@ -68,8 +91,10 @@ public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
 			checkEntityLookup = false;
 
 			synchronized (REGISTERED_SELVES) {
-				REGISTERED_SELVES.forEach((apiClass, entityTypes) -> {
-					for (EntityType<?> entityType : entityTypes) {
+				for (Map.Entry<Class<?>, Collection<EntityType<?>>> entry : REGISTERED_SELVES.asMap().entrySet()) {
+					Class<?> apiClass = entry.getKey();
+
+					for (EntityType<?> entityType : entry.getValue()) {
 						Entity entity = entityType.create(server.getOverworld());
 
 						if (entity == null) {
@@ -90,69 +115,18 @@ public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
 							throw new IllegalArgumentException(errorMessage);
 						}
 					}
-				});
+				}
 			}
 		}
 	}
 
-	@Override
-	@Nullable
-	public A find(Entity entity, C context) {
-		Objects.requireNonNull(entity, "Entity may not be null.");
-
-		if (EntityPredicates.VALID_ENTITY.test(entity)) {
-			EntityApiProvider<A, C> provider = providerMap.get(entity.getType());
-
-			if (provider != null) {
-				A instance = provider.find(entity, context);
-
-				if (instance != null) {
-					return instance;
-				}
-			}
-
-			for (EntityApiProvider<A, C> fallback : fallbackProviders) {
-				A instance = fallback.find(entity, context);
-
-				if (instance != null) {
-					return instance;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
 	@Override
 	public void registerSelf(EntityType<?>... entityTypes) {
 		synchronized (REGISTERED_SELVES) {
-			REGISTERED_SELVES.computeIfAbsent(apiClass, c -> new LinkedHashSet<>()).addAll(Arrays.asList(entityTypes));
+			REGISTERED_SELVES.putAll(apiClass(), Arrays.asList(entityTypes));
 		}
 
-		registerForTypes((entity, context) -> (A) entity, entityTypes);
-	}
-
-	@Override
-	public void registerForTypes(EntityApiProvider<A, C> provider, EntityType<?>... entityTypes) {
-		Objects.requireNonNull(provider, "EntityApiProvider may not be null.");
-
-		if (entityTypes.length == 0) {
-			throw new IllegalArgumentException("Must register at least one EntityType instance with an EntityApiProvider.");
-		}
-
-		for (EntityType<?> entityType : entityTypes) {
-			if (providerMap.putIfAbsent(entityType, provider) != null) {
-				LOGGER.warn("Encountered duplicate API provider registration for entity type: " + Registries.ENTITY_TYPE.getId(entityType));
-			}
-		}
-	}
-
-	@Override
-	public void registerFallback(EntityApiProvider<A, C> fallbackProvider) {
-		Objects.requireNonNull(fallbackProvider, "EntityApiProvider may not be null.");
-
-		fallbackProviders.add(fallbackProvider);
+		EntityApiLookup.super.registerSelf(entityTypes);
 	}
 
 	@Override
@@ -170,9 +144,41 @@ public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
 		return contextClass;
 	}
 
+	@SuppressWarnings("removal")
 	@Override
-	@Nullable
-	public EntityApiProvider<A, C> getProvider(EntityType<?> entityType) {
-		return providerMap.get(entityType);
+	@Deprecated(forRemoval = true)
+	public @Nullable EntityApiProvider<A, C> getProvider(EntityType<?> entityType) {
+		for (EntityApiProvider<A, C> provider : typeSpecificProviders.get(entityType)) {
+			return provider;
+		}
+
+		return null;
+	}
+
+	@Override
+	public Event<EntityApiProvider<A, C>> preliminary() {
+		return preliminary;
+	}
+
+	@Override
+	public @UnmodifiableView Map<EntityType<?>, Event<EntityApiProvider<A, C>>> typeSpecific() {
+		return typeSpecific.asMap();
+	}
+
+	@Override
+	public @NotNull Event<EntityApiProvider<A, C>> getSpecificFor(EntityType<?> type) {
+		Event<EntityApiProvider<A, C>> event = typeSpecific.get(type);
+
+		if (event == null) {
+			typeSpecific.putIfAbsent(type, newEvent());
+			event = Objects.requireNonNull(typeSpecific.get(type));
+		}
+
+		return event;
+	}
+
+	@Override
+	public Event<EntityApiProvider<A, C>> fallback() {
+		return fallback;
 	}
 }

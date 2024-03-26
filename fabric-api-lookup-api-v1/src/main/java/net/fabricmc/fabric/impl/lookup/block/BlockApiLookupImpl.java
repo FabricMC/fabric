@@ -22,7 +22,7 @@ import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiFunction;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import org.jetbrains.annotations.ApiStatus;
@@ -71,13 +71,15 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 	private final Event<BlockApiProvider<A, C>> preliminary = newEvent();
 	private final ApiProviderMap<Block, Event<BlockApiProvider<A, C>>> blockSpecific = ApiProviderMap.create();
 	/**
-	 * It can't reflect phase order.
+	 * It can't reflect phase order.<br/>
+	 * It's just for {@link #getProvider}. It should be removed in the future.
 	 */
 	@ApiStatus.Experimental
-	private final Multimap<Block, BlockApiProvider<A, C>> blockSpecificProviders = Multimaps.synchronizedMultimap(HashMultimap.create());
+	private final Multimap<Block, BlockApiProvider<A, C>> blockSpecificProviders = Multimaps.synchronizedMultimap(ArrayListMultimap.create());
 	private final Event<BlockApiProvider<A, C>> fallback = newEvent();
 	/**
-	 * It can't reflect phase order.
+	 * It can't reflect phase order.<br/>
+	 * It's just for {@link #getFallbackProviders()}. It should be removed in the future.
 	 */
 	@ApiStatus.Experimental
 	private final List<BlockApiProvider<A, C>> fallbackProviders = new CopyOnWriteArrayList<>();
@@ -143,6 +145,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 		return null;
 	}
 
+	@Deprecated(forRemoval = true)
 	public @UnmodifiableView List<BlockApiProvider<A, C>> getFallbackProviders() {
 		return fallbackProviders;
 	}
@@ -162,8 +165,8 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 		Event<BlockApiProvider<A, C>> event = blockSpecific.get(block);
 
 		if (event == null) {
-			event = newEvent();
-			blockSpecific.putIfAbsent(block, event);
+			blockSpecific.putIfAbsent(block, newEvent());
+			event = Objects.requireNonNull(blockSpecific.get(block));
 		}
 
 		return event;
