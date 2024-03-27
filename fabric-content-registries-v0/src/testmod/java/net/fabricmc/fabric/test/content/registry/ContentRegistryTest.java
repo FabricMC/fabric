@@ -34,6 +34,8 @@ import net.minecraft.potion.Potions;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
@@ -137,7 +139,7 @@ public final class ContentRegistryTest implements ModInitializer {
 
 		VillagerInteractionRegistries.registerCollectable(Items.OAK_SAPLING);
 
-		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, new Identifier("fake_loot_table"));
+		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, RegistryKey.of(RegistryKeys.LOOT_TABLE, new Identifier("fake_loot_table")));
 
 		Registry.register(Registries.BLOCK, TEST_EVENT_ID, new TestEventBlock(AbstractBlock.Settings.copy(Blocks.STONE)));
 		SculkSensorFrequencyRegistry.register(TEST_EVENT.registryKey(), 2);

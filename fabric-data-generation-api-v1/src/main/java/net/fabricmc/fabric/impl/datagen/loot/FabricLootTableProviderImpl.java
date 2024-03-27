@@ -72,7 +72,7 @@ public final class FabricLootTableProviderImpl {
 			final List<CompletableFuture<?>> futures = new ArrayList<>();
 
 			for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
-				JsonObject tableJson = (JsonObject) Util.getResult(LootTable.field_50021.encodeStart(ops, entry.getValue()), IllegalStateException::new);
+				JsonObject tableJson = (JsonObject) Util.getResult(LootTable.CODEC.encodeStart(ops, entry.getValue()), IllegalStateException::new);
 				ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
 				futures.add(DataProvider.writeToPath(writer, tableJson, getOutputPath(fabricDataOutput, entry.getKey())));
 			}
