@@ -21,6 +21,8 @@ import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
 
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -61,11 +63,11 @@ abstract class CombinedIngredient implements CustomIngredient {
 
 	static class Serializer<I extends CombinedIngredient> implements CustomIngredientSerializer<I> {
 		private final Identifier identifier;
-		private final Codec<I> allowEmptyCodec;
-		private final Codec<I> disallowEmptyCodec;
+		private final MapCodec<I> allowEmptyCodec;
+		private final MapCodec<I> disallowEmptyCodec;
 		private final PacketCodec<RegistryByteBuf, I> packetCodec;
 
-		Serializer(Identifier identifier, Function<List<Ingredient>, I> factory, Codec<I> allowEmptyCodec, Codec<I> disallowEmptyCodec) {
+		Serializer(Identifier identifier, Function<List<Ingredient>, I> factory, MapCodec<I> allowEmptyCodec, MapCodec<I> disallowEmptyCodec) {
 			this.identifier = identifier;
 			this.allowEmptyCodec = allowEmptyCodec;
 			this.disallowEmptyCodec = disallowEmptyCodec;
@@ -79,7 +81,7 @@ abstract class CombinedIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public Codec<I> getCodec(boolean allowEmpty) {
+		public MapCodec<I> getCodec(boolean allowEmpty) {
 			return allowEmpty ? allowEmptyCodec : disallowEmptyCodec;
 		}
 

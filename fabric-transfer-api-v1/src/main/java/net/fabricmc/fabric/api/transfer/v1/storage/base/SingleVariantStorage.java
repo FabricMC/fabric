@@ -198,7 +198,7 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 	 */
 	public static <T extends TransferVariant<?>> void writeNbt(SingleVariantStorage<T> storage, Codec<T> codec, NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
 		final RegistryOps<NbtElement> ops = wrapperLookup.getOps(NbtOps.INSTANCE);
-		nbt.put("variant", Util.getResult(codec.encodeStart(ops, storage.variant), RuntimeException::new));
+		nbt.put("variant", codec.encodeStart(ops, storage.variant).getOrThrow(RuntimeException::new));
 		nbt.putLong("amount", storage.amount);
 	}
 }

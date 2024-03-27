@@ -68,13 +68,13 @@ public abstract class SingleFluidStorage extends SingleVariantStorage<FluidVaria
 	 * Other formats are allowed, this is just a suggestion.
 	 */
 	public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
-		SingleVariantStorage.readNbt(this, FluidVariant.CODEC, FluidVariant::blank, nbt, wrapperLookup);
+		SingleVariantStorage.readNbt(this, FluidVariant.CODEC.codec(), FluidVariant::blank, nbt, wrapperLookup);
 	}
 
 	/**
 	 * Simple implementation of writing to NBT. Other formats are allowed, this is just a convenient suggestion.
 	 */
 	public void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
-		SingleVariantStorage.writeNbt(this, FluidVariant.CODEC, nbt, wrapperLookup);
+		SingleVariantStorage.writeNbt(this, FluidVariant.CODEC.codec(), nbt, wrapperLookup);
 	}
 }

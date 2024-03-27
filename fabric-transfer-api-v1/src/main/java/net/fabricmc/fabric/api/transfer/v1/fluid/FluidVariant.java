@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.component.ComponentChanges;
@@ -42,7 +43,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
  */
 @ApiStatus.NonExtendable
 public interface FluidVariant extends TransferVariant<Fluid> {
-	Codec<FluidVariant> CODEC = VariantCodecs.FLUID_CODEC;
+	MapCodec<FluidVariant> CODEC = VariantCodecs.FLUID_CODEC;
 	PacketCodec<RegistryByteBuf, FluidVariant> PACKET_CODEC = VariantCodecs.FLUID_PACKET_CODEC;
 
 	/**

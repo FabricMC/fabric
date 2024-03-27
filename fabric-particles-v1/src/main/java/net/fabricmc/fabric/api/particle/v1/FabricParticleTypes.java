@@ -20,6 +20,8 @@ import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
 
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.particle.DefaultParticleType;
@@ -69,7 +71,7 @@ public final class FabricParticleTypes {
 	 * @param codec The codec for serialization.
 	 * @param packetCodec The packet codec for network serialization.
 	 */
-	public static <T extends ParticleEffect> ParticleType<T> complex(ParticleEffect.Factory<T> factory, final Function<ParticleType<T>, Codec<T>> codecGetter, final Codec<T> codec, final PacketCodec<? super RegistryByteBuf, T> packetCodec) {
+	public static <T extends ParticleEffect> ParticleType<T> complex(ParticleEffect.Factory<T> factory, final Function<ParticleType<T>, Codec<T>> codecGetter, final MapCodec<T> codec, final PacketCodec<? super RegistryByteBuf, T> packetCodec) {
 		return complex(false, factory, codec, packetCodec);
 	}
 
@@ -81,10 +83,10 @@ public final class FabricParticleTypes {
 	 * @param codec The codec for serialization.
 	 * @param packetCodec The packet codec for network serialization.
 	 */
-	public static <T extends ParticleEffect> ParticleType<T> complex(boolean alwaysSpawn, ParticleEffect.Factory<T> factory, final Codec<T> codec, final PacketCodec<? super RegistryByteBuf, T> packetCodec) {
+	public static <T extends ParticleEffect> ParticleType<T> complex(boolean alwaysSpawn, ParticleEffect.Factory<T> factory, final MapCodec<T> codec, final PacketCodec<? super RegistryByteBuf, T> packetCodec) {
 		return new ParticleType<T>(alwaysSpawn, factory) {
 			@Override
-			public Codec<T> getCodec() {
+			public MapCodec<T> getCodec() {
 				return codec;
 			}
 
@@ -103,7 +105,7 @@ public final class FabricParticleTypes {
 	 * @param codecGetter A function that, given the newly created type, returns the codec for serialization.
 	 * @param packetCodecGetter A function that, given the newly created type, returns the packet codec for network serialization.
 	 */
-	public static <T extends ParticleEffect> ParticleType<T> complex(ParticleEffect.Factory<T> factory, final Function<ParticleType<T>, Codec<T>> codecGetter, final Function<ParticleType<T>, PacketCodec<? super RegistryByteBuf, T>> packetCodecGetter) {
+	public static <T extends ParticleEffect> ParticleType<T> complex(ParticleEffect.Factory<T> factory, final Function<ParticleType<T>, MapCodec<T>> codecGetter, final Function<ParticleType<T>, PacketCodec<? super RegistryByteBuf, T>> packetCodecGetter) {
 		return complex(false, factory, codecGetter, packetCodecGetter);
 	}
 
@@ -116,10 +118,10 @@ public final class FabricParticleTypes {
 	 * @param codecGetter A function that, given the newly created type, returns the codec for serialization.
 	 * @param packetCodecGetter A function that, given the newly created type, returns the packet codec for network serialization.
 	 */
-	public static <T extends ParticleEffect> ParticleType<T> complex(boolean alwaysSpawn, ParticleEffect.Factory<T> factory, final Function<ParticleType<T>, Codec<T>> codecGetter, final Function<ParticleType<T>, PacketCodec<? super RegistryByteBuf, T>> packetCodecGetter) {
+	public static <T extends ParticleEffect> ParticleType<T> complex(boolean alwaysSpawn, ParticleEffect.Factory<T> factory, final Function<ParticleType<T>, MapCodec<T>> codecGetter, final Function<ParticleType<T>, PacketCodec<? super RegistryByteBuf, T>> packetCodecGetter) {
 		return new ParticleType<T>(alwaysSpawn, factory) {
 			@Override
-			public Codec<T> getCodec() {
+			public MapCodec<T> getCodec() {
 				return codecGetter.apply(this);
 			}
 

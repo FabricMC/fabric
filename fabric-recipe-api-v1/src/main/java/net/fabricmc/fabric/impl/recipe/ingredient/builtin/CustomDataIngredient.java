@@ -23,6 +23,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.component.DataComponentTypes;
@@ -35,7 +36,6 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.dynamic.Codecs;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
@@ -95,7 +95,7 @@ public class CustomDataIngredient implements CustomIngredient {
 		private static final Identifier ID = new Identifier("fabric", "custom_data");
 
 		// Supports decoding the NBT as a string as well as the object.
-		private static final Codec<NbtCompound> NBT_CODEC = Codecs.xor(
+		private static final Codec<NbtCompound> NBT_CODEC = Codec.xor(
 				Codec.STRING, NbtCompound.CODEC
 		).flatXmap(either -> either.map(s -> {
 			try {
@@ -105,8 +105,8 @@ public class CustomDataIngredient implements CustomIngredient {
 			}
 		}, DataResult::success), nbtCompound -> DataResult.success(Either.left(nbtCompound.asString())));
 
-		private static final Codec<CustomDataIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
-		private static final Codec<CustomDataIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
+		private static final MapCodec<CustomDataIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
+		private static final MapCodec<CustomDataIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
 
 		private static final PacketCodec<RegistryByteBuf, CustomDataIngredient> PACKET_CODEC = PacketCodec.tuple(
 				Ingredient.PACKET_CODEC, CustomDataIngredient::getBase,
@@ -114,8 +114,8 @@ public class CustomDataIngredient implements CustomIngredient {
 				CustomDataIngredient::new
 		);
 
-		private static Codec<CustomDataIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
-			return RecordCodecBuilder.create(instance ->
+		private static MapCodec<CustomDataIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
+			return RecordCodecBuilder.mapCodec(instance ->
 					instance.group(
 							ingredientCodec.fieldOf("base").forGetter(CustomDataIngredient::getBase),
 							NBT_CODEC.fieldOf("nbt").forGetter(CustomDataIngredient::getNbt)
@@ -129,7 +129,7 @@ public class CustomDataIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public Codec<CustomDataIngredient> getCodec(boolean allowEmpty) {
+		public MapCodec<CustomDataIngredient> getCodec(boolean allowEmpty) {
 			return allowEmpty ? ALLOW_EMPTY_CODEC : DISALLOW_EMPTY_CODEC;
 		}
 
