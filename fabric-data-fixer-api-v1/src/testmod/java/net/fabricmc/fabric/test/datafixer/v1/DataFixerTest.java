@@ -159,6 +159,7 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 
 		LOGGER.info("Preparing world for data fixer testing...");
 
+		// TODO: Use a custom chest to test the schema isolation issue.
 		BlockPos chestPos = new BlockPos(0, 10, 0);
 		world.setBlockState(chestPos, Blocks.CHEST.getDefaultState());
 
