@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.screenhandler;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -81,10 +83,22 @@ public final class Networking implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		PayloadTypeRegistry.playS2C().register(OpenScreenPayload.ID, OpenScreenPayload.CODEC);
-		RegistryEntryAddedCallback.event(Registries.SCREEN_HANDLER).register((rawId, id, type) -> {
+
+		forEachEntry(Registries.SCREEN_HANDLER, (type, id) -> {
 			if (type instanceof ExtendedScreenHandlerType<?, ?> extended) {
 				CODEC_BY_ID.put(id, extended.getPacketCodec());
 			}
+		});
+	}
+
+	// Calls the consumer for each registry entry that has been registered or will be registered.
+	private static <T> void forEachEntry(Registry<T> registry, BiConsumer<T, Identifier> consumer) {
+		for (T type : registry) {
+			consumer.accept(type, registry.getId(type));
+		}
+
+		RegistryEntryAddedCallback.event(registry).register((rawId, id, type) -> {
+			consumer.accept(type, id);
 		});
 	}
 

@@ -30,7 +30,6 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
 import net.minecraft.test.TestContext;
-import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients;
@@ -58,7 +57,7 @@ public class SerializationTests {
 		JsonElement json = JsonParser.parseString(ingredientJson);
 
 		try {
-			Util.getResult(Ingredient.DISALLOW_EMPTY_CODEC.parse(JsonOps.INSTANCE, json), JsonParseException::new);
+			Ingredient.DISALLOW_EMPTY_CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(JsonParseException::new);
 			throw new GameTestException("Using a custom ingredient inside an array ingredient should have failed.");
 		} catch (JsonParseException e) {
 			context.complete();
@@ -79,12 +78,10 @@ public class SerializationTests {
 					Ingredient.ofItems(Items.STONE)
 			);
 			Codec<Ingredient> ingredientCodec = allowEmpty ? Ingredient.ALLOW_EMPTY_CODEC : Ingredient.DISALLOW_EMPTY_CODEC;
-			JsonObject json = Util.getResult(ingredientCodec.encodeStart(JsonOps.INSTANCE, ingredient), IllegalStateException::new).getAsJsonObject();
+			JsonObject json = ingredientCodec.encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow(IllegalStateException::new).getAsJsonObject();
 			context.assertTrue(json.toString().equals(ingredientJson), "Unexpected json: " + json);
 			// Make sure that we can deserialize it
-			Ingredient deserialized = Util.getResult(
-					ingredientCodec.parse(JsonOps.INSTANCE, json), JsonParseException::new
-			);
+			Ingredient deserialized = ingredientCodec.parse(JsonOps.INSTANCE, json).getOrThrow(JsonParseException::new);
 			context.assertTrue(deserialized.getCustomIngredient() != null, "Custom ingredient was not deserialized");
 			context.assertTrue(deserialized.getCustomIngredient().getSerializer() == ingredient.getCustomIngredient().getSerializer(), "Serializer did not match");
 		}

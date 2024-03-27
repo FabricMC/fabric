@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.item.ItemStack;
@@ -74,16 +75,16 @@ public class DifferenceIngredient implements CustomIngredient {
 
 	private static class Serializer implements CustomIngredientSerializer<DifferenceIngredient> {
 		private static final Identifier ID = new Identifier("fabric", "difference");
-		private static final Codec<DifferenceIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
-		private static final Codec<DifferenceIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
+		private static final MapCodec<DifferenceIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
+		private static final MapCodec<DifferenceIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
 		private static final PacketCodec<RegistryByteBuf, DifferenceIngredient> PACKET_CODEC = PacketCodec.tuple(
 				Ingredient.PACKET_CODEC, DifferenceIngredient::getBase,
 				Ingredient.PACKET_CODEC, DifferenceIngredient::getSubtracted,
 				DifferenceIngredient::new
 		);
 
-		private static Codec<DifferenceIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
-			return RecordCodecBuilder.create(instance ->
+		private static MapCodec<DifferenceIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
+			return RecordCodecBuilder.mapCodec(instance ->
 					instance.group(
 							ingredientCodec.fieldOf("base").forGetter(DifferenceIngredient::getBase),
 							ingredientCodec.fieldOf("subtracted").forGetter(DifferenceIngredient::getSubtracted)
@@ -97,7 +98,7 @@ public class DifferenceIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public Codec<DifferenceIngredient> getCodec(boolean allowEmpty) {
+		public MapCodec<DifferenceIngredient> getCodec(boolean allowEmpty) {
 			return allowEmpty ? ALLOW_EMPTY_CODEC : DISALLOW_EMPTY_CODEC;
 		}
 

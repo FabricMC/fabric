@@ -102,7 +102,7 @@ transitive-accessible method net/minecraft/sound/SoundEvent of (Lnet/minecraft/u
 transitive-accessible method net/minecraft/sound/SoundEvent of (Lnet/minecraft/util/Identifier;)Lnet/minecraft/sound/SoundEvent;
 
 # Creating BlockStateProviderTypes
-transitive-accessible method net/minecraft/world/gen/stateprovider/BlockStateProviderType <init> (Lcom/mojang/serialization/Codec;)V
+transitive-accessible method net/minecraft/world/gen/stateprovider/BlockStateProviderType <init> (Lcom/mojang/serialization/MapCodec;)V
 
 # Creating custom biomes
 transitive-accessible method net/minecraft/world/biome/OverworldBiomeCreator getSkyColor (F)I
@@ -111,10 +111,10 @@ transitive-accessible method net/minecraft/world/biome/OverworldBiomeCreator get
 transitive-accessible field net/minecraft/structure/processor/StructureProcessorLists EMPTY Lnet/minecraft/registry/RegistryKey;
 
 # Creating custom trees
-transitive-accessible method net/minecraft/world/gen/foliage/FoliagePlacerType <init> (Lcom/mojang/serialization/Codec;)V
-transitive-accessible method net/minecraft/world/gen/treedecorator/TreeDecoratorType <init> (Lcom/mojang/serialization/Codec;)V
-transitive-accessible method net/minecraft/world/gen/trunk/TrunkPlacerType <init> (Lcom/mojang/serialization/Codec;)V
-transitive-accessible method net/minecraft/world/gen/root/RootPlacerType <init> (Lcom/mojang/serialization/Codec;)V
+transitive-accessible method net/minecraft/world/gen/foliage/FoliagePlacerType <init> (Lcom/mojang/serialization/MapCodec;)V
+transitive-accessible method net/minecraft/world/gen/treedecorator/TreeDecoratorType <init> (Lcom/mojang/serialization/MapCodec;)V
+transitive-accessible method net/minecraft/world/gen/trunk/TrunkPlacerType <init> (Lcom/mojang/serialization/MapCodec;)V
+transitive-accessible method net/minecraft/world/gen/root/RootPlacerType <init> (Lcom/mojang/serialization/MapCodec;)V
 
 # Working with custom damage sources
 transitive-accessible field net/minecraft/entity/damage/DamageSources registry Lnet/minecraft/registry/Registry;

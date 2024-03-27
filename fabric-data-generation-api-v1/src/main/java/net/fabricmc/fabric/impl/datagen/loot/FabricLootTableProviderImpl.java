@@ -36,7 +36,6 @@ import net.minecraft.loot.context.LootContextType;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
@@ -72,7 +71,7 @@ public final class FabricLootTableProviderImpl {
 			final List<CompletableFuture<?>> futures = new ArrayList<>();
 
 			for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
-				JsonObject tableJson = (JsonObject) Util.getResult(LootTable.CODEC.encodeStart(ops, entry.getValue()), IllegalStateException::new);
+				JsonObject tableJson = (JsonObject) LootTable.CODEC.encodeStart(ops, entry.getValue()).getOrThrow(IllegalStateException::new);
 				ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
 				futures.add(DataProvider.writeToPath(writer, tableJson, getOutputPath(fabricDataOutput, entry.getKey())));
 			}
