@@ -52,12 +52,11 @@ public class AttachmentSerializingImpl {
 			if (codec != null) {
 				RegistryOps<NbtElement> registryOps = wrapperLookup.getOps(NbtOps.INSTANCE);
 				codec.encodeStart(registryOps, entry.getValue())
-						.get()
-						.ifRight(partial -> {
+						.ifError(partial -> {
 							LOGGER.warn("Couldn't serialize attachment " + type.identifier() + ", skipping. Error:");
 							LOGGER.warn(partial.message());
 						})
-						.ifLeft(serialized -> compound.put(type.identifier().toString(), serialized));
+						.ifSuccess(serialized -> compound.put(type.identifier().toString(), serialized));
 			}
 		}
 
@@ -83,12 +82,11 @@ public class AttachmentSerializingImpl {
 				if (codec != null) {
 					RegistryOps<NbtElement> registryOps = wrapperLookup.getOps(NbtOps.INSTANCE);
 					codec.parse(registryOps, compound.get(key))
-							.get()
-							.ifRight(partial -> {
+							.ifError(partial -> {
 								LOGGER.warn("Couldn't deserialize attachment " + type.identifier() + ", skipping. Error:");
 								LOGGER.warn(partial.message());
 							})
-							.ifLeft(
+							.ifSuccess(
 									deserialized -> attachments.put(type, deserialized)
 							);
 				}
