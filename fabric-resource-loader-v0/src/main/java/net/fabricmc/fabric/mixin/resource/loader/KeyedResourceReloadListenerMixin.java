@@ -22,7 +22,6 @@ import java.util.Locale;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.loot.LootManager;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.registry.tag.TagManagerLoader;
 import net.minecraft.server.ServerAdvancementLoader;
@@ -34,7 +33,7 @@ import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 
 @Mixin({
 		/* public */
-		RecipeManager.class, ServerAdvancementLoader.class, FunctionLoader.class, LootManager.class, TagManagerLoader.class
+		RecipeManager.class, ServerAdvancementLoader.class, FunctionLoader.class, TagManagerLoader.class
 		/* private */
 })
 public abstract class KeyedResourceReloadListenerMixin implements IdentifiableResourceReloadListener {
@@ -53,8 +52,6 @@ public abstract class KeyedResourceReloadListenerMixin implements IdentifiableRe
 				this.fabric$id = ResourceReloadListenerKeys.ADVANCEMENTS;
 			} else if (self instanceof FunctionLoader) {
 				this.fabric$id = ResourceReloadListenerKeys.FUNCTIONS;
-			} else if (self instanceof LootManager) {
-				this.fabric$id = ResourceReloadListenerKeys.LOOT_TABLES;
 			} else if (self instanceof TagManagerLoader) {
 				this.fabric$id = ResourceReloadListenerKeys.TAGS;
 			} else {

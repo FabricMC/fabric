@@ -15,5 +15,8 @@
     "JukeboxBlockEntityMixin",
     "LockableContainerBlockEntityMixin",
     "SimpleInventoryMixin"
-  ]
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

@@ -17,14 +17,11 @@
 package net.fabricmc.fabric.api.item.v1;
 
 import com.google.common.collect.Multimap;
-import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -85,18 +82,6 @@ public interface FabricItem {
 	}
 
 	/**
-	 * Determines if mining with this item allows drops to be harvested from the specified block state.
-	 * Stack-aware version of {@link Item#isSuitableFor(BlockState)}.
-	 *
-	 * @param stack the current stack
-	 * @param state the block state of the targeted block
-	 * @return true if drops can be harvested
-	 */
-	default boolean isSuitableFor(ItemStack stack, BlockState state) {
-		return ((Item) this).isSuitableFor(state);
-	}
-
-	/**
 	 * Returns a leftover item stack after {@code stack} is consumed in a recipe.
 	 * (This is also known as "recipe remainder".)
 	 * For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
@@ -126,17 +111,6 @@ public interface FabricItem {
 	 */
 	default ItemStack getRecipeRemainder(ItemStack stack) {
 		return ((Item) this).hasRecipeRemainder() ? ((Item) this).getRecipeRemainder().getDefaultStack() : ItemStack.EMPTY;
-	}
-
-	/**
-	 * This is a stack-aware version of {@link Item#getFoodComponent()}.
-	 * Note that simple food component can also be set via {@link Item.Settings#food(FoodComponent)}.
-	 * If you want to get a food component for a stack, is <strong>recommended</strong> to use the stack version of this method: {@link FabricItemStack#getFoodComponent()}.
-	 *
-	 * @return this item's {@link FoodComponent}, or {@code null} if none was set
-	 */
-	default @Nullable FoodComponent getFoodComponent(ItemStack stack) {
-		return ((Item) this).getFoodComponent();
 	}
 
 	/**
