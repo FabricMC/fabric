@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.recipe.v1.ingredient;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.Nullable;
 

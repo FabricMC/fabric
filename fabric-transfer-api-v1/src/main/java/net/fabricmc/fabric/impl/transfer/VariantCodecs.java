@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.transfer;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.component.ComponentChanges;
@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 
 public class VariantCodecs {
-	public static final MapCodec<ItemVariant> ITEM_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+	public static final Codec<ItemVariant> ITEM_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Registries.ITEM.getEntryCodec().fieldOf("item").forGetter(ItemVariant::getRegistryEntry),
 			ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(ItemVariant::getComponents)
 		).apply(instance, ItemVariantImpl::of)
@@ -43,7 +43,7 @@ public class VariantCodecs {
 			ItemVariantImpl::of
 	);
 
-	public static final MapCodec<FluidVariant> FLUID_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+	public static final Codec<FluidVariant> FLUID_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Registries.FLUID.getEntryCodec().fieldOf("fluid").forGetter(FluidVariant::getRegistryEntry),
 			ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(FluidVariant::getComponents)
 		).apply(instance, FluidVariantImpl::of)

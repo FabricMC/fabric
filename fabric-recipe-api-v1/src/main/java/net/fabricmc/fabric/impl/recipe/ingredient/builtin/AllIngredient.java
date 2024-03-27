@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.mojang.serialization.Codec;
-
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.item.ItemStack;

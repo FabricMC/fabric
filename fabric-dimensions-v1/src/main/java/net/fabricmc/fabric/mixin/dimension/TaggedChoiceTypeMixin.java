@@ -50,17 +50,17 @@ public class TaggedChoiceTypeMixin<K> implements TaggedChoiceTypeExtension {
 	 * The Codec.PASSTHROUGH will not make Dynamic to be deserialized and serialized to Dynamic.
 	 * This will avoid deserialization failure from DFU when upgrading level.dat that contains mod custom generator types.
 	 */
-//	@Inject(
-//			method = "getMapCodec", at = @At("HEAD"), cancellable = true, remap = false
-//	)
-//	private void onGetCodec(K k, CallbackInfoReturnable<DataResult<? extends Codec<?>>> cir) {
-//		if (failSoft) {
-//			if (!types.containsKey(k)) {
-//				LOGGER.warn("Not recognizing key {}. Using pass-through codec. {}", k, this);
-//				cir.setReturnValue(DataResult.success(Codec.PASSTHROUGH));
-//			}
-//		}
-//	}
+	@Inject(
+			method = "getMapCodec", at = @At("HEAD"), cancellable = true, remap = false
+	)
+	private void onGetCodec(K k, CallbackInfoReturnable<DataResult<? extends Codec<?>>> cir) {
+		if (failSoft) {
+			if (!types.containsKey(k)) {
+				LOGGER.warn("Not recognizing key {}. Using pass-through codec. {}", k, this);
+				cir.setReturnValue(DataResult.success(Codec.PASSTHROUGH));
+			}
+		}
+	}
 
 	@Override
 	public void fabric$setFailSoft(boolean cond) {

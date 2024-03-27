@@ -19,8 +19,6 @@ package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 import java.util.List;
 import java.util.function.Function;
 
-import com.mojang.serialization.Codec;
-
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.network.RegistryByteBuf;

@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.transfer.v1.item;
 import java.util.Objects;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.component.ComponentChanges;
@@ -42,7 +41,7 @@ import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
  */
 @ApiStatus.NonExtendable
 public interface ItemVariant extends TransferVariant<Item> {
-	MapCodec<ItemVariant> CODEC = VariantCodecs.ITEM_CODEC;
+	Codec<ItemVariant> CODEC = VariantCodecs.ITEM_CODEC;
 	PacketCodec<RegistryByteBuf, ItemVariant> PACKET_CODEC = VariantCodecs.ITEM_PACKET_CODEC;
 
 	/**

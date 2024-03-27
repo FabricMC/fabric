@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.particle.v1;
 import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
-
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.network.RegistryByteBuf;
