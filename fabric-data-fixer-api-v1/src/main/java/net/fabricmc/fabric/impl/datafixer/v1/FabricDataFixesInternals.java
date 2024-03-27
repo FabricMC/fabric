@@ -69,8 +69,8 @@ public abstract class FabricDataFixesInternals {
 			return null;
 		}
 
-		if (key.getType() != CustomValue.CvType.NUMBER) {
-			throw new RuntimeException("Key is not set in the fabric.mod.json file; set it or pass explicitly");
+		if (key.getType() != CustomValue.CvType.STRING) {
+			throw new RuntimeException("Key is not a string in the fabric.mod.json file");
 		}
 
 		return key.getAsString();
