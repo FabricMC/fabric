@@ -76,7 +76,7 @@ public class UpdatingItem extends Item {
 	}
 
 	@Override
-	public float method_58404(ItemStack stack, BlockState state) {
-		return isEnabled(stack) ? 20 : super.method_58404(stack, state);
+	public float getMiningSpeed(ItemStack stack, BlockState state) {
+		return isEnabled(stack) ? 20 : super.getMiningSpeed(stack, state);
 	}
 }
