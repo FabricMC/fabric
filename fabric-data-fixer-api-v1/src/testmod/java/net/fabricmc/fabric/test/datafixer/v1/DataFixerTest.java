@@ -99,7 +99,7 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 			throw new AssertionError(String.format(Locale.ROOT, "Expected data version %d, got %d", CURRENT_DATA_VERSION, builder.getDataVersion()));
 		}
 
-		builder.addSchema(0, FabricDataFixes.BASE_SCHEMA);
+		builder.addSchema(0, FabricDataFixes.getBaseSchema());
 
 		Schema schema1 = builder.addSchema(1, IdentifierNormalizingSchema::new);
 		SimpleFixes.addItemRenameFix(builder, "Rename old_item to new_item", OLD_ITEM_ID, NEW_ITEM_ID, schema1);

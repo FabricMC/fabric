@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFixerBuilder;
+import com.mojang.datafixers.DataFixerUpper;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Range;
 
@@ -84,8 +85,8 @@ public class FabricDataFixerBuilder extends DataFixerBuilder {
 	 * @return the newly built data fixer
 	 */
 	@Contract(value = "_, _ -> new")
-	public FabricDataFixerUpper build(Set<DSL.TypeReference> types, Supplier<Executor> executorGetter) {
+	public DataFixerUpper build(Set<DSL.TypeReference> types, Supplier<Executor> executorGetter) {
 		Objects.requireNonNull(executorGetter, "executorGetter cannot be null");
-		return (FabricDataFixerUpper) (types.isEmpty() ? this.buildUnoptimized() : this.buildOptimized(types, executorGetter.get()));
+		return (DataFixerUpper) (types.isEmpty() ? this.buildUnoptimized() : this.buildOptimized(types, executorGetter.get()));
 	}
 }

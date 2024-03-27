@@ -24,8 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.mojang.datafixers.DataFixerUpper;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
+import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
@@ -35,28 +37,32 @@ import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
-import net.fabricmc.fabric.api.datafixer.v1.FabricDataFixerUpper;
-
 public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals {
 	// From QSL.
 	private final Schema latestVanillaSchema;
+	private Schema latestModSchema;
 
 	private Map<String, List<DataFixerEntry>> modDataFixers;
 	private boolean frozen;
 
-	private final CombinedDataFixer combinedDataFixer;
-
 	public FabricDataFixesInternalsImpl(Schema latestVanillaSchema) {
 		this.latestVanillaSchema = latestVanillaSchema;
+		this.latestModSchema = latestVanillaSchema;
 
 		this.modDataFixers = new Object2ReferenceOpenHashMap<>();
-		this.combinedDataFixer = new CombinedDataFixerUpper(this.modDataFixers);
 		this.frozen = false;
 	}
 
 	@Override
 	public void registerFixer(String modId, @Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
-			@Nullable String key, FabricDataFixerUpper dataFixer) {
+			@Nullable String key, DataFixerUpper dataFixer) {
+		Int2ObjectSortedMap<Schema> schemas = ((DataFixerUpperExtension) dataFixer).fabric_getSchemas();
+		Schema lastSchema = schemas.getOrDefault(schemas.lastIntKey(), null);
+
+		if (lastSchema != null) {
+			this.latestModSchema = lastSchema;
+		}
+
 		this.modDataFixers.computeIfAbsent(modId, modIdx -> new ObjectArrayList<>())
 				.add(new DataFixerEntry(dataFixer, currentVersion, key));
 	}
@@ -67,8 +73,8 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 	}
 
 	@Override
-	public Schema createBaseSchema() {
-		return new Schema(0, this.latestVanillaSchema);
+	public Schema getBaseSchema() {
+		return new Schema(0, this.latestModSchema);
 	}
 
 	@Override
@@ -83,11 +89,14 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 			for (DataFixerEntry dataFixerEntry : dataFixerEntries) {
 				int modDataVersion = FabricDataFixesInternals.getModDataVersion(compound, entry.getKey(), dataFixerEntry.key());
 
-				fixers.put(dataFixerEntry, modDataVersion);
+				current = dataFixerEntry.dataFixer()
+						.update(dataFixTypes.typeReference,
+								current,
+								modDataVersion, dataFixerEntry.currentVersion());
 			}
 		}
 
-		return this.combinedDataFixer.update(dataFixTypes.typeReference, current, fixers);
+		return current;
 	}
 
 	@Override

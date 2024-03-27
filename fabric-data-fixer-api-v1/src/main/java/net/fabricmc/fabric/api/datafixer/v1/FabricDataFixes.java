@@ -32,6 +32,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerBuilder;
+import com.mojang.datafixers.DataFixerUpper;
 import com.mojang.datafixers.schemas.Schema;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
@@ -59,11 +60,13 @@ public final class FabricDataFixes {
 	 *
 	 * @see DataFixerBuilder#addSchema(int, BiFunction)
 	 */
-	public static final BiFunction<Integer, Schema, Schema> BASE_SCHEMA = (version, parent) -> {
-		Preconditions.checkArgument(version == 0, "version must be 0");
-		Preconditions.checkArgument(parent == null, "parent must be null");
-		return FabricDataFixesInternals.get().createBaseSchema();
-	};
+	public static BiFunction<Integer, Schema, Schema> getBaseSchema() {
+		return (version, parent) -> {
+			Preconditions.checkArgument(version == 0, "version must be 0");
+			Preconditions.checkArgument(parent == null, "parent must be null");
+			return FabricDataFixesInternals.get().getBaseSchema();
+		};
+	}
 
 	/**
 	 * Registers a new data fixer.
@@ -75,7 +78,7 @@ public final class FabricDataFixes {
 	 */
 	public static void registerFixer(String modId,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
-			FabricDataFixerUpper dataFixer) {
+			DataFixerUpper dataFixer) {
 		registerFixer(modId, currentVersion, null, dataFixer);
 	}
 
@@ -90,7 +93,7 @@ public final class FabricDataFixes {
 	 */
 	public static void registerFixer(String modId,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
-			@Nullable String key, FabricDataFixerUpper dataFixer) {
+			@Nullable String key, DataFixerUpper dataFixer) {
 		Objects.requireNonNull(modId, "modId cannot be null");
 		//noinspection ConstantConditions
 		Preconditions.checkArgument(currentVersion >= 0, "currentVersion must be positive");
@@ -113,7 +116,7 @@ public final class FabricDataFixes {
 	 */
 	public static void registerFixer(ModContainer mod,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
-			FabricDataFixerUpper dataFixer) {
+			DataFixerUpper dataFixer) {
 		registerFixer(mod, currentVersion, null, dataFixer);
 	}
 
@@ -129,7 +132,7 @@ public final class FabricDataFixes {
 	public static void registerFixer(ModContainer mod,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
 			@Nullable String key,
-			FabricDataFixerUpper dataFixer) {
+			DataFixerUpper dataFixer) {
 		Objects.requireNonNull(mod, "mod cannot be null");
 
 		registerFixer(mod.getMetadata().getId(), currentVersion, key, dataFixer);
@@ -146,7 +149,7 @@ public final class FabricDataFixes {
 	 * @throws RuntimeException         if the version field does not exist or is not a number
 	 * @throws IllegalArgumentException if the data fixer for {@code mod} is already registered
 	 */
-	public static void registerFixer(ModContainer mod, FabricDataFixerUpper dataFixer) {
+	public static void registerFixer(ModContainer mod, DataFixerUpper dataFixer) {
 		Objects.requireNonNull(mod, "mod cannot be null");
 		registerFixer(mod.getMetadata().getId(), FabricDataFixesInternals.getDataVersionFromMetadata(mod), FabricDataFixesInternals.getKeyFromMetadata(mod), dataFixer);
 	}
@@ -189,10 +192,10 @@ public final class FabricDataFixes {
 	 * @param modId the mod ID
 	 * @return the mod's data fixer, or empty optional if the mod hasn't registered one
 	 */
-	public static Optional<List<Optional<FabricDataFixerUpper>>> getFixers(String modId) {
+	public static Optional<List<Optional<DataFixerUpper>>> getFixers(String modId) {
 		Objects.requireNonNull(modId, "modId cannot be null");
 
-		List<Optional<FabricDataFixerUpper>> fixers = new ArrayList<>();
+		List<Optional<DataFixerUpper>> fixers = new ArrayList<>();
 
 		List<FabricDataFixesInternals.DataFixerEntry> entries = FabricDataFixesInternals.get().getFixerEntries(modId);
 

@@ -22,6 +22,7 @@ package net.fabricmc.fabric.impl.datafixer.v1;
 import java.util.List;
 
 import com.mojang.datafixers.DataFixUtils;
+import com.mojang.datafixers.DataFixerUpper;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
@@ -37,7 +38,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
 import net.fabricmc.fabric.api.datafixer.v1.DataFixerEntrypoint;
-import net.fabricmc.fabric.api.datafixer.v1.FabricDataFixerUpper;
 import net.fabricmc.fabric.api.datafixer.v1.SchemaRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -52,7 +52,7 @@ public abstract class FabricDataFixesInternals {
 	public static final String METADATA_KEY_KEY = "fabric-data-fixer-api-v1:key";
 	private static final String ENTRYPOINT_KEY = "fabric-data-fixer";
 
-	public record DataFixerEntry(FabricDataFixerUpper dataFixer, int currentVersion, @Nullable String key) {
+	public record DataFixerEntry(DataFixerUpper dataFixer, int currentVersion, @Nullable String key) {
 	}
 
 	@Range(from = 0, to = Integer.MAX_VALUE)
@@ -142,12 +142,12 @@ public abstract class FabricDataFixesInternals {
 		return instance;
 	}
 
-	public abstract void registerFixer(String modId, @Range(from = 0, to = Integer.MAX_VALUE) int currentVersion, @Nullable String key, FabricDataFixerUpper dataFixer);
+	public abstract void registerFixer(String modId, @Range(from = 0, to = Integer.MAX_VALUE) int currentVersion, @Nullable String key, DataFixerUpper dataFixer);
 
 	public abstract @Nullable List<DataFixerEntry> getFixerEntries(String modId);
 
 	@Contract(value = "-> new", pure = true)
-	public abstract Schema createBaseSchema();
+	public abstract Schema getBaseSchema();
 
 	public abstract Dynamic<NbtElement> updateWithAllFixers(DataFixTypes dataFixTypes, Dynamic<NbtElement> element);
 

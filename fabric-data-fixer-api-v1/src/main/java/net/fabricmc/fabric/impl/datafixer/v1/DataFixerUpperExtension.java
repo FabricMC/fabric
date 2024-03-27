@@ -16,19 +16,9 @@
 
 package net.fabricmc.fabric.impl.datafixer.v1;
 
-import java.util.Map;
-
-import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.schemas.Schema;
-import com.mojang.serialization.Dynamic;
-import org.jetbrains.annotations.Nullable;
+import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
 
-public interface CombinedDataFixer {
-	<T> Dynamic<T> update(DSL.TypeReference type, Dynamic<T> input, Map<FabricDataFixesInternals.DataFixerEntry, Integer> versionUpgrades);
-
-	default Schema getSchema(String modId, int version) {
-		return getSchema(modId, null, version);
-	}
-
-	Schema getSchema(String modId, @Nullable String key, int version);
+public interface DataFixerUpperExtension {
+	Int2ObjectSortedMap<Schema> fabric_getSchemas();
 }
