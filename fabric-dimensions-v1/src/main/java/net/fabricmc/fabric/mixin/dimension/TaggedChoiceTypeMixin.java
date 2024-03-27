@@ -51,7 +51,7 @@ public class TaggedChoiceTypeMixin<K> implements TaggedChoiceTypeExtension {
 	 * This will avoid deserialization failure from DFU when upgrading level.dat that contains mod custom generator types.
 	 */
 	@Inject(
-			method = "getCodec", at = @At("HEAD"), cancellable = true, remap = false
+			method = "getMapCodec", at = @At("HEAD"), cancellable = true, remap = false
 	)
 	private void onGetCodec(K k, CallbackInfoReturnable<DataResult<? extends Codec<?>>> cir) {
 		if (failSoft) {

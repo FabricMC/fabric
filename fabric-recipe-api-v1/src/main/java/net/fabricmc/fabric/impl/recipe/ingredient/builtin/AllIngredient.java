@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
@@ -29,15 +30,14 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
 public class AllIngredient extends CombinedIngredient {
-	private static final Codec<AllIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
-	private static final Codec<AllIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
+	private static final MapCodec<AllIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
+	private static final MapCodec<AllIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
 
-	private static Codec<AllIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
+	private static MapCodec<AllIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
 		return ingredientCodec
 				.listOf()
 				.fieldOf("ingredients")
-				.xmap(AllIngredient::new, AllIngredient::getIngredients)
-				.codec();
+				.xmap(AllIngredient::new, AllIngredient::getIngredients);
 	}
 
 	public static final CustomIngredientSerializer<AllIngredient> SERIALIZER =

@@ -27,7 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.dynamic.Codecs;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.FabricIngredient;
@@ -43,7 +42,7 @@ public class IngredientMixin implements FabricIngredient {
 				CustomIngredient::getSerializer,
 				serializer -> serializer.getCodec(allowEmpty));
 
-		cir.setReturnValue(Codecs.either(customIngredientCodec, cir.getReturnValue()).xmap(
+		cir.setReturnValue(Codec.either(customIngredientCodec, cir.getReturnValue()).xmap(
 				either -> either.map(CustomIngredient::toVanilla, ingredient -> ingredient),
 				ingredient -> {
 					CustomIngredient customIngredient = ingredient.getCustomIngredient();

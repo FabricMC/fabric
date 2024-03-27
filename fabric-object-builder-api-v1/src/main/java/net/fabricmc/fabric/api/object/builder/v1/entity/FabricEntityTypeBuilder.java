@@ -297,7 +297,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			}
 		}
 
-		return new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates, this.requiredFeatures);
+		//TODO 1.20.5, new field
+		return new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, 1, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates, this.requiredFeatures);
 	}
 
 	/**

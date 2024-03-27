@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
@@ -116,16 +117,16 @@ public class ComponentsIngredient implements CustomIngredient {
 
 	private static class Serializer implements CustomIngredientSerializer<ComponentsIngredient> {
 		private static final Identifier ID = new Identifier("fabric", "components");
-		private static final Codec<ComponentsIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
-		private static final Codec<ComponentsIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
+		private static final MapCodec<ComponentsIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
+		private static final MapCodec<ComponentsIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
 		private static final PacketCodec<RegistryByteBuf, ComponentsIngredient> PACKET_CODEC = PacketCodec.tuple(
 				Ingredient.PACKET_CODEC, ComponentsIngredient::getBase,
 				ComponentChanges.PACKET_CODEC, ComponentsIngredient::getComponents,
 				ComponentsIngredient::new
 		);
 
-		private static Codec<ComponentsIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
-			return RecordCodecBuilder.create(instance ->
+		private static MapCodec<ComponentsIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
+			return RecordCodecBuilder.mapCodec(instance ->
 					instance.group(
 							ingredientCodec.fieldOf("base").forGetter(ComponentsIngredient::getBase),
 							ComponentChanges.CODEC.fieldOf("components").forGetter(ComponentsIngredient::getComponents)
@@ -139,7 +140,7 @@ public class ComponentsIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public Codec<ComponentsIngredient> getCodec(boolean allowEmpty) {
+		public MapCodec<ComponentsIngredient> getCodec(boolean allowEmpty) {
 			return allowEmpty ? ALLOW_EMPTY_CODEC : DISALLOW_EMPTY_CODEC;
 		}
 

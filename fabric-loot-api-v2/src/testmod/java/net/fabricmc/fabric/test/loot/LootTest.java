@@ -75,7 +75,7 @@ public class LootTest implements ModInitializer {
 				LootPool pool = LootPool.builder()
 						.with(ItemEntry.builder(Items.GOLD_INGOT).build())
 						.conditionally(SurvivesExplosionLootCondition.builder().build())
-						.apply(SetNameLootFunction.builder(Text.literal("Gold from White Wool")).build())
+						.apply(SetNameLootFunction.builder(Text.literal("Gold from White Wool"), SetNameLootFunction.class_9475.CUSTOM_NAME).build())
 						.build();
 
 				tableBuilder.pool(pool);
