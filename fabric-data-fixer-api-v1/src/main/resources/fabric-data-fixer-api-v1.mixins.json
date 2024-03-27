@@ -5,8 +5,7 @@
   "mixins": [
     "DataFixerUpperMixin",
     "DataFixTypesMixin",
-    "NbtHelperMixin",
-    "SchemasMixin"
+    "NbtHelperMixin"
   ],
   "injectors": {
     "defaultRequire": 1
