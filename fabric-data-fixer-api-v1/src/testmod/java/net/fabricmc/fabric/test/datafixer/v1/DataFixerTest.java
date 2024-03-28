@@ -22,23 +22,17 @@ import java.util.Objects;
 
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.logging.LogUtils;
-
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-
-import net.minecraft.block.entity.BlockEntityType;
-
-import net.minecraft.datafixer.Schemas;
-import net.minecraft.datafixer.TypeReferences;
-import net.minecraft.datafixer.fix.ChoiceTypesFix;
-
-import net.minecraft.datafixer.fix.RenameBlockEntityFix;
-
 import org.slf4j.Logger;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.datafixer.Schemas;
+import net.minecraft.datafixer.TypeReferences;
+import net.minecraft.datafixer.fix.ChoiceTypesFix;
+import net.minecraft.datafixer.fix.RenameBlockEntityFix;
 import net.minecraft.datafixer.schema.IdentifierNormalizingSchema;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
@@ -56,6 +50,7 @@ import net.fabricmc.fabric.api.datafixer.v1.FabricDataFixerBuilder;
 import net.fabricmc.fabric.api.datafixer.v1.FabricDataFixes;
 import net.fabricmc.fabric.api.datafixer.v1.SimpleFixes;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
