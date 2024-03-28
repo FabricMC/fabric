@@ -22,6 +22,17 @@ import java.util.Objects;
 
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.logging.LogUtils;
+
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+
+import net.minecraft.block.entity.BlockEntityType;
+
+import net.minecraft.datafixer.Schemas;
+import net.minecraft.datafixer.TypeReferences;
+import net.minecraft.datafixer.fix.ChoiceTypesFix;
+
+import net.minecraft.datafixer.fix.RenameBlockEntityFix;
+
 import org.slf4j.Logger;
 
 import net.minecraft.block.AbstractBlock;
@@ -50,11 +61,11 @@ import net.fabricmc.loader.api.ModContainer;
 
 public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.ServerStarted {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final String MOD_ID = "fabric-data-fixer-api-v1-testmod";
+	static final String MOD_ID = "fabric-data-fixer-api-v1-testmod";
 	/**
 	 * Note: must be equal to the one in {@code fabric.mod.json} (used for verifying).
 	 */
-	private static final int CURRENT_DATA_VERSION = 3;
+	private static final int CURRENT_DATA_VERSION = 4;
 	/**
 	 * If {@code true}, generates a "base" save data for running a data fixer. If
 	 * {@code false} (default), runs the data fixer.
@@ -69,6 +80,11 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 	public static final Identifier NEW_BLOCK_ID = new Identifier(MOD_ID, "new_block");
 	public static final Block BLOCK = new Block(AbstractBlock.Settings.create());
 
+	public static final Identifier OLD_CHEST_ID = new Identifier(MOD_ID, "old_chest");
+	public static final Identifier NEW_CHEST_ID = new Identifier(MOD_ID, "new_chest");
+	public static final Block CHEST = new Block(AbstractBlock.Settings.copy(Blocks.CHEST));
+	public static final BlockEntityType<ModdedChestBlockEntity> CHEST_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(ModdedChestBlockEntity::new, BLOCK).build();
+
 	public static final Identifier OLD_BIOME_ID = new Identifier(MOD_ID, "old_biome");
 	public static final Identifier NEW_BIOME_ID = new Identifier(MOD_ID, "new_biome");
 	//public static final RegistryKey<Biome> BIOME_KEY = RegistryKey.of(
@@ -79,6 +95,8 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 	public void onInitialize() {
 		Registry.register(Registries.ITEM, GENERATE_MODE ? OLD_ITEM_ID : NEW_ITEM_ID, ITEM);
 		Registry.register(Registries.BLOCK, GENERATE_MODE ? OLD_BLOCK_ID : NEW_BLOCK_ID, BLOCK);
+		Registry.register(Registries.BLOCK, GENERATE_MODE ? OLD_CHEST_ID : NEW_CHEST_ID, CHEST);
+		Registry.register(Registries.BLOCK_ENTITY_TYPE, GENERATE_MODE ? OLD_CHEST_ID : NEW_CHEST_ID, CHEST_BLOCK_ENTITY);
 		//BuiltinRegistries.add(Registries.BIOME, BIOME_KEY, BIOME);
 		//TheEndBiomes.addMainIslandBiome(BIOME_KEY, 10);
 
@@ -87,6 +105,7 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 		if (!GENERATE_MODE) {
 			// Not generate mode - run the data fixer and tests.
 			initDataFixer();
+			initChestDataFixer(); // Used to test isolation issues
 			testNbt();
 		}
 	}
@@ -110,10 +129,30 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 		Schema schema3 = builder.addSchema(3, IdentifierNormalizingSchema::new);
 		SimpleFixes.addBiomeRenameFix(builder, "Rename old_biome to new_biome", Map.of(OLD_BIOME_ID, NEW_BIOME_ID), schema3);
 
+		Schema schema4 = builder.addSchema(4, IdentifierNormalizingSchema::new);
+		SimpleFixes.addBlockRenameFix(builder, "Rename old_chest to new_chest", OLD_CHEST_ID, NEW_CHEST_ID, schema4);
+
 		FabricDataFixes.buildAndRegisterFixer(mod, builder);
 
 		// Test that the data fixer exists
 		FabricDataFixes.getFixers(MOD_ID).orElseThrow(() -> new AssertionError("Data fixer is not be registered"));
+	}
+
+	private void initChestDataFixer() {
+		ModContainer mod = FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow();
+		FabricDataFixerBuilder builder = new FabricDataFixerBuilder(GENERATE_MODE ? 1 : 2);
+
+		builder.addSchema(0, FabricDataFixes.getBaseSchema());
+
+		Schema schema1 = builder.addSchema(1, ChestSchema1::new);
+		builder.addFixer(new ChoiceTypesFix(schema1, "Add modded chest", TypeReferences.BLOCK_ENTITY));
+
+		if (!GENERATE_MODE) {
+			Schema schema2 = builder.addSchema(2, ChestSchema2::new);
+			builder.addFixer(RenameBlockEntityFix.create(schema2, "Rename modded chest", Schemas.replacing(OLD_CHEST_ID.toString(), NEW_CHEST_ID.toString())));
+		}
+
+		FabricDataFixes.buildAndRegisterFixer(mod, "chest", builder);
 	}
 
 	/**
@@ -159,7 +198,6 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 
 		LOGGER.info("Preparing world for data fixer testing...");
 
-		// TODO: Use a custom chest to test the schema isolation issue.
 		BlockPos chestPos = new BlockPos(0, 10, 0);
 		world.setBlockState(chestPos, Blocks.CHEST.getDefaultState());
 
@@ -167,7 +205,14 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 			chestBlockEntity.setStack(0, ITEM.getDefaultStack());
 		}
 
-		world.setBlockState(chestPos.down(), BLOCK.getDefaultState());
+		BlockPos moddedChestPos = chestPos.down();
+		world.setBlockState(moddedChestPos, CHEST.getDefaultState());
+
+		if (world.getBlockEntity(moddedChestPos) instanceof ModdedChestBlockEntity chestBlockEntity) {
+			chestBlockEntity.setStack(0, ITEM.getDefaultStack());
+		}
+
+		world.setBlockState(moddedChestPos.down(), BLOCK.getDefaultState());
 
 		LOGGER.info("Generation finished, stopping server...");
 		server.stop(false);

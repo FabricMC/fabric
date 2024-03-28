@@ -17,5 +17,6 @@ To generate the file (without running the tests), run `gradlew runGenOldSave`, t
 The test files contain:
 
 - A chest block with a modded item, at `0, 10, 0` in the overworld
-- A modded block at `0, 9, 0` in the overworld
+- A modded chest block with a modded item, at `0, 9, 0` in the overworld
+- A modded block at `0, 8, 0` in the overworld
 - A modded biome at chunk `0, 0` in the End
