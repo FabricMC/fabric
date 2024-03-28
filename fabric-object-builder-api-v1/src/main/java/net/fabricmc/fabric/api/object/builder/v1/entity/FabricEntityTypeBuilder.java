@@ -289,10 +289,10 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @return a new {@link EntityType}
 	 */
 	public EntityType<T> build(Identifier id) {
-		if (this.saveable) {
+		if (this.saveable && id != null) {
 			try {
 				Util.getChoiceType(TypeReferences.ENTITY_TREE, id.toString());
-			} catch (IllegalArgumentException | NullPointerException e) {
+			} catch (Exception e) {
 				LOGGER.warn("Entity not registered in schema.", e);
 			}
 		}
