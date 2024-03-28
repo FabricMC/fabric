@@ -23,11 +23,15 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.google.common.collect.ImmutableMap;
+import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFix;
 import com.mojang.datafixers.DataFixerBuilder;
+import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
+import com.mojang.serialization.Dynamic;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.datafixer.Schemas;
@@ -125,6 +129,34 @@ public final class SimpleFixes {
 	}
 
 	/**
+	 * Adds a blockstate rename fix to the builder, in case a blockstate's name is changed.
+	 *
+	 * @param builder       the builder
+	 * @param name          the fix's name
+	 * @param blockId       the block's identifier
+	 * @param oldState      the blockstate's old name
+	 * @param defaultValue  the blockstate's default value
+	 * @param newState      the blockstates's new name
+	 * @param schema        the schema this fixer should be a part of
+	 * @see BlockStateRenameFix
+	 */
+	public static void addBlockStateRenameFix(@NotNull DataFixerBuilder builder, @NotNull String name,
+											  @NotNull Identifier blockId, @NotNull String oldState,
+											  @NotNull String defaultValue, @NotNull String newState,
+											  @NotNull Schema schema) {
+		requireNonNull(builder, "DataFixerBuilder cannot be null");
+		requireNonNull(name, "Fix name cannot be null");
+		requireNonNull(blockId, "Block Id cannot be null");
+		requireNonNull(oldState, "Old BlockState cannot be null");
+		requireNonNull(defaultValue, "Default value cannot be null");
+		requireNonNull(newState, "New BlockState cannot be null");
+		requireNonNull(schema, "Schema cannot be null");
+
+		final String blockIdStr = blockId.toString();
+		builder.addFixer(new BlockStateRenameFix(schema, name, blockIdStr, oldState, defaultValue, newState));
+	}
+
+	/**
 	 * Adds a biome rename fix to the builder, in case biome identifiers are changed.
 	 *
 	 * @param builder the builder
@@ -148,5 +180,37 @@ public final class SimpleFixes {
 		}
 
 		builder.addFixer(new GameEventRenamesFix(schema, name, TypeReferences.BIOME, Schemas.replacing(mapBuilder.build())));
+	}
+
+	public static class BlockStateRenameFix extends DataFix {
+		private final String name;
+		private final String blockId;
+		private final String oldState;
+		private final String defaultState;
+		private final String newState;
+
+		public BlockStateRenameFix(Schema outputSchema, String name, String blockId, String oldState, String defaultState, String newState) {
+			super(outputSchema, false);
+			this.name = name;
+			this.blockId = blockId;
+			this.oldState = oldState;
+			this.defaultState = defaultState;
+			this.newState = newState;
+		}
+
+		private Dynamic<?> fix(Dynamic<?> dynamic) {
+			Optional<String> optional = dynamic.get("Name").asString().result();
+			return optional.equals(Optional.of(this.blockId)) ? dynamic.update("Properties", dynamic1 -> {
+				String string = dynamic1.get(this.oldState).asString(this.defaultState);
+				return dynamic1.remove(this.oldState).set(this.newState, dynamic1.createString(string));
+			}) : dynamic;
+		}
+
+		@Override
+		protected TypeRewriteRule makeRule() {
+			return this.fixTypeEverywhereTyped(this.name, this.getInputSchema().getType(TypeReferences.BLOCK_STATE),
+					typed -> typed.update(DSL.remainderFinder(), this::fix)
+			);
+		}
 	}
 }
