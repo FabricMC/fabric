@@ -16,6 +16,9 @@
       "net.fabricmc.fabric.test.datafixer.v1.DataFixerTest"
     ]
   },
+  "mixins": [
+    "fabric-data-fixer-api-v1-testmod.mixins.json"
+  ],
   "custom": {
     "fabric-data-fixer-api-v1:version": 4
   }

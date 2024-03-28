@@ -38,14 +38,18 @@ import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
 import net.fabricmc.fabric.api.datafixer.v1.FabricDataFixerBuilder;
 import net.fabricmc.fabric.api.datafixer.v1.FabricDataFixes;
 import net.fabricmc.fabric.api.datafixer.v1.SimpleFixes;
@@ -82,9 +86,8 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 
 	public static final Identifier OLD_BIOME_ID = new Identifier(MOD_ID, "old_biome");
 	public static final Identifier NEW_BIOME_ID = new Identifier(MOD_ID, "new_biome");
-	//public static final RegistryKey<Biome> BIOME_KEY = RegistryKey.of(
-	//		RegistryKeys.BIOME, GENERATE_MODE ? OLD_BIOME_ID : NEW_BIOME_ID);
-	//public static final Biome BIOME = TheEndBiomeCreator.createEndHighlands();
+	public static final RegistryKey<Biome> BIOME_KEY = RegistryKey.of(
+			RegistryKeys.BIOME, GENERATE_MODE ? OLD_BIOME_ID : NEW_BIOME_ID);
 
 	@Override
 	public void onInitialize() {
@@ -92,8 +95,7 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 		Registry.register(Registries.BLOCK, GENERATE_MODE ? OLD_BLOCK_ID : NEW_BLOCK_ID, BLOCK);
 		Registry.register(Registries.BLOCK, GENERATE_MODE ? OLD_CHEST_ID : NEW_CHEST_ID, CHEST);
 		Registry.register(Registries.BLOCK_ENTITY_TYPE, GENERATE_MODE ? OLD_CHEST_ID : NEW_CHEST_ID, CHEST_BLOCK_ENTITY);
-		//BuiltinRegistries.add(Registries.BIOME, BIOME_KEY, BIOME);
-		//TheEndBiomes.addMainIslandBiome(BIOME_KEY, 10);
+		TheEndBiomes.addMainIslandBiome(BIOME_KEY, 10);
 
 		ServerLifecycleEvents.SERVER_STARTED.register(this);
 

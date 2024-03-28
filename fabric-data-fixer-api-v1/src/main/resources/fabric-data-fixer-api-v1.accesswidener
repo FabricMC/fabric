@@ -7,3 +7,6 @@ transitive-accessible method net/minecraft/datafixer/Schemas replacingRaw (Ljava
 transitive-accessible method net/minecraft/datafixer/Schemas replacing (Ljava/util/Map;)Ljava/util/function/UnaryOperator;
 transitive-accessible method net/minecraft/datafixer/Schemas replacing (Ljava/lang/String;Ljava/lang/String;)Ljava/util/function/UnaryOperator;
 transitive-accessible method net/minecraft/datafixer/schema/Schema100 targetItems (Lcom/mojang/datafixers/schemas/Schema;)Lcom/mojang/datafixers/types/templates/TypeTemplate;
+
+accessible class net/minecraft/registry/RegistryLoader$RegistryLoadable
+accessible class net/minecraft/registry/RegistryLoader$Loader

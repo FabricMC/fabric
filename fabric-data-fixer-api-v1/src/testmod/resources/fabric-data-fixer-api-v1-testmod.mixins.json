@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.test.datafixer.v1.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "RegistryLoaderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
