@@ -39,16 +39,13 @@ import net.minecraft.nbt.NbtElement;
 
 public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals {
 	// From QSL.
-	private final Schema latestVanillaSchema;
-	private Schema latestModSchema;
+	private Schema latestSchema;
 
 	private Map<String, List<DataFixerEntry>> modDataFixers;
 	private boolean frozen;
 
 	public FabricDataFixesInternalsImpl(Schema latestVanillaSchema) {
-		this.latestVanillaSchema = latestVanillaSchema;
-		this.latestModSchema = latestVanillaSchema;
-
+		this.latestSchema = latestVanillaSchema;
 		this.modDataFixers = new Object2ReferenceOpenHashMap<>();
 		this.frozen = false;
 	}
@@ -60,7 +57,7 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 		Schema lastSchema = schemas.getOrDefault(schemas.lastIntKey(), null);
 
 		if (lastSchema != null) {
-			this.latestModSchema = lastSchema;
+			this.latestSchema = lastSchema;
 		}
 
 		this.modDataFixers.computeIfAbsent(modId, modIdx -> new ObjectArrayList<>())
@@ -74,7 +71,7 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 
 	@Override
 	public Schema getBaseSchema() {
-		return new Schema(0, this.latestModSchema);
+		return new Schema(0, this.latestSchema);
 	}
 
 	@Override
