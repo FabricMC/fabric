@@ -8,6 +8,8 @@
     "DefaultAttributeRegistryAccessor",
     "DefaultAttributeRegistryMixin",
     "DetectorRailBlockMixin",
+    "EntityTypeBuilderMixin",
+    "EntityTypeMixin",
     "PersistentStateManagerMixin",
     "TradeOffersTypeAwareBuyForOneEmeraldFactoryMixin"
   ],
