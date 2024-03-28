@@ -289,11 +289,12 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @return a new {@link EntityType}
 	 */
 	public EntityType<T> build(Identifier id) {
+		// Log a warning if a mod inputs a non-null id that is not found in the vanilla or modded schemas
 		if (this.saveable && id != null) {
 			try {
 				Util.getChoiceType(TypeReferences.ENTITY_TREE, id.toString());
 			} catch (Exception e) {
-				LOGGER.warn("Entity not registered in schema.", e);
+				LOGGER.warn("Entity not registered in schema: " + id, e);
 			}
 		}
 
