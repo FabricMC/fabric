@@ -20,9 +20,12 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableSet;
+import com.mojang.logging.LogUtils;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import net.minecraft.block.Block;
+import net.minecraft.datafixer.TypeReferences;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
@@ -35,6 +38,8 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 
@@ -47,6 +52,8 @@ import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
  * @param <T> Entity class.
  */
 public class FabricEntityTypeBuilder<T extends Entity> {
+	private static final Logger LOGGER = LogUtils.getLogger();
+
 	private SpawnGroup spawnGroup;
 	private EntityType.EntityFactory<T> factory;
 	private boolean saveable = true;
@@ -273,7 +280,23 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @return a new {@link EntityType}
 	 */
 	public EntityType<T> build() {
-		// Modded DFU is a dream, currently not possible without screwing it up.
+		return build(null);
+	}
+
+	/**
+	 * Creates the entity type.
+	 *
+	 * @return a new {@link EntityType}
+	 */
+	public EntityType<T> build(Identifier id) {
+		// Log a warning if a mod inputs a non-null id that is not found in the vanilla or modded schemas
+		if (this.saveable && id != null) {
+			try {
+				Util.getChoiceType(TypeReferences.ENTITY_TREE, id.toString());
+			} catch (Exception e) {
+				LOGGER.warn("Entity not registered in schema: " + id, e);
+			}
+		}
 
 		//TODO 1.20.5, new field
 		return new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, 1, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates, this.requiredFeatures);

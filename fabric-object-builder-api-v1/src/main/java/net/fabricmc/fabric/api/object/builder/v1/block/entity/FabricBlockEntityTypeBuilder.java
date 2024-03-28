@@ -21,11 +21,16 @@ import java.util.Collections;
 import java.util.List;
 
 import com.mojang.datafixers.types.Type;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.datafixer.TypeReferences;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 
 /**
@@ -35,6 +40,8 @@ import net.minecraft.util.math.BlockPos;
  * in Fabric Transitive Access Wideners (v1).
  */
 public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
+	private static final Logger LOGGER = LogUtils.getLogger();
+
 	private final Factory<? extends T> factory;
 	private final List<Block> blocks;
 
@@ -73,10 +80,25 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 	}
 
 	public BlockEntityType<T> build() {
-		return build(null);
+		return build((Type<?>) null);
 	}
 
-	public BlockEntityType<T> build(Type<?> type) {
+	public BlockEntityType<T> build(Identifier id) {
+		Type<?> type = null;
+
+		// Log a warning if a mod inputs a non-null id that is not found in the vanilla or modded schemas
+		if (id != null) {
+			try {
+				type = Util.getChoiceType(TypeReferences.BLOCK_ENTITY, id.toString());
+			} catch (Exception e) {
+				LOGGER.warn("Block entity not registered in schema: " + id, e);
+			}
+		}
+
+		return build(type);
+	}
+
+	private BlockEntityType<T> build(Type<?> type) {
 		return BlockEntityType.Builder.<T>create(factory::create, blocks.toArray(new Block[0]))
 				.build(type);
 	}
