@@ -86,9 +86,9 @@ public final class SimpleFixes {
 	 * @param schema  the schema this fix should be a part of
 	 * @see EntityRenameFix
 	 */
-	public static void addEntityRenameFix(@NotNull DataFixerBuilder builder, @NotNull String name,
-			@NotNull Identifier oldId, @NotNull Identifier newId,
-			@NotNull Schema schema) {
+	public static void addEntityRenameFix(DataFixerBuilder builder, String name,
+			Identifier oldId, Identifier newId,
+			Schema schema) {
 		requireNonNull(builder, "DataFixerBuilder cannot be null");
 		requireNonNull(name, "Fix name cannot be null");
 		requireNonNull(oldId, "Old identifier cannot be null");
@@ -140,10 +140,9 @@ public final class SimpleFixes {
 	 * @param schema        the schema this fixer should be a part of
 	 * @see BlockStateRenameFix
 	 */
-	public static void addBlockStateRenameFix(@NotNull DataFixerBuilder builder, @NotNull String name,
-											  @NotNull Identifier blockId, @NotNull String oldState,
-											  @NotNull String defaultValue, @NotNull String newState,
-											  @NotNull Schema schema) {
+	public static void addBlockStateRenameFix(DataFixerBuilder builder, String name, Identifier blockId, String oldState,
+			String defaultValue, String newState,
+			Schema schema) {
 		requireNonNull(builder, "DataFixerBuilder cannot be null");
 		requireNonNull(name, "Fix name cannot be null");
 		requireNonNull(blockId, "Block Id cannot be null");
