@@ -22,14 +22,14 @@ jobs:
             **/build/reports/checkstyle/*.xml
       - uses: actions/upload-artifact@v4
         with:
-          name: Artifacts
+          name: Artifacts ${{ matrix.java }}
           path: |
             build/libs/
             ./*/build/libs/
             build/publishMods/
       - uses: actions/upload-artifact@v4
         with:
-          name: Maven Local
+          name: Maven Local ${{ matrix.java }}
           path: /root/.m2/repository/net/fabricmc/
 
   client_test:
