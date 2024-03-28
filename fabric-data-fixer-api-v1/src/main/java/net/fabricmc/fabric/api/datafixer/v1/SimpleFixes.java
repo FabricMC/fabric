@@ -32,7 +32,6 @@ import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.datafixer.Schemas;
 import net.minecraft.datafixer.TypeReferences;
