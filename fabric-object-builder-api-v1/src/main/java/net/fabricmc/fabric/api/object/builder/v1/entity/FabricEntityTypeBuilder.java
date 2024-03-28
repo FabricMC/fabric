@@ -32,12 +32,8 @@ import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
-import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
-
-import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
 
 /**
  * Extended version of {@link EntityType.Builder} with added registration for
@@ -45,6 +41,7 @@ import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
  *
  * @param <T> Entity class.
  */
+@Deprecated
 public class FabricEntityTypeBuilder<T extends Entity> {
 	private SpawnGroup spawnGroup;
 	private EntityType.EntityFactory<T> factory;
@@ -58,7 +55,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private EntityDimensions dimensions = EntityDimensions.changing(-1.0f, -1.0f);
 	private ImmutableSet<Block> specificSpawnBlocks = ImmutableSet.of();
 
-	private FeatureSet requiredFeatures = FeatureFlags.VANILLA_FEATURES;
+	@Nullable
+	private FeatureFlag[] requiredFeatures = null;
 
 	protected FabricEntityTypeBuilder(SpawnGroup spawnGroup, EntityType.EntityFactory<T> factory) {
 		this.spawnGroup = spawnGroup;
@@ -262,7 +260,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @return this builder for chaining
 	 */
 	public FabricEntityTypeBuilder<T> requires(FeatureFlag... requiredFeatures) {
-		this.requiredFeatures = FeatureFlags.FEATURE_MANAGER.featureSetOf(requiredFeatures);
+		this.requiredFeatures = requiredFeatures;
 		return this;
 	}
 
@@ -272,9 +270,38 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @return a new {@link EntityType}
 	 */
 	public EntityType<T> build() {
-		// Modded DFU is a dream, currently not possible without screwing it up.
+		EntityType.Builder<T> builder = EntityType.Builder.create(this.factory, this.spawnGroup)
+				.allowSpawningInside(specificSpawnBlocks.toArray(Block[]::new))
+				.maxTrackingRange(this.trackRange)
+				.trackingTickInterval(this.trackedUpdateRate)
+				.setDimensions(this.dimensions.width, this.dimensions.height);
 
-		return new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates, this.requiredFeatures);
+		if (!this.saveable) {
+			builder = builder.disableSaving();
+		}
+
+		if (!this.summonable) {
+			builder = builder.disableSummon();
+		}
+
+		if (this.fireImmune) {
+			builder = builder.makeFireImmune();
+		}
+
+		if (this.spawnableFarFromPlayer) {
+			builder = builder.spawnableFarFromPlayer();
+		}
+
+		if (this.requiredFeatures != null) {
+			builder = builder.requires(this.requiredFeatures);
+		}
+
+		if (this.forceTrackedVelocityUpdates != null) {
+			// TODO iface injection with loom 1.6
+			//builder = builder.alwaysUpdateVelocity(this.forceTrackedVelocityUpdates);
+		}
+
+		return builder.build(null);
 	}
 
 	/**
