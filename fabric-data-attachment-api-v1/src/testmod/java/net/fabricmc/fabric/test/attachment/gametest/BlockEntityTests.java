@@ -77,6 +77,7 @@ public class BlockEntityTests implements FabricGameTest {
 			NbtCompound nbt = ((BlockEntityUpdateS2CPacket) packet).getNbt();
 
 			if (nbt != null && nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY)) {
+				// Note: this is a vanilla bug (it called createNbt, instead of the correct createComponentlessNbt)
 				throw new GameTestException("Packet NBT for " + entry + " had persistent data: " + nbt.asString());
 			}
 		}
