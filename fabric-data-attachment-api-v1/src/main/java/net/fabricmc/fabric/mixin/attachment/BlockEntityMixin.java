@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	@Inject(
 			method = "method_17897", // lambda body in BlockEntity#createFromNbt
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;method_58690(Lnet/minecraft/nbt/NbtCompound;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)V")
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;read(Lnet/minecraft/nbt/NbtCompound;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)V")
 	)
 	private static void readBlockEntityAttachments(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup, String string, BlockEntity blockEntity, CallbackInfoReturnable<BlockEntity> cir) {
 		((AttachmentTargetImpl) blockEntity).fabric_readAttachmentsFromNbt(nbt, wrapperLookup);
