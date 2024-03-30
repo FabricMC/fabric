@@ -48,12 +48,12 @@ public class SchemasMixin {
 	private static void addFabricFixers(DataFixerBuilder builder, CallbackInfo ci) {
 		FabricSubSchema schema = (FabricSubSchema) builder.addSchema(1903, FabricSubSchema::new);
 
-		for (String id : schema.registeredBlockEntities.getKeys()) {
-			builder.addFixer(new ChoiceTypesFix(schema, "Add Fabric block entity " + id, TypeReferences.BLOCK_ENTITY));
+		if (!schema.registeredBlockEntities.getKeys().isEmpty()) {
+			builder.addFixer(new ChoiceTypesFix(schema, "Add Fabric block entities.", TypeReferences.BLOCK_ENTITY));
 		}
 
-		for (String id : schema.registeredEntities.getKeys()) {
-			builder.addFixer(new ChoiceTypesFix(schema, "Add Fabric entity " + id, TypeReferences.ENTITY));
+		if (!schema.registeredEntities.getKeys().isEmpty()) {
+			builder.addFixer(new ChoiceTypesFix(schema, "Add Fabric entities.", TypeReferences.ENTITY));
 		}
 
 		schema.registeredBlockEntities = null;
