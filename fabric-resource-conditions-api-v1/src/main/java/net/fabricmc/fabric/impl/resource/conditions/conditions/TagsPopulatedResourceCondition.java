@@ -41,6 +41,7 @@ public record TagsPopulatedResourceCondition(Identifier registry, List<Identifie
 	public <T> TagsPopulatedResourceCondition(Identifier registry, TagKey<T>... tags) {
 		this(registry, Arrays.stream(tags).map(TagKey::id).toList());
 	}
+
 	@Override
 	public ResourceConditionType<?> getType() {
 		return DefaultResourceConditionTypes.ANY_MODS_LOADED;

@@ -36,6 +36,7 @@ public record FeaturesEnabledResourceCondition(List<Identifier> features) implem
 	public FeaturesEnabledResourceCondition(Identifier... features) {
 		this(List.of(features));
 	}
+
 	@Override
 	public ResourceConditionType<?> getType() {
 		return DefaultResourceConditionTypes.FEATURES_ENABLED;

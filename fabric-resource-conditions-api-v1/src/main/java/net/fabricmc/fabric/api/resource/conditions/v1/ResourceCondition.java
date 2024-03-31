@@ -35,13 +35,14 @@ public interface ResourceCondition {
 		}
 
 		Either<JsonElement, DataResult.PartialResult<JsonElement>> conditionsResult = CODEC.listOf().encodeStart(JsonOps.INSTANCE, Arrays.asList(conditions)).get();
+
 		if (conditionsResult.left().isPresent()) {
 			baseObject.add(ResourceConditions.CONDITIONS_KEY, conditionsResult.left().get());
 		} else {
 			throw new IllegalArgumentException("Could not parse resource conditions");
 		}
 	}
+
 	ResourceConditionType<?> getType();
 	boolean test();
-
 }

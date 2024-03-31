@@ -41,7 +41,6 @@ public class ResourceConditions {
 
 	public static final String CONDITIONS_KEY = "fabric:load_conditions";
 
-
 	public static void register(ResourceConditionType<?> condition) {
 		Objects.requireNonNull(condition, "Condition may not be null.");
 

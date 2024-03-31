@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.fabricmc.api.ModInitializer;
-
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 
 import org.slf4j.Logger;
@@ -67,6 +66,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 				return !and;
 			}
 		}
+
 		return and;
 	}
 
@@ -76,6 +76,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 				return !and;
 			}
 		}
+
 		return and;
 	}
 
