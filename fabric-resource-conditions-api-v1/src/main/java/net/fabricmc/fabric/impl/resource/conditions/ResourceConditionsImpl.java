@@ -21,6 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.fabricmc.api.ModInitializer;
+
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,11 +40,24 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.loader.api.FabricLoader;
 
-public final class ResourceConditionsImpl {
+public final class ResourceConditionsImpl implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("Fabric Resource Conditions");
 	public static final ThreadLocal<Map<RegistryKey<?>, Map<Identifier, Collection<RegistryEntry<?>>>>> LOADED_TAGS = new ThreadLocal<>();
 	public static final ThreadLocal<FeatureSet> CURRENT_FEATURES = new ThreadLocal<>();
 	public static final ThreadLocal<DynamicRegistryManager.Immutable> CURRENT_REGISTRIES = new ThreadLocal<>();
+
+	@Override
+	public void onInitialize() {
+		ResourceConditions.register(DefaultResourceConditionTypes.TRUE);
+		ResourceConditions.register(DefaultResourceConditionTypes.NOT);
+		ResourceConditions.register(DefaultResourceConditionTypes.AND);
+		ResourceConditions.register(DefaultResourceConditionTypes.OR);
+		ResourceConditions.register(DefaultResourceConditionTypes.ALL_MODS_LOADED);
+		ResourceConditions.register(DefaultResourceConditionTypes.ANY_MODS_LOADED);
+		ResourceConditions.register(DefaultResourceConditionTypes.TAGS_POPULATED);
+		ResourceConditions.register(DefaultResourceConditionTypes.FEATURES_ENABLED);
+		ResourceConditions.register(DefaultResourceConditionTypes.REGISTRY_CONTAINS);
+	}
 
 	// Condition implementations
 
@@ -138,10 +155,5 @@ public final class ResourceConditionsImpl {
 		}
 
 		LOADED_TAGS.set(tagMap);
-	}
-
-
-	static {
-		DefaultResourceConditionTypes.init();
 	}
 }

@@ -22,7 +22,6 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
-import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.AllModsLoadedResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.AndResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.AnyModsLoadedResourceCondition;
@@ -46,21 +45,5 @@ public class DefaultResourceConditionTypes {
 
 	private static <T extends ResourceCondition> ResourceConditionType<T> createResourceConditionType(String name, Codec<T> codec) {
 		return ResourceConditionType.create(new Identifier("fabric", name), codec);
-	}
-
-	public static void init() {
-
-	}
-
-	static {
-		ResourceConditions.register(TRUE);
-		ResourceConditions.register(NOT);
-		ResourceConditions.register(AND);
-		ResourceConditions.register(OR);
-		ResourceConditions.register(ALL_MODS_LOADED);
-		ResourceConditions.register(ANY_MODS_LOADED);
-		ResourceConditions.register(TAGS_POPULATED);
-		ResourceConditions.register(FEATURES_ENABLED);
-		ResourceConditions.register(REGISTRY_CONTAINS);
 	}
 }
