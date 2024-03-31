@@ -1,10 +1,10 @@
-package net.fabricmc.fabric.api.resource.conditions.v1.conditions;
+package net.fabricmc.fabric.impl.resource.conditions.conditions;
 
 import com.mojang.serialization.Codec;
 
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditionTypes;
+import net.fabricmc.fabric.impl.resource.conditions.DefaultResourceConditionTypes;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
 

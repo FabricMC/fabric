@@ -1,21 +1,20 @@
 package net.fabricmc.fabric.api.resource.conditions.v1;
 
-import net.fabricmc.fabric.api.resource.conditions.v1.conditions.AllModsLoadedResourceCondition;
-import net.fabricmc.fabric.api.resource.conditions.v1.conditions.AndResourceCondition;
-import net.fabricmc.fabric.api.resource.conditions.v1.conditions.AnyModsLoadedResourceCondition;
-import net.fabricmc.fabric.api.resource.conditions.v1.conditions.FeaturesEnabledResourceCondition;
-import net.fabricmc.fabric.api.resource.conditions.v1.conditions.NotResourceCondition;
-import net.fabricmc.fabric.api.resource.conditions.v1.conditions.OrResourceCondition;
-import net.fabricmc.fabric.api.resource.conditions.v1.conditions.RegistryContainsResourceCondition;
-import net.fabricmc.fabric.api.resource.conditions.v1.conditions.TagsPopulatedResourceCondition;
-import net.fabricmc.fabric.api.resource.conditions.v1.conditions.TrueResourceCondition;
+import net.fabricmc.fabric.impl.resource.conditions.conditions.AllModsLoadedResourceCondition;
+import net.fabricmc.fabric.impl.resource.conditions.conditions.AndResourceCondition;
+import net.fabricmc.fabric.impl.resource.conditions.conditions.AnyModsLoadedResourceCondition;
+import net.fabricmc.fabric.impl.resource.conditions.conditions.FeaturesEnabledResourceCondition;
+import net.fabricmc.fabric.impl.resource.conditions.conditions.NotResourceCondition;
+import net.fabricmc.fabric.impl.resource.conditions.conditions.OrResourceCondition;
+import net.fabricmc.fabric.impl.resource.conditions.conditions.RegistryContainsResourceCondition;
+import net.fabricmc.fabric.impl.resource.conditions.conditions.TagsPopulatedResourceCondition;
+import net.fabricmc.fabric.impl.resource.conditions.conditions.TrueResourceCondition;
 
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;

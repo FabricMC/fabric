@@ -20,17 +20,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-
-import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditionTypes;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
-
-import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
 
 import net.minecraft.registry.tag.TagManagerLoader;
 
@@ -44,7 +35,6 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
 
 import net.fabricmc.loader.api.FabricLoader;
 
