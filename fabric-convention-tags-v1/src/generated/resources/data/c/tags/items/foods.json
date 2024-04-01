@@ -1,5 +1,6 @@
 {
   "values": [
+    "minecraft:potato_fruit",
     "minecraft:apple",
     "minecraft:mushroom_stew",
     "minecraft:bread",
@@ -7,6 +8,8 @@
     "minecraft:cooked_porkchop",
     "minecraft:golden_apple",
     "minecraft:enchanted_golden_apple",
+    "minecraft:golden_poisonous_potato",
+    "minecraft:enchanted_golden_poisonous_potato",
     "minecraft:cod",
     "minecraft:salmon",
     "minecraft:tropical_fish",
@@ -25,6 +28,11 @@
     "minecraft:carrot",
     "minecraft:potato",
     "minecraft:baked_potato",
+    "minecraft:hot_potato",
+    "minecraft:poisonous_potato_fries",
+    "minecraft:poisonous_potato_sticks",
+    "minecraft:poisonous_potato_slices",
+    "minecraft:poisonous_potato_chips",
     "minecraft:poisonous_potato",
     "minecraft:golden_carrot",
     "minecraft:pumpkin_pie",
@@ -39,6 +47,8 @@
     "minecraft:suspicious_stew",
     "minecraft:sweet_berries",
     "minecraft:glow_berries",
-    "minecraft:honey_bottle"
+    "minecraft:honey_bottle",
+    "minecraft:hash_browns",
+    "minecraft:poisonous_potato_plant"
   ]
 }

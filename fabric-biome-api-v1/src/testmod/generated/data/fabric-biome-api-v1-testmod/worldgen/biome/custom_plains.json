@@ -26,7 +26,8 @@
       "minecraft:lake_lava_surface"
     ],
     [
-      "minecraft:amethyst_geode"
+      "minecraft:amethyst_geode",
+      "minecraft:potato_geode"
     ],
     [
       "minecraft:monster_room",
@@ -49,6 +50,7 @@
       "minecraft:ore_iron_upper",
       "minecraft:ore_iron_middle",
       "minecraft:ore_iron_small",
+      "minecraft:ore_poisonous_potato",
       "minecraft:ore_gold",
       "minecraft:ore_gold_lower",
       "minecraft:ore_redstone",
@@ -94,6 +96,12 @@
         "maxCount": 8,
         "minCount": 8,
         "weight": 10
+      },
+      {
+        "type": "minecraft:batato",
+        "maxCount": 16,
+        "minCount": 8,
+        "weight": 13
       }
     ],
     "axolotls": [],
@@ -148,6 +156,12 @@
         "maxCount": 4,
         "minCount": 4,
         "weight": 95
+      },
+      {
+        "type": "minecraft:poisonous_potato_zombie",
+        "maxCount": 4,
+        "minCount": 1,
+        "weight": 25
       },
       {
         "type": "minecraft:zombie_villager",

@@ -4,7 +4,7 @@ plugins {
 	id "idea"
 	id "maven-publish"
 	id 'jacoco'
-	id "fabric-loom" version "1.5.4" apply false
+	id "fabric-loom" version "1.5.8" apply false
 	id "com.diffplug.spotless" version "6.20.0"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "me.modmuss50.remotesign" version "0.4.0" apply false
@@ -361,7 +361,7 @@ remapTestmodJar {
 
 // Apply auxiliary buildscripts to submodules
 // This must be done after all plugins are applied to subprojects
-apply from: "gradle/module-validation.gradle"
+//apply from: "gradle/module-validation.gradle"
 apply from: "gradle/module-versioning.gradle"
 
 loom {

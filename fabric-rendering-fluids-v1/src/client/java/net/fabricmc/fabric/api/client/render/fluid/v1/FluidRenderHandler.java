@@ -82,8 +82,8 @@ public interface FluidRenderHandler {
 	 * @param blockState The block state being rendered.
 	 * @param fluidState The fluid state being rendered.
 	 */
-	default void renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
-		FluidRenderingImpl.renderDefault(this, world, pos, vertexConsumer, blockState, fluidState);
+	default void renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, double x, double y, double z) {
+		FluidRenderingImpl.renderDefault(this, world, pos, vertexConsumer, blockState, fluidState, x, y, z);
 	}
 
 	/**

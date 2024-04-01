@@ -51,7 +51,7 @@ public class EntityMixin implements Teleportable {
 	}
 
 	@Inject(method = "getTeleportTarget", at = @At("HEAD"), cancellable = true, allow = 1)
-	public void getTeleportTarget(ServerWorld destination, CallbackInfoReturnable<TeleportTarget> cir) {
+	public void getTeleportTarget(ServerWorld destination, boolean bl, CallbackInfoReturnable<TeleportTarget> cir) {
 		// Check if a destination has been set for the entity currently being teleported
 		TeleportTarget customTarget = this.customTeleportTarget;
 

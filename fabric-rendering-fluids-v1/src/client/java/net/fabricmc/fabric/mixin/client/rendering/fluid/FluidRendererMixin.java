@@ -61,14 +61,14 @@ public class FluidRendererMixin {
 	}
 
 	@Inject(at = @At("HEAD"), method = "render", cancellable = true)
-	public void onHeadRender(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, CallbackInfo ci) {
+	public void onHeadRender(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, double x, double y, double z, CallbackInfo ci) {
 		FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();
 
 		if (info.handler == null) {
 			FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluidState.getFluid());
 
 			if (handler != null) {
-				handler.renderFluid(pos, view, vertexConsumer, blockState, fluidState);
+				handler.renderFluid(pos, view, vertexConsumer, blockState, fluidState, x, y, z);
 				ci.cancel();
 			}
 		}

@@ -45,8 +45,8 @@ public final class FluidRendering {
 	 * @param fluidState the fluid state
 	 * @param defaultRenderer the renderer to use whenever the handler requests default geometry
 	 */
-	public static void render(FluidRenderHandler handler, BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, DefaultRenderer defaultRenderer) {
-		FluidRenderingImpl.render(handler, world, pos, vertexConsumer, blockState, fluidState, defaultRenderer);
+	public static void render(FluidRenderHandler handler, BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, double x, double y, double z, DefaultRenderer defaultRenderer) {
+		FluidRenderingImpl.render(handler, world, pos, vertexConsumer, blockState, fluidState, z, y, z, defaultRenderer);
 	}
 
 	public interface DefaultRenderer {
@@ -65,8 +65,8 @@ public final class FluidRendering {
 		 * @param blockState the block state
 		 * @param fluidState the fluid state
 		 */
-		default void render(FluidRenderHandler handler, BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
-			FluidRenderingImpl.renderVanillaDefault(handler, world, pos, vertexConsumer, blockState, fluidState);
+		default void render(FluidRenderHandler handler, BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, double d, double e, double f) {
+			FluidRenderingImpl.renderVanillaDefault(handler, world, pos, vertexConsumer, blockState, fluidState, d, e, f);
 		}
 	}
 }

@@ -32,7 +32,7 @@ public class CustomizedFluidRenderer extends SimpleFluidRenderHandler {
 	}
 
 	@Override
-	public void renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+	public void renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, double x, double y, double z) {
 		int light = getLight(world, pos);
 		float u1 = sprites[2].getFrameU(0);
 		float v1 = sprites[2].getFrameV(0);

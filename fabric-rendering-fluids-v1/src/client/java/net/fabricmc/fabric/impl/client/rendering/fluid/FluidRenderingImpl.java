@@ -32,35 +32,35 @@ public class FluidRenderingImpl {
 	private static FluidRenderer vanillaRenderer;
 
 	// Only invoked manually from FluidRendering#render
-	public static void render(FluidRenderHandler handler, BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, FluidRendering.DefaultRenderer defaultRenderer) {
+	public static void render(FluidRenderHandler handler, BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, double x, double y, double z, FluidRendering.DefaultRenderer defaultRenderer) {
 		CURRENT_DEFAULT_RENDERER.set(defaultRenderer);
 
 		try {
-			handler.renderFluid(pos, world, vertexConsumer, blockState, fluidState);
+			handler.renderFluid(pos, world, vertexConsumer, blockState, fluidState, x, y, z);
 		} finally {
 			CURRENT_DEFAULT_RENDERER.remove();
 		}
 	}
 
 	// Only invoked when FluidRenderHandler#renderFluid calls super
-	public static void renderDefault(FluidRenderHandler handler, BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+	public static void renderDefault(FluidRenderHandler handler, BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, double x, double y, double z) {
 		FluidRendering.DefaultRenderer renderer = CURRENT_DEFAULT_RENDERER.get();
 
 		if (renderer != null) {
-			renderer.render(handler, world, pos, vertexConsumer, blockState, fluidState);
+			renderer.render(handler, world, pos, vertexConsumer, blockState, fluidState, x, y, z);
 		} else {
-			renderVanillaDefault(handler, world, pos, vertexConsumer, blockState, fluidState);
+			renderVanillaDefault(handler, world, pos, vertexConsumer, blockState, fluidState, x, y, z);
 		}
 	}
 
 	// Invoked when FluidRenderHandler#renderFluid is called directly without using FluidRendering#render (such as
 	// from vanilla FluidRenderer#render via mixin) or from the default implementation of DefaultRenderer#render
-	public static void renderVanillaDefault(FluidRenderHandler handler, BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+	public static void renderVanillaDefault(FluidRenderHandler handler, BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, double x, double y, double z) {
 		FluidRenderHandlerInfo info = CURRENT_INFO.get();
 		info.setup(handler, world, pos, fluidState);
 
 		try {
-			vanillaRenderer.render(world, pos, vertexConsumer, blockState, fluidState);
+			vanillaRenderer.render(world, pos, vertexConsumer, blockState, fluidState, x, y, z);
 		} finally {
 			info.clear();
 		}

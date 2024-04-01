@@ -50,7 +50,7 @@ public final class FabricDimensionInternals {
 				return teleported;
 			}
 
-			return (E) teleported.moveToWorld(dimension);
+			return (E) teleported.moveToWorld(dimension, false);
 		} finally {
 			((Teleportable) teleported).fabric_setCustomTeleportTarget(null);
 		}
