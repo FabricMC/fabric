@@ -63,7 +63,7 @@ public abstract class EntityTypeBuilderMixin<T extends Entity> implements Fabric
 	}
 
 	@Inject(method = "build", at = @At("RETURN"))
-	public void build(String id, CallbackInfoReturnable<EntityType<T>> cir) {
+	private void applyChildBuilders(String id, CallbackInfoReturnable<EntityType<T>> cir) {
 		if (!(cir.getReturnValue() instanceof FabricEntityTypeImpl entityType)) {
 			throw new IllegalStateException();
 		}
