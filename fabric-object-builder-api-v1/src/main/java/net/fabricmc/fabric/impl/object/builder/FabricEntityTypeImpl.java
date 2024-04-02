@@ -16,6 +16,83 @@
 
 package net.fabricmc.fabric.impl.object.builder;
 
+import java.util.Objects;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.SpawnRestriction;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.world.Heightmap;
+
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityType;
+
 public interface FabricEntityTypeImpl {
 	void fabric_setAlwaysUpdateVelocity(Boolean alwaysUpdateVelocity);
+
+	interface Builder {
+		void fabric_setLivingEntityBuilder(Living<? extends LivingEntity> livingBuilder);
+
+		void fabric_setMobEntityBuilder(Mob<? extends MobEntity> mobBuilder);
+
+		static <T extends LivingEntity> EntityType.Builder<T> createLiving(UnaryOperator<FabricEntityType.Builder.Living<T>> livingBuilder) {
+			EntityType.Builder<T> builder = EntityType.Builder.create((type, world) -> null, SpawnGroup.MISC);
+			Living<T> builderImpl = new Living<>();
+			livingBuilder.apply(builderImpl);
+			((Builder) builder).fabric_setLivingEntityBuilder(builderImpl);
+			return builder;
+		}
+
+		static <T extends MobEntity> EntityType.Builder<T> createMob(UnaryOperator<FabricEntityType.Builder.Mob<T>> mobBuilder) {
+			EntityType.Builder<T> builder = EntityType.Builder.create((type, world) -> null, SpawnGroup.MISC);
+			Mob<T> builderImpl = new Mob<>();
+			mobBuilder.apply(builderImpl);
+			((Builder) builder).fabric_setMobEntityBuilder(builderImpl);
+			return builder;
+		}
+
+		final class Living<T extends LivingEntity> implements FabricEntityType.Builder.Living<T> {
+			@Nullable
+			private Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder;
+
+			@Override
+			public FabricEntityType.Builder.Living<T> defaultAttributes(Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder) {
+				Objects.requireNonNull(defaultAttributeBuilder, "Cannot set null attribute builder");
+				this.defaultAttributeBuilder = defaultAttributeBuilder;
+				return this;
+			}
+
+			public void onBuild(EntityType<T> type) {
+				if (this.defaultAttributeBuilder != null) {
+					FabricDefaultAttributeRegistry.register(type, this.defaultAttributeBuilder.get());
+				}
+			}
+		}
+
+		final class Mob<T extends MobEntity> implements FabricEntityType.Builder.Mob<T> {
+			private SpawnRestriction.Location restrictionLocation;
+			private Heightmap.Type restrictionHeightmap;
+			private SpawnRestriction.SpawnPredicate<T> spawnPredicate;
+
+			@Override
+			public FabricEntityType.Builder.Mob<T> spawnRestriction(SpawnRestriction.Location location, Heightmap.Type heightmap, SpawnRestriction.SpawnPredicate<T> spawnPredicate) {
+				this.restrictionLocation = Objects.requireNonNull(location, "Location cannot be null.");
+				this.restrictionHeightmap = Objects.requireNonNull(heightmap, "Heightmap type cannot be null.");
+				this.spawnPredicate = Objects.requireNonNull(spawnPredicate, "Spawn predicate cannot be null.");
+				return this;
+			}
+
+			public void onBuild(EntityType<T> type) {
+				if (this.spawnPredicate != null) {
+					SpawnRestriction.register(type, this.restrictionLocation, this.restrictionHeightmap, this.spawnPredicate);
+				}
+			}
+		}
+	}
 }
