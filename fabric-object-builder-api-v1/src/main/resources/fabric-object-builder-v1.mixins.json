@@ -5,6 +5,7 @@
   "mixins": [
     "AbstractBlockAccessor",
     "AbstractBlockSettingsAccessor",
+    "BlockEntityTypeBuilderMixin",
     "DefaultAttributeRegistryAccessor",
     "DefaultAttributeRegistryMixin",
     "DetectorRailBlockMixin",
