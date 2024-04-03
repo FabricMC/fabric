@@ -7,33 +7,41 @@ import java.util.HashMap;
 import java.util.function.Supplier;
 
 /**
- * Acceptable class for {@link BlockStateModelGenerator}'s blockStateCollector.
+ * Acceptable class for {@link net.minecraft.data.client.BlockStateModelGenerator}'s blockStateCollector.
  * makes generating more specific block models easier for modders.
  */
 
 public class FabricBlockModelSupplier implements Supplier<JsonElement> {
     protected final JsonObject jsonObject;
 
+    /**
+     * Constructor for vanilla parent types.
+     *
+     * @param type The parent type for the model.
+     */
     public FabricBlockModelSupplier(String type)
     {
         this.jsonObject = new JsonObject();
-		this.jsonObject.addProperty("parent", "minecraft:block/" + type);
+        this.jsonObject.addProperty("parent", "minecraft:block/" + type);
     }
 
-	/**
- 	 * Have an acceptable <modID> parameter in case of custom model parents.
-	 */
-	public FabricBlockModelSupplier(String modID, String type)
+    /**
+     * Have an acceptable <modID> parameter in case of custom model parents.
+     *
+     * @param modID The modID as the prefix to the parent type in the Identifier.
+     * @param type The parent type for the model.
+     */
+    public FabricBlockModelSupplier(String modID, String type)
     {
         this.jsonObject = new JsonObject();
-		this.jsonObject.addProperty("parent", modID + ":block/" + type);
+        this.jsonObject.addProperty("parent", modID + ":block/" + type);
     }
 
-	/**
-	 * Add HashMap textures to the model's JsonObject.
-	 *
-	 * @param textureMap HashMap containing the data for the textures.
-	 */
+    /**
+     * Add HashMap textures to the model's JsonObject.
+     *
+     * @param textureMap {@link HashMap} containing the data for the textures.
+     */
     public FabricBlockModelSupplier addTextureData(HashMap<String, Identifier> textureMap)
     {
         JsonObject textureData = new JsonObject();
@@ -46,11 +54,11 @@ public class FabricBlockModelSupplier implements Supplier<JsonElement> {
         return this;
     }
 
-	/**
-	 * Add a sample texture as 'all' of the textures. Can only be used on the cube_all parent.
-	 *
-	 * @param texture {@link Identifier} for the location of the texture.
-	 */
+    /**
+     * Add a sample texture as 'all' of the textures. Can only be used on the cube_all parent.
+     *
+     * @param texture {@link Identifier} for the location of the texture.
+     */
     public FabricBlockModelSupplier simpleCubeAllTextures(Identifier texture)
     {
         JsonObject textureData = new JsonObject();
@@ -60,11 +68,11 @@ public class FabricBlockModelSupplier implements Supplier<JsonElement> {
         return this;
     }
 
-	/**
-	 * Returns the {@link JsonObject} for the Model.
+    /**
+     * Returns the {@link JsonObject} for the Model.
      *
-  	 * @return the supplier's JsonObject
-	 */
+     * @return the supplier's {@link JsonObject}
+     */
     @Override
     public JsonElement get() {
         return this.jsonObject;
