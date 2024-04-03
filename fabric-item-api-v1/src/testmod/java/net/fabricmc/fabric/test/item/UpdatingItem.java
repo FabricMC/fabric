@@ -16,19 +16,15 @@
 
 package net.fabricmc.fabric.test.item;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-
 import net.minecraft.block.BlockState;
+import net.minecraft.component.type.AttributeModifierSlot;
+import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
@@ -66,13 +62,11 @@ public class UpdatingItem extends Item {
 	}
 
 	@Override
-	public Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
+	public AttributeModifiersComponent getAttributeModifiers(ItemStack stack) {
 		// Give + 5 attack damage for 15 seconds every 30 seconds.
-		if (slot == EquipmentSlot.MAINHAND && isEnabled(stack)) {
-			return ImmutableMultimap.of(EntityAttributes.GENERIC_ATTACK_DAMAGE, PLUS_FIVE);
-		} else {
-			return ImmutableMultimap.of();
-		}
+		return AttributeModifiersComponent.builder()
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, PLUS_FIVE, AttributeModifierSlot.MAINHAND)
+				.build();
 	}
 
 	@Override
