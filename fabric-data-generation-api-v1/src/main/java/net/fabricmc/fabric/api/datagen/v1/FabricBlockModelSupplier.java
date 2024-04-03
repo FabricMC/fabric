@@ -11,10 +11,10 @@ import java.util.function.Supplier;
  * makes generating more specific block models easier for modders.
  */
 
-public class BlockModelSupplier implements Supplier<JsonElement> {
+public class FabricBlockModelSupplier implements Supplier<JsonElement> {
     protected final JsonObject jsonObject;
 
-    public BlockModelSupplier(String type)
+    public FabricBlockModelSupplier(String type)
     {
         this.jsonObject = new JsonObject();
 		this.jsonObject.addProperty("parent", "minecraft:block/" + type);
@@ -23,7 +23,7 @@ public class BlockModelSupplier implements Supplier<JsonElement> {
 	/**
  	 * Have an acceptable <modID> parameter in case of custom model parents.
 	 */
-	public BlockModelSupplier(String modID, String type)
+	public FabricBlockModelSupplier(String modID, String type)
     {
         this.jsonObject = new JsonObject();
 		this.jsonObject.addProperty("parent", modID + ":block/" + type);
@@ -34,7 +34,7 @@ public class BlockModelSupplier implements Supplier<JsonElement> {
 	 *
 	 * @param textureMap HashMap containing the data for the textures.
 	 */
-    public BlockModelSupplier addTextureData(HashMap<String, Identifier> textureMap)
+    public FabricBlockModelSupplier addTextureData(HashMap<String, Identifier> textureMap)
     {
         JsonObject textureData = new JsonObject();
         for (String key : textureMap.keySet()) {
@@ -51,7 +51,7 @@ public class BlockModelSupplier implements Supplier<JsonElement> {
 	 *
 	 * @param texture {@link Identifier} for the location of the texture.
 	 */
-    public BlockModelSupplier simpleCubeAllTextures(Identifier texture)
+    public FabricBlockModelSupplier simpleCubeAllTextures(Identifier texture)
     {
         JsonObject textureData = new JsonObject();
         textureData.addProperty("all", texture.getNamespace() + ":" + texture.getPath());
