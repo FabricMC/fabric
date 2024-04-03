@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.function.Supplier;
 
 /**
- * Acceptable class for BlockStateModelGenerator's blockStateCollector
- * @see BlockStateModelGenerator
+ * Acceptable class for {@link BlockStateModelGenerator}'s blockStateCollector.
+ * makes generating more specific block models easier for modders.
  */
 
 public class BlockModelSupplier implements Supplier<JsonElement> {
@@ -30,9 +30,9 @@ public class BlockModelSupplier implements Supplier<JsonElement> {
     }
 
 	/**
-	 * Add textures.
+	 * Add HashMap textures to the model's JsonObject.
 	 *
-	 * @param textureMap The {@link FabricDataGenerator} instance
+	 * @param textureMap HashMap containing the data for the textures.
 	 */
     public BlockModelSupplier addTextureData(HashMap<String, Identifier> textureMap)
     {
@@ -46,7 +46,12 @@ public class BlockModelSupplier implements Supplier<JsonElement> {
         return this;
     }
 
-    public BlockModelSupplier simpleTextureData(Identifier texture)
+	/**
+	 * Add a sample texture as 'all' of the textures. Can only be used on the cube_all parent.
+	 *
+	 * @param texture {@link Identifier} for the location of the texture.
+	 */
+    public BlockModelSupplier simpleCubeAllTextures(Identifier texture)
     {
         JsonObject textureData = new JsonObject();
         textureData.addProperty("all", texture.getNamespace() + ":" + texture.getPath());
@@ -55,6 +60,11 @@ public class BlockModelSupplier implements Supplier<JsonElement> {
         return this;
     }
 
+	/**
+	 * Returns the {@link JsonObject} for the Model.
+     *
+  	 * @return the supplier's JsonObject
+	 */
     @Override
     public JsonElement get() {
         return this.jsonObject;
