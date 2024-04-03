@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.attachment;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.entity.BlockEntity;
@@ -30,11 +31,11 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 @Mixin(BlockEntity.class)
 abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	@Inject(
-			method = "method_17897", // lambda body in BlockEntity#createFromNbt
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;method_58690(Lnet/minecraft/nbt/NbtCompound;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)V")
+			method = "read",
+			at = @At("RETURN")
 	)
-	private static void readBlockEntityAttachments(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup, String string, BlockEntity blockEntity, CallbackInfoReturnable<BlockEntity> cir) {
-		((AttachmentTargetImpl) blockEntity).fabric_readAttachmentsFromNbt(nbt, wrapperLookup);
+	private void readBlockEntityAttachments(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup, CallbackInfo ci) {
+		this.fabric_readAttachmentsFromNbt(nbt, registryLookup);
 	}
 
 	@Inject(

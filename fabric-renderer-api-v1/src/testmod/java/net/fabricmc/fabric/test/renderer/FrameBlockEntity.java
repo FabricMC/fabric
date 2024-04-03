@@ -100,6 +100,6 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 
 	@Override
 	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup wrapperLookup) {
-		return this.createNbt(wrapperLookup);
+		return this.createComponentlessNbt(wrapperLookup);
 	}
 }
