@@ -46,7 +46,7 @@ public class FabricBlockModelSupplier implements Supplier<JsonElement> {
     public FabricBlockModelSupplier addTextureData(HashMap<String, Identifier> textureMap)
     {
         JsonObject textureData = new JsonObject();
-        for (Map.Entry<String, Number> entry : textureMap.entrySet()) {
+        for (Map.Entry<String, Identifier> entry : textureMap.entrySet()) {
 			String key = entry.getKey();
             Identifier identifier = entry.getValue();
             textureData.addProperty(key, identifier.getNamespace() + ":" + identifier.getPath());
