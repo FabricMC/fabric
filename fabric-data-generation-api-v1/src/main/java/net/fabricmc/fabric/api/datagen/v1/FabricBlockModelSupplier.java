@@ -6,30 +6,34 @@ import net.minecraft.util.Identifier;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
-/* Acceptor for the BlockStateModelGenerator's blockStateCollector (datagen) */
+/**
+ * Acceptable class for BlockStateModelGenerator's blockStateCollector
+ * @see BlockStateModelGenerator
+ */
 
 public class BlockModelSupplier implements Supplier<JsonElement> {
     protected final JsonObject jsonObject;
 
-    public BlockModelSupplier()
+    public BlockModelSupplier(String type)
     {
         this.jsonObject = new JsonObject();
-    }
-  
-    // You're expected to manually add a parent type
-    // TODO possibly change to be a construction parameter?
-    public BlockModelSupplier addParentType(String type)
-    {
-        this.jsonObject.addProperty("parent", "minecraft:block/" + type);
-        return this;
+		this.jsonObject.addProperty("parent", "minecraft:block/" + type);
     }
 
-    public BlockModelSupplier addParentType(String modID, String type)
+	/**
+ 	 * Have an acceptable <modID> parameter in case of custom model parents.
+	 */
+	public BlockModelSupplier(String modID, String type)
     {
-        this.jsonObject.addProperty("parent", modID + ":block/" + type);
-        return this;
+        this.jsonObject = new JsonObject();
+		this.jsonObject.addProperty("parent", modID + ":block/" + type);
     }
 
+	/**
+	 * Add textures.
+	 *
+	 * @param textureMap The {@link FabricDataGenerator} instance
+	 */
     public BlockModelSupplier addTextureData(HashMap<String, Identifier> textureMap)
     {
         JsonObject textureData = new JsonObject();
@@ -53,11 +57,6 @@ public class BlockModelSupplier implements Supplier<JsonElement> {
 
     @Override
     public JsonElement get() {
-        if (this.jsonObject.get("parent") == null)
-        {
-            // Default to cube_all if no parent is added!
-            this.jsonObject.addProperty("parent", "minecraft:block/cube_all");
-        }
         return this.jsonObject;
     }
 }
