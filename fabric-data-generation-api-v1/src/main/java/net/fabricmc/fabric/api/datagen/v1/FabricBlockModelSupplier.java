@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.util.Identifier;
 import java.util.HashMap;
 import java.util.function.Supplier;
+import java.util.Map;
 
 /**
  * Acceptable class for {@link net.minecraft.data.client.BlockStateModelGenerator}'s blockStateCollector.
@@ -45,8 +46,9 @@ public class FabricBlockModelSupplier implements Supplier<JsonElement> {
     public FabricBlockModelSupplier addTextureData(HashMap<String, Identifier> textureMap)
     {
         JsonObject textureData = new JsonObject();
-        for (String key : textureMap.keySet()) {
-            Identifier identifier = textureMap.get(key);
+        for (Map.Entry<String, Number> entry : textureMap.entrySet()) {
+			String key = entry.getKey();
+            Identifier identifier = entry.getValue();
             textureData.addProperty(key, identifier.getNamespace() + ":" + identifier.getPath());
         }
 
