@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import java.util.Map;
 
 /**
- * Acceptable class for {@link net.minecraft.data.client.BlockStateModelGenerator}'s blockStateCollector.
+ * Acceptable class for {@link net.minecraft.data.client.BlockStateModelGenerator}'s modelCollector.
  * makes generating more specific block models easier for modders.
  */
 
@@ -41,10 +41,11 @@ public class FabricBlockModelSupplier implements Supplier<JsonElement> {
     /**
      * Add HashMap textures to the model's JsonObject.
      *
-     * @param textureMap {@link HashMap} containing the data for the textures.
+     * @param fabricTextureMap {@link FabricTextureMap} containing the data for the textures.
      */
-    public FabricBlockModelSupplier addTextureData(HashMap<String, Identifier> textureMap)
+    public FabricBlockModelSupplier addTextureData(FabricTextureMap fabricTextureMap)
     {
+		HashMap<String, Identifier> textureMap = fabricTextureMap.get();
         JsonObject textureData = new JsonObject();
         for (Map.Entry<String, Identifier> entry : textureMap.entrySet()) {
 			String key = entry.getKey();
