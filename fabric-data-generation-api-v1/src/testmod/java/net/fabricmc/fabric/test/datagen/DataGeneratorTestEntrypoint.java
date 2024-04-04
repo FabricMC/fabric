@@ -42,6 +42,8 @@ import net.fabricmc.fabric.api.datagen.v1.FabricBlockModelSupplier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricTextureMap;
 
+import net.fabricmc.fabric.api.datagen.v1.SimpleBlockStateSupplier;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -307,6 +309,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerSimpleCubeAll(BLOCK_THAT_DROPS_NOTHING);
 
 			// registerSimpleCubeAll() -> FabricBlockModelSupplier::new
+			blockStateModelGenerator.blockStateCollector.accept(new SimpleBlockStateSupplier(SIMPLE_BLOCK, new Identifier(MOD_ID, "simple_block")));
 			blockStateModelGenerator.modelCollector.accept(new Identifier(MOD_ID, "simple_block"),
 					() -> new FabricBlockModelSupplier("cube_all")
 							.addTextureData(new FabricTextureMap("all")
