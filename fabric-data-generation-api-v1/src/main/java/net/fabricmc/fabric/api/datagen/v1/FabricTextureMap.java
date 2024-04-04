@@ -32,8 +32,12 @@ public class FabricTextureMap {
 	 */
 	public FabricTextureMap set(Identifier... textureLocations) {
 		List<Identifier> textureList = Arrays.stream(textureLocations).toList();
-		if (textureList.size() != this.bufferNames.size()) {
-			throw new IllegalStateException("Provided texture locations should be same length as texture names!");
+		int difference = textureList.size() - this.bufferNames.size();
+		if (difference > 0) {
+			throw new IllegalStateException(String.format("You need to provide %s more texture names to allocate to texture locations!", difference));
+		}
+		if (difference < 0) {
+			throw new IllegalStateException(String.format("You need to provide %s more texture locations to link to texture names!", difference));
 		}
 		for (int i = 0; i < bufferNames.size(); i++) {
 			map.put(bufferNames.get(i), textureList.get(i));
