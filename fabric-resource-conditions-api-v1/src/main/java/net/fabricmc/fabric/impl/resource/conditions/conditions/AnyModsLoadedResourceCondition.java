@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.resource.conditions.conditions;
 import java.util.List;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.util.dynamic.Codecs;
@@ -29,7 +30,7 @@ import net.fabricmc.fabric.impl.resource.conditions.DefaultResourceConditionType
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 public record AnyModsLoadedResourceCondition(List<String> modIds) implements ResourceCondition {
-	public static final Codec<AnyModsLoadedResourceCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+	public static final MapCodec<AnyModsLoadedResourceCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 		Codecs.nonEmptyList(Codec.STRING.listOf()).fieldOf("values").forGetter(AnyModsLoadedResourceCondition::modIds)
 	).apply(instance, AnyModsLoadedResourceCondition::new));
 

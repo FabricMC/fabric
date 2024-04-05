@@ -28,19 +28,13 @@ import com.mojang.serialization.JsonOps;
 
 public interface ResourceCondition {
 	Codec<ResourceCondition> CODEC = ResourceConditionType.TYPE_CODEC.dispatch("condition", ResourceCondition::getType, ResourceConditionType::codec);
-	Codec<List<ResourceCondition>> CONDITIONS_CODEC = CODEC.listOf().fieldOf(ResourceConditions.CONDITIONS_KEY).codec();
+	Codec<List<ResourceCondition>> LIST_CODEC = CODEC.listOf();
 	static void addConditions(JsonObject baseObject, ResourceCondition... conditions) {
 		if (baseObject.has(ResourceConditions.CONDITIONS_KEY)) {
 			throw new IllegalArgumentException("Object already has a condition entry: " + baseObject);
 		}
 
-		Either<JsonElement, DataResult.PartialResult<JsonElement>> conditionsResult = CODEC.listOf().encodeStart(JsonOps.INSTANCE, Arrays.asList(conditions)).get();
-
-		if (conditionsResult.left().isPresent()) {
-			baseObject.add(ResourceConditions.CONDITIONS_KEY, conditionsResult.left().get());
-		} else {
-			throw new IllegalArgumentException("Could not parse resource conditions");
-		}
+		baseObject.add(ResourceConditions.CONDITIONS_KEY, LIST_CODEC.encodeStart(JsonOps.INSTANCE, Arrays.asList(conditions)).getOrThrow());
 	}
 
 	ResourceConditionType<?> getType();

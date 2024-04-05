@@ -61,9 +61,9 @@ public class JsonDataLoaderMixin extends SinglePreparationResourceReloaderMixin 
 			if (resourceData.isJsonObject()) {
 				JsonObject obj = resourceData.getAsJsonObject();
 				if (obj.has(ResourceConditions.CONDITIONS_KEY)) {
-					DataResult<List<ResourceCondition>> conditions = ResourceCondition.CONDITIONS_CODEC.parse(JsonOps.INSTANCE, obj);
-					if (conditions.result().isPresent()) {
-						boolean matched = ResourceConditionsImpl.conditionsMet(conditions.result().get(), true);
+					DataResult<List<ResourceCondition>> conditions = ResourceCondition.LIST_CODEC.parse(JsonOps.INSTANCE, obj.get(ResourceConditions.CONDITIONS_KEY));
+					if (conditions.isSuccess()) {
+						boolean matched = ResourceConditionsImpl.conditionsMet(conditions.getOrThrow(), true);
 						if (!matched) {
 							it.remove();
 						}

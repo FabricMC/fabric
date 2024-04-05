@@ -21,6 +21,8 @@ import java.util.Optional;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.util.Identifier;
 
 public interface ResourceConditionType<T extends ResourceCondition> {
@@ -30,8 +32,8 @@ public interface ResourceConditionType<T extends ResourceCondition> {
 	);
 
 	Identifier id();
-	Codec<T> codec();
-	static <T extends ResourceCondition> ResourceConditionType<T> create(Identifier id, Codec<T> codec) {
+	MapCodec<T> codec();
+	static <T extends ResourceCondition> ResourceConditionType<T> create(Identifier id, MapCodec<T> codec) {
 		return new ResourceConditionType<>() {
 			@Override
 			public Identifier id() {
@@ -39,7 +41,7 @@ public interface ResourceConditionType<T extends ResourceCondition> {
 			}
 
 			@Override
-			public Codec<T> codec() {
+			public MapCodec<T> codec() {
 				return codec;
 			}
 		};
