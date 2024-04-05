@@ -16,16 +16,14 @@
 
 package net.fabricmc.fabric.impl.resource.conditions.conditions;
 
-import java.util.List;
-
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
-import net.minecraft.resource.featuretoggle.FeatureManager;
 import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
@@ -47,7 +45,7 @@ public record FeaturesEnabledResourceCondition(FeatureSet features) implements R
 	}
 
 	@Override
-	public boolean test() {
+	public boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup) {
 		return ResourceConditionsImpl.featuresEnabled(this.features());
 	}
 }

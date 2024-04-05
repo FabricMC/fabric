@@ -6,8 +6,10 @@
     "DataPackContentsMixin",
     "DataProviderMixin",
     "JsonDataLoaderMixin",
-    "SinglePreparationResourceReloaderMixin",
-    "TagManagerLoaderMixin"
+    "RecipeManagerMixin",
+    "ReloadableRegistriesMixin",
+    "ServerAdvancementLoaderMixin",
+    "SinglePreparationResourceReloaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

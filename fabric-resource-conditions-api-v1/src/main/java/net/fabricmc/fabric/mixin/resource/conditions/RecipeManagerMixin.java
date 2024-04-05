@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.resource.conditions.conditions;
+package net.fabricmc.fabric.mixin.resource.conditions;
 
-import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
+import net.minecraft.recipe.RecipeManager;
 import net.minecraft.registry.RegistryWrapper;
 
-import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
-import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
-import net.fabricmc.fabric.impl.resource.conditions.DefaultResourceConditionTypes;
-
-public class TrueResourceCondition implements ResourceCondition {
-	public static final MapCodec<TrueResourceCondition> CODEC = MapCodec.unit(TrueResourceCondition::new);
-
-	@Override
-	public ResourceConditionType<?> getType() {
-		return DefaultResourceConditionTypes.TRUE;
-	}
+@Mixin(RecipeManager.class)
+public class RecipeManagerMixin extends SinglePreparationResourceReloaderMixin {
+	@Shadow
+	@Final
+	private RegistryWrapper.WrapperLookup registryLookup;
 
 	@Override
-	public boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup) {
-		return true;
+	protected @Nullable RegistryWrapper.WrapperLookup fabric_getRegistryLookup() {
+		return this.registryLookup;
 	}
 }

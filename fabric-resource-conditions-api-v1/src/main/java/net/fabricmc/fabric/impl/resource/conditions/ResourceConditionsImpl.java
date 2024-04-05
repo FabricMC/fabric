@@ -16,20 +16,20 @@
 
 package net.fabricmc.fabric.impl.resource.conditions;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
+import com.google.gson.JsonObject;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.TagManagerLoader;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 
@@ -40,9 +40,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public final class ResourceConditionsImpl implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("Fabric Resource Conditions");
-	public static final ThreadLocal<Map<RegistryKey<?>, Map<Identifier, Collection<RegistryEntry<?>>>>> LOADED_TAGS = new ThreadLocal<>();
 	public static final ThreadLocal<FeatureSet> CURRENT_FEATURES = new ThreadLocal<>();
-	public static final ThreadLocal<DynamicRegistryManager.Immutable> CURRENT_REGISTRIES = new ThreadLocal<>();
 
 	@Override
 	public void onInitialize() {
@@ -57,11 +55,34 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		ResourceConditions.register(DefaultResourceConditionTypes.REGISTRY_CONTAINS);
 	}
 
+	public static boolean applyResourceConditions(JsonObject obj, String dataType, Identifier key, @Nullable RegistryWrapper.WrapperLookup registryLookup) {
+		boolean debugLogEnabled = ResourceConditionsImpl.LOGGER.isDebugEnabled();
+
+		if (obj.has(ResourceConditions.CONDITIONS_KEY)) {
+			DataResult<List<ResourceCondition>> conditions = ResourceCondition.LIST_CODEC.parse(JsonOps.INSTANCE, obj.get(ResourceConditions.CONDITIONS_KEY));
+
+			if (conditions.isSuccess()) {
+				boolean matched = ResourceConditionsImpl.conditionsMet(conditions.getOrThrow(), registryLookup, true);
+
+				if (debugLogEnabled) {
+					String verdict = matched ? "Allowed" : "Rejected";
+					ResourceConditionsImpl.LOGGER.debug("{} resource of type {} with id {}", verdict, dataType, key);
+				}
+
+				return matched;
+			} else {
+				ResourceConditionsImpl.LOGGER.error("Failed to parse resource conditions for file of type {} with id {}, skipping: {}", dataType, key, conditions.error().get().message());
+			}
+		}
+
+		return true;
+	}
+
 	// Condition implementations
 
-	public static boolean conditionsMet(List<ResourceCondition> conditions, boolean and) {
+	public static boolean conditionsMet(List<ResourceCondition> conditions, @Nullable RegistryWrapper.WrapperLookup registryLookup, boolean and) {
 		for (ResourceCondition condition : conditions) {
-			if (condition.test() != and) {
+			if (condition.test(registryLookup) != and) {
 				return !and;
 			}
 		}
@@ -79,31 +100,28 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		return and;
 	}
 
-	public static boolean tagsPopulated(Identifier registryId, List<Identifier> tags) {
+	@SuppressWarnings("unchecked")
+	public static boolean tagsPopulated(@Nullable RegistryWrapper.WrapperLookup registryLookup, Identifier registryId, List<Identifier> tags) {
 		RegistryKey<? extends Registry<?>> registryKey = RegistryKey.ofRegistry(registryId);
-		Map<RegistryKey<?>, Map<Identifier, Collection<RegistryEntry<?>>>> allTags = LOADED_TAGS.get();
 
-		if (allTags == null) {
-			LOGGER.warn("Can't retrieve deserialized tags, failing tags_populated resource condition check");
+		if (registryLookup == null) {
+			LOGGER.warn("Can't retrieve registry {}, failing tags_populated resource condition check", registryId);
 			return false;
 		}
 
-		Map<Identifier, Collection<RegistryEntry<?>>> registryTags = allTags.get(registryKey);
+		Optional<RegistryWrapper.Impl<Object>> wrapper = registryLookup.getOptionalWrapper(registryKey);
 
-		if (registryTags == null) {
-			// No tag for this registry
+		if (wrapper.isPresent()) {
+			for (Identifier id : tags) {
+				if (wrapper.get().getOptional(TagKey.of((RegistryKey<? extends Registry<Object>>) registryKey, id)).isEmpty()) {
+					return false;
+				}
+			}
+
+			return true;
+		} else {
 			return tags.isEmpty();
 		}
-
-		for (Identifier tagId : tags) {
-			Collection<RegistryEntry<?>> tag = registryTags.get(tagId);
-
-			if (tag == null || tag.isEmpty()) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	public static boolean featuresEnabled(FeatureSet set) {
@@ -117,39 +135,27 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		return set.isSubsetOf(currentFeatures);
 	}
 
-	public static boolean registryContains(Identifier registryId, List<Identifier> entries) {
+	@SuppressWarnings("unchecked")
+	public static boolean registryContains(@Nullable RegistryWrapper.WrapperLookup registryLookup, Identifier registryId, List<Identifier> entries) {
 		RegistryKey<? extends Registry<?>> registryKey = RegistryKey.ofRegistry(registryId);
-		DynamicRegistryManager.Immutable registries = CURRENT_REGISTRIES.get();
 
-		if (registries == null) {
-			LOGGER.warn("Can't retrieve deserialized tags, failing tags_populated resource condition check");
+		if (registryLookup == null) {
+			LOGGER.warn("Can't retrieve registry {}, failing registry_contains resource condition check", registryId);
 			return false;
 		}
 
-		Registry<?> registry = registries.get(registryKey);
+		Optional<RegistryWrapper.Impl<Object>> wrapper = registryLookup.getOptionalWrapper(registryKey);
 
-		if (registry == null) {
-			// No such registry
+		if (wrapper.isPresent()) {
+			for (Identifier id : entries) {
+				if (wrapper.get().getOptional(RegistryKey.of((RegistryKey<? extends Registry<Object>>) registryKey, id)).isEmpty()) {
+					return false;
+				}
+			}
+
+			return true;
+		} else {
 			return entries.isEmpty();
 		}
-
-		for (Identifier entryId : entries) {
-			if (!registry.containsId(entryId)) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	public static void setTags(List<TagManagerLoader.RegistryTags<?>> tags) {
-		Map<RegistryKey<?>, Map<Identifier, Collection<RegistryEntry<?>>>> tagMap = new HashMap<>();
-
-		for (TagManagerLoader.RegistryTags<?> registryTags : tags) {
-			tagMap.put(registryTags.key(), (Map) registryTags.tags());
-		}
-
-		LOADED_TAGS.set(tagMap);
-	}
+ 	}
 }

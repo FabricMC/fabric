@@ -18,6 +18,9 @@ package net.fabricmc.fabric.impl.resource.conditions.conditions;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.registry.RegistryWrapper;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
@@ -34,7 +37,7 @@ public record NotResourceCondition(ResourceCondition condition) implements Resou
 	}
 
 	@Override
-	public boolean test() {
-		return !this.condition().test();
+	public boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup) {
+		return !this.condition().test(registryLookup);
 	}
 }

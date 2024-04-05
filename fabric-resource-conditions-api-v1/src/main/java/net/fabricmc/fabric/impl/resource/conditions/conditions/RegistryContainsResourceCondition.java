@@ -21,9 +21,11 @@ import java.util.List;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
@@ -32,6 +34,8 @@ import net.fabricmc.fabric.impl.resource.conditions.DefaultResourceConditionType
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 public record RegistryContainsResourceCondition(Identifier registry, List<Identifier> entries) implements ResourceCondition {
+	// Cannot use registry-bound codec because they fail parsing if nonexistent,
+	// and resource conditions themselves should not fail to parse on condition failure
 	public static final MapCodec<RegistryContainsResourceCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Identifier.CODEC.fieldOf("registry").orElse(RegistryKeys.ITEM.getValue()).forGetter(RegistryContainsResourceCondition::registry),
 			Identifier.CODEC.listOf().fieldOf("values").forGetter(RegistryContainsResourceCondition::entries)
@@ -52,7 +56,7 @@ public record RegistryContainsResourceCondition(Identifier registry, List<Identi
 	}
 
 	@Override
-	public boolean test() {
-		return ResourceConditionsImpl.registryContains(this.registry(), this.entries());
+	public boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup) {
+		return ResourceConditionsImpl.registryContains(registryLookup, this.registry(), this.entries());
 	}
 }

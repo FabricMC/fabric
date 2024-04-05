@@ -22,10 +22,14 @@ import java.util.List;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.registry.RegistryWrapper;
 
 public interface ResourceCondition {
 	Codec<ResourceCondition> CODEC = ResourceConditionType.TYPE_CODEC.dispatch("condition", ResourceCondition::getType, ResourceConditionType::codec);
 	Codec<List<ResourceCondition>> LIST_CODEC = CODEC.listOf();
+
 	static void addConditions(JsonObject baseObject, ResourceCondition... conditions) {
 		if (baseObject.has(ResourceConditions.CONDITIONS_KEY)) {
 			throw new IllegalArgumentException("Object already has a condition entry: " + baseObject);
@@ -35,5 +39,6 @@ public interface ResourceCondition {
 	}
 
 	ResourceConditionType<?> getType();
-	boolean test();
+
+	boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup);
 }
