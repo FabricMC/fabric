@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.resource.conditions.conditions;
 
 import java.util.List;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -31,7 +30,7 @@ import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 public record AndResourceCondition(List<ResourceCondition> conditions) implements ResourceCondition {
 	public static final MapCodec<AndResourceCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-		Codecs.nonEmptyList(ResourceCondition.CODEC.listOf()).fieldOf("values").forGetter(AndResourceCondition::conditions)
+			Codecs.nonEmptyList(ResourceCondition.CODEC.listOf()).fieldOf("values").forGetter(AndResourceCondition::conditions)
 	).apply(instance, AndResourceCondition::new));
 
 	@Override

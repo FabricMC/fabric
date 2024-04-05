@@ -19,7 +19,6 @@ package net.fabricmc.fabric.impl.resource.conditions.conditions;
 import java.util.Arrays;
 import java.util.List;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -34,8 +33,8 @@ import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 public record TagsPopulatedResourceCondition(Identifier registry, List<Identifier> tags) implements ResourceCondition {
 	public static final MapCodec<TagsPopulatedResourceCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-		Identifier.CODEC.fieldOf("registry").orElse(RegistryKeys.ITEM.getValue()).forGetter(TagsPopulatedResourceCondition::registry),
-		Identifier.CODEC.listOf().fieldOf("values").forGetter(TagsPopulatedResourceCondition::tags)
+			Identifier.CODEC.fieldOf("registry").orElse(RegistryKeys.ITEM.getValue()).forGetter(TagsPopulatedResourceCondition::registry),
+			Identifier.CODEC.listOf().fieldOf("values").forGetter(TagsPopulatedResourceCondition::tags)
 	).apply(instance, TagsPopulatedResourceCondition::new));
 
 	@SafeVarargs

@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.impl.resource.conditions;
 
-import com.mojang.serialization.Codec;
-
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.util.Identifier;

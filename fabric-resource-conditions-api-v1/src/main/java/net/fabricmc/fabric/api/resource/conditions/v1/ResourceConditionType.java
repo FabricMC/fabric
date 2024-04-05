@@ -20,19 +20,20 @@ import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.util.Identifier;
 
 public interface ResourceConditionType<T extends ResourceCondition> {
 	Codec<ResourceConditionType<?>> TYPE_CODEC = Identifier.CODEC.comapFlatMap(id ->
-		Optional.ofNullable(ResourceConditions.getConditionType(id)).map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Unknown resource condition key: "+ id )),
-		ResourceConditionType::id
+					Optional.ofNullable(ResourceConditions.getConditionType(id)).map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Unknown resource condition key: "+ id)),
+					ResourceConditionType::id
 	);
 
 	Identifier id();
+
 	MapCodec<T> codec();
+
 	static <T extends ResourceCondition> ResourceConditionType<T> create(Identifier id, MapCodec<T> codec) {
 		return new ResourceConditionType<>() {
 			@Override

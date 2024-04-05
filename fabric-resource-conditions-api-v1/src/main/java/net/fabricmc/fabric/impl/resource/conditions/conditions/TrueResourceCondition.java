@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.impl.resource.conditions.conditions;
 
-import com.mojang.serialization.Codec;
-
 import com.mojang.serialization.MapCodec;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;

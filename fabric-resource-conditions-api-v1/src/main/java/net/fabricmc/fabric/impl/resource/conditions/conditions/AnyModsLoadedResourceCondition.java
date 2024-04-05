@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 public record AnyModsLoadedResourceCondition(List<String> modIds) implements ResourceCondition {
 	public static final MapCodec<AnyModsLoadedResourceCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-		Codecs.nonEmptyList(Codec.STRING.listOf()).fieldOf("values").forGetter(AnyModsLoadedResourceCondition::modIds)
+			Codecs.nonEmptyList(Codec.STRING.listOf()).fieldOf("values").forGetter(AnyModsLoadedResourceCondition::modIds)
 	).apply(instance, AnyModsLoadedResourceCondition::new));
 
 	@Override
