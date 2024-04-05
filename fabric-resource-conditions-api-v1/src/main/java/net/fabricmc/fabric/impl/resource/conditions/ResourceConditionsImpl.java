@@ -16,12 +16,14 @@
 
 package net.fabricmc.fabric.impl.resource.conditions;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 
@@ -124,7 +127,17 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		}
 	}
 
-	public static boolean featuresEnabled(FeatureSet set) {
+	public static boolean featuresEnabled(Collection<Identifier> features) {
+		MutableBoolean foundUnknown = new MutableBoolean();
+		FeatureSet set = FeatureFlags.FEATURE_MANAGER.featureSetOf(features, (id) -> {
+			LOGGER.info("Found unknown feature {}, treating it as failure", id);
+			foundUnknown.setTrue();
+		});
+
+		if (foundUnknown.booleanValue()) {
+			return false;
+		}
+
 		FeatureSet currentFeatures = CURRENT_FEATURES.get();
 
 		if (currentFeatures == null) {
@@ -157,5 +170,5 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		} else {
 			return entries.isEmpty();
 		}
- 	}
+	}
 }

@@ -83,6 +83,15 @@ public class ResourceConditions {
 		return new TagsPopulatedResourceCondition(registry, tags);
 	}
 
+	@SafeVarargs
+	public static <T> ResourceCondition tagsPopulated(RegistryKey<? extends Registry<T>> registry, TagKey<T>... tags) {
+		return new TagsPopulatedResourceCondition(registry.getValue(), tags);
+	}
+
+	public static ResourceCondition featuresEnabled(Identifier... features) {
+		return new FeaturesEnabledResourceCondition(features);
+	}
+
 	public static ResourceCondition featuresEnabled(FeatureFlag... features) {
 		return new FeaturesEnabledResourceCondition(features);
 	}
@@ -92,7 +101,7 @@ public class ResourceConditions {
 		return new RegistryContainsResourceCondition(entries);
 	}
 
-	public static <T> ResourceCondition registryContains(RegistryKey<Registry<T>> registry, Identifier... entries) {
+	public static <T> ResourceCondition registryContains(RegistryKey<? extends Registry<T>> registry, Identifier... entries) {
 		return new RegistryContainsResourceCondition(registry.getValue(), entries);
 	}
 }

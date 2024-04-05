@@ -23,7 +23,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.dynamic.Codecs;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
@@ -32,7 +31,7 @@ import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 public record AndResourceCondition(List<ResourceCondition> conditions) implements ResourceCondition {
 	public static final MapCodec<AndResourceCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			Codecs.nonEmptyList(ResourceCondition.CODEC.listOf()).fieldOf("values").forGetter(AndResourceCondition::conditions)
+			ResourceCondition.CODEC.listOf().fieldOf("values").forGetter(AndResourceCondition::conditions)
 	).apply(instance, AndResourceCondition::new));
 
 	@Override
