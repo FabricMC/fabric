@@ -21,6 +21,10 @@ import java.util.List;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.resource.featuretoggle.FeatureFlag;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
+import net.minecraft.resource.featuretoggle.FeatureManager;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
@@ -28,13 +32,13 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
 import net.fabricmc.fabric.impl.resource.conditions.DefaultResourceConditionTypes;
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
-public record FeaturesEnabledResourceCondition(List<Identifier> features) implements ResourceCondition {
+public record FeaturesEnabledResourceCondition(FeatureSet features) implements ResourceCondition {
 	public static final MapCodec<FeaturesEnabledResourceCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			Identifier.CODEC.listOf().fieldOf("features").forGetter(FeaturesEnabledResourceCondition::features)
+			FeatureFlags.CODEC.fieldOf("features").forGetter(FeaturesEnabledResourceCondition::features)
 	).apply(instance, FeaturesEnabledResourceCondition::new));
 
-	public FeaturesEnabledResourceCondition(Identifier... features) {
-		this(List.of(features));
+	public FeaturesEnabledResourceCondition(FeatureFlag... features) {
+		this(FeatureFlags.FEATURE_MANAGER.featureSetOf(features));
 	}
 
 	@Override

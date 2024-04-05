@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.resource.conditions.conditions.AllModsLoadedResourceCondition;
@@ -82,7 +83,7 @@ public class ResourceConditions {
 		return new TagsPopulatedResourceCondition(registry, tags);
 	}
 
-	public static ResourceCondition featuresEnabled(Identifier... features) {
+	public static ResourceCondition featuresEnabled(FeatureFlag... features) {
 		return new FeaturesEnabledResourceCondition(features);
 	}
 

@@ -106,11 +106,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		return true;
 	}
 
-	public static boolean featuresEnabled(List<Identifier> features) {
-		FeatureSet set = FeatureFlags.FEATURE_MANAGER.featureSetOf(features, (id) -> {
-			throw new IllegalStateException("Unknown feature flag: " + id);
-		});
-
+	public static boolean featuresEnabled(FeatureSet set) {
 		FeatureSet currentFeatures = CURRENT_FEATURES.get();
 
 		if (currentFeatures == null) {
