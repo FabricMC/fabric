@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.class_9383;
+import net.minecraft.registry.ReloadableRegistries;
 import net.minecraft.server.DataPackContents;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
@@ -32,10 +32,10 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 public class DataPackContentsMixin {
 	@Shadow
 	@Final
-	private class_9383.class_9385 field_49921;
+	private ReloadableRegistries.Lookup reloadableRegistries;
 
 	@Inject(method = "refresh", at = @At("TAIL"))
 	private void hookRefresh(CallbackInfo ci) {
-		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(field_49921.method_58289(), false);
+		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(this.reloadableRegistries.getRegistryManager(), false);
 	}
 }

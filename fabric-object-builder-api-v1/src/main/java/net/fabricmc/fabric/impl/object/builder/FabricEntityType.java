@@ -28,8 +28,8 @@ import net.minecraft.resource.featuretoggle.FeatureSet;
 public class FabricEntityType<T extends Entity> extends EntityType<T> {
 	private final Boolean alwaysUpdateVelocity;
 
-	public FabricEntityType(EntityType.EntityFactory<T> factory, SpawnGroup spawnGroup, boolean bl, boolean summonable, boolean fireImmune, boolean spawnableFarFromPlayer, ImmutableSet<Block> spawnBlocks, EntityDimensions entityDimensions, int maxTrackDistance, int trackTickInterval, Boolean alwaysUpdateVelocity, FeatureSet featureSet) {
-		super(factory, spawnGroup, bl, summonable, fireImmune, spawnableFarFromPlayer, spawnBlocks, entityDimensions, maxTrackDistance, trackTickInterval, featureSet);
+	public FabricEntityType(EntityType.EntityFactory<T> factory, SpawnGroup spawnGroup, boolean bl, boolean summonable, boolean fireImmune, boolean spawnableFarFromPlayer, ImmutableSet<Block> spawnBlocks, EntityDimensions entityDimensions, float field_50125, int maxTrackDistance, int trackTickInterval, Boolean alwaysUpdateVelocity, FeatureSet featureSet) {
+		super(factory, spawnGroup, bl, summonable, fireImmune, spawnableFarFromPlayer, spawnBlocks, entityDimensions, field_50125, maxTrackDistance, trackTickInterval, featureSet);
 		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
 	}
 

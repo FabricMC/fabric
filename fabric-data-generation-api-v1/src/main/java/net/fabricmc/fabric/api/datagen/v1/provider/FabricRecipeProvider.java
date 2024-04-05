@@ -41,7 +41,6 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -100,15 +99,20 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 				}
 
 				RegistryOps<JsonElement> registryOps = wrapperLookup.getOps(JsonOps.INSTANCE);
-				JsonObject recipeJson = Util.getResult(Recipe.CODEC.encodeStart(registryOps, recipe), IllegalStateException::new).getAsJsonObject();
+				JsonObject recipeJson = Recipe.CODEC.encodeStart(registryOps, recipe).getOrThrow(IllegalStateException::new).getAsJsonObject();
 				ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(recipe);
 				ResourceCondition.addConditions(recipeJson, conditions);
 
 				list.add(DataProvider.writeToPath(writer, recipeJson, recipesPathResolver.resolveJson(identifier)));
 
 				if (advancement != null) {
+<<<<<<< HEAD
 					JsonObject advancementJson = Util.getResult(Advancement.CODEC.encodeStart(registryOps, advancement.value()), IllegalStateException::new).getAsJsonObject();
 					ResourceCondition.addConditions(advancementJson, conditions);
+=======
+					JsonObject advancementJson = Advancement.CODEC.encodeStart(registryOps, advancement.value()).getOrThrow(IllegalStateException::new).getAsJsonObject();
+					ConditionJsonProvider.write(advancementJson, conditions);
+>>>>>>> 9d8968f5a331964b552f22556336b53d99590253
 					list.add(DataProvider.writeToPath(writer, advancementJson, advancementsPathResolver.resolveJson(getRecipeIdentifier(advancement.id()))));
 				}
 			}

@@ -84,9 +84,9 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 
 	private JsonElement convert(Identifier id, T value, DynamicOps<JsonElement> ops) {
 		DataResult<JsonElement> dataResult = this.codec.encodeStart(ops, value);
-		return dataResult.get()
-				.mapRight(partial -> "Invalid entry %s: %s".formatted(id, partial.message()))
-				.orThrow();
+		return dataResult
+				.mapError(message -> "Invalid entry %s: %s".formatted(id, message))
+				.getOrThrow();
 	}
 
 	private CompletableFuture<?> write(DataWriter writer, Map<Identifier, JsonElement> entries) {

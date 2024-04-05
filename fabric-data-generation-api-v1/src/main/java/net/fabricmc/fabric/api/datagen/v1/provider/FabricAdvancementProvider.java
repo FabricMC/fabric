@@ -37,7 +37,6 @@ import net.minecraft.data.DataWriter;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -94,7 +93,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 					throw new IllegalStateException("Duplicate advancement " + advancement.id());
 				}
 
-				JsonObject advancementJson = Util.getResult(Advancement.CODEC.encodeStart(ops, advancement.value()), IllegalStateException::new).getAsJsonObject();
+				JsonObject advancementJson = Advancement.CODEC.encodeStart(ops, advancement.value()).getOrThrow(IllegalStateException::new).getAsJsonObject();
 				ResourceCondition.addConditions(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
 				futures.add(DataProvider.writeToPath(writer, advancementJson, getOutputPath(advancement)));
 			}

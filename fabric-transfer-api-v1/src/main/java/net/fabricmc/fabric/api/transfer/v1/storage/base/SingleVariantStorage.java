@@ -28,7 +28,6 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
@@ -198,7 +197,7 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 	 */
 	public static <T extends TransferVariant<?>> void writeNbt(SingleVariantStorage<T> storage, Codec<T> codec, NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
 		final RegistryOps<NbtElement> ops = wrapperLookup.getOps(NbtOps.INSTANCE);
-		nbt.put("variant", Util.getResult(codec.encodeStart(ops, storage.variant), RuntimeException::new));
+		nbt.put("variant", codec.encode(storage.variant, ops, nbt).getOrThrow(RuntimeException::new));
 		nbt.putLong("amount", storage.amount);
 	}
 }

@@ -16,15 +16,10 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import com.google.common.collect.Multimap;
-
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Hand;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
@@ -69,16 +64,15 @@ public interface FabricItem {
 
 	/**
 	 * Return the attribute modifiers to apply when this stack is worn in a living entity equipment slot.
-	 * Stack-aware version of {@link Item#getAttributeModifiers(EquipmentSlot)}.
+	 * Stack-aware version of {@link Item#getAttributeModifiers()}.
 	 *
 	 * <p>Note that attribute modifiers are only updated when the stack changes, i.e. when {@code ItemStack.areEqual(old, new)} is false.
 	 *
 	 * @param stack the current stack
-	 * @param slot  the equipment slot this stack is in
 	 * @return the attribute modifiers
 	 */
-	default Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
-		return ((Item) this).getAttributeModifiers(slot);
+	default AttributeModifiersComponent getAttributeModifiers(ItemStack stack) {
+		return ((Item) this).getAttributeModifiers();
 	}
 
 	/**

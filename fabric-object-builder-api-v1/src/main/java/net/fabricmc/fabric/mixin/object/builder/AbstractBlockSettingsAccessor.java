@@ -101,7 +101,7 @@ public interface AbstractBlockSettingsAccessor {
 	Optional<AbstractBlock.Offsetter> getOffsetter();
 
 	@Accessor
-	RegistryKey<LootTable> getLootTableId();
+	RegistryKey<LootTable> getLootTableKey();
 
 	@Accessor
 	boolean getBlockBreakParticles();
@@ -150,7 +150,7 @@ public interface AbstractBlockSettingsAccessor {
 	void setIsAir(boolean isAir);
 
 	@Accessor
-	void setLootTableId(RegistryKey<LootTable> lootTableId);
+	void setLootTableKey(RegistryKey<LootTable> lootTableKey);
 
 	@Accessor
 	void setToolRequired(boolean toolRequired);

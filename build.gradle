@@ -4,7 +4,7 @@ plugins {
 	id "idea"
 	id "maven-publish"
 	id 'jacoco'
-	id "fabric-loom" version "1.5.4" apply false
+	id "fabric-loom" version "1.6.3" apply false
 	id "com.diffplug.spotless" version "6.20.0"
 	id "org.ajoberstar.grgit" version "3.1.0"
 	id "me.modmuss50.remotesign" version "0.4.0" apply false
@@ -154,7 +154,7 @@ allprojects {
 	apply plugin: "com.diffplug.spotless"
 
 	tasks.withType(JavaCompile).configureEach {
-		it.options.release = 17
+		it.options.release = 21
 	}
 
 	java {
@@ -371,7 +371,7 @@ loom {
 
 javadoc {
 	options {
-		source = "17"
+		source = "21"
 		encoding = "UTF-8"
 		charSet = "UTF-8"
 		memberLevel = JavadocMemberLevel.PACKAGE
