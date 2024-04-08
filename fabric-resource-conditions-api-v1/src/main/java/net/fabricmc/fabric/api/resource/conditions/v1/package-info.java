@@ -16,7 +16,7 @@
 
 /**
  * Provides a way of conditionally loading JSON-based resources. By default, this can
- * be used with recipes and advancements.
+ * be used with recipes, advancements, loot tables, predicates, and item modifiers.
  * Conditions are identified by an identifier and registered at {@link
  * net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions}.
  *
@@ -43,6 +43,7 @@
  * }
  * }</pre>
  *
+ * <p>Unknown/invalid conditions will be skipped and considered successful.
  *
  * <h2>Data generation integration</h2>
  *

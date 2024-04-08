@@ -37,11 +37,25 @@ import net.fabricmc.fabric.impl.resource.conditions.conditions.RegistryContainsR
 import net.fabricmc.fabric.impl.resource.conditions.conditions.TagsPopulatedResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.TrueResourceCondition;
 
-public class ResourceConditions {
+/**
+ * Contains default resource conditions and the condition registry.
+ */
+public final class ResourceConditions {
 	private static final Map<Identifier, ResourceConditionType<?>> REGISTERED_CONDITIONS = new ConcurrentHashMap<>();
 
+	/**
+	 * The JSON key for resource conditions, {@value #CONDITIONS_KEY}.
+	 */
 	public static final String CONDITIONS_KEY = "fabric:load_conditions";
 
+	private ResourceConditions() {
+	}
+
+	/**
+	 * Registers {@code condition}.
+	 * @param condition the condition to register
+	 * @throws IllegalArgumentException if {@code condition} is already registered
+	 */
 	public static void register(ResourceConditionType<?> condition) {
 		Objects.requireNonNull(condition, "Condition may not be null.");
 
@@ -50,14 +64,24 @@ public class ResourceConditions {
 		}
 	}
 
+	/**
+	 * @return the condition with ID {@code id}, or {@code null} if there is no such condition
+	 */
 	public static ResourceConditionType<?> getConditionType(Identifier id) {
 		return REGISTERED_CONDITIONS.get(id);
 	}
 
+	/**
+	 * A condition that always passes. Has ID {@code fabric:true}.
+	 */
 	public static ResourceCondition alwaysTrue() {
 		return new TrueResourceCondition();
 	}
 
+	/**
+	 * A condition that passes if {@code condition} does not pass. Has ID {@code fabric:not} and
+	 * takes a sole field, {@code value}, which is a resource condition.
+	 */
 	public static ResourceCondition not(ResourceCondition condition) {
 		return new NotResourceCondition(condition);
 	}

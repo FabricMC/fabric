@@ -16,17 +16,16 @@
 
 package net.fabricmc.fabric.api.resource.conditions.v1;
 
-import java.util.Optional;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Nullables;
 
 public interface ResourceConditionType<T extends ResourceCondition> {
 	Codec<ResourceConditionType<?>> TYPE_CODEC = Identifier.CODEC.comapFlatMap(id ->
-					Optional.ofNullable(ResourceConditions.getConditionType(id)).map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Unknown resource condition key: "+ id)),
+					Nullables.mapOrElseGet(ResourceConditions.getConditionType(id), DataResult::success, () -> DataResult.error(() -> "Unknown resource condition key: "+ id)),
 					ResourceConditionType::id
 	);
 
