@@ -9,7 +9,8 @@
     "RecipeManagerMixin",
     "ReloadableRegistriesMixin",
     "ServerAdvancementLoaderMixin",
-    "SinglePreparationResourceReloaderMixin"
+    "SinglePreparationResourceReloaderMixin",
+    "TagManagerLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -53,6 +53,6 @@ public record TagsPopulatedResourceCondition(Identifier registry, List<Identifie
 
 	@Override
 	public boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup) {
-		return ResourceConditionsImpl.tagsPopulated(registryLookup, this.registry(), this.tags());
+		return ResourceConditionsImpl.tagsPopulated(this.registry(), this.tags());
 	}
 }

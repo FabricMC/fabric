@@ -22,6 +22,7 @@ import java.util.concurrent.Executor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.registry.CombinedDynamicRegistries;
@@ -35,6 +36,14 @@ import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 @Mixin(DataPackContents.class)
 public class DataPackContentsMixin {
+	@Inject(
+			method = "refresh",
+			at = @At("HEAD")
+	)
+	private void hookRefresh(CallbackInfo ci) {
+		ResourceConditionsImpl.LOADED_TAGS.remove();
+	}
+
 	@Inject(
 			method = "reload",
 			at = @At("HEAD")

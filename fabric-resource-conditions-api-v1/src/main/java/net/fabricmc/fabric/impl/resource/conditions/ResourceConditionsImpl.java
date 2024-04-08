@@ -17,8 +17,11 @@
 package net.fabricmc.fabric.impl.resource.conditions;
 
 import java.util.Collection;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
@@ -31,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.registry.tag.TagManagerLoader;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
@@ -103,27 +106,41 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		return and;
 	}
 
-	@SuppressWarnings("unchecked")
-	public static boolean tagsPopulated(@Nullable RegistryWrapper.WrapperLookup registryLookup, Identifier registryId, List<Identifier> tags) {
-		RegistryKey<? extends Registry<?>> registryKey = RegistryKey.ofRegistry(registryId);
+	/**
+	 * Stores the tags deserialized by {@link TagManagerLoader} before they are bound, to use them in the tags_populated conditions.
+	 * The tags are set at the end of the "apply" phase in {@link TagManagerLoader}, and cleared in {@link net.minecraft.server.DataPackContents#refresh}.
+	 * If the resource reload fails, the thread local is not cleared and:
+	 * - the map will remain in memory until the next reload;
+	 * - any call to {@link #tagsPopulated} will check the tags from the failed reload instead of failing directly.
+	 * This is probably acceptable.
+	 */
+	public static final ThreadLocal<Map<RegistryKey<?>, Set<Identifier>>> LOADED_TAGS = new ThreadLocal<>();
 
-		if (registryLookup == null) {
+	public static void setTags(List<TagManagerLoader.RegistryTags<?>> tags) {
+		Map<RegistryKey<?>, Set<Identifier>> tagMap = new IdentityHashMap<>();
+
+		for (TagManagerLoader.RegistryTags<?> registryTags : tags) {
+			tagMap.put(registryTags.key(), registryTags.tags().keySet());
+		}
+
+		LOADED_TAGS.set(tagMap);
+	}
+
+	// Cannot use registry because tags are not loaded to the registry at this stage yet.
+	public static boolean tagsPopulated(Identifier registryId, List<Identifier> tags) {
+		Map<RegistryKey<?>, Set<Identifier>> tagMap = LOADED_TAGS.get();
+
+		if (tagMap == null) {
 			LOGGER.warn("Can't retrieve registry {}, failing tags_populated resource condition check", registryId);
 			return false;
 		}
 
-		Optional<RegistryWrapper.Impl<Object>> wrapper = registryLookup.getOptionalWrapper(registryKey);
+		Set<Identifier> tagSet = tagMap.get(RegistryKey.ofRegistry(registryId));
 
-		if (wrapper.isPresent()) {
-			for (Identifier id : tags) {
-				if (wrapper.get().getOptional(TagKey.of((RegistryKey<? extends Registry<Object>>) registryKey, id)).isEmpty()) {
-					return false;
-				}
-			}
-
-			return true;
-		} else {
+		if (tagSet == null) {
 			return tags.isEmpty();
+		} else {
+			return tagSet.containsAll(tags);
 		}
 	}
 
@@ -148,9 +165,8 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		return set.isSubsetOf(currentFeatures);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static boolean registryContains(@Nullable RegistryWrapper.WrapperLookup registryLookup, Identifier registryId, List<Identifier> entries) {
-		RegistryKey<? extends Registry<?>> registryKey = RegistryKey.ofRegistry(registryId);
+		RegistryKey<? extends Registry<Object>> registryKey = RegistryKey.ofRegistry(registryId);
 
 		if (registryLookup == null) {
 			LOGGER.warn("Can't retrieve registry {}, failing registry_contains resource condition check", registryId);
@@ -161,7 +177,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 
 		if (wrapper.isPresent()) {
 			for (Identifier id : entries) {
-				if (wrapper.get().getOptional(RegistryKey.of((RegistryKey<? extends Registry<Object>>) registryKey, id)).isEmpty()) {
+				if (wrapper.get().getOptional(RegistryKey.of(registryKey, id)).isEmpty()) {
 					return false;
 				}
 			}
