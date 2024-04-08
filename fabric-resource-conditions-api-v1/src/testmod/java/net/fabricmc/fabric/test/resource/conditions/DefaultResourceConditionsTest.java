@@ -128,7 +128,7 @@ public class DefaultResourceConditionsTest {
 		expectCondition(context, "vanilla only", vanilla, true);
 		expectCondition(context, "vanilla and bundle", vanillaAndBundle, true);
 		expectCondition(context, "unknown feature ID", unknown, false);
-		expectCondition(context, "no feature", unknown, true);
+		expectCondition(context, "no feature", empty, true);
 
 		context.complete();
 	}

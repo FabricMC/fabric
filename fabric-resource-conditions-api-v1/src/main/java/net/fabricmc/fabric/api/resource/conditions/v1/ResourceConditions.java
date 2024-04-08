@@ -79,8 +79,8 @@ public class ResourceConditions {
 	}
 
 	@SafeVarargs
-	public static <T> ResourceCondition tagsPopulated(Identifier registry, TagKey<T>... tags) {
-		return new TagsPopulatedResourceCondition(registry, tags);
+	public static <T> ResourceCondition tagsPopulated(TagKey<T>... tags) {
+		return new TagsPopulatedResourceCondition(tags);
 	}
 
 	@SafeVarargs
