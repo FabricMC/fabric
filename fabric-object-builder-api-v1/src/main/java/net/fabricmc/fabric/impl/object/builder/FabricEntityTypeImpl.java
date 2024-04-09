@@ -41,16 +41,16 @@ public interface FabricEntityTypeImpl {
 
 		void fabric_setMobEntityBuilder(Mob<? extends MobEntity> mobBuilder);
 
-		static <T extends LivingEntity> EntityType.Builder<T> createLiving(UnaryOperator<FabricEntityType.Builder.Living<T>> livingBuilder) {
-			EntityType.Builder<T> builder = EntityType.Builder.create((type, world) -> null, SpawnGroup.MISC);
+		static <T extends LivingEntity> EntityType.Builder<T> createLiving(EntityType.EntityFactory<T> factory, SpawnGroup spawnGroup, UnaryOperator<FabricEntityType.Builder.Living<T>> livingBuilder) {
+			EntityType.Builder<T> builder = EntityType.Builder.create(factory, spawnGroup);
 			Living<T> builderImpl = new Living<>();
 			livingBuilder.apply(builderImpl);
 			((Builder) builder).fabric_setLivingEntityBuilder(builderImpl);
 			return builder;
 		}
 
-		static <T extends MobEntity> EntityType.Builder<T> createMob(UnaryOperator<FabricEntityType.Builder.Mob<T>> mobBuilder) {
-			EntityType.Builder<T> builder = EntityType.Builder.create((type, world) -> null, SpawnGroup.MISC);
+		static <T extends MobEntity> EntityType.Builder<T> createMob(EntityType.EntityFactory<T> factory, SpawnGroup spawnGroup, UnaryOperator<FabricEntityType.Builder.Mob<T>> mobBuilder) {
+			EntityType.Builder<T> builder = EntityType.Builder.create(factory, spawnGroup);
 			Mob<T> builderImpl = new Mob<>();
 			mobBuilder.apply(builderImpl);
 			((Builder) builder).fabric_setMobEntityBuilder(builderImpl);

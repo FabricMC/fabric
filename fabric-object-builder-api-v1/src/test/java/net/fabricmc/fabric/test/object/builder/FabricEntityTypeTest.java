@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.test.object.builder;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -58,8 +56,8 @@ public class FabricEntityTypeTest {
 
 	@Test
 	void buildLivingEntityType() {
-		EntityType<LivingEntity> type = FabricEntityType.Builder.createLiving(living -> living
-				.defaultAttributes(FabricEntityTypeTest::createAttributes)
+		EntityType<LivingEntity> type = FabricEntityType.Builder.createLiving((t, w) -> null, SpawnGroup.MISC, living -> living
+						.defaultAttributes(FabricEntityTypeTest::createAttributes)
 		).build();
 
 		assertNotNull(type);
@@ -68,7 +66,7 @@ public class FabricEntityTypeTest {
 
 	@Test
 	void buildMobEntityType() {
-		EntityType<MobEntity> type = FabricEntityType.Builder.createMob(mob -> mob
+		EntityType<MobEntity> type = FabricEntityType.Builder.createMob((t, w) -> null, SpawnGroup.MISC, mob -> mob
 				.spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, PigEntity::canMobSpawn)
 		).build();
 

@@ -69,21 +69,8 @@ public interface FabricEntityType {
 		 *
 		 * @return a new living entity type builder
 		 */
-		static <T extends LivingEntity> EntityType.Builder<T> createLiving(UnaryOperator<Living<T>> livingBuilder) {
-			return FabricEntityTypeImpl.Builder.createLiving(livingBuilder);
-		}
-
-		/**
-		 * Creates an entity type builder for a living entity.
-		 *
-		 * <p>This entity's spawn group will automatically be set to {@link SpawnGroup#MISC}.
-		 *
-		 * @param <T> the type of entity
-		 *
-		 * @return a new living entity type builder
-		 */
-		static <T extends LivingEntity> EntityType.Builder<T> createLiving() {
-			return FabricEntityTypeImpl.Builder.createLiving(UnaryOperator.identity());
+		static <T extends LivingEntity> EntityType.Builder<T> createLiving(EntityType.EntityFactory<T> factory, SpawnGroup spawnGroup, UnaryOperator<Living<T>> livingBuilder) {
+			return FabricEntityTypeImpl.Builder.createLiving(factory, spawnGroup, livingBuilder);
 		}
 
 		/**
@@ -94,23 +81,12 @@ public interface FabricEntityType {
 		 *
 		 * @return a new mob entity type builder
 		 */
-		static <T extends MobEntity> EntityType.Builder<T> createMob(UnaryOperator<Mob<T>> mobBuilder) {
-			return FabricEntityTypeImpl.Builder.createMob(mobBuilder);
+		static <T extends MobEntity> EntityType.Builder<T> createMob(EntityType.EntityFactory<T> factory, SpawnGroup spawnGroup, UnaryOperator<Mob<T>> mobBuilder) {
+			return FabricEntityTypeImpl.Builder.createMob(factory, spawnGroup, mobBuilder);
 		}
 
 		/**
-		 * Creates an entity type builder for a mob entity.
-		 *
-		 * @param <T> the type of entity
-		 *
-		 * @return a new mob entity type builder
-		 */
-		static <T extends MobEntity> EntityType.Builder<T> createMob() {
-			return FabricEntityTypeImpl.Builder.createMob(UnaryOperator.identity());
-		}
-
-		/**
-		 * A builder for additional properties of a living entity, use via {@link #createLiving(UnaryOperator)}.
+		 * A builder for additional properties of a living entity, use via {@link #createLiving(EntityType.EntityFactory, SpawnGroup, UnaryOperator)}.
 		 * @param <T> the type of living entity
 		 */
 		interface Living<T extends LivingEntity> {
@@ -134,7 +110,7 @@ public interface FabricEntityType {
 		}
 
 		/**
-		 * A builder for additional properties of a mob entity, use via {@link #createMob(UnaryOperator)}.
+		 * A builder for additional properties of a mob entity, use via {@link #createMob(EntityType.EntityFactory, SpawnGroup, UnaryOperator)}.
 		 * @param <T> the type of mob entity
 		 */
 		interface Mob<T extends MobEntity> {
