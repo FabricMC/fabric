@@ -115,4 +115,16 @@ public interface BiomeSelectionContext {
 	 * {@return true if this biome is in the given {@link TagKey}}.
 	 */
 	boolean hasTag(TagKey<Biome> tag);
+
+	/**
+	 * {@return true if this biome is in any of the given {@link TagKey}s}.
+	 */
+	default boolean hasTag(TagKey<Biome>... tags) {
+		for (TagKey<Biome> tag : tags) {
+			if (hasTag(tag)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
