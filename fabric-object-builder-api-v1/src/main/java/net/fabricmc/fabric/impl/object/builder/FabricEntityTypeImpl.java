@@ -57,7 +57,7 @@ public interface FabricEntityTypeImpl {
 			return builder;
 		}
 
-		final class Living<T extends LivingEntity> implements FabricEntityType.Builder.Living<T> {
+		sealed class Living<T extends LivingEntity> implements FabricEntityType.Builder.Living<T> permits Mob {
 			@Nullable
 			private Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder;
 
@@ -75,7 +75,7 @@ public interface FabricEntityTypeImpl {
 			}
 		}
 
-		final class Mob<T extends MobEntity> implements FabricEntityType.Builder.Mob<T> {
+		final class Mob<T extends MobEntity> extends Living<T> implements FabricEntityType.Builder.Mob<T> {
 			private SpawnRestriction.Location restrictionLocation;
 			private Heightmap.Type restrictionHeightmap;
 			private SpawnRestriction.SpawnPredicate<T> spawnPredicate;
@@ -88,7 +88,15 @@ public interface FabricEntityTypeImpl {
 				return this;
 			}
 
+			@Override
+			public FabricEntityType.Builder.Mob<T> defaultAttributes(Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder) {
+				super.defaultAttributes(defaultAttributeBuilder);
+				return this;
+			}
+
 			public void onBuild(EntityType<T> type) {
+				super.onBuild(type);
+
 				if (this.spawnPredicate != null) {
 					SpawnRestriction.register(type, this.restrictionLocation, this.restrictionHeightmap, this.spawnPredicate);
 				}

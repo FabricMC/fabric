@@ -93,16 +93,6 @@ public interface FabricEntityType {
 			/**
 			 * Sets the default attributes for a type of living entity.
 			 *
-			 * <p>This can be used in a fashion similar to this:
-			 * <blockquote><pre>
-			 * FabricEntityTypeBuilder.createLiving()
-			 * 	.spawnGroup(SpawnGroup.CREATURE)
-			 * 	.entityFactory(MyCreature::new)
-			 * 	.defaultAttributes(LivingEntity::createLivingAttributes)
-			 * 	...
-			 * 	.build();
-			 * </pre></blockquote>
-			 *
 			 * @param defaultAttributeBuilder a function to generate the default attribute builder from the entity type
 			 * @return this builder for chaining
 			 */
@@ -113,7 +103,7 @@ public interface FabricEntityType {
 		 * A builder for additional properties of a mob entity, use via {@link #createMob(EntityType.EntityFactory, SpawnGroup, UnaryOperator)}.
 		 * @param <T> the type of mob entity
 		 */
-		interface Mob<T extends MobEntity> {
+		interface Mob<T extends MobEntity> extends Living<T> {
 			/**
 			 * Registers a spawn restriction for this entity.
 			 *
@@ -122,6 +112,15 @@ public interface FabricEntityType {
 			 * @return this builder for chaining.
 			 */
 			Mob<T> spawnRestriction(SpawnRestriction.Location location, Heightmap.Type heightmap, SpawnRestriction.SpawnPredicate<T> spawnPredicate);
+
+			/**
+			 * Sets the default attributes for a type of mob entity.
+			 *
+			 * @param defaultAttributeBuilder a function to generate the default attribute builder from the entity type
+			 * @return this builder for chaining
+			 */
+			@Override
+			Mob<T> defaultAttributes(Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder);
 		}
 	}
 }

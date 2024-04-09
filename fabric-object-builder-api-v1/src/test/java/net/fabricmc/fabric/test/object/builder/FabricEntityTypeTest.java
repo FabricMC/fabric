@@ -68,10 +68,12 @@ public class FabricEntityTypeTest {
 	void buildMobEntityType() {
 		EntityType<MobEntity> type = FabricEntityType.Builder.createMob((t, w) -> null, SpawnGroup.MISC, mob -> mob
 				.spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, PigEntity::canMobSpawn)
+				.defaultAttributes(FabricEntityTypeTest::createAttributes)
 		).build();
 
 		assertNotNull(type);
 		assertEquals(SpawnRestriction.Location.ON_GROUND, SpawnRestriction.getLocation(type));
+		assertNotNull(DefaultAttributeRegistry.get(type));
 	}
 
 	private static DefaultAttributeContainer.Builder createAttributes() {
