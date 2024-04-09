@@ -80,51 +80,107 @@ public final class ResourceConditions {
 
 	/**
 	 * A condition that passes if {@code condition} does not pass. Has ID {@code fabric:not} and
-	 * takes a sole field, {@code value}, which is a resource condition.
+	 * takes one field, {@code value}, which is a resource condition.
 	 */
 	public static ResourceCondition not(ResourceCondition condition) {
 		return new NotResourceCondition(condition);
 	}
 
+	/**
+	 * A condition that passes if each of the {@code conditions} passes. Has ID {@code fabric:and}
+	 * and takes one field, {@code values}, which is a list of resource conditions.
+	 * If there are no conditions to check, it always passes.
+	 */
 	public static ResourceCondition and(ResourceCondition... conditions) {
 		return new AndResourceCondition(List.of(conditions));
 	}
 
+	/**
+	 * A condition that passes if any of the {@code conditions} passes. Has ID {@code fabric:or}
+	 * and takes one field, {@code values}, which is a list of resource conditions.
+	 * If there are no conditions to check, it always fails.
+	 */
 	public static ResourceCondition or(ResourceCondition... conditions) {
 		return new OrResourceCondition(List.of(conditions));
 	}
 
+	/**
+	 * A condition that passes if each of the specified {@code modIds} are loaded. Has ID
+	 * {@code all_mods_loaded} and takes one field, {@code values}, which is a list of strings indicating
+	 * mod IDs. If there are no IDs to check, it always passes.
+	 */
 	public static ResourceCondition allModsLoaded(String... modIds) {
 		return new AllModsLoadedResourceCondition(List.of(modIds));
 	}
 
+	/**
+	 * A condition that passes if any of the specified {@code modIds} are loaded. Has ID
+	 * {@code any_mods_loaded} and takes one field, {@code values}, which is a list of strings indicating
+	 * mod IDs. If there are no IDs to check, it always fails.
+	 */
 	public static ResourceCondition anyModsLoaded(String... modIds) {
 		return new AnyModsLoadedResourceCondition(List.of(modIds));
 	}
 
+	/**
+	 * A condition that passes if each of the {@code tags} exist. This does not check if those tags have
+	 * any entries. Has ID {@code tags_populated} and takes two fields: {@code registry}, which is the ID
+	 * of the registry the tag is for, and {@code values}, which is a list of the tag IDs to check.
+	 * If there are no IDs to check, it always passes, including in cases where a nonexistent registry is
+	 * specified.
+	 *
+	 * @implNote Because tags are loaded after loot tables (and predicates/item modifiers), these resources
+	 * do not support this condition. In those cases, this condition logs a warning and always fails.
+	 * @param <T> the type of the tag values
+	 */
 	@SafeVarargs
 	public static <T> ResourceCondition tagsPopulated(TagKey<T>... tags) {
 		return new TagsPopulatedResourceCondition(tags);
 	}
 
+	/**
+	 * @see #tagsPopulated(TagKey[])
+	 * @param <T> the type of the tag values
+	 */
 	@SafeVarargs
 	public static <T> ResourceCondition tagsPopulated(RegistryKey<? extends Registry<T>> registry, TagKey<T>... tags) {
 		return new TagsPopulatedResourceCondition(registry.getValue(), tags);
 	}
 
+	/**
+	 * A condition that passes if each of the {@code features} are enabled. Has ID {@code features_enabled}
+	 * and takes one field, {@code features}, which is a list of the feature IDs. If there are no IDs to
+	 * check, it always passes. If an unknown feature is specified, it always fails.
+	 */
 	public static ResourceCondition featuresEnabled(Identifier... features) {
 		return new FeaturesEnabledResourceCondition(features);
 	}
 
+	/**
+	 * @see #featuresEnabled(Identifier...)
+	 */
 	public static ResourceCondition featuresEnabled(FeatureFlag... features) {
 		return new FeaturesEnabledResourceCondition(features);
 	}
 
+	/**
+	 * A condition that passes if each of the {@code entries} exist. The entries may be from static or
+	 * dynamic registries. Has ID {@code registry_contains} and takes two fields: {@code registry}, which
+	 * is the ID of the registry, and {@code values}, which is a list of IDs to check.
+	 * If there are no IDs to check, it always passes, including in cases where a nonexistent registry is
+	 * specified.
+	 *
+	 * @param <T> the type of the tag values
+	 */
 	@SafeVarargs
 	public static <T> ResourceCondition registryContains(RegistryKey<T>... entries) {
 		return new RegistryContainsResourceCondition(entries);
 	}
 
+	/**
+	 * @see #registryContains(RegistryKey[])
+	 * @param <T> the type of the tag values
+	 */
 	public static <T> ResourceCondition registryContains(RegistryKey<? extends Registry<T>> registry, Identifier... entries) {
 		return new RegistryContainsResourceCondition(registry.getValue(), entries);
 	}

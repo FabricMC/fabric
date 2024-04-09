@@ -16,10 +16,13 @@
 
 package net.fabricmc.fabric.test.resource.conditions;
 
+import java.util.stream.Collectors;
+
 import com.mojang.serialization.JsonOps;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -38,6 +41,7 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
+import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 public class DefaultResourceConditionsTest {
 	private static final String TESTMOD_ID = "fabric-resource-conditions-api-v1-testmod";
@@ -163,6 +167,14 @@ public class DefaultResourceConditionsTest {
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void tagsPopulated(TestContext context) {
+		// We need to set the tags ourselves as it is cleared outside the resource loading context.
+		ResourceConditionsImpl.LOADED_TAGS.set(
+				context.getWorld().getRegistryManager().streamAllRegistries().collect(Collectors.toMap(
+						DynamicRegistryManager.Entry::key,
+						e -> e.value().streamTags().map(TagKey::id).collect(Collectors.toUnmodifiableSet())
+				))
+		);
+
 		// Static registry
 		ResourceCondition dirt = ResourceConditions.tagsPopulated(RegistryKeys.BLOCK, BlockTags.DIRT);
 		ResourceCondition dirtAndUnknownBlock = ResourceConditions.tagsPopulated(RegistryKeys.BLOCK, BlockTags.DIRT, TagKey.of(RegistryKeys.BLOCK, UNKNOWN_ENTRY_ID));

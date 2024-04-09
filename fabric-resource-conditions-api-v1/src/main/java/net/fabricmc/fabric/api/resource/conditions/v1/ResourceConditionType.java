@@ -23,16 +23,36 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Nullables;
 
+/**
+ * A type of resource conditions.
+ * @param <T> the type of {@link ResourceCondition}
+ */
 public interface ResourceConditionType<T extends ResourceCondition> {
+	/**
+	 * A codec used to serialize the condition type.
+	 */
 	Codec<ResourceConditionType<?>> TYPE_CODEC = Identifier.CODEC.comapFlatMap(id ->
 					Nullables.mapOrElseGet(ResourceConditions.getConditionType(id), DataResult::success, () -> DataResult.error(() -> "Unknown resource condition key: "+ id)),
 					ResourceConditionType::id
 	);
 
+	/**
+	 * @return the condition's ID
+	 */
 	Identifier id();
 
+	/**
+	 * @return the condition's codec
+	 */
 	MapCodec<T> codec();
 
+	/**
+	 * Creates a resource condition type. The returned value needs to be registered with {@link ResourceConditions#register}.
+	 * @param id the ID of the condition
+	 * @param codec the codec used to serialize the condition
+	 * @param <T> the type of the resource condition
+	 * @return the condition type to register
+	 */
 	static <T extends ResourceCondition> ResourceConditionType<T> create(Identifier id, MapCodec<T> codec) {
 		return new ResourceConditionType<>() {
 			@Override

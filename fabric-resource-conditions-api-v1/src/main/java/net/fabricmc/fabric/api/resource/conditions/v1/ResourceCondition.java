@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.registry.RegistryWrapper;
 
 /**
- * A resource condition. To create a custom condition, implement this interface,
+ * A resource condition. To create a custom condition type, implement this interface,
  * call {@link ResourceConditionType#create} and create the type, then register
  * via {@link ResourceConditions#register}.
  */
