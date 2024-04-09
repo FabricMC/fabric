@@ -51,6 +51,9 @@ public interface ResourceCondition {
 	static void addConditions(JsonObject baseObject, ResourceCondition... conditions) {
 		if (baseObject.has(ResourceConditions.CONDITIONS_KEY)) {
 			throw new IllegalArgumentException("Object already has a condition entry: " + baseObject);
+		} else if (conditions == null || conditions.length == 0) {
+			// Datagen might pass null conditions.
+			return;
 		}
 
 		baseObject.add(ResourceConditions.CONDITIONS_KEY, LIST_CODEC.encodeStart(JsonOps.INSTANCE, Arrays.asList(conditions)).getOrThrow());
