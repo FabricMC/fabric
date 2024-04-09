@@ -106,13 +106,8 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 				list.add(DataProvider.writeToPath(writer, recipeJson, recipesPathResolver.resolveJson(identifier)));
 
 				if (advancement != null) {
-<<<<<<< HEAD
-					JsonObject advancementJson = Util.getResult(Advancement.CODEC.encodeStart(registryOps, advancement.value()), IllegalStateException::new).getAsJsonObject();
-					ResourceCondition.addConditions(advancementJson, conditions);
-=======
 					JsonObject advancementJson = Advancement.CODEC.encodeStart(registryOps, advancement.value()).getOrThrow(IllegalStateException::new).getAsJsonObject();
-					ConditionJsonProvider.write(advancementJson, conditions);
->>>>>>> 9d8968f5a331964b552f22556336b53d99590253
+					ResourceCondition.addConditions(advancementJson, conditions);
 					list.add(DataProvider.writeToPath(writer, advancementJson, advancementsPathResolver.resolveJson(getRecipeIdentifier(advancement.id()))));
 				}
 			}
