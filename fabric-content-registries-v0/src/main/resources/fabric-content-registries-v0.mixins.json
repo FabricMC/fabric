@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AxeItemAccessor",
+    "BrewingRecipeRegistryBuilderMixin",
     "PathContextMixin",
     "FarmerWorkTaskAccessor",
     "GiveGiftsToHeroTaskAccessor",
