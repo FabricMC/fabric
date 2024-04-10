@@ -60,7 +60,6 @@ import net.fabricmc.fabric.api.registry.SculkSensorFrequencyRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
 import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
-import net.fabricmc.fabric.test.mixin.content.registry.BrewingRecipeRegistryAccessor;
 
 public final class ContentRegistryTest implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);

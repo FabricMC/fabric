@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.item.TooltipType;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
@@ -41,7 +41,7 @@ public interface FluidVariantRenderHandler {
 	 * <p>The name of the fluid, and its identifier if the tooltip context is advanced, should not be appended.
 	 * They are already added by {@link FluidVariantRendering#getTooltip}.
 	 */
-	default void appendTooltip(FluidVariant fluidVariant, List<Text> tooltip, TooltipContext tooltipContext) {
+	default void appendTooltip(FluidVariant fluidVariant, List<Text> tooltip, TooltipType tooltipType) {
 	}
 
 	/**

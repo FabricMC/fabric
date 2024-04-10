@@ -46,7 +46,7 @@ public final class FabricBrewingRecipeRegistry {
 		Objects.requireNonNull(ingredient, "Ingredient cannot be null!");
 		Objects.requireNonNull(output, "Output cannot be null!");
 
-		BrewingRecipeRegistry.ITEM_RECIPES.add(new BrewingRecipeRegistry.Recipe<>(input.getRegistryEntry(), ingredient, output.getRegistryEntry()));
+		//BrewingRecipeRegistry.ITEM_RECIPES.add(new BrewingRecipeRegistry.Recipe<>(input.getRegistryEntry(), ingredient, output.getRegistryEntry()));
 	}
 
 	/**
@@ -63,6 +63,6 @@ public final class FabricBrewingRecipeRegistry {
 		Objects.requireNonNull(ingredient, "Ingredient cannot be null!");
 		Objects.requireNonNull(output, "Output cannot be null");
 
-		BrewingRecipeRegistry.POTION_RECIPES.add(new BrewingRecipeRegistry.Recipe<>(input, ingredient, output));
+		//BrewingRecipeRegistry.POTION_RECIPES.add(new BrewingRecipeRegistry.Recipe<>(input, ingredient, output));
 	}
 }
