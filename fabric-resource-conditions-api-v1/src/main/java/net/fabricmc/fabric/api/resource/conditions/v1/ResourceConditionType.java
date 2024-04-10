@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.resource.conditions.v1;
 
+import java.util.Objects;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
@@ -54,6 +56,9 @@ public interface ResourceConditionType<T extends ResourceCondition> {
 	 * @return the condition type to register
 	 */
 	static <T extends ResourceCondition> ResourceConditionType<T> create(Identifier id, MapCodec<T> codec) {
+		Objects.requireNonNull(id, "id cannot be null");
+		Objects.requireNonNull(codec, "codec cannot be null");
+
 		return new ResourceConditionType<>() {
 			@Override
 			public Identifier id() {

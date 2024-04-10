@@ -65,6 +65,7 @@ import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.Registerable;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryBuilder;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
@@ -165,7 +166,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND_ORE, 4).input(Items.ITEM_FRAME)
 					.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
-					.offerTo(withConditions(exporter, ResourceConditions.registryContains(RegistryKeys.ITEM, new Identifier("diamond_block"))));
+					.offerTo(withConditions(exporter, ResourceConditions.registryContains(RegistryKeys.ITEM, Registries.ITEM.getId(Items.DIAMOND_BLOCK))));
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.EMERALD, 4).input(Items.ITEM_FRAME, 2)
 					.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
 					.offerTo(withConditions(exporter, ResourceConditions.registryContains(BiomeKeys.PLAINS, BiomeKeys.BADLANDS)));
