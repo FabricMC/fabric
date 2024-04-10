@@ -50,7 +50,6 @@ public class DataPackContentsMixin {
 			at = @At("HEAD")
 	)
 	private static void hookReload(ResourceManager manager, CombinedDynamicRegistries<ServerDynamicRegistryType> combinedDynamicRegistries, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, int functionPermissionLevel, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<DataPackContents>> cir) {
-		System.out.println("Enabling " + FeatureFlags.FEATURE_MANAGER.toId(enabledFeatures));
 		ResourceConditionsImpl.currentFeatures = enabledFeatures;
 	}
 }
