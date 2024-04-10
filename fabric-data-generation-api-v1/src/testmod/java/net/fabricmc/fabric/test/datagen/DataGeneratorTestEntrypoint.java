@@ -37,8 +37,6 @@ import java.util.function.Consumer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
-
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.AdvancementFrame;
@@ -99,6 +97,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {

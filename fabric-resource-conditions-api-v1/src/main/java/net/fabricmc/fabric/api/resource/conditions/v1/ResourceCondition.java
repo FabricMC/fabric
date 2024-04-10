@@ -16,12 +16,9 @@
 
 package net.fabricmc.fabric.api.resource.conditions.v1;
 
-import java.util.Arrays;
 import java.util.List;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.registry.RegistryWrapper;
@@ -41,23 +38,6 @@ public interface ResourceCondition {
 	 * A codec for a list of conditions.
 	 */
 	Codec<List<ResourceCondition>> LIST_CODEC = CODEC.listOf();
-
-	/**
-	 * Adds {@code conditions} to {@code baseObject}.
-	 * @param baseObject the base JSON object to which the conditions are inserted
-	 * @param conditions the conditions to insert
-	 * @throws IllegalArgumentException if the object already has conditions
-	 */
-	static void addConditions(JsonObject baseObject, ResourceCondition... conditions) {
-		if (baseObject.has(ResourceConditions.CONDITIONS_KEY)) {
-			throw new IllegalArgumentException("Object already has a condition entry: " + baseObject);
-		} else if (conditions == null || conditions.length == 0) {
-			// Datagen might pass null conditions.
-			return;
-		}
-
-		baseObject.add(ResourceConditions.CONDITIONS_KEY, LIST_CODEC.encodeStart(JsonOps.INSTANCE, Arrays.asList(conditions)).getOrThrow());
-	}
 
 	/**
 	 * @return the type of the condition

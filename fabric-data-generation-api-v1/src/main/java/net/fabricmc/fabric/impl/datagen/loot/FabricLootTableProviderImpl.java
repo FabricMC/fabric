@@ -72,7 +72,7 @@ public final class FabricLootTableProviderImpl {
 
 			for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
 				JsonObject tableJson = (JsonObject) LootTable.CODEC.encodeStart(ops, entry.getValue()).getOrThrow(IllegalStateException::new);
-				ResourceCondition.addConditions(tableJson, conditionMap.remove(entry.getKey()));
+				FabricDataGenHelper.addConditions(tableJson, conditionMap.remove(entry.getKey()));
 				futures.add(DataProvider.writeToPath(writer, tableJson, getOutputPath(fabricDataOutput, entry.getKey())));
 			}
 

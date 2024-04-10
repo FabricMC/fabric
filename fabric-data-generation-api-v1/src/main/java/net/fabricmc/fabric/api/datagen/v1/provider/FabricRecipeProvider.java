@@ -101,13 +101,13 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 				RegistryOps<JsonElement> registryOps = wrapperLookup.getOps(JsonOps.INSTANCE);
 				JsonObject recipeJson = Recipe.CODEC.encodeStart(registryOps, recipe).getOrThrow(IllegalStateException::new).getAsJsonObject();
 				ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(recipe);
-				ResourceCondition.addConditions(recipeJson, conditions);
+				FabricDataGenHelper.addConditions(recipeJson, conditions);
 
 				list.add(DataProvider.writeToPath(writer, recipeJson, recipesPathResolver.resolveJson(identifier)));
 
 				if (advancement != null) {
 					JsonObject advancementJson = Advancement.CODEC.encodeStart(registryOps, advancement.value()).getOrThrow(IllegalStateException::new).getAsJsonObject();
-					ResourceCondition.addConditions(advancementJson, conditions);
+					FabricDataGenHelper.addConditions(advancementJson, conditions);
 					list.add(DataProvider.writeToPath(writer, advancementJson, advancementsPathResolver.resolveJson(getRecipeIdentifier(advancement.id()))));
 				}
 			}

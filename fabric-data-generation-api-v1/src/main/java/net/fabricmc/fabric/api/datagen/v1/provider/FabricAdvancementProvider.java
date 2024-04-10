@@ -94,7 +94,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 				}
 
 				JsonObject advancementJson = Advancement.CODEC.encodeStart(ops, advancement.value()).getOrThrow(IllegalStateException::new).getAsJsonObject();
-				ResourceCondition.addConditions(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
+				FabricDataGenHelper.addConditions(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
 				futures.add(DataProvider.writeToPath(writer, advancementJson, getOutputPath(advancement)));
 			}
 

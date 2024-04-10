@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.datagen;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -27,7 +28,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.ArrayUtils;
@@ -48,6 +51,7 @@ import net.minecraft.util.Util;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
@@ -224,5 +228,22 @@ public final class FabricDataGenHelper {
 	@Nullable
 	public static ResourceCondition[] consumeConditions(Object object) {
 		return CONDITIONS_MAP.remove(object);
+	}
+
+	/**
+	 * Adds {@code conditions} to {@code baseObject}.
+	 * @param baseObject the base JSON object to which the conditions are inserted
+	 * @param conditions the conditions to insert
+	 * @throws IllegalArgumentException if the object already has conditions
+	 */
+	public static void addConditions(JsonObject baseObject, ResourceCondition... conditions) {
+		if (baseObject.has(ResourceConditions.CONDITIONS_KEY)) {
+			throw new IllegalArgumentException("Object already has a condition entry: " + baseObject);
+		} else if (conditions == null || conditions.length == 0) {
+			// Datagen might pass null conditions.
+			return;
+		}
+
+		baseObject.add(ResourceConditions.CONDITIONS_KEY, ResourceCondition.LIST_CODEC.encodeStart(JsonOps.INSTANCE, Arrays.asList(conditions)).getOrThrow());
 	}
 }
