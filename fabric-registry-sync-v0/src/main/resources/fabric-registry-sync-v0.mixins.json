@@ -14,7 +14,6 @@
     "SaveLoadingMixin",
     "SerializableRegistriesMixin",
     "SimpleRegistryMixin",
-    "StructuresToConfiguredStructuresFixMixin",
     "TagManagerLoaderMixin"
   ],
   "injectors": {

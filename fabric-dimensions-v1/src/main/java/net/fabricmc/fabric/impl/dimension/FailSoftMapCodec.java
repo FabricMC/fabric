@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.dimension;
 
 import java.util.Map;
+import java.util.Optional;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
@@ -65,15 +66,19 @@ public record FailSoftMapCodec<K, V>(Codec<K> keyCodec, Codec<V> elementCodec) i
 				final DataResult<K> k = keyCodec().parse(ops, pair.getFirst());
 				final DataResult<V> v = elementCodec().parse(ops, pair.getSecond());
 
-				k.get().ifRight(kPartialResult -> {
-					LOGGER.error("Failed to decode key {} from {}  {}", k, pair, kPartialResult);
-				});
-				v.get().ifRight(vPartialResult -> {
-					LOGGER.error("Failed to decode value {} from {}  {}", v, pair, vPartialResult);
-				});
+				Optional<K> optionalK = k.result();
+				Optional<V> optionalV = v.result();
 
-				if (k.get().left().isPresent() && v.get().left().isPresent()) {
-					builder.put(k.get().left().get(), v.get().left().get());
+				if (optionalK.isEmpty()) {
+					LOGGER.error("Failed to decode key {} from {}  {}", k, pair, k.resultOrPartial());
+				}
+
+				if (optionalV.isEmpty()) {
+					LOGGER.error("Failed to decode value {} from {}  {}", k, pair, v.resultOrPartial());
+				}
+
+				if (optionalK.isPresent() && optionalV.isPresent()) {
+					builder.put(optionalK.get(), optionalV.get());
 				} else {
 					// ignore failure
 				}

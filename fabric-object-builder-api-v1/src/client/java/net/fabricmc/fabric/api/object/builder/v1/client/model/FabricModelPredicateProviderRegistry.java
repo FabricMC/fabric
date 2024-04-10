@@ -27,7 +27,7 @@ import net.fabricmc.fabric.mixin.object.builder.client.ModelPredicateProviderReg
  * Allows registering model predicate providers for item models.
  *
  * <p>A registered model predicate providers for an item can be retrieved through
- * {@link net.minecraft.client.item.ModelPredicateProviderRegistry#get(Item, Identifier)}.</p>
+ * {@link net.minecraft.client.item.ModelPredicateProviderRegistry#get(net.minecraft.item.ItemStack, Identifier)}.</p>
  *
  * @see net.minecraft.client.item.ModelPredicateProviderRegistry
  * @deprecated Replaced by access wideners for {@link net.minecraft.client.item.ModelPredicateProviderRegistry}

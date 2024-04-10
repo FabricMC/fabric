@@ -84,7 +84,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		// more proper way, this copies all the fields, not just the shallow ones.
 		// Fields are added by field definition order.
 		this.jumpVelocityMultiplier(otherAccessor.getJumpVelocityMultiplier());
-		this.drops(otherAccessor.getLootTableId());
+		this.drops(otherAccessor.getLootTableKey());
 		this.allowsSpawning(otherAccessor.getAllowsSpawningPredicate());
 		this.solidBlock(otherAccessor.getSolidBlockPredicate());
 		this.suffocates(otherAccessor.getSuffocationPredicate());
@@ -409,7 +409,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 
 	@Deprecated
 	public FabricBlockSettings drops(RegistryKey<LootTable> dropTableId) {
-		((AbstractBlockSettingsAccessor) this).setLootTableId(dropTableId);
+		((AbstractBlockSettingsAccessor) this).setLootTableKey(dropTableId);
 		return this;
 	}
 

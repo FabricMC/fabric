@@ -26,8 +26,6 @@ import net.minecraft.item.Items;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.potion.Potions;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
@@ -38,7 +36,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
-import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.util.TriState;
 
@@ -61,7 +58,8 @@ public class CustomDamageTest implements ModInitializer {
 	public void onInitialize() {
 		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "weird_pickaxe"), WEIRD_PICK);
 		FuelRegistry.INSTANCE.add(WEIRD_PICK, 200);
-		FabricBrewingRecipeRegistry.registerPotionRecipe(Potions.WATER, Ingredient.ofItems(WEIRD_PICK), Potions.AWKWARD);
+		// TODO 1.20.5
+		// FabricBrewingRecipeRegistry.registerPotionRecipe(Potions.WATER, Ingredient.ofItems(WEIRD_PICK), Potions.AWKWARD);
 		EnchantmentEvents.ALLOW_ENCHANTING.register(((enchantment, target, enchantingContext) -> {
 			if (target.isOf(Items.DIAMOND_PICKAXE)
 					&& enchantment == Enchantments.SHARPNESS

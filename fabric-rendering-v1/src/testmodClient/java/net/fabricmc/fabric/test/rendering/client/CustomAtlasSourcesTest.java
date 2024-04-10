@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.util.Optional;
 
 import com.mojang.logging.LogUtils;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.slf4j.Logger;
 
@@ -49,7 +49,7 @@ public class CustomAtlasSourcesTest implements ClientModInitializer {
 
 	private static class DoubleAtlasSource implements AtlasSource {
 		private static final Logger LOGGER = LogUtils.getLogger();
-		public static final Codec<DoubleAtlasSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		public static final MapCodec<DoubleAtlasSource> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				Identifier.CODEC.fieldOf("resource").forGetter(source -> source.resource),
 				Identifier.CODEC.fieldOf("sprite").forGetter(source -> source.sprite)
 		).apply(instance, DoubleAtlasSource::new));
