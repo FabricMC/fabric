@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.object.builder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.village.TradeOffer;
+import net.minecraft.village.TradedItem;
 import net.minecraft.village.VillagerProfession;
 
 import net.fabricmc.api.ModInitializer;
@@ -31,22 +32,22 @@ public class VillagerTypeTest2 implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.WEAPONSMITH, 1, factories -> {
-			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.DIAMOND, 5), new ItemStack(Items.NETHERITE_INGOT), 3, 4, 0.15F)));
+			factories.add(new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.DIAMOND, 5), new ItemStack(Items.NETHERITE_INGOT), 3, 4, 0.15F)));
 		});
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, factories -> {
-			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.DIAMOND, 6), new ItemStack(Items.ELYTRA), 3, 4, 0.15F)));
+			factories.add(new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.DIAMOND, 6), new ItemStack(Items.ELYTRA), 3, 4, 0.15F)));
 		});
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, factories -> {
-			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.DIAMOND, 7), new ItemStack(Items.CHAINMAIL_BOOTS), 3, 4, 0.15F)));
+			factories.add(new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.DIAMOND, 7), new ItemStack(Items.CHAINMAIL_BOOTS), 3, 4, 0.15F)));
 		});
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, factories -> {
-			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.DIAMOND, 8), new ItemStack(Items.CHAINMAIL_CHESTPLATE), 3, 4, 0.15F)));
+			factories.add(new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.DIAMOND, 8), new ItemStack(Items.CHAINMAIL_CHESTPLATE), 3, 4, 0.15F)));
 		});
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, factories -> {
-			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.DIAMOND, 9), new ItemStack(Items.CHAINMAIL_HELMET), 3, 4, 0.15F)));
+			factories.add(new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.DIAMOND, 9), new ItemStack(Items.CHAINMAIL_HELMET), 3, 4, 0.15F)));
 		});
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, factories -> {
-			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.DIAMOND, 10), new ItemStack(Items.CHAINMAIL_LEGGINGS), 3, 4, 0.15F)));
+			factories.add(new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.DIAMOND, 10), new ItemStack(Items.CHAINMAIL_LEGGINGS), 3, 4, 0.15F)));
 		});
 	}
 }

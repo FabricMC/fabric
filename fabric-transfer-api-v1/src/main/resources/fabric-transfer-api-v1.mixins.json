@@ -12,7 +12,11 @@
     "FluidMixin",
     "HopperBlockEntityMixin",
     "ItemMixin",
-    "LootableContainerBlockEntityMixin",
+    "JukeboxBlockEntityMixin",
+    "LockableContainerBlockEntityMixin",
     "SimpleInventoryMixin"
-  ]
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

@@ -34,34 +34,45 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockKeys;
+import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.data.DataOutput;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
+import net.minecraft.loot.condition.BlockStatePropertyLootCondition;
+import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.loot.condition.LootConditionTypes;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.Registerable;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryBuilder;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryFixedCodec;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
@@ -69,6 +80,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.event.GameEvent;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
@@ -77,6 +89,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.JsonKeySortOrderCallback;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
@@ -84,14 +97,13 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients;
-import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
-import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
-	private static final Logger LOGGER = LoggerFactory.getLogger(DataGeneratorTestEntrypoint.class);
-	private static final ConditionJsonProvider NEVER_LOADED = DefaultResourceConditions.allModsLoaded("a");
-	private static final ConditionJsonProvider ALWAYS_LOADED = DefaultResourceConditions.not(NEVER_LOADED);
+	private static final ResourceCondition ALWAYS_LOADED = ResourceConditions.alwaysTrue();
+	private static final ResourceCondition NEVER_LOADED = ResourceConditions.not(ALWAYS_LOADED);
 
 	@Override
 	public void addJsonKeySortOrders(JsonKeySortOrderCallback callback) {
@@ -110,10 +122,13 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider(ExistingEnglishLangProvider::new);
 		pack.addProvider(JapaneseLangProvider::new);
 		pack.addProvider(TestDynamicRegistryProvider::new);
+		pack.addProvider(TestPredicateProvider::new);
+		pack.addProvider(TestCustomCodecProvider::new);
 
 		TestBlockTagProvider blockTagProvider = pack.addProvider(TestBlockTagProvider::new);
 		pack.addProvider((output, registries) -> new TestItemTagProvider(output, registries, blockTagProvider));
 		pack.addProvider(TestBiomeTagProvider::new);
+		pack.addProvider(TestGameEventTagProvider::new);
 
 		// TODO replace with a client only entrypoint with FMJ 2
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -141,20 +156,20 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestRecipeProvider extends FabricRecipeProvider {
-		private TestRecipeProvider(FabricDataOutput output) {
-			super(output);
+		private TestRecipeProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(output, registriesFuture);
 		}
 
 		@Override
 		public void generate(RecipeExporter exporter) {
 			offerPlanksRecipe2(exporter, SIMPLE_BLOCK, ItemTags.ACACIA_LOGS, 1);
 
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.LEATHER, 4).input(Items.ITEM_FRAME)
+			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND_ORE, 4).input(Items.ITEM_FRAME)
 					.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
-					.offerTo(withConditions(exporter, DefaultResourceConditions.itemsRegistered(Blocks.DIAMOND_BLOCK)));
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.LEATHER_BOOTS, 4).input(Items.ITEM_FRAME, 2)
+					.offerTo(withConditions(exporter, ResourceConditions.registryContains(RegistryKeys.ITEM, Registries.ITEM.getId(Items.DIAMOND_BLOCK))));
+			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.EMERALD, 4).input(Items.ITEM_FRAME, 2)
 					.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
-					.offerTo(withConditions(exporter, DefaultResourceConditions.registryContains(BiomeKeys.PLAINS, BiomeKeys.BADLANDS)));
+					.offerTo(withConditions(exporter, ResourceConditions.registryContains(BiomeKeys.PLAINS, BiomeKeys.BADLANDS)));
 
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));
@@ -174,29 +189,24 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			// - 9 damaged pickaxes should not match.
 			// - 9 undamaged pickaxes should match.
 			// - 1 undamaged pickaxe + 8 damaged pickaxes should match (regardless of the position).
-			// - 1 undamaged renamed pickaxe + 8 damaged pickaxes should match (NBT is not strictly matched here).
+			// - 1 undamaged renamed pickaxe + 8 damaged pickaxes should match (components are not strictly matched here).
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND_BLOCK)
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
-					.input(DefaultCustomIngredients.nbt(new ItemStack(Items.DIAMOND_PICKAXE), false))
+					.input(DefaultCustomIngredients.components(
+							Ingredient.ofItems(Items.DIAMOND_PICKAXE),
+							ComponentChanges.builder()
+									.add(DataComponentTypes.DAMAGE, 0)
+									.build()
+							)
+					)
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.criterion("has_pickaxe", conditionsFromItem(Items.DIAMOND_PICKAXE))
-					.offerTo(exporter);
-
-			// Test strict NBT
-			// To test: try renaming an apple to "Golden Apple" in creative with an anvil.
-			// That should match the recipe and give a golden apple. Any other NBT should not match.
-			ItemStack appleWithGoldenName = new ItemStack(Items.APPLE);
-			appleWithGoldenName.setCustomName(Text.literal("Golden Apple"));
-			appleWithGoldenName.setRepairCost(0);
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLDEN_APPLE)
-					.input(DefaultCustomIngredients.nbt(appleWithGoldenName, true))
-					.criterion("has_apple", conditionsFromItem(Items.APPLE))
 					.offerTo(exporter);
 
 			// Test AND
@@ -229,12 +239,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class ExistingEnglishLangProvider extends FabricLanguageProvider {
-		private ExistingEnglishLangProvider(FabricDataOutput output) {
-			super(output);
+		private ExistingEnglishLangProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(output, registriesFuture);
 		}
 
 		@Override
-		public void generateTranslations(TranslationBuilder translationBuilder) {
+		public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, TranslationBuilder translationBuilder) {
 			translationBuilder.add(SIMPLE_BLOCK, "Simple Block");
 			translationBuilder.add(new Identifier(MOD_ID, "identifier_test"), "Identifier Test");
 			translationBuilder.add(EntityType.ALLAY, "Allay");
@@ -261,12 +271,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class JapaneseLangProvider extends FabricLanguageProvider {
-		private JapaneseLangProvider(FabricDataOutput output) {
-			super(output, "ja_jp");
+		private JapaneseLangProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(output, "ja_jp", registriesFuture);
 		}
 
 		@Override
-		public void generateTranslations(TranslationBuilder translationBuilder) {
+		public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, TranslationBuilder translationBuilder) {
 			translationBuilder.add(SIMPLE_BLOCK, "シンプルブロック");
 			translationBuilder.add(SIMPLE_ITEM_GROUP, "データ生成項目");
 			translationBuilder.add("this.is.a.test", "こんにちは");
@@ -330,13 +340,25 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestAdvancementProvider extends FabricAdvancementProvider {
-		private TestAdvancementProvider(FabricDataOutput output) {
-			super(output);
+	private static class TestGameEventTagProvider extends FabricTagProvider<GameEvent> {
+		private TestGameEventTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(output, RegistryKeys.GAME_EVENT, registriesFuture);
 		}
 
 		@Override
-		public void generateAdvancement(Consumer<AdvancementEntry> consumer) {
+		protected void configure(RegistryWrapper.WrapperLookup registries) {
+			getOrCreateTagBuilder(TagKey.of(RegistryKeys.GAME_EVENT, new Identifier(MOD_ID, "game_event_tag_test")))
+					.add(GameEvent.SHRIEK.registryKey());
+		}
+	}
+
+	private static class TestAdvancementProvider extends FabricAdvancementProvider {
+		private TestAdvancementProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+			super(output, registryLookup);
+		}
+
+		@Override
+		public void generateAdvancement(RegistryWrapper.WrapperLookup registryLookup, Consumer<AdvancementEntry> consumer) {
 			AdvancementEntry root = Advancement.Builder.create()
 					.display(
 							SIMPLE_BLOCK,
@@ -361,14 +383,14 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestBlockLootTableProvider extends FabricBlockLootTableProvider {
-		private TestBlockLootTableProvider(FabricDataOutput output) {
-			super(output);
+		private TestBlockLootTableProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+			super(output, registryLookup);
 		}
 
 		@Override
 		public void generate() {
 			// Same condition twice to test recursive condition adding
-			withConditions(ALWAYS_LOADED).withConditions(DefaultResourceConditions.not(NEVER_LOADED)).addDrop(SIMPLE_BLOCK);
+			withConditions(ALWAYS_LOADED).withConditions(ResourceConditions.not(NEVER_LOADED)).addDrop(SIMPLE_BLOCK);
 			addDrop(BLOCK_WITHOUT_ITEM, drops(SIMPLE_BLOCK));
 
 			excludeFromStrictValidation(BLOCK_WITHOUT_LOOT_TABLE);
@@ -376,12 +398,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestBarterLootTableProvider extends SimpleFabricLootTableProvider {
-		private TestBarterLootTableProvider(FabricDataOutput output) {
-			super(output, LootContextTypes.BARTER);
+		private TestBarterLootTableProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+			super(output, registryLookup, LootContextTypes.BARTER);
 		}
 
 		@Override
-		public void accept(BiConsumer<Identifier, LootTable.Builder> consumer) {
+		public void accept(RegistryWrapper.WrapperLookup registryLookup, BiConsumer<RegistryKey<LootTable>, LootTable.Builder> consumer) {
 			withConditions(consumer, ALWAYS_LOADED).accept(
 					LootTables.PIGLIN_BARTERING_GAMEPLAY,
 					LootTable.builder().pool(
@@ -408,6 +430,47 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public String getName() {
 			return "Test Dynamic Registry";
+		}
+	}
+
+	private static class TestPredicateProvider extends FabricCodecDataProvider<LootCondition> {
+		private TestPredicateProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, "predicates", LootConditionTypes.CODEC);
+		}
+
+		@Override
+		protected void configure(BiConsumer<Identifier, LootCondition> provider, RegistryWrapper.WrapperLookup lookup) {
+			RegistryEntryLookup<Block> blocks = lookup.createRegistryLookup().getOrThrow(RegistryKeys.BLOCK);
+			provider.accept(new Identifier(MOD_ID, "predicate_test"), BlockStatePropertyLootCondition.builder(
+					blocks.getOrThrow(BlockKeys.MELON).value()).build()); // Pretend this actually does something and we cannot access the blocks directly
+		}
+
+		@Override
+		public String getName() {
+			return "Predicates";
+		}
+	}
+
+	private static class TestCustomCodecProvider extends FabricCodecDataProvider<TestCustomCodecProvider.Entry> {
+		private TestCustomCodecProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, "biome_entry", Entry.CODEC);
+		}
+
+		@Override
+		protected void configure(BiConsumer<Identifier, Entry> provider, RegistryWrapper.WrapperLookup lookup) {
+			RegistryEntryLookup<Biome> biomes = lookup.createRegistryLookup().getOrThrow(RegistryKeys.BIOME);
+			provider.accept(new Identifier(MOD_ID, "custom_codec_test"), new Entry(biomes.getOrThrow(BiomeKeys.PLAINS)));
+		}
+
+		@Override
+		public String getName() {
+			return "Codec Test Using Dynamic Registry";
+		}
+
+		private record Entry(RegistryEntry<Biome> biome) {
+			private static final Codec<Entry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+					RegistryFixedCodec.of(RegistryKeys.BIOME).fieldOf("biome").forGetter(Entry::biome)
+			).apply(instance, Entry::new));
 		}
 	}
 }

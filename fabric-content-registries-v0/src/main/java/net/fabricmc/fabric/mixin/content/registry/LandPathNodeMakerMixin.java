@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.mixin.content.registry;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.pathing.LandPathNodeMaker;
@@ -36,24 +36,12 @@ public class LandPathNodeMakerMixin {
 	/**
 	 * Overrides the node type for the specified position, if the position is a direct target in a path.
 	 */
-	@Inject(method = "getCommonNodeType", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/BlockView;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-	private static void getCommonNodeType(BlockView world, BlockPos pos, CallbackInfoReturnable<PathNodeType> cir, BlockState state) {
+	@Inject(method = "getCommonNodeType", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;"), cancellable = true)
+	private static void getCommonNodeType(BlockView world, BlockPos pos, CallbackInfoReturnable<PathNodeType> cir, @Local BlockState state) {
 		PathNodeType nodeType = LandPathNodeTypesRegistry.getPathNodeType(state, world, pos, false);
 
 		if (nodeType != null) {
 			cir.setReturnValue(nodeType);
-		}
-	}
-
-	/**
-	 * Overrides the node type for the specified position, if the position is found as neighbor block in a path.
-	 */
-	@Inject(method = "getNodeTypeFromNeighbors", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/BlockView;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-	private static void getNodeTypeFromNeighbors(BlockView world, BlockPos.Mutable pos, PathNodeType nodeType, CallbackInfoReturnable<PathNodeType> cir, int i, int j, int k, int l, int m, int n, BlockState state) {
-		PathNodeType neighborNodeType = LandPathNodeTypesRegistry.getPathNodeType(state, world, pos, true);
-
-		if (neighborNodeType != null) {
-			cir.setReturnValue(neighborNodeType);
 		}
 	}
 }

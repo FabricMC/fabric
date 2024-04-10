@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.object.builder;
 import java.util.Objects;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 
@@ -46,7 +47,7 @@ public class PersistentStateManagerTest implements ModInitializer {
 		private static final PersistentState.Type<TestState> TYPE = new Type<>(TestState::new, TestState::fromTag, null);
 
 		public static TestState getOrCreate(ServerWorld world) {
-			return world.getPersistentStateManager().getOrCreate(TestState.TYPE, ObjectBuilderTestConstants.id("test_state").toString());
+			return world.getPersistentStateManager().getOrCreate(TestState.TYPE, ObjectBuilderTestConstants.id("test_state").toString().replace(":", "_"));
 		}
 
 		private String value = "";
@@ -68,12 +69,12 @@ public class PersistentStateManagerTest implements ModInitializer {
 		}
 
 		@Override
-		public NbtCompound writeNbt(NbtCompound nbt) {
+		public NbtCompound writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
 			nbt.putString("value", value);
 			return nbt;
 		}
 
-		private static TestState fromTag(NbtCompound tag) {
+		private static TestState fromTag(NbtCompound tag, RegistryWrapper.WrapperLookup wrapperLookup) {
 			return new TestState(tag.getString("value"));
 		}
 	}

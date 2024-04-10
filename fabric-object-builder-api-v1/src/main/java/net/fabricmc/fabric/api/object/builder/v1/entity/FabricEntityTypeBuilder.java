@@ -28,6 +28,7 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.SpawnLocation;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.mob.MobEntity;
@@ -274,7 +275,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	public EntityType<T> build() {
 		// Modded DFU is a dream, currently not possible without screwing it up.
 
-		return new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates, this.requiredFeatures);
+		//TODO 1.20.5, new field
+		return new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, 1, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates, this.requiredFeatures);
 	}
 
 	/**
@@ -422,7 +424,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @param <T> Entity class.
 	 */
 	public static class Mob<T extends MobEntity> extends FabricEntityTypeBuilder.Living<T> {
-		private SpawnRestriction.Location restrictionLocation;
+		private SpawnLocation spawnLocation;
 		private Heightmap.Type restrictionHeightmap;
 		private SpawnRestriction.SpawnPredicate<T> spawnPredicate;
 
@@ -535,8 +537,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		 *
 		 * @return this builder for chaining.
 		 */
-		public FabricEntityTypeBuilder.Mob<T> spawnRestriction(SpawnRestriction.Location location, Heightmap.Type heightmap, SpawnRestriction.SpawnPredicate<T> spawnPredicate) {
-			this.restrictionLocation = Objects.requireNonNull(location, "Location cannot be null.");
+		public FabricEntityTypeBuilder.Mob<T> spawnRestriction(SpawnLocation spawnLocation, Heightmap.Type heightmap, SpawnRestriction.SpawnPredicate<T> spawnPredicate) {
+			this.spawnLocation = Objects.requireNonNull(spawnLocation, "Spawn location cannot be null.");
 			this.restrictionHeightmap = Objects.requireNonNull(heightmap, "Heightmap type cannot be null.");
 			this.spawnPredicate = Objects.requireNonNull(spawnPredicate, "Spawn predicate cannot be null.");
 			return this;
@@ -547,7 +549,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			EntityType<T> type = super.build();
 
 			if (this.spawnPredicate != null) {
-				SpawnRestriction.register(type, this.restrictionLocation, this.restrictionHeightmap, this.spawnPredicate);
+				SpawnRestriction.register(type, this.spawnLocation, this.restrictionHeightmap, this.spawnPredicate);
 			}
 
 			return type;

@@ -32,6 +32,8 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.util.Identifier;
 
@@ -47,10 +49,12 @@ import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
 public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerator implements FabricLootTableProvider {
 	private final FabricDataOutput output;
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
+	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup;
 
-	protected FabricBlockLootTableProvider(FabricDataOutput dataOutput) {
+	protected FabricBlockLootTableProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
 		super(Collections.emptySet(), FeatureFlags.FEATURE_MANAGER.getFeatureSet());
 		this.output = dataOutput;
+		this.registryLookup = registryLookup;
 	}
 
 	/**
@@ -69,17 +73,17 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 	}
 
 	@Override
-	public void accept(BiConsumer<Identifier, LootTable.Builder> biConsumer) {
+	public void accept(RegistryWrapper.WrapperLookup registryLookup, BiConsumer<RegistryKey<LootTable>, LootTable.Builder> biConsumer) {
 		generate();
 
-		for (Map.Entry<Identifier, LootTable.Builder> entry : lootTables.entrySet()) {
-			Identifier identifier = entry.getKey();
+		for (Map.Entry<RegistryKey<LootTable>, LootTable.Builder> entry : lootTables.entrySet()) {
+			RegistryKey<LootTable> registryKey = entry.getKey();
 
-			if (identifier.equals(LootTables.EMPTY)) {
+			if (registryKey == LootTables.EMPTY) {
 				continue;
 			}
 
-			biConsumer.accept(identifier, entry.getValue());
+			biConsumer.accept(registryKey, entry.getValue());
 		}
 
 		if (output.isStrictValidationEnabled()) {
@@ -87,9 +91,9 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 
 			for (Identifier blockId : Registries.BLOCK.getIds()) {
 				if (blockId.getNamespace().equals(output.getModId())) {
-					Identifier blockLootTableId = Registries.BLOCK.get(blockId).getLootTableId();
+					RegistryKey<LootTable> blockLootTableId = Registries.BLOCK.get(blockId).getLootTableKey();
 
-					if (blockLootTableId.getNamespace().equals(output.getModId())) {
+					if (blockLootTableId.getValue().getNamespace().equals(output.getModId())) {
 						if (!lootTables.containsKey(blockLootTableId)) {
 							missing.add(blockId);
 						}
@@ -107,7 +111,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 
 	@Override
 	public CompletableFuture<?> run(DataWriter writer) {
-		return FabricLootTableProviderImpl.run(writer, this, LootContextTypes.BLOCK, output);
+		return FabricLootTableProviderImpl.run(writer, this, LootContextTypes.BLOCK, output, registryLookup);
 	}
 
 	@Override

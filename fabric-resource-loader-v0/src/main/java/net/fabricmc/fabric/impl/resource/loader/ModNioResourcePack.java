@@ -33,6 +33,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -43,8 +45,10 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackInfo;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PathUtil;
 
@@ -59,14 +63,19 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	private static final FileSystem DEFAULT_FS = FileSystems.getDefault();
 
 	private final String id;
-	private final ModMetadata modInfo;
+	private final ModContainer mod;
 	private final List<Path> basePaths;
 	private final ResourceType type;
-	private final AutoCloseable closer;
 	private final ResourcePackActivationType activationType;
 	private final Map<ResourceType, Set<String>> namespaces;
+	private final ResourcePackInfo metadata;
+	/**
+	 * Whether the pack is bundled and loaded by default, as opposed to registered built-in packs.
+	 * @see ModResourcePackUtil#appendModResourcePacks(List, ResourceType, String)
+	 */
+	private final boolean modBundled;
 
-	public static ModNioResourcePack create(String id, ModContainer mod, String subPath, ResourceType type, ResourcePackActivationType activationType) {
+	public static ModNioResourcePack create(String id, ModContainer mod, String subPath, ResourceType type, ResourcePackActivationType activationType, boolean modBundled) {
 		List<Path> rootPaths = mod.getRootPaths();
 		List<Path> paths;
 
@@ -89,19 +98,38 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 
 		if (paths.isEmpty()) return null;
 
-		ModNioResourcePack ret = new ModNioResourcePack(id, mod.getMetadata(), paths, type, null, activationType);
+		String packId = subPath != null && modBundled ? id + "_" + subPath : id;
+		Text displayName = subPath == null
+				? Text.translatable("pack.name.fabricMod", mod.getMetadata().getName())
+				: Text.translatable("pack.name.fabricMod.subPack", mod.getMetadata().getName(), Text.translatable("resourcePack." + subPath + ".name"));
+		ResourcePackInfo metadata = new ResourcePackInfo(
+				packId,
+				displayName,
+				ModResourcePackCreator.RESOURCE_PACK_SOURCE,
+				Optional.empty()
+		);
+		ModNioResourcePack ret = new ModNioResourcePack(packId, mod, paths, type, activationType, modBundled, metadata);
 
 		return ret.getNamespaces(type).isEmpty() ? null : ret;
 	}
 
-	private ModNioResourcePack(String id, ModMetadata modInfo, List<Path> paths, ResourceType type, AutoCloseable closer, ResourcePackActivationType activationType) {
+	private ModNioResourcePack(String id, ModContainer mod, List<Path> paths, ResourceType type, ResourcePackActivationType activationType, boolean modBundled, ResourcePackInfo metadata) {
 		this.id = id;
-		this.modInfo = modInfo;
+		this.mod = mod;
 		this.basePaths = paths;
 		this.type = type;
-		this.closer = closer;
 		this.activationType = activationType;
-		this.namespaces = readNamespaces(paths, modInfo.getId());
+		this.modBundled = modBundled;
+		this.namespaces = readNamespaces(paths, mod.getMetadata().getId());
+		this.metadata = metadata;
+	}
+
+	@Override
+	public ModNioResourcePack createOverlay(String overlay) {
+		// See DirectoryResourcePack.
+		return new ModNioResourcePack(id, mod, basePaths.stream().map(
+				path -> path.resolve(overlay)
+		).toList(), type, activationType, modBundled, metadata);
 	}
 
 	static Map<ResourceType, Set<String>> readNamespaces(List<Path> paths, String modId) {
@@ -188,8 +216,8 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 			return () -> Files.newInputStream(path);
 		}
 
-		if (ModResourcePackUtil.containsDefault(this.modInfo, filename)) {
-			return () -> ModResourcePackUtil.openDefault(this.modInfo, this.type, filename);
+		if (ModResourcePackUtil.containsDefault(filename, this.modBundled)) {
+			return () -> ModResourcePackUtil.openDefault(this.mod, this.type, filename);
 		}
 
 		return null;
@@ -239,7 +267,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 					}
 				});
 			} catch (IOException e) {
-				LOGGER.warn("findResources at " + path + " in namespace " + namespace + ", mod " + modInfo.getId() + " failed!", e);
+				LOGGER.warn("findResources at " + path + " in namespace " + namespace + ", mod " + mod.getMetadata().getId() + " failed!", e);
 			}
 		}
 	}
@@ -251,25 +279,23 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 
 	@Override
 	public <T> T parseMetadata(ResourceMetadataReader<T> metaReader) throws IOException {
-		try (InputStream is = openFile("pack.mcmeta").get()) {
+		try (InputStream is = Objects.requireNonNull(openFile("pack.mcmeta")).get()) {
 			return AbstractFileResourcePack.parseMetadata(metaReader, is);
 		}
 	}
 
 	@Override
+	public ResourcePackInfo getInfo() {
+		return metadata;
+	}
+
+	@Override
 	public void close() {
-		if (closer != null) {
-			try {
-				closer.close();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
 	}
 
 	@Override
 	public ModMetadata getFabricModMetadata() {
-		return modInfo;
+		return mod.getMetadata();
 	}
 
 	public ResourcePackActivationType getActivationType() {
@@ -277,7 +303,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	}
 
 	@Override
-	public String getName() {
+	public String getId() {
 		return id;
 	}
 

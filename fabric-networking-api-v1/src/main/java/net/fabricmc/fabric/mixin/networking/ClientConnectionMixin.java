@@ -21,8 +21,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,9 +30,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.NetworkState;
 import net.minecraft.network.PacketCallbacks;
@@ -45,7 +43,6 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
-import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
 
@@ -61,7 +58,7 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 	public abstract void send(Packet<?> packet, @Nullable PacketCallbacks arg);
 
 	@Unique
-	private Map<NetworkState, Collection<Identifier>> playChannels;
+	private Map<NetworkPhase, Collection<Identifier>> playChannels;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddedFields(NetworkSide side, CallbackInfo ci) {
@@ -89,7 +86,7 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 	}
 
 	@Inject(method = "setPacketListener", at = @At("HEAD"))
-	private void unwatchAddon(PacketListener packetListener, CallbackInfo ci) {
+	private void unwatchAddon(NetworkState<?> state, PacketListener listener, CallbackInfo ci) {
 		if (this.packetListener instanceof NetworkHandlerExtensions oldListener) {
 			oldListener.getAddon().endSession();
 		}
@@ -109,17 +106,8 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 		}
 	}
 
-	@Inject(method = "sendInternal", at = @At(value = "INVOKE", target = "Lio/netty/channel/ChannelFuture;addListener(Lio/netty/util/concurrent/GenericFutureListener;)Lio/netty/channel/ChannelFuture;", remap = false), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-	private void sendInternal(Packet<?> packet, @Nullable PacketCallbacks callbacks, boolean flush, CallbackInfo ci, ChannelFuture channelFuture) {
-		if (callbacks instanceof GenericFutureListenerHolder holder) {
-			channelFuture.addListener(holder.getDelegate());
-			channelFuture.addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
-			ci.cancel();
-		}
-	}
-
 	@Override
-	public Collection<Identifier> getPendingChannelsNames(NetworkState state) {
+	public Collection<Identifier> fabric_getPendingChannelsNames(NetworkPhase state) {
 		return this.playChannels.computeIfAbsent(state, (key) -> Collections.newSetFromMap(new ConcurrentHashMap<>()));
 	}
 }

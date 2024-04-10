@@ -22,6 +22,7 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.data.DataWriter;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.registry.RegistryWrapper;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -32,16 +33,18 @@ import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
  */
 public abstract class SimpleFabricLootTableProvider implements FabricLootTableProvider {
 	protected final FabricDataOutput output;
+	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup;
 	protected final LootContextType lootContextType;
 
-	public SimpleFabricLootTableProvider(FabricDataOutput output, LootContextType lootContextType) {
+	public SimpleFabricLootTableProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup, LootContextType lootContextType) {
 		this.output = output;
+		this.registryLookup = registryLookup;
 		this.lootContextType = lootContextType;
 	}
 
 	@Override
 	public CompletableFuture<?> run(DataWriter writer) {
-		return FabricLootTableProviderImpl.run(writer, this, lootContextType, output);
+		return FabricLootTableProviderImpl.run(writer, this, lootContextType, output, registryLookup);
 	}
 
 	@Override

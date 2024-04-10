@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -33,6 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackInfo;
+import net.minecraft.resource.ResourcePackPosition;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
@@ -74,8 +77,8 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		List<Path> paths = container.getRootPaths();
 		String separator = paths.get(0).getFileSystem().getSeparator();
 		subPath = subPath.replace("/", separator);
-		ModNioResourcePack resourcePack = ModNioResourcePack.create(id.toString(), container, subPath, ResourceType.CLIENT_RESOURCES, activationType);
-		ModNioResourcePack dataPack = ModNioResourcePack.create(id.toString(), container, subPath, ResourceType.SERVER_DATA, activationType);
+		ModNioResourcePack resourcePack = ModNioResourcePack.create(id.toString(), container, subPath, ResourceType.CLIENT_RESOURCES, activationType, false);
+		ModNioResourcePack dataPack = ModNioResourcePack.create(id.toString(), container, subPath, ResourceType.SERVER_DATA, activationType, false);
 		if (resourcePack == null && dataPack == null) return false;
 
 		if (resourcePack != null) {
@@ -112,18 +115,30 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 			// Add the built-in pack only if namespaces for the specified resource type are present.
 			if (!pack.getNamespaces(resourceType).isEmpty()) {
 				// Make the resource pack profile for built-in pack, should never be always enabled.
-				ResourcePackProfile profile = ResourcePackProfile.create(entry.getRight().getName(), entry.getLeft(), pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED, new ResourcePackProfile.PackFactory() {
+				ResourcePackInfo info = new ResourcePackInfo(
+						entry.getRight().getId(),
+						entry.getLeft(),
+						new BuiltinModResourcePackSource(pack.getFabricModMetadata().getName()),
+						Optional.empty()
+				);
+				ResourcePackPosition info2 = new ResourcePackPosition(
+						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,
+						ResourcePackProfile.InsertionPosition.TOP,
+						false
+				);
+
+				ResourcePackProfile profile = ResourcePackProfile.create(info, new ResourcePackProfile.PackFactory() {
 					@Override
-					public ResourcePack open(String name) {
+					public ResourcePack open(ResourcePackInfo var1) {
 						return entry.getRight();
 					}
 
 					@Override
-					public ResourcePack openWithOverlays(String string, ResourcePackProfile.Metadata metadata) {
+					public ResourcePack openWithOverlays(ResourcePackInfo var1, ResourcePackProfile.Metadata metadata) {
 						// Don't support overlays in builtin res packs.
 						return entry.getRight();
 					}
-				}, resourceType, ResourcePackProfile.InsertionPosition.TOP, new BuiltinModResourcePackSource(pack.getFabricModMetadata().getName()));
+				}, resourceType, info2);
 				consumer.accept(profile);
 			}
 		}

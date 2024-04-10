@@ -27,7 +27,7 @@ import net.minecraft.item.ItemStack;
  * <p>The preferred requipment slot of an item stack can be queried using
  * {@link net.minecraft.entity.LivingEntity#getPreferredEquipmentSlot(ItemStack) LivingEntity.getPreferredEquipmentSlot()}.
  *
- * <p>Equipment slot providers can be set with {@link FabricItemSettings#equipmentSlot(EquipmentSlotProvider)}.
+ * <p>Equipment slot providers can be set with {@link FabricItem.Settings#equipmentSlot(EquipmentSlotProvider)}.
  *
  * <p>Note that items extending {@link net.minecraft.item.ArmorItem} don't need to use this
  * as there's {@link net.minecraft.item.ArmorItem#getSlotType()}.

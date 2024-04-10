@@ -10,7 +10,8 @@
   },
   "entrypoints": {
     "fabric-gametest": [
-      "net.fabricmc.fabric.test.resource.conditions.ConditionalResourcesTest"
+      "net.fabricmc.fabric.test.resource.conditions.ConditionalResourcesTest",
+      "net.fabricmc.fabric.test.resource.conditions.DefaultResourceConditionsTest"
     ]
   }
 }

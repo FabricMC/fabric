@@ -18,9 +18,9 @@ package net.fabricmc.fabric.api.recipe.v1.ingredient;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 
-import org.jetbrains.annotations.Nullable;
-
+import net.minecraft.component.ComponentChanges;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
@@ -28,8 +28,9 @@ import net.minecraft.recipe.Ingredient;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AllIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AnyIngredient;
+import net.fabricmc.fabric.impl.recipe.ingredient.builtin.ComponentsIngredient;
+import net.fabricmc.fabric.impl.recipe.ingredient.builtin.CustomDataIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.DifferenceIngredient;
-import net.fabricmc.fabric.impl.recipe.ingredient.builtin.NbtIngredient;
 
 /**
  * Factory methods for the custom ingredients directly provided by Fabric API.
@@ -101,42 +102,89 @@ public final class DefaultCustomIngredients {
 	}
 
 	/**
-	 * Creates an ingredient that wraps another ingredient to also check for stack NBT.
-	 * This check can either be strict (the exact NBT must match) or non-strict aka. partial (the ingredient NBT must be a subset of the stack NBT).
+	 * Creates an ingredient that wraps another ingredient to also check for matching components.
 	 *
-	 * <p>In strict mode, passing a {@code null} {@code nbt} is allowed, and will only match stacks with {@code null} NBT.
-	 * In partial mode, passing a {@code null} {@code nbt} is <strong>not</strong> allowed, as it would always match.
-	 *
-	 * <p>See {@link NbtHelper#matches} for the non-strict matching.
+	 * <p>Use {@link ComponentChanges#builder()} to add or remove components.
+	 * Added components are checked to match on the target stack, either as the default or
+	 * the item stack-specific override.
+	 * Removed components are checked to not exist in the target stack.
+	 * The check is "non-strict"; components that are neither added nor removed are ignored.
 	 *
 	 * <p>The JSON format is as follows:
 	 * <pre>{@code
 	 * {
-	 *    "fabric:type": "fabric:nbt",
-	 *    "base": // base ingredient,
-	 *    "nbt": // NBT tag to match, either in JSON directly or a string representation (default: null),
-	 *    "strict": // whether to use strict matching (default: false)
+	 *     "fabric:type": "fabric:components",
+	 *     "base": // base ingredient,
+	 *     "components": // components to be checked
 	 * }
 	 * }</pre>
 	 *
-	 * @throws IllegalArgumentException if {@code strict} is {@code false} and the NBT is {@code null}
+	 * @throws IllegalArgumentException if there are no components to check
 	 */
-	public static Ingredient nbt(Ingredient base, @Nullable NbtCompound nbt, boolean strict) {
+	public static Ingredient components(Ingredient base, ComponentChanges components) {
 		Objects.requireNonNull(base, "Base ingredient cannot be null");
+		Objects.requireNonNull(components, "Component changes cannot be null");
 
-		return new NbtIngredient(base, nbt, strict).toVanilla();
+		return new ComponentsIngredient(base, components).toVanilla();
 	}
 
 	/**
-	 * Creates an ingredient that matches the passed template stack, including NBT.
+	 * @see #components(Ingredient, ComponentChanges)
+	 */
+	public static Ingredient components(Ingredient base, UnaryOperator<ComponentChanges.Builder> operator) {
+		return components(base, operator.apply(ComponentChanges.builder()).build());
+	}
+
+	/**
+	 * Creates an ingredient that matches the components specified in the passed item stack.
 	 * Note that the count of the stack is ignored.
 	 *
-	 * @see #nbt(Ingredient, NbtCompound, boolean)
+	 * <p>This does not check for the default component of the item stack that remains unchanged.
+	 * For example, an undamaged pickaxe matches any pickaxes (regardless of damage), because having
+	 * zero damage is the default, but a pickaxe with 1 damage would only match another pickaxe
+	 * with 1 damage. To only match the default value, use the other methods and explicitly specify
+	 * the default value.
+	 *
+	 * @see #components(Ingredient, ComponentChanges)
+	 * @throws IllegalArgumentException if {@code stack} has no changed components
 	 */
-	public static Ingredient nbt(ItemStack stack, boolean strict) {
+	public static Ingredient components(ItemStack stack) {
 		Objects.requireNonNull(stack, "Stack cannot be null");
 
-		return nbt(Ingredient.ofItems(stack.getItem()), stack.getNbt(), strict);
+		return components(Ingredient.ofItems(stack.getItem()), stack.getComponentChanges());
+	}
+
+	/**
+	 * Creates an ingredient that wraps another ingredient to also check for stack's {@linkplain
+	 * net.minecraft.component.DataComponentTypes#CUSTOM_DATA custom data}.
+	 * This check is non-strict; the ingredient custom data must be a subset of the stack custom data.
+	 * This is useful for mods that still rely on NBT-based custom data instead of custom components,
+	 * such as those requiring vanilla compatibility or interacting with another data packs.
+	 *
+	 * <p>Passing a {@code null} or empty {@code nbt} is <strong>not</strong> allowed, as it would always match.
+	 * For strict matching, use {@link #components(Ingredient, UnaryOperator)} like this instead:
+	 *
+	 * <pre>{@code
+	 * components(base, builder -> builder.add(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt)));
+	 * // or, to check for absence of custom data:
+	 * components(base, builder -> builder.remove(DataComponentTypes.CUSTOM_DATA));
+	 * }</pre>
+	 *
+	 * <p>See {@link NbtHelper#matches} for how matching works.
+	 *
+	 * <p>The JSON format is as follows:
+	 * <pre>{@code
+	 * {
+	 *    "fabric:type": "fabric:custom_data",
+	 *    "base": // base ingredient,
+	 *    "nbt": // NBT tag to match, either in JSON directly or a string representation
+	 * }
+	 * }</pre>
+	 *
+	 * @throws IllegalArgumentException if {@code nbt} is {@code null} or empty
+	 */
+	public static Ingredient customData(Ingredient base, NbtCompound nbt) {
+		return new CustomDataIngredient(base, nbt).toVanilla();
 	}
 
 	private DefaultCustomIngredients() {

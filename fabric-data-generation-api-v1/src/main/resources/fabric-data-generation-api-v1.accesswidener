@@ -64,7 +64,8 @@ transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGe
 
 ### Generated access wideners below
 
-transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	saveRecipeAdvancement	(Lnet/minecraft/data/DataWriter;Lnet/minecraft/advancement/AdvancementEntry;)Ljava/util/concurrent/CompletableFuture;
+transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	run	(Lnet/minecraft/data/DataWriter;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)Ljava/util/concurrent/CompletableFuture;
+transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	saveRecipeAdvancement	(Lnet/minecraft/data/DataWriter;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;Lnet/minecraft/advancement/AdvancementEntry;)Ljava/util/concurrent/CompletableFuture;
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	generate	(Lnet/minecraft/data/server/recipe/RecipeExporter;)V
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	generateFamilies	(Lnet/minecraft/data/server/recipe/RecipeExporter;Lnet/minecraft/resource/featuretoggle/FeatureSet;)V
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	offerSingleOutputShapelessRecipe	(Lnet/minecraft/data/server/recipe/RecipeExporter;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/item/ItemConvertible;Ljava/lang/String;)V
@@ -307,22 +308,24 @@ transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableG
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	register	(Lnet/minecraft/item/Item;Lnet/minecraft/data/client/Model;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	register	(Lnet/minecraft/item/Item;Ljava/lang/String;Lnet/minecraft/data/client/Model;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	register	(Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;Lnet/minecraft/data/client/Model;)V
+transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	registerWolfArmor	(Lnet/minecraft/item/Item;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	registerCompass	(Lnet/minecraft/item/Item;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	registerClock	(Lnet/minecraft/item/Item;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	uploadArmor	(Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	uploadArmor	(Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	suffixTrim	(Lnet/minecraft/util/Identifier;Ljava/lang/String;)Lnet/minecraft/util/Identifier;
-transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	createArmorJson	(Lnet/minecraft/util/Identifier;Ljava/util/Map;Lnet/minecraft/item/ArmorMaterial;)Lcom/google/gson/JsonObject;
+transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	createArmorJson	(Lnet/minecraft/util/Identifier;Ljava/util/Map;Lnet/minecraft/registry/entry/RegistryEntry;)Lcom/google/gson/JsonObject;
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	registerArmor	(Lnet/minecraft/item/ArmorItem;)V
 transitive-extendable	method	net/minecraft/data/MetadataProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/SnbtProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/client/ModelProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/dev/NbtProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/report/BiomeParametersProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/report/BlockListProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/report/CommandSyntaxProvider	getName	()Ljava/lang/String;
-transitive-extendable	method	net/minecraft/data/report/DynamicRegistriesProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/report/ItemListProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/report/RegistryDumpProvider	getName	()Ljava/lang/String;
-transitive-extendable	method	net/minecraft/data/server/BiomeParametersProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/server/DynamicRegistriesProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/server/advancement/AdvancementProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/server/loottable/LootTableProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/server/recipe/RecipeProvider	getName	()Ljava/lang/String;

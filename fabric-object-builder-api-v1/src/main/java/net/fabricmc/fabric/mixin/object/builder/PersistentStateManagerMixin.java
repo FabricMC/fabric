@@ -16,15 +16,11 @@
 
 package net.fabricmc.fabric.mixin.object.builder;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.PushbackInputStream;
-
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.mojang.datafixers.DataFixer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
@@ -35,10 +31,12 @@ class PersistentStateManagerMixin {
 	/**
 	 * Handle mods passing a null DataFixTypes to a PersistentState.Type.
 	 */
-	@Inject(method = "readNbt", at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/NbtHelper;getDataVersion(Lnet/minecraft/nbt/NbtCompound;I)I"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-	private void handleNullDataFixType(String id, DataFixTypes dataFixTypes, int currentSaveVersion, CallbackInfoReturnable<NbtCompound> cir, File file, FileInputStream fileInputStream, PushbackInputStream pushbackInputStream, NbtCompound nbtCompound) {
+	@WrapOperation(method = "readNbt", at = @At(value = "INVOKE", target = "Lnet/minecraft/datafixer/DataFixTypes;update(Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/nbt/NbtCompound;II)Lnet/minecraft/nbt/NbtCompound;"))
+	private NbtCompound handleNullDataFixType(DataFixTypes dataFixTypes, DataFixer dataFixer, NbtCompound nbt, int oldVersion, int newVersion, Operation<NbtCompound> original) {
 		if (dataFixTypes == null) {
-			cir.setReturnValue(nbtCompound);
+			return nbt;
 		}
+
+		return original.call(dataFixTypes, dataFixer, nbt, oldVersion, newVersion);
 	}
 }

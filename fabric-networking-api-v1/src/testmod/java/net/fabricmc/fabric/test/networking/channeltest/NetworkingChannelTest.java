@@ -35,6 +35,8 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.EntitySelector;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -43,6 +45,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 
 public final class NetworkingChannelTest implements ModInitializer {
 	@Override
@@ -88,7 +91,7 @@ public final class NetworkingChannelTest implements ModInitializer {
 		});
 	}
 
-	private static CompletableFuture<Suggestions> suggestReceivableChannels(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
+	private static CompletableFuture<Suggestions> suggestReceivableChannels(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
 		final ServerPlayerEntity player = context.getSource().getPlayer();
 
 		return CommandSource.suggestIdentifiers(ServerPlayNetworking.getReceived(player), builder);
@@ -101,20 +104,24 @@ public final class NetworkingChannelTest implements ModInitializer {
 			throw new SimpleCommandExceptionType(Text.literal(String.format("Cannot register channel %s twice for server player", channel))).create();
 		}
 
-		ServerPlayNetworking.registerReceiver(executor.networkHandler, channel, (server, player, handler, buf, sender) -> {
-			System.out.printf("Received packet on channel %s%n", channel);
-		});
+		CustomPayload.Type<RegistryByteBuf, ? extends CustomPayload> payloadType = PayloadTypeRegistryImpl.PLAY_C2S.get(channel);
 
-		context.getSource().sendFeedback(() -> Text.literal(String.format("Registered channel %s for %s", channel, executor.getDisplayName())), false);
-
-		return 1;
+		if (payloadType != null) {
+			ServerPlayNetworking.registerReceiver(executor.networkHandler, payloadType.id(), (payload, ctx) -> {
+				System.out.printf("Received packet on channel %s%n", payloadType.id().id());
+			});
+			context.getSource().sendFeedback(() -> Text.literal(String.format("Registered channel %s for %s", channel, executor.getDisplayName())), false);
+			return 1;
+		} else {
+			throw new SimpleCommandExceptionType(Text.literal("Unknown channel id")).create();
+		}
 	}
 
 	private static int unregisterChannel(CommandContext<ServerCommandSource> context, ServerPlayerEntity player) throws CommandSyntaxException {
 		final Identifier channel = getIdentifier(context, "channel");
 
 		if (!ServerPlayNetworking.getReceived(player).contains(channel)) {
-			throw new SimpleCommandExceptionType(Text.literal("Cannot unregister channel the server player entity cannot recieve packets on")).create();
+			throw new SimpleCommandExceptionType(Text.literal("Cannot unregister channel the server player entity cannot receive packets on")).create();
 		}
 
 		ServerPlayNetworking.unregisterReceiver(player.networkHandler, channel);

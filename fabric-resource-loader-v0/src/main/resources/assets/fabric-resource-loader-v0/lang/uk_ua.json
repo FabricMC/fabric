@@ -3,5 +3,7 @@
   "pack.source.fabricmod": "Мод Fabric",
   "pack.source.builtinMod": "вбудований: %s",
   "pack.name.fabricMod": "Мод Fabric \"%s\"",
-  "pack.name.fabricMods": "Моди Fabric"
+  "pack.name.fabricMods": "Моди Fabric",
+  "pack.name.fabricMod.subPack": "Мод Fabric \"%s\" (%s)",
+  "commands.datapack.fabric.internal": "Неможливо увімкнути або вимкнути вбудований пак Fabric \"%s\"."
 }

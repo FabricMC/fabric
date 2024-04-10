@@ -41,6 +41,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.stat.StatType;
 import net.minecraft.text.TextContent;
 import net.minecraft.text.TranslatableTextContent;
@@ -50,22 +52,24 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 
 /**
- * Extend this class and implement {@link FabricLanguageProvider#generateTranslations(TranslationBuilder)}.
- * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricDataOutput, String)} FabricLanguageProvider} to declare what language code is being generated if it isn't {@code en_us}.
+ * Extend this class and implement {@link FabricLanguageProvider#generateTranslations}.
+ * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricDataOutput, String, CompletableFuture) FabricLanguageProvider} to declare what language code is being generated if it isn't {@code en_us}.
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
 public abstract class FabricLanguageProvider implements DataProvider {
 	protected final FabricDataOutput dataOutput;
 	private final String languageCode;
+	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup;
 
-	protected FabricLanguageProvider(FabricDataOutput dataOutput) {
-		this(dataOutput, "en_us");
+	protected FabricLanguageProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+		this(dataOutput, "en_us", registryLookup);
 	}
 
-	protected FabricLanguageProvider(FabricDataOutput dataOutput, String languageCode) {
+	protected FabricLanguageProvider(FabricDataOutput dataOutput, String languageCode, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
 		this.dataOutput = dataOutput;
 		this.languageCode = languageCode;
+		this.registryLookup = registryLookup;
 	}
 
 	/**
@@ -73,30 +77,32 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	 *
 	 * <p>Call {@link TranslationBuilder#add(String, String)} to add a translation.
 	 */
-	public abstract void generateTranslations(TranslationBuilder translationBuilder);
+	public abstract void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, TranslationBuilder translationBuilder);
 
 	@Override
 	public CompletableFuture<?> run(DataWriter writer) {
 		TreeMap<String, String> translationEntries = new TreeMap<>();
 
-		generateTranslations((String key, String value) -> {
-			Objects.requireNonNull(key);
-			Objects.requireNonNull(value);
+		return this.registryLookup.thenCompose(lookup -> {
+			generateTranslations(lookup, (String key, String value) -> {
+				Objects.requireNonNull(key);
+				Objects.requireNonNull(value);
 
-			if (translationEntries.containsKey(key)) {
-				throw new RuntimeException("Existing translation key found - " + key + " - Duplicate will be ignored.");
+				if (translationEntries.containsKey(key)) {
+					throw new RuntimeException("Existing translation key found - " + key + " - Duplicate will be ignored.");
+				}
+
+				translationEntries.put(key, value);
+			});
+
+			JsonObject langEntryJson = new JsonObject();
+
+			for (Map.Entry<String, String> entry : translationEntries.entrySet()) {
+				langEntryJson.addProperty(entry.getKey(), entry.getValue());
 			}
 
-			translationEntries.put(key, value);
+			return DataProvider.writeToPath(writer, langEntryJson, getLangFilePath(this.languageCode));
 		});
-
-		JsonObject langEntryJson = new JsonObject();
-
-		for (Map.Entry<String, String> entry : translationEntries.entrySet()) {
-			langEntryJson.addProperty(entry.getKey(), entry.getValue());
-		}
-
-		return DataProvider.writeToPath(writer, langEntryJson, getLangFilePath(this.languageCode));
 	}
 
 	private Path getLangFilePath(String code) {
@@ -111,7 +117,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	}
 
 	/**
-	 * A consumer used by {@link FabricLanguageProvider#generateTranslations(TranslationBuilder)}.
+	 * A consumer used by {@link FabricLanguageProvider#generateTranslations}.
 	 */
 	@ApiStatus.NonExtendable
 	@FunctionalInterface
@@ -188,8 +194,8 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param entityAttribute The {@link EntityAttribute} to get the translation key from.
 		 * @param value           The value of the entry.
 		 */
-		default void add(EntityAttribute entityAttribute, String value) {
-			add(entityAttribute.getTranslationKey(), value);
+		default void add(RegistryEntry<EntityAttribute> entityAttribute, String value) {
+			add(entityAttribute.value().getTranslationKey(), value);
 		}
 
 		/**

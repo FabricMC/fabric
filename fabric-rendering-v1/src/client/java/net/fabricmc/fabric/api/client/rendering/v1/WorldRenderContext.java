@@ -35,7 +35,7 @@ import net.minecraft.util.profiler.Profiler;
 
 /**
  * Except as noted below, the properties exposed here match the parameters passed to
- * {@link WorldRenderer#render(MatrixStack, float, long, boolean, Camera, GameRenderer, LightmapTextureManager, Matrix4f)}.
+ * {@link WorldRenderer#render}.
  */
 public interface WorldRenderContext {
 	/**
@@ -45,6 +45,10 @@ public interface WorldRenderContext {
 	 */
 	WorldRenderer worldRenderer();
 
+	/**
+	 * The matrix stack is only not null in {@link WorldRenderEvents#AFTER_ENTITIES} or later events.
+	 */
+	@Nullable
 	MatrixStack matrixStack();
 
 	float tickDelta();
@@ -60,6 +64,8 @@ public interface WorldRenderContext {
 	LightmapTextureManager lightmapTextureManager();
 
 	Matrix4f projectionMatrix();
+
+	Matrix4f positionMatrix();
 
 	/**
 	 * Convenient access to {WorldRenderer.world}.

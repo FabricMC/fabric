@@ -16,65 +16,46 @@
 
 package net.fabricmc.fabric.test.item;
 
+import java.util.EnumMap;
+import java.util.List;
+
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 import net.fabricmc.api.ModInitializer;
 
 public class ArmorKnockbackResistanceTest implements ModInitializer {
-	private static final ArmorMaterial WOOD_ARMOR = new ArmorMaterial() {
-		@Override
-		public int getDurability(ArmorItem.Type arg) {
-			return 50;
-		}
-
-		@Override
-		public int getProtection(ArmorItem.Type arg) {
-			return 5;
-		}
-
-		@Override
-		public int getEnchantability() {
-			return 1;
-		}
-
-		@Override
-		public SoundEvent getEquipSound() {
-			return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
-		}
-
-		@Override
-		public Ingredient getRepairIngredient() {
-			return Ingredient.fromTag(ItemTags.LOGS);
-		}
-
-		@Override
-		public String getName() {
-			return "wood";
-		}
-
-		@Override
-		public float getToughness() {
-			return 0.0F;
-		}
-
-		@Override
-		public float getKnockbackResistance() {
-			return 0.5F;
-		}
-	};
+	private static final RegistryEntry<ArmorMaterial> WOOD_ARMOR = Registry.registerReference(Registries.ARMOR_MATERIAL, new Identifier("fabric-item-api-v1-testmod", "wood"), createTestArmorMaterial());
 
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod",
 				"wooden_boots"), new ArmorItem(WOOD_ARMOR, ArmorItem.Type.BOOTS, new Item.Settings()));
+	}
+
+	private static ArmorMaterial createTestArmorMaterial() {
+		return new ArmorMaterial(Util.make(new EnumMap<>(ArmorItem.Type.class), (map) -> {
+			map.put(ArmorItem.Type.BOOTS, 1);
+			map.put(ArmorItem.Type.LEGGINGS, 2);
+			map.put(ArmorItem.Type.CHESTPLATE, 3);
+			map.put(ArmorItem.Type.HELMET, 1);
+			map.put(ArmorItem.Type.BODY, 3);
+		}),
+			0,
+			SoundEvents.ITEM_ARMOR_EQUIP_LEATHER,
+				() -> Ingredient.ofItems(Items.LEATHER),
+			List.of(new ArmorMaterial.Layer(new Identifier("fabric-item-api-v1-testmod", "wood"))),
+			0,
+			0.5F
+		);
 	}
 }

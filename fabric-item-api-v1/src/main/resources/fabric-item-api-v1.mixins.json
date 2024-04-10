@@ -4,9 +4,9 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AbstractFurnaceBlockEntityMixin",
-    "ArmorItemMixin",
     "BrewingStandBlockEntityMixin",
     "ItemMixin",
+    "ItemSettingsMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
     "RecipeMixin"

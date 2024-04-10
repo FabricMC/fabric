@@ -62,11 +62,4 @@ public interface DynamicRegistryView {
 	 * @param callback the callback of the event
 	 */
 	<T> void registerEntryAdded(RegistryKey<? extends Registry<? extends T>> registryRef, RegistryEntryAddedCallback<T> callback);
-
-	/**
-	 * A shortcut to register {@link RegistryEntryRemovedCallback}.
-	 * @param registryRef the registry key of the registry to register the event to
-	 * @param callback the callback of the event
-	 */
-	<T> void registerEntryRemoved(RegistryKey<? extends Registry<? extends T>> registryRef, RegistryEntryRemovedCallback<T> callback);
 }

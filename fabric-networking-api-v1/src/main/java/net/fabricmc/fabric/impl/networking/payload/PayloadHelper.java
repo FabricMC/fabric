@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.networking.payload;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 
@@ -33,18 +32,6 @@ public class PayloadHelper {
 		newBuf.writeBytes(byteBuf.copy());
 		byteBuf.skipBytes(byteBuf.readableBytes());
 		return newBuf;
-	}
-
-	public static ResolvablePayload readCustom(Identifier id, PacketByteBuf buf, int maxSize, boolean retain) {
-		assertSize(buf, maxSize);
-
-		if (retain) {
-			RetainedPayload payload = new RetainedPayload(id, PacketByteBufs.retainedSlice(buf));
-			buf.skipBytes(buf.readableBytes());
-			return payload;
-		} else {
-			return new UntypedPayload(id, read(buf, maxSize));
-		}
 	}
 
 	private static void assertSize(PacketByteBuf buf, int maxSize) {

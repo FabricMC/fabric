@@ -1,0 +1,7 @@
+{
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Kliendile tundmatu registrikirje vastuvõetud.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "%d kliendile tundmatut registrikirjet vastuvõetud.\n",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "See on üldjuhul põhjustatud sellest, kui kliendis kasutatud modid erinevad serveri omadest.",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Rohkemate andmete nägemiseks vaata kliendilogisid.\nNeed registrikirje nimeruumid võivad olla seotud:\n\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "Ja veel %d..."
+}

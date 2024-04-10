@@ -18,17 +18,17 @@ package net.fabricmc.fabric.impl.networking.server;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.NetworkState;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.NetworkPhase;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.S2CPlayChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -36,20 +36,22 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.payload.ResolvedPayload;
+import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 
-public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworkAddon.Handler> {
+public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworking.PlayPayloadHandler<?>> {
 	private final ServerPlayNetworkHandler handler;
 	private final MinecraftServer server;
 	private boolean sentInitialRegisterPacket;
+	private final ServerPlayNetworking.Context context;
 
 	public ServerPlayNetworkAddon(ServerPlayNetworkHandler handler, ClientConnection connection, MinecraftServer server) {
 		super(ServerNetworkingImpl.PLAY, connection, "ServerPlayNetworkAddon for " + handler.player.getDisplayName());
 		this.handler = handler;
 		this.server = server;
+		this.context = new ContextImpl(handler.player, this);
 
 		// Must register pending channels via lateinit
-		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkState.PLAY);
+		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkPhase.PLAY);
 	}
 
 	@Override
@@ -65,8 +67,10 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	protected void receive(Handler handler, ResolvedPayload payload) {
-		handler.receive(this.server, this.handler.player, this.handler, payload, this);
+	protected void receive(ServerPlayNetworking.PlayPayloadHandler<?> payloadHandler, CustomPayload payload) {
+		this.server.execute(() -> {
+			((ServerPlayNetworking.PlayPayloadHandler) payloadHandler).receive(payload, ServerPlayNetworkAddon.this.context);
+		});
 	}
 
 	// impl details
@@ -77,12 +81,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	public Packet<?> createPacket(Identifier channelName, PacketByteBuf buf) {
-		return ServerPlayNetworking.createS2CPacket(channelName, buf);
-	}
-
-	@Override
-	public Packet<?> createPacket(FabricPacket packet) {
+	public Packet<?> createPacket(CustomPayload packet) {
 		return ServerPlayNetworking.createS2CPacket(packet);
 	}
 
@@ -100,10 +99,10 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	protected void handleRegistration(Identifier channelName) {
 		// If we can already send packets, immediately send the register packet for this channel
 		if (this.sentInitialRegisterPacket) {
-			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channelName));
+			RegistrationPayload registrationPayload = this.createRegistrationPayload(RegistrationPayload.REGISTER, Collections.singleton(channelName));
 
-			if (buf != null) {
-				this.sendPacket(NetworkingImpl.REGISTER_CHANNEL, buf);
+			if (registrationPayload != null) {
+				this.sendPacket(registrationPayload);
 			}
 		}
 	}
@@ -112,10 +111,10 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	protected void handleUnregistration(Identifier channelName) {
 		// If we can already send packets, immediately send the unregister packet for this channel
 		if (this.sentInitialRegisterPacket) {
-			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channelName));
+			RegistrationPayload registrationPayload = this.createRegistrationPayload(RegistrationPayload.UNREGISTER, Collections.singleton(channelName));
 
-			if (buf != null) {
-				this.sendPacket(NetworkingImpl.UNREGISTER_CHANNEL, buf);
+			if (registrationPayload != null) {
+				this.sendPacket(registrationPayload);
 			}
 		}
 	}
@@ -130,7 +129,10 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		return NetworkingImpl.isReservedCommonChannel(channelName);
 	}
 
-	public interface Handler {
-		void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, ResolvedPayload payload, PacketSender responseSender);
+	private record ContextImpl(ServerPlayerEntity player, PacketSender responseSender) implements ServerPlayNetworking.Context {
+		private ContextImpl {
+			Objects.requireNonNull(player, "player");
+			Objects.requireNonNull(responseSender, "responseSender");
+		}
 	}
 }

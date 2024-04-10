@@ -39,8 +39,8 @@ public class MinecraftClientMixin {
 	private static Logger FABRIC_LOGGER = LoggerFactory.getLogger(MinecraftClientMixin.class);
 
 	// Unmap the registry before loading a new SP/MP setup.
-	@Inject(at = @At("RETURN"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V")
-	public void disconnectAfter(Screen screen_1, CallbackInfo info) {
+	@Inject(at = @At("RETURN"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V")
+	public void disconnectAfter(Screen disconnectionScreen, boolean bl, CallbackInfo ci) {
 		try {
 			RegistrySyncManager.unmap();
 		} catch (RemapException e) {

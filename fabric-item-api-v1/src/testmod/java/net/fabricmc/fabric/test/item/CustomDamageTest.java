@@ -16,52 +16,53 @@
 
 package net.fabricmc.fabric.test.item;
 
+import net.minecraft.component.DataComponentType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ToolMaterials;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.potion.Potions;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.dynamic.Codecs;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
-import net.fabricmc.fabric.test.item.mixin.BrewingRecipeRegistryAccessor;
 
 public class CustomDamageTest implements ModInitializer {
 	public static final Item WEIRD_PICK = new WeirdPick();
+	public static final DataComponentType<Integer> WEIRD = Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier("fabric-item-api-v1-testmod", "weird"),
+																DataComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
 
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "weird_pickaxe"), WEIRD_PICK);
 		FuelRegistry.INSTANCE.add(WEIRD_PICK, 200);
-		BrewingRecipeRegistryAccessor.callRegisterPotionRecipe(Potions.WATER, WEIRD_PICK, Potions.AWKWARD);
+		// TODO 1.20.5
+		// FabricBrewingRecipeRegistry.registerPotionRecipe(Potions.WATER, Ingredient.ofItems(WEIRD_PICK), Potions.AWKWARD);
 	}
 
-	public static final CustomDamageHandler WEIRD_DAMAGE_HANDLER = (stack, amount, entity, breakCallback) -> {
+	public static final CustomDamageHandler WEIRD_DAMAGE_HANDLER = (stack, amount, entity, slot, breakCallback) -> {
 		// If sneaking, apply all damage to vanilla. Otherwise, increment a tag on the stack by one and don't apply any damage
 		if (entity.isSneaking()) {
 			return amount;
 		} else {
-			NbtCompound tag = stack.getOrCreateNbt();
-			tag.putInt("weird", tag.getInt("weird") + 1);
+			stack.set(WEIRD, Math.max(0, stack.getOrDefault(WEIRD, 0) + 1));
 			return 0;
 		}
 	};
 
 	public static class WeirdPick extends PickaxeItem {
 		protected WeirdPick() {
-			super(ToolMaterials.GOLD, 1, -2.8F, new FabricItemSettings().customDamage(WEIRD_DAMAGE_HANDLER));
+			super(ToolMaterials.GOLD, new Item.Settings().customDamage(WEIRD_DAMAGE_HANDLER));
 		}
 
 		@Override
 		public Text getName(ItemStack stack) {
-			int v = stack.getOrCreateNbt().getInt("weird");
+			int v = stack.getOrDefault(WEIRD, 0);
 			return super.getName(stack).copy().append(" (Weird Value: " + v + ")");
 		}
 

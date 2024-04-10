@@ -1,5 +1,6 @@
 {
   "pack.source.fabricmod": "Fabric mod",
   "pack.source.builtinMod": "ビルトイン: %s",
-  "pack.name.fabricMods": "Fabric Mod"
+  "pack.name.fabricMods": "Fabric Mod",
+  "commands.datapack.fabric.internal": "「%s」はFabric内部で管理されているため、有効化・無効化できません"
 }

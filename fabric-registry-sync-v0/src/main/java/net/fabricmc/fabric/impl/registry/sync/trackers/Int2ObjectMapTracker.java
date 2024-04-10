@@ -32,10 +32,9 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 
-public class Int2ObjectMapTracker<V, OV> implements RegistryEntryAddedCallback<V>, RegistryIdRemapCallback<V>, RegistryEntryRemovedCallback<V> {
+public class Int2ObjectMapTracker<V, OV> implements RegistryEntryAddedCallback<V>, RegistryIdRemapCallback<V> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Int2ObjectMapTracker.class);
 	private final String name;
 	private final Int2ObjectMap<OV> mappers;
@@ -50,7 +49,6 @@ public class Int2ObjectMapTracker<V, OV> implements RegistryEntryAddedCallback<V
 		Int2ObjectMapTracker<V, OV> updater = new Int2ObjectMapTracker<>(name, mappers);
 		RegistryEntryAddedCallback.event(registry).register(updater);
 		RegistryIdRemapCallback.event(registry).register(updater);
-		RegistryEntryRemovedCallback.event(registry).register(updater);
 	}
 
 	@Override
@@ -89,15 +87,6 @@ public class Int2ObjectMapTracker<V, OV> implements RegistryEntryAddedCallback<V
 
 		if (errors != null) {
 			throw new RuntimeException("Errors while remapping Int2ObjectMap " + name + " found:\n" + Joiner.on('\n').join(errors));
-		}
-	}
-
-	@Override
-	public void onEntryRemoved(int rawId, Identifier id, V object) {
-		OV mapper = mappers.remove(rawId);
-
-		if (mapper != null) {
-			removedMapperCache.put(id, mapper);
 		}
 	}
 }

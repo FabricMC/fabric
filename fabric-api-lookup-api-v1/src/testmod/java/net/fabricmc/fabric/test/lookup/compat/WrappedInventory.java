@@ -60,7 +60,7 @@ final class WrappedInventory implements ItemInsertable, ItemExtractable {
 			if (inv.isValid(i, input)) {
 				ItemStack stack = inv.getStack(i);
 
-				if (stack.isEmpty() || ItemStack.canCombine(stack, input)) {
+				if (stack.isEmpty() || ItemStack.areItemsAndComponentsEqual(stack, input)) {
 					int remainingSpace = Math.min(inv.getMaxCountPerStack(), stack.getItem().getMaxCount()) - stack.getCount();
 					int inserted = Math.min(remainingSpace, input.getCount());
 

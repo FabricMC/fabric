@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -112,6 +113,10 @@ public final class EntityEventTests implements ModInitializer {
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			LOGGER.info("{} died due to {} damage source", entity.getName().getString(), source.getName());
+		});
+
+		ServerLivingEntityEvents.MOB_CONVERSION.register((previous, converted, keepEquipment) -> {
+			LOGGER.info("{} is being converted to {} [{}]", previous.getName().getString(), converted.getName().getString(), keepEquipment);
 		});
 
 		EntitySleepEvents.ALLOW_SLEEPING.register((player, sleepingPos) -> {
@@ -221,7 +226,7 @@ public final class EntityEventTests implements ModInitializer {
 
 	private static ItemStack createNamedItem(Item item, String name) {
 		ItemStack stack = new ItemStack(item);
-		stack.setCustomName(Text.literal(name));
+		stack.set(DataComponentTypes.CUSTOM_NAME, Text.literal(name));
 		return stack;
 	}
 }

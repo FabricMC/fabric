@@ -21,22 +21,11 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.networking.payload.TypedPayload;
-import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
-import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 public final class NetworkingImpl {
 	public static final String MOD_ID = "fabric-networking-api-v1";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-
-	/**
-	 * Force {@link TypedPayload} to be serialized into {@link UntypedPayload}, mimicking remote connection.
-	 *
-	 * <p>Defaults to {@code true} in dev env and {@code false} in production.
-	 */
-	public static final boolean FORCE_PACKET_SERIALIZATION = Boolean.parseBoolean(System.getProperty(
-			"fabric-api.networking.force-packet-serialization",
-			Boolean.toString(FabricLoader.getInstance().isDevelopmentEnvironment())));
 
 	/**
 	 * Id of packet used to register supported channels.
@@ -48,15 +37,18 @@ public final class NetworkingImpl {
 	 */
 	public static final Identifier UNREGISTER_CHANNEL = new Identifier("minecraft", "unregister");
 
-	public static final ThreadLocal<Boolean> FACTORY_RETAIN = ThreadLocal.withInitial(() -> Boolean.FALSE);
-
 	public static boolean isReservedCommonChannel(Identifier channelName) {
 		return channelName.equals(REGISTER_CHANNEL) || channelName.equals(UNREGISTER_CHANNEL);
 	}
 
-	static {
-		if (FORCE_PACKET_SERIALIZATION) {
-			LOGGER.info("Force Packet Serialization is enabled to mimic remote connection on single player, this is the default behaviour on dev env. Add -Dfabric-api.networking.force-packet-serialization=false JVM arg to disable it.");
-		}
+	public static void init() {
+		PayloadTypeRegistry.configurationS2C().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.configurationS2C().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
+		PayloadTypeRegistry.configurationC2S().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.configurationC2S().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
+		PayloadTypeRegistry.playS2C().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.playS2C().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
+		PayloadTypeRegistry.playC2S().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.playC2S().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
 	}
 }

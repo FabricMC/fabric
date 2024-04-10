@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.transfer.ingame;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -57,14 +58,14 @@ public class FluidChuteBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound nbt) {
-		super.writeNbt(nbt);
-		storage.writeNbt(nbt);
+	protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
+		super.writeNbt(nbt, wrapperLookup);
+		storage.writeNbt(nbt, wrapperLookup);
 	}
 
 	@Override
-	public void readNbt(NbtCompound nbt) {
-		super.readNbt(nbt);
-		storage.readNbt(nbt);
+	public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
+		super.readNbt(nbt, wrapperLookup);
+		storage.readNbt(nbt, wrapperLookup);
 	}
 }

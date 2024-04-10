@@ -3,13 +3,18 @@
   "package": "net.fabricmc.fabric.mixin.entity.event",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "elytra.LivingEntityMixin",
-    "elytra.PlayerEntityMixin",
     "EntityMixin",
     "LivingEntityMixin",
+    "MobEntityMixin",
+    "MooshroomEntityMixin",
+    "PigEntityMixin",
     "PlayerEntityMixin",
     "PlayerManagerMixin",
-    "ServerPlayerEntityMixin"
+    "ServerPlayerEntityMixin",
+    "TadpoleEntityMixin",
+    "VillagerEntityMixin",
+    "elytra.LivingEntityMixin",
+    "elytra.PlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1,

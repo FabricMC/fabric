@@ -26,6 +26,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleDefaultedRegistry;
 import net.minecraft.registry.SimpleRegistry;
+import net.minecraft.registry.entry.RegistryEntryInfo;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.mixin.registry.sync.RegistriesAccessor;
@@ -145,7 +146,7 @@ public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 		}
 
 		//noinspection unchecked
-		RegistriesAccessor.getROOT().add((RegistryKey<MutableRegistry<?>>) key, registry, Lifecycle.stable());
+		RegistriesAccessor.getROOT().add((RegistryKey<MutableRegistry<?>>) key, registry, RegistryEntryInfo.DEFAULT);
 
 		return registry;
 	}

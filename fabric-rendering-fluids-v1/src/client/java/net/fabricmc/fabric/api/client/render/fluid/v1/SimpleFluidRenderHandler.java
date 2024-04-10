@@ -85,7 +85,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 */
 	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, @Nullable Identifier overlayTexture, int tint) {
 		this.stillTexture = Objects.requireNonNull(stillTexture, "stillTexture");
-		this.flowingTexture = Objects.requireNonNull(flowingTexture, "flowingTexture");;
+		this.flowingTexture = Objects.requireNonNull(flowingTexture, "flowingTexture");
 		this.overlayTexture = overlayTexture;
 		this.sprites = new Sprite[overlayTexture == null ? 2 : 3];
 		this.tint = tint;

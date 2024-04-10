@@ -21,16 +21,17 @@ import java.util.Map;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
 
-import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 /**
@@ -44,11 +45,10 @@ public class JsonDataLoaderMixin extends SinglePreparationResourceReloaderMixin 
 
 	@Override
 	@SuppressWarnings("unchecked")
-	protected void fabric_applyResourceConditions(ResourceManager resourceManager, Profiler profiler, Object object) {
+	protected void fabric_applyResourceConditions(ResourceManager resourceManager, Profiler profiler, Object object, @Nullable RegistryWrapper.WrapperLookup registryLookup) {
 		profiler.push("Fabric resource conditions: %s".formatted(dataType));
 
 		Iterator<Map.Entry<Identifier, JsonElement>> it = ((Map<Identifier, JsonElement>) object).entrySet().iterator();
-		boolean debugLogEnabled = ResourceConditionsImpl.LOGGER.isDebugEnabled();
 
 		while (it.hasNext()) {
 			Map.Entry<Identifier, JsonElement> entry = it.next();
@@ -57,17 +57,8 @@ public class JsonDataLoaderMixin extends SinglePreparationResourceReloaderMixin 
 			if (resourceData.isJsonObject()) {
 				JsonObject obj = resourceData.getAsJsonObject();
 
-				if (obj.has(ResourceConditions.CONDITIONS_KEY)) {
-					boolean matched = ResourceConditions.objectMatchesConditions(obj);
-
-					if (!matched) {
-						it.remove();
-					}
-
-					if (debugLogEnabled) {
-						String verdict = matched ? "Allowed" : "Rejected";
-						ResourceConditionsImpl.LOGGER.debug("{} resource of type {} with id {}", verdict, dataType, entry.getKey());
-					}
+				if (!ResourceConditionsImpl.applyResourceConditions(obj, dataType, entry.getKey(), fabric_getRegistryLookup())) {
+					it.remove();
 				}
 			}
 		}

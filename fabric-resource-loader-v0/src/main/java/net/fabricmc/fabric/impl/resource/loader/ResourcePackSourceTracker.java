@@ -28,7 +28,6 @@ import net.minecraft.resource.ResourcePackSource;
  * See {@link net.fabricmc.fabric.mixin.resource.loader.ResourcePackProfileMixin ResourcePackProfileMixin}.
  *
  * <p>The sources are later read for use in {@link FabricResource} and {@link FabricResourceImpl}.
- * See {@link net.fabricmc.fabric.mixin.resource.loader.NamespaceResourceManagerMixin NamespaceResourceManagerMixin}.
  */
 public final class ResourcePackSourceTracker {
 	// Use a weak hash map so that if resource packs would be deleted, this won't keep them alive.

@@ -29,9 +29,10 @@ import net.minecraft.block.MapColor;
 import net.minecraft.block.enums.Instrument;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.EntityType;
+import net.minecraft.loot.LootTable;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.Identifier;
 
 @Mixin(AbstractBlock.Settings.class)
 public interface AbstractBlockSettingsAccessor {
@@ -100,7 +101,7 @@ public interface AbstractBlockSettingsAccessor {
 	Optional<AbstractBlock.Offsetter> getOffsetter();
 
 	@Accessor
-	Identifier getLootTableId();
+	RegistryKey<LootTable> getLootTableKey();
 
 	@Accessor
 	boolean getBlockBreakParticles();
@@ -149,7 +150,7 @@ public interface AbstractBlockSettingsAccessor {
 	void setIsAir(boolean isAir);
 
 	@Accessor
-	void setLootTableId(Identifier lootTableId);
+	void setLootTableKey(RegistryKey<LootTable> lootTableKey);
 
 	@Accessor
 	void setToolRequired(boolean toolRequired);

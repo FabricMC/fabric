@@ -6,7 +6,9 @@
     "DataPackContentsMixin",
     "DataProviderMixin",
     "JsonDataLoaderMixin",
-    "LootManagerMixin",
+    "RecipeManagerMixin",
+    "ReloadableRegistriesMixin",
+    "ServerAdvancementLoaderMixin",
     "SinglePreparationResourceReloaderMixin",
     "TagManagerLoaderMixin"
   ],

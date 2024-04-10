@@ -38,8 +38,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtSizeTracker;
 import net.minecraft.nbt.NbtString;
-import net.minecraft.nbt.NbtTagSizeTracker;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 
@@ -80,7 +80,7 @@ public class GameOptionsMixin {
 
 		if (Files.exists(trackerFile)) {
 			try {
-				NbtCompound data = NbtIo.readCompressed(trackerFile, NbtTagSizeTracker.ofUnlimitedBytes());
+				NbtCompound data = NbtIo.readCompressed(trackerFile, NbtSizeTracker.ofUnlimitedBytes());
 				NbtList values = data.getList("values", NbtElement.STRING_TYPE);
 
 				for (int i = 0; i < values.size(); i++) {
@@ -99,17 +99,17 @@ public class GameOptionsMixin {
 
 		for (ResourcePackProfile profile : profiles) {
 			// Always add "Fabric Mods" pack to enabled resource packs.
-			if (profile.getSource() == ModResourcePackCreator.RESOURCE_PACK_SOURCE) {
-				resourcePacks.add(profile.getName());
+			if (profile.getId().equals(ModResourcePackCreator.FABRIC)) {
+				resourcePacks.add(profile.getId());
 				continue;
 			}
 
 			try (ResourcePack pack = profile.createResourcePack()) {
 				if (pack instanceof ModNioResourcePack builtinPack && builtinPack.getActivationType().isEnabledByDefault()) {
-					if (trackedPacks.add(builtinPack.getName())) {
-						resourcePacks.add(profile.getName());
+					if (trackedPacks.add(builtinPack.getId())) {
+						resourcePacks.add(profile.getId());
 					} else {
-						removedPacks.remove(builtinPack.getName());
+						removedPacks.remove(builtinPack.getId());
 					}
 				}
 			}

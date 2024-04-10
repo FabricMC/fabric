@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.transfer.gametests;
 
-import static net.fabricmc.fabric.test.transfer.unittests.TestUtil.assertEquals;
+import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
 
 import net.minecraft.fluid.Fluids;
 import net.minecraft.server.world.ServerWorld;

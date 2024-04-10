@@ -59,7 +59,7 @@ final class ChannelScreen extends Screen {
 
 	@Override
 	public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(drawContext);
+		this.renderBackground(drawContext, mouseX, mouseY, delta);
 		this.channelList.render(drawContext, mouseX, mouseY, delta);
 		super.render(drawContext, mouseX, mouseY, delta);
 
