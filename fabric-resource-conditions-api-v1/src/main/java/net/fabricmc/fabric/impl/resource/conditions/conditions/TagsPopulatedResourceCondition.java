@@ -53,7 +53,7 @@ public record TagsPopulatedResourceCondition(Identifier registry, List<Identifie
 
 	@Override
 	public ResourceConditionType<?> getType() {
-		return DefaultResourceConditionTypes.ANY_MODS_LOADED;
+		return DefaultResourceConditionTypes.TAGS_POPULATED;
 	}
 
 	@Override
