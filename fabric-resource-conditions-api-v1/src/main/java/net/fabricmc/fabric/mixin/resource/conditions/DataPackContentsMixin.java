@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.registry.CombinedDynamicRegistries;
 import net.minecraft.registry.ServerDynamicRegistryType;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.DataPackContents;
 import net.minecraft.server.command.CommandManager;
@@ -36,17 +37,12 @@ import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 @Mixin(DataPackContents.class)
 public class DataPackContentsMixin {
-	/**
-	 * Clear the tags captured by {@link DataPackContentsMixin}.
-	 * This must happen after the resource reload is complete, to ensure that the tags remain available throughout the entire "apply" phase.
-	 */
 	@Inject(
 			method = "refresh",
 			at = @At("HEAD")
 	)
-	public void hookRefresh(CallbackInfo ci) {
+	private void hookRefresh(CallbackInfo ci) {
 		ResourceConditionsImpl.LOADED_TAGS.remove();
-		ResourceConditionsImpl.CURRENT_REGISTRIES.remove();
 	}
 
 	@Inject(
@@ -54,7 +50,7 @@ public class DataPackContentsMixin {
 			at = @At("HEAD")
 	)
 	private static void hookReload(ResourceManager manager, CombinedDynamicRegistries<ServerDynamicRegistryType> combinedDynamicRegistries, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, int functionPermissionLevel, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<DataPackContents>> cir) {
-		ResourceConditionsImpl.CURRENT_FEATURES.set(enabledFeatures);
-		ResourceConditionsImpl.CURRENT_REGISTRIES.set(combinedDynamicRegistries.getCombinedRegistryManager());
+		System.out.println("Enabling " + FeatureFlags.FEATURE_MANAGER.toId(enabledFeatures));
+		ResourceConditionsImpl.currentFeatures = enabledFeatures;
 	}
 }

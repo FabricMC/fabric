@@ -43,7 +43,6 @@ import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockKeys;
-import net.minecraft.block.Blocks;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.data.DataOutput;
@@ -66,6 +65,7 @@ import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.Registerable;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryBuilder;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
@@ -97,13 +97,13 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients;
-import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
-import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
-	private static final ConditionJsonProvider NEVER_LOADED = DefaultResourceConditions.allModsLoaded("a");
-	private static final ConditionJsonProvider ALWAYS_LOADED = DefaultResourceConditions.not(NEVER_LOADED);
+	private static final ResourceCondition ALWAYS_LOADED = ResourceConditions.alwaysTrue();
+	private static final ResourceCondition NEVER_LOADED = ResourceConditions.not(ALWAYS_LOADED);
 
 	@Override
 	public void addJsonKeySortOrders(JsonKeySortOrderCallback callback) {
@@ -166,10 +166,10 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND_ORE, 4).input(Items.ITEM_FRAME)
 					.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
-					.offerTo(withConditions(exporter, DefaultResourceConditions.itemsRegistered(Blocks.DIAMOND_BLOCK)));
+					.offerTo(withConditions(exporter, ResourceConditions.registryContains(RegistryKeys.ITEM, Registries.ITEM.getId(Items.DIAMOND_BLOCK))));
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.EMERALD, 4).input(Items.ITEM_FRAME, 2)
 					.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
-					.offerTo(withConditions(exporter, DefaultResourceConditions.registryContains(BiomeKeys.PLAINS, BiomeKeys.BADLANDS)));
+					.offerTo(withConditions(exporter, ResourceConditions.registryContains(BiomeKeys.PLAINS, BiomeKeys.BADLANDS)));
 
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));
@@ -390,7 +390,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public void generate() {
 			// Same condition twice to test recursive condition adding
-			withConditions(ALWAYS_LOADED).withConditions(DefaultResourceConditions.not(NEVER_LOADED)).addDrop(SIMPLE_BLOCK);
+			withConditions(ALWAYS_LOADED).withConditions(ResourceConditions.not(NEVER_LOADED)).addDrop(SIMPLE_BLOCK);
 			addDrop(BLOCK_WITHOUT_ITEM, drops(SIMPLE_BLOCK));
 
 			excludeFromStrictValidation(BLOCK_WITHOUT_LOOT_TABLE);
