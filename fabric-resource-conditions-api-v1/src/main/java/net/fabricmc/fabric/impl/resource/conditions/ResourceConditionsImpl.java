@@ -46,7 +46,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public final class ResourceConditionsImpl implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("Fabric Resource Conditions");
-	public static final ThreadLocal<FeatureSet> CURRENT_FEATURES = new ThreadLocal<>();
+	public static FeatureSet currentFeatures = null;
 
 	@Override
 	public void onInitialize() {
@@ -154,8 +154,6 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		if (foundUnknown.booleanValue()) {
 			return false;
 		}
-
-		FeatureSet currentFeatures = CURRENT_FEATURES.get();
 
 		if (currentFeatures == null) {
 			LOGGER.warn("Can't retrieve current features, failing features_enabled resource condition check.");
