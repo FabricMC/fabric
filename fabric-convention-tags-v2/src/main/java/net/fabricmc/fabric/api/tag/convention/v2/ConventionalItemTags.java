@@ -54,6 +54,18 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> RANGED_WEAPONS_TOOLS = register("tools/ranged_weapons");
 	public static final TagKey<Item> MINING_TOOLS = register("tools/mining_tools");
 
+	// Armor tags
+	/**
+	 * Collects the 4 vanilla armor tags into one parent collection for ease.
+	 */
+	public static final TagKey<Item> ARMORS = register("armors");
+
+	// Tools/Armor tags
+	/**
+	 * Collects the many enchantable tags into one parent collection for ease.
+	 */
+	public static final TagKey<Item> ENCHANTABLE = register("enchantable");
+
 	// Ores and ingots - categories
 	public static final TagKey<Item> BRICKS = register("bricks");
 	public static final TagKey<Item> DUSTS = register("dusts");
@@ -201,7 +213,8 @@ public final class ConventionalItemTags {
 	// Items created with dyes
 	/**
 	 * Tag that holds all blocks and items that can be dyed a specific color.
-	 * (Does not include color blending items like leather armor)
+	 * (Does not include color blending items like leather armor.
+	 * Use {@link net.minecraft.registry.tag.ItemTags.DYEABLE} tag instead for color blending items)
 	 * <p></p>
 	 * Note: Use custom ingredients in recipes to do tag intersections and/or tag exclusions
 	 * to make more powerful recipes utilizing multiple tags such as dyed tags for an ingredient.

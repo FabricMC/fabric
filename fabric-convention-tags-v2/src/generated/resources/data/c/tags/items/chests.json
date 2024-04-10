@@ -1,5 +1,4 @@
 {
-  "replace": false,
   "values": [
     "#c:chests/wooden",
     "minecraft:ender_chest"

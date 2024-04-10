@@ -221,6 +221,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.BAKED_POTATO)
 				.add(Items.PUMPKIN_PIE)
 				.add(Items.HONEY_BOTTLE)
+				.add(Items.OMINOUS_BOTTLE)
 				.add(Items.DRIED_KELP)
 				.addOptionalTag(ConventionalItemTags.FRUITS_FOODS)
 				.addOptionalTag(ConventionalItemTags.VEGETABLES_FOODS)
@@ -408,6 +409,27 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.BOW)
 				.add(Items.CROSSBOW)
 				.add(Items.TRIDENT);
+
+		getOrCreateTagBuilder(ConventionalItemTags.ARMORS)
+				.addOptionalTag(ItemTags.HEAD_ARMOR)
+				.addOptionalTag(ItemTags.CHEST_ARMOR)
+				.addOptionalTag(ItemTags.LEG_ARMOR)
+				.addOptionalTag(ItemTags.FOOT_ARMOR);
+
+		getOrCreateTagBuilder(ConventionalItemTags.ENCHANTABLE)
+				.addOptionalTag(ItemTags.ARMOR_ENCHANTABLE)
+				.addOptionalTag(ItemTags.EQUIPPABLE_ENCHANTABLE)
+				.addOptionalTag(ItemTags.WEAPON_ENCHANTABLE)
+				.addOptionalTag(ItemTags.SWORD_ENCHANTABLE)
+				.addOptionalTag(ItemTags.MINING_ENCHANTABLE)
+				.addOptionalTag(ItemTags.MINING_LOOT_ENCHANTABLE)
+				.addOptionalTag(ItemTags.FISHING_ENCHANTABLE)
+				.addOptionalTag(ItemTags.TRIDENT_ENCHANTABLE)
+				.addOptionalTag(ItemTags.BOW_ENCHANTABLE)
+				.addOptionalTag(ItemTags.CROSSBOW_ENCHANTABLE)
+				.addOptionalTag(ItemTags.MACE_ENCHANTABLE)
+				.addOptionalTag(ItemTags.FIRE_ASPECT_ENCHANTABLE)
+				.addOptionalTag(ItemTags.DURABILITY_ENCHANTABLE);
 	}
 
 	private void generateVillagerJobSites() {
