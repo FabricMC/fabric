@@ -17,9 +17,12 @@
 package net.fabricmc.fabric.api.item.v1;
 
 import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -134,5 +137,43 @@ public interface FabricItem {
 	 */
 	default @Nullable FoodComponent getFoodComponent(ItemStack stack) {
 		return ((Item) this).getFoodComponent();
+	}
+
+	/**
+	 * Determines if the item is allowed to receive an {@link Enchantment}. This can be used to manually override what
+	 * enchantments a modded item is able to receive.
+	 *
+	 * <p>For example, one might want a modded item to be able to receive Unbreaking, but not Mending, which cannot be
+	 * achieved with the vanilla tag system alone. Alternatively, one might want to do the same thing with enchantments
+	 * from other mods, which don't have a similar tag system in general.</p>
+	 *
+	 * <p>Note that this method is only called <em>after</em> the {@link EnchantmentEvents#ALLOW_ENCHANTING} event, and
+	 * only if none of the listeners to that event override the result.</p>
+	 *
+	 * @param stack the current stack
+	 * @param enchantment the enchantment to check
+	 * @param context the context in which the enchantment is being checked
+	 * @return whether the enchantment is allowed to apply to the stack
+	 */
+	default boolean canBeEnchantedWith(ItemStack stack, Enchantment enchantment, EnchantingContext context) {
+		return enchantment.isAcceptableItem(stack);
+	}
+
+	/**
+	 * Returns a (stack-aware) map of <em>intrinsic enchantments</em> for this item.
+	 * These enchantments have their usual gameplay effects, but do not produce glint or otherwise show on the item,
+	 * and cannot be removed with a grindstone. For example, a mod that adds an electric multi-tool might want to give
+	 * it a Silk Touch-like effect, without relying on the vanilla system.
+	 *
+	 * <p>By default, having an intrinsic enchantment does not prevent the item from being enchanted with the same one
+	 * by normal means. In such a case, only the highest level of the enchantment will be retained. To prevent the item
+	 * from receiving certain enchantments, use {@link #canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)}.</p>
+	 *
+	 * @param stack the current stack
+	 * @return an immutable map from each intrinsic enchantment to its level
+	 * @see #canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)
+	 */
+	default Object2IntMap<Enchantment> getIntrinsicEnchantments(ItemStack stack) {
+		return Object2IntMaps.emptyMap();
 	}
 }
