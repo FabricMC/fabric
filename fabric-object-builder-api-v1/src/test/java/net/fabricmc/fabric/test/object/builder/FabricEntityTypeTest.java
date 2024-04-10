@@ -20,10 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import net.minecraft.entity.SpawnLocation;
-
-import net.minecraft.entity.SpawnLocationTypes;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -33,6 +29,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.SpawnLocationTypes;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.DefaultAttributeRegistry;
