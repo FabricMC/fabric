@@ -33,15 +33,20 @@ public final class ConventionalBiomeTags {
 
 	/**
 	 * Biomes that spawn in the Overworld.
+	 * (This is for people who want to tag their biomes as Overworld without getting
+	 * side effects from {@link net.minecraft.registry.tag.BiomeTags.IS_OVERWORLD})
 	 */
 	public static final TagKey<Biome> IS_OVERWORLD = register("is_overworld");
-	// The following are based on Biome categories, see Biome$Category for details
 	/**
 	 * Biomes that spawn in the End.
+	 * (This is for people who want to tag their biomes as End without getting
+	 * side effects from {@link net.minecraft.registry.tag.BiomeTags.IS_END})
 	 */
-	public static final TagKey<Biome> IS_THE_END = register("is_the_end");
+	public static final TagKey<Biome> IS_END = register("is_end");
 	/**
 	 * Biomes that spawn in the Nether.
+	 * (This is for people who want to tag their biomes as Nether without getting
+	 * side effects from {@link net.minecraft.registry.tag.BiomeTags.IS_NETHER})
 	 */
 	public static final TagKey<Biome> IS_NETHER = register("is_nether");
 	public static final TagKey<Biome> IS_TAIGA = register("is_taiga");

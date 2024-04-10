@@ -53,7 +53,7 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.NETHER_WASTES)
 				.add(BiomeKeys.SOUL_SAND_VALLEY)
 				.add(BiomeKeys.BASALT_DELTAS);
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_THE_END)
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_END)
 				.addOptionalTag(BiomeTags.IS_END)
 				.add(BiomeKeys.END_BARRENS)
 				.add(BiomeKeys.END_MIDLANDS)
@@ -297,7 +297,7 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		// TODO: Remove backwards compat tag entries in 1.22
 
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_NETHER).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "in_nether"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_THE_END).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "in_the_end"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_END).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "in_the_end"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_OVERWORLD).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "in_the_overworld"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_CAVE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "caves"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_COLD_OVERWORLD).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "climate_cold"));

@@ -118,7 +118,7 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(ConventionalEnchantmentTags.ENTITY_MOVEMENT_ENHANCEMENT, net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENTS),
 
 			createMapEntry(ConventionalBiomeTags.IN_NETHER, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_NETHER),
-			createMapEntry(ConventionalBiomeTags.IN_THE_END, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_THE_END),
+			createMapEntry(ConventionalBiomeTags.IN_THE_END, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_END),
 			createMapEntry(ConventionalBiomeTags.IN_OVERWORLD, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_OVERWORLD),
 			createMapEntry(ConventionalBiomeTags.CAVES, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_CAVE),
 			createMapEntry(ConventionalBiomeTags.CLIMATE_COLD, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_COLD),
