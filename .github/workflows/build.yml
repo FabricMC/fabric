@@ -13,28 +13,23 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: gradle/wrapper-validation-action@v1
-      - run: ./gradlew check build publishToMavenLocal --stacktrace --warning-mode=fail -Porg.gradle.parallel.threads=4
+      - uses: gradle/wrapper-validation-action@v2
+      - run: ./gradlew check build publishToMavenLocal --stacktrace --warning-mode=fail
       - uses: Juuxel/publish-checkstyle-report@v1
         if: ${{ failure() }}
         with:
           reports: |
             **/build/reports/checkstyle/*.xml
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: Artifacts
-          path: build/libs/
-      - uses: actions/upload-artifact@v3
+          name: Artifacts ${{ matrix.java }}
+          path: |
+            build/libs/
+            ./*/build/libs/
+            build/publishMods/
+      - uses: actions/upload-artifact@v4
         with:
-          name: Artifacts
-          path: ./*/build/libs/
-      - uses: actions/upload-artifact@v3
-        with:
-          name: Artifacts
-          path: build/publishMods/
-      - uses: actions/upload-artifact@v3
-        with:
-          name: Maven Local
+          name: Maven Local ${{ matrix.java }}
           path: /root/.m2/repository/net/fabricmc/
 
   client_test:
@@ -43,7 +38,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
           distribution: 'microsoft'
           java-version: '17'
@@ -51,7 +46,7 @@ jobs:
         uses: modmuss50/xvfb-action@v1
         with:
           run: ./gradlew runProductionAutoTestClient --stacktrace --warning-mode=fail
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: Test Screenshots
@@ -63,7 +58,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
           distribution: 'microsoft'
           java-version: '17'
@@ -76,7 +71,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
           distribution: 'microsoft'
           java-version: '17'

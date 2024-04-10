@@ -21,8 +21,8 @@ jobs:
         with:
           context: changelog
           workflow_id: release.yml
-      - uses: gradle/wrapper-validation-action@v1
-      - run: ./gradlew checkVersion build publish publishMods --stacktrace -Porg.gradle.parallel.threads=4
+      - uses: gradle/wrapper-validation-action@v2
+      - run: ./gradlew checkVersion build publish publishMods --stacktrace
         env:
           MAVEN_URL: ${{ secrets.MAVEN_URL }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
