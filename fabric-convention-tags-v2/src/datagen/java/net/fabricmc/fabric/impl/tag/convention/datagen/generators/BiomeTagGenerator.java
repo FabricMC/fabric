@@ -60,7 +60,6 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.END_HIGHLANDS)
 				.add(BiomeKeys.THE_END)
 				.add(BiomeKeys.SMALL_END_ISLANDS);
-		// We avoid the vanilla group tags here as mods may add to them without actually spawning them in the overworld
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_OVERWORLD)
 				.addOptionalTag(BiomeTags.IS_OVERWORLD)
 				.add(BiomeKeys.RIVER, BiomeKeys.FROZEN_RIVER)
