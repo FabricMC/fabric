@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.mixin.content.registry;
+package net.fabricmc.fabric.mixin.content.registry;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.item.Item;
 import net.minecraft.recipe.BrewingRecipeRegistry;
 
-@Mixin(BrewingRecipeRegistry.class)
-public interface BrewingRecipeRegistryAccessor {
-	/* Required for the testmod
-	 * The TAW cannot be used due to current limitations of Loom
-	 * TODO review when upgrading to Loom 1.1
-	 */
-	@Invoker("registerPotionType")
-	static void callRegisterPotionType(Item item) {
-		throw new AssertionError("Untransformed @Invoker");
+import net.fabricmc.fabric.api.registry.BrewingRecipeRegistryBuilderCallback;
+
+@Mixin(BrewingRecipeRegistry.class_9665.class)
+public class BrewingRecipeRegistryBuilderMixin {
+	@Inject(method = "method_59701", at = @At("HEAD"))
+	private void build(CallbackInfoReturnable<BrewingRecipeRegistry> cir) {
+		BrewingRecipeRegistryBuilderCallback.BUILD.invoker().build((BrewingRecipeRegistry.class_9665) (Object) this);
 	}
 }

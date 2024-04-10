@@ -30,8 +30,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.PotionItem;
-import net.minecraft.potion.Potions;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -49,8 +47,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.registry.BrewingRecipeRegistryBuilderCallback;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
-import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
@@ -60,7 +58,6 @@ import net.fabricmc.fabric.api.registry.SculkSensorFrequencyRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
 import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
-import net.fabricmc.fabric.test.mixin.content.registry.BrewingRecipeRegistryAccessor;
 
 public final class ContentRegistryTest implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
@@ -154,14 +151,17 @@ public final class ContentRegistryTest implements ModInitializer {
 			LOGGER.info("SculkSensorFrequencyRegistry test passed!");
 		}
 
-		FabricBrewingRecipeRegistry.registerPotionRecipe(Potions.AWKWARD, Ingredient.fromTag(ItemTags.SMALL_FLOWERS), Potions.HEALING);
 		var dirtyPotion = new DirtyPotionItem(new Item.Settings().maxCount(1));
 		Registry.register(Registries.ITEM, new Identifier("fabric-content-registries-v0-testmod", "dirty_potion"),
 				dirtyPotion);
 		/* Mods should use BrewingRecipeRegistry.registerPotionType(Item), which is access widened by fabric-transitive-access-wideners-v1
 		 * This testmod uses an accessor due to Loom limitations that prevent TAWs from applying across Gradle subproject boundaries */
-		BrewingRecipeRegistryAccessor.callRegisterPotionType(dirtyPotion);
-		FabricBrewingRecipeRegistry.registerItemRecipe((PotionItem) Items.POTION, Ingredient.fromTag(ItemTags.DIRT), dirtyPotion);
+		BrewingRecipeRegistryBuilderCallback.BUILD.register(builder -> {
+			builder.method_59702(dirtyPotion);
+			// TODO 1.20.5 Ingredient.fromTag(ItemTags.DIRT)
+			builder.method_59703(Items.POTION, Items.DIRT, dirtyPotion);
+			// registerPotionRecipe(Potions.AWKWARD, Ingredient.fromTag(ItemTags.SMALL_FLOWERS), Potions.HEALING);
+		});
 	}
 
 	public static class TestEventBlock extends Block {
