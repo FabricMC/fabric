@@ -314,7 +314,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 				.allowSpawningInside(specificSpawnBlocks.toArray(Block[]::new))
 				.maxTrackingRange(this.trackRange)
 				.trackingTickInterval(this.trackedUpdateRate)
-				.setDimensions(this.dimensions.width, this.dimensions.height);
+				.dimensions(this.dimensions.width(), this.dimensions.height());
 
 		if (!this.saveable) {
 			builder = builder.disableSaving();

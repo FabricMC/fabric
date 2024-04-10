@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.SpawnLocation;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.mob.MobEntity;
@@ -76,12 +77,12 @@ public interface FabricEntityTypeImpl {
 		}
 
 		final class Mob<T extends MobEntity> extends Living<T> implements FabricEntityType.Builder.Mob<T> {
-			private SpawnRestriction.Location restrictionLocation;
+			private SpawnLocation restrictionLocation;
 			private Heightmap.Type restrictionHeightmap;
 			private SpawnRestriction.SpawnPredicate<T> spawnPredicate;
 
 			@Override
-			public FabricEntityType.Builder.Mob<T> spawnRestriction(SpawnRestriction.Location location, Heightmap.Type heightmap, SpawnRestriction.SpawnPredicate<T> spawnPredicate) {
+			public FabricEntityType.Builder.Mob<T> spawnRestriction(SpawnLocation location, Heightmap.Type heightmap, SpawnRestriction.SpawnPredicate<T> spawnPredicate) {
 				this.restrictionLocation = Objects.requireNonNull(location, "Location cannot be null.");
 				this.restrictionHeightmap = Objects.requireNonNull(heightmap, "Heightmap type cannot be null.");
 				this.spawnPredicate = Objects.requireNonNull(spawnPredicate, "Spawn predicate cannot be null.");
