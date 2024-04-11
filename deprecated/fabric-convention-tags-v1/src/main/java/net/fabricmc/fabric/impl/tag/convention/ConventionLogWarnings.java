@@ -134,7 +134,7 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(ConventionalBiomeTags.TREE_SAVANNA, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_SAVANNA_TREE),
 			createMapEntry(ConventionalBiomeTags.MOUNTAIN_PEAK, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_MOUNTAIN_PEAK),
 			createMapEntry(ConventionalBiomeTags.MOUNTAIN_SLOPE, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_MOUNTAIN_SLOPE),
-			createMapEntry(ConventionalBiomeTags.END_ISLANDS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_END_ISLAND),
+			createMapEntry(ConventionalBiomeTags.END_ISLANDS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_OUTER_END_ISLAND),
 			createMapEntry(ConventionalBiomeTags.NETHER_FORESTS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_NETHER_FOREST),
 			createMapEntry(ConventionalBiomeTags.FLOWER_FORESTS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_FLOWER_FOREST),
 

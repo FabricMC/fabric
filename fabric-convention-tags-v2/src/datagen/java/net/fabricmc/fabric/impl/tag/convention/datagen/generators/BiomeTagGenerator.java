@@ -158,16 +158,17 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VOID)
 				.add(BiomeKeys.THE_VOID);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_DEEP_OCEAN)
-				.add(BiomeKeys.DEEP_FROZEN_OCEAN)
+				.addOptionalTag(BiomeTags.IS_DEEP_OCEAN)
+				.add(BiomeKeys.DEEP_OCEAN)
 				.add(BiomeKeys.DEEP_LUKEWARM_OCEAN)
 				.add(BiomeKeys.DEEP_COLD_OCEAN)
-				.add(BiomeKeys.DEEP_OCEAN);
+				.add(BiomeKeys.DEEP_FROZEN_OCEAN);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SHALLOW_OCEAN)
 				.add(BiomeKeys.OCEAN)
 				.add(BiomeKeys.LUKEWARM_OCEAN)
-				.add(BiomeKeys.FROZEN_OCEAN)
+				.add(BiomeKeys.WARM_OCEAN)
 				.add(BiomeKeys.COLD_OCEAN)
-				.add(BiomeKeys.WARM_OCEAN);
+				.add(BiomeKeys.FROZEN_OCEAN);
 		getOrCreateTagBuilder(ConventionalBiomeTags.NO_DEFAULT_MONSTERS)
 				.add(BiomeKeys.MUSHROOM_FIELDS)
 				.add(BiomeKeys.DEEP_DARK);
@@ -278,7 +279,7 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.addOptionalTag(ConventionalBiomeTags.IS_RIVER);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_DEAD);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_WASTELAND);
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_END_ISLAND)
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_OUTER_END_ISLAND)
 				.add(BiomeKeys.END_HIGHLANDS)
 				.add(BiomeKeys.END_MIDLANDS)
 				.add(BiomeKeys.END_BARRENS);
@@ -312,7 +313,7 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SAVANNA_TREE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "tree_savanna"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_MOUNTAIN_PEAK).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "mountain_peak"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_MOUNTAIN_SLOPE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "mountain_slope"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_END_ISLAND).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "end_islands"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_OUTER_END_ISLAND).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "end_islands"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_NETHER_FOREST).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "nether_forests"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_FLOWER_FOREST).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "flower_forests"));
 	}

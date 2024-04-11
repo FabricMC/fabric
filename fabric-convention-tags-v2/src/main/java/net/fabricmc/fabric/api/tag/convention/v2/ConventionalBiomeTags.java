@@ -144,7 +144,7 @@ public final class ConventionalBiomeTags {
 	/**
 	 * Biomes that spawn as part of the large islands outside the center island in The End dimension.
 	 */
-	public static final TagKey<Biome> IS_END_ISLAND = register("is_end_island");
+	public static final TagKey<Biome> IS_OUTER_END_ISLAND = register("is_outer_end_island");
 	public static final TagKey<Biome> IS_NETHER_FOREST = register("is_nether_forest");
 	/**
 	 * For snowy plains-like biomes.
