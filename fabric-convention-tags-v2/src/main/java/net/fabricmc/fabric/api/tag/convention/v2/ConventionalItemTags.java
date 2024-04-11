@@ -64,7 +64,7 @@ public final class ConventionalItemTags {
 	/**
 	 * Collects the many enchantable tags into one parent collection for ease.
 	 */
-	public static final TagKey<Item> ENCHANTABLE = register("enchantable");
+	public static final TagKey<Item> ENCHANTABLES = register("enchantables");
 
 	// Ores and ingots - categories
 	public static final TagKey<Item> BRICKS = register("bricks");

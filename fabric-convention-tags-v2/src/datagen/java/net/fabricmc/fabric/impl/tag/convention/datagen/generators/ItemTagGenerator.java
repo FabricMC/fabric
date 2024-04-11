@@ -416,7 +416,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ItemTags.LEG_ARMOR)
 				.addOptionalTag(ItemTags.FOOT_ARMOR);
 
-		getOrCreateTagBuilder(ConventionalItemTags.ENCHANTABLE)
+		getOrCreateTagBuilder(ConventionalItemTags.ENCHANTABLES)
 				.addOptionalTag(ItemTags.ARMOR_ENCHANTABLE)
 				.addOptionalTag(ItemTags.EQUIPPABLE_ENCHANTABLE)
 				.addOptionalTag(ItemTags.WEAPON_ENCHANTABLE)

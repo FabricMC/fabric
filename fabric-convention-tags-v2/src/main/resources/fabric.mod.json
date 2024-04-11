@@ -17,7 +17,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.15.6",
-    "minecraft": ">=1.20.5",
+    "minecraft": ">=1.20.5-beta.1",
     "fabric-lifecycle-events-v1": "*"
   },
   "mixins": [],
