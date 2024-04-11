@@ -48,7 +48,7 @@ public final class ParticleTestSetup implements ModInitializer {
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(CommandManager.literal("addparticletestblocks").executes(context -> {
-				PlayerInventory inventory = context.getSource().getPlayer().getInventory();
+				PlayerInventory inventory = context.getSource().getPlayerOrThrow().getInventory();
 				inventory.offerOrDrop(new ItemStack(ALWAYS_TINTED));
 				inventory.offerOrDrop(new ItemStack(TINTED_OVER_WATER));
 				inventory.offerOrDrop(new ItemStack(NEVER_TINTED));

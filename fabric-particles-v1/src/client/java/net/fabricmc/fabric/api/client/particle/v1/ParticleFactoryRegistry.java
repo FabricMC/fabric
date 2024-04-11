@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.particle.v1;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
@@ -29,6 +31,7 @@ import net.fabricmc.fabric.impl.client.particle.ParticleFactoryRegistryImpl;
  *
  * @see FabricParticleTypes
  */
+@ApiStatus.NonExtendable
 public interface ParticleFactoryRegistry {
 	static ParticleFactoryRegistry getInstance() {
 		return ParticleFactoryRegistryImpl.INSTANCE;
