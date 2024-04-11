@@ -278,7 +278,10 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.addOptionalTag(ConventionalBiomeTags.IS_RIVER);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_DEAD);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_WASTELAND);
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_END_ISLAND);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_END_ISLAND)
+				.add(BiomeKeys.END_HIGHLANDS)
+				.add(BiomeKeys.END_MIDLANDS)
+				.add(BiomeKeys.END_BARRENS);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_NETHER_FOREST)
 				.add(BiomeKeys.WARPED_FOREST)
 				.add(BiomeKeys.CRIMSON_FOREST);
