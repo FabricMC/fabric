@@ -70,7 +70,7 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_AQUATIC_ICY = register("is_aquatic_icy");
 	/**
-	 * Biomes that exist on the shoreline of a body of water.
+	 * Biomes that are dedicated to spawning on the shoreline of a body of water.
 	 */
 	public static final TagKey<Biome> IS_BEACH = register("is_beach");
 	/**
@@ -120,7 +120,8 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_AQUATIC = register("is_aquatic");
 	/**
-	 * Barren biomes that lack vegetation.
+	 * Biomes that lack any natural life or vegetation.
+	 * (Example, land destroyed and sterilized by nuclear weapons)
 	 */
 	public static final TagKey<Biome> IS_WASTELAND = register("is_wasteland");
 	/**
@@ -132,8 +133,9 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_FLORAL = register("is_floral");
 	/**
-	 * For biomes where snow, and not ice, naturally spawns as a predominant feature.
-	 * For biomes where ice is a predominant feature, see {@link ConventionalBiomeTags#IS_ICY}.
+	 * For biomes that contains lots of naturally spawned snow.
+	 * For biomes where lot of ice is present, see {@link ConventionalBiomeTags#IS_ICY}.
+	 * Biome with lots of both snow and ice may be in both tags.
 	 */
 	public static final TagKey<Biome> IS_SNOWY = register("is_snowy");
 
