@@ -142,7 +142,7 @@ public final class ConventionalBiomeTags {
 	public static final TagKey<Biome> IS_BADLANDS = register("is_badlands");
 	public static final TagKey<Biome> IS_CAVE = register("is_cave");
 	/**
-	 * Biomes that spawn as or on islands in the End.
+	 * Biomes that spawn as part of the large islands outside the center island in The End dimension.
 	 */
 	public static final TagKey<Biome> IS_END_ISLAND = register("is_end_island");
 	public static final TagKey<Biome> IS_NETHER_FOREST = register("is_nether_forest");
