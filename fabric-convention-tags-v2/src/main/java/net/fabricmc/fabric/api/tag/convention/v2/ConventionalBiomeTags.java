@@ -20,7 +20,6 @@ import net.minecraft.registry.tag.TagKey;
 import net.minecraft.world.biome.Biome;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
-import net.minecraft.world.gen.structure.Structure;
 
 /**
  * See {@link net.minecraft.registry.tag.BiomeTags} for vanilla tags.
