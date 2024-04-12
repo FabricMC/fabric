@@ -30,7 +30,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>For preventing block breaking client side and other purposes, see {@link net.fabricmc.fabric.api.event.player.AttackBlockCallback}.
  * For server side block break events, see {@link net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents}.
  */
-public class ClientPlayerBlockBreakEvents {
+public final class ClientPlayerBlockBreakEvents {
+	private ClientPlayerBlockBreakEvents() {
+	}
+
 	/**
 	 * Callback after a block is broken client side.
 	 *
