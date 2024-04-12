@@ -30,6 +30,13 @@ import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 public final class ConventionalBiomeTags {
 	private ConventionalBiomeTags() {
 	}
+	
+	/**
+	 * For biomes that should not spawn monsters over time the normal way.
+	 * In other words, their Spawners and Spawn Cost entries have the monster category empty.
+	 * Example: Mushroom Biomes not having Zombies, Creepers, Skeleton, nor any other normal monsters.
+	 */
+	public static final TagKey<Biome> NO_DEFAULT_MONSTERS = register("no_default_monsters");
 
 	public static final TagKey<Biome> IS_VOID = register("is_void");
 
@@ -162,13 +169,6 @@ public final class ConventionalBiomeTags {
 	 * Biomes that spawn as part of the large islands outside the center island in The End dimension.
 	 */
 	public static final TagKey<Biome> IS_OUTER_END_ISLAND = register("is_outer_end_island");
-
-	/**
-	 * For biomes that should not spawn monsters over time the normal way.
-	 * In other words, their Spawners and Spawn Cost entries have the monster category empty.
-	 * Example: Mushroom Biomes not having Zombies, Creepers, Skeleton, nor any other normal monsters.
-	 */
-	public static final TagKey<Biome> NO_DEFAULT_MONSTERS = register("no_default_monsters");
 
 	private static TagKey<Biome> register(String tagId) {
 		return TagRegistration.BIOME_TAG.registerC(tagId);
