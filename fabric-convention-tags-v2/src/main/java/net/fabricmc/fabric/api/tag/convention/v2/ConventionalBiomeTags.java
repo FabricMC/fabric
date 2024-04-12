@@ -20,6 +20,7 @@ import net.minecraft.registry.tag.TagKey;
 import net.minecraft.world.biome.Biome;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
+import net.minecraft.world.gen.structure.Structure;
 
 /**
  * See {@link net.minecraft.registry.tag.BiomeTags} for vanilla tags.
@@ -37,6 +38,11 @@ public final class ConventionalBiomeTags {
 	 * Example: Mushroom Biomes not having Zombies, Creepers, Skeleton, nor any other normal monsters.
 	 */
 	public static final TagKey<Biome> NO_DEFAULT_MONSTERS = register("no_default_monsters");
+	/**
+	 * Biomes that should not be locatable/selectable by modded biome-locating items or abilities.
+	 */
+	public static final TagKey<Biome> HIDDEN_FROM_LOCATOR_SELECTION = register("hidden_from_locator_selection");
+
 
 	public static final TagKey<Biome> IS_VOID = register("is_void");
 

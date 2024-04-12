@@ -172,6 +172,7 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(ConventionalBiomeTags.NO_DEFAULT_MONSTERS)
 				.add(BiomeKeys.MUSHROOM_FIELDS)
 				.add(BiomeKeys.DEEP_DARK);
+		getOrCreateTagBuilder(ConventionalBiomeTags.HIDDEN_FROM_LOCATOR_SELECTION); // Create tag file for visibility
 	}
 
 	private void generateClimateAndVegetationTags() {
