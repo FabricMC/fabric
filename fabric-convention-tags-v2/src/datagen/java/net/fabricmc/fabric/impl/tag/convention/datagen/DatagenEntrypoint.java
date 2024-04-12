@@ -24,6 +24,7 @@ import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EnchantmentTag
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EntityTypeTagGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.FluidTagGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.ItemTagGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.StructureTagGenerator;
 
 public class DatagenEntrypoint implements DataGeneratorEntrypoint {
 	@Override
@@ -35,6 +36,7 @@ public class DatagenEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider(FluidTagGenerator::new);
 		pack.addProvider(EnchantmentTagGenerator::new);
 		pack.addProvider(BiomeTagGenerator::new);
+		pack.addProvider(StructureTagGenerator::new);
 		pack.addProvider(EntityTypeTagGenerator::new);
 	}
 }
