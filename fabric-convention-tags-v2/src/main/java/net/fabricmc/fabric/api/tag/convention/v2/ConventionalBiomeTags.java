@@ -30,7 +30,7 @@ import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 public final class ConventionalBiomeTags {
 	private ConventionalBiomeTags() {
 	}
-	
+
 	/**
 	 * For biomes that should not spawn monsters over time the normal way.
 	 * In other words, their Spawners and Spawn Cost entries have the monster category empty.
