@@ -33,6 +33,7 @@ public final class ConventionalEntityTypeTags {
 	 * Tag containing entity types that display a boss health bar.
 	 */
 	public static final TagKey<EntityType<?>> BOSSES = register("bosses");
+
 	public static final TagKey<EntityType<?>> MINECARTS = register("minecarts");
 	public static final TagKey<EntityType<?>> BOATS = register("boats");
 

@@ -35,8 +35,8 @@ import net.minecraft.registry.tag.TagKey;
  * For non-dynamic registry entries, the simpler {@link #isIn(TagKey, Object)} can be used.
  */
 public final class TagUtil {
-	public static String C_TAG_NAMESPACE = "c";
-	public static String FABRIC_TAG_NAMESPACE = "fabric";
+	public static final String C_TAG_NAMESPACE = "c";
+	public static final String FABRIC_TAG_NAMESPACE = "fabric";
 
 	private TagUtil() {
 	}

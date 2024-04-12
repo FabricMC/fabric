@@ -43,14 +43,14 @@ import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ConventionLogWarnings implements ModInitializer {
-	public static final String LOG_LEGACY_WARNING_MODE = System.getProperty("fabric-tag-conventions-v1.legacyTagWarning", LOG_WARNING_MODES.DEV_SHORT.name());
-	public enum LOG_WARNING_MODES {
+	private static final String LOG_LEGACY_WARNING_MODE = System.getProperty("fabric-tag-conventions-v1.legacyTagWarning", LOG_WARNING_MODES.DEV_SHORT.name());
+	private enum LOG_WARNING_MODES {
 		SILENCED,
 		DEV_SHORT,
 		DEV_VERBOSE
 	}
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(ConventionLogWarnings.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConventionLogWarnings.class);
 
 	/**
 	 * Old `c` tags that we migrated to a new tag under a new convention.

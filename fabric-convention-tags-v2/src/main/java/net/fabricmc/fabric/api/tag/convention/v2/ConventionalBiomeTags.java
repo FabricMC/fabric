@@ -31,60 +31,14 @@ public final class ConventionalBiomeTags {
 	private ConventionalBiomeTags() {
 	}
 
+	public static final TagKey<Biome> IS_VOID = register("is_void");
+
 	/**
 	 * Biomes that spawn in the Overworld.
 	 * (This is for people who want to tag their biomes as Overworld without getting
 	 * side effects from {@link net.minecraft.registry.tag.BiomeTags.IS_OVERWORLD})
 	 */
 	public static final TagKey<Biome> IS_OVERWORLD = register("is_overworld");
-	/**
-	 * Biomes that spawn in the End.
-	 * (This is for people who want to tag their biomes as End without getting
-	 * side effects from {@link net.minecraft.registry.tag.BiomeTags.IS_END})
-	 */
-	public static final TagKey<Biome> IS_END = register("is_end");
-	/**
-	 * Biomes that spawn in the Nether.
-	 * (This is for people who want to tag their biomes as Nether without getting
-	 * side effects from {@link net.minecraft.registry.tag.BiomeTags.IS_NETHER})
-	 */
-	public static final TagKey<Biome> IS_NETHER = register("is_nether");
-	public static final TagKey<Biome> IS_TAIGA = register("is_taiga");
-	public static final TagKey<Biome> IS_EXTREME_HILLS = register("is_extreme_hills");
-	public static final TagKey<Biome> IS_WINDSWEPT = register("is_windswept");
-	public static final TagKey<Biome> IS_JUNGLE = register("is_jungle");
-	/**
-	 * For temperate or warmer plains-like biomes.
-	 * For snowy plains-like biomes, see {@link ConventionalBiomeTags#IS_SNOWY_PLAINS}.
-	 */
-	public static final TagKey<Biome> IS_PLAINS = register("is_plains");
-	public static final TagKey<Biome> IS_SAVANNA = register("is_savanna");
-	/**
-	 * For land biomes where ice naturally spawns.
-	 * For biomes where snow alone spawns, see {@link ConventionalBiomeTags#IS_SNOWY}.
-	 */
-	public static final TagKey<Biome> IS_ICY = register("is_icy");
-	/**
-	 * For water biomes where ice naturally spawns.
-	 * For biomes where snow alone spawns, see {@link ConventionalBiomeTags#IS_SNOWY}.
-	 */
-	public static final TagKey<Biome> IS_AQUATIC_ICY = register("is_aquatic_icy");
-	/**
-	 * Biomes that are dedicated to spawning on the shoreline of a body of water.
-	 */
-	public static final TagKey<Biome> IS_BEACH = register("is_beach");
-	/**
-	 * Biomes densely populated with deciduous trees.
-	 */
-	public static final TagKey<Biome> IS_FOREST = register("is_forest");
-	public static final TagKey<Biome> IS_BIRCH_FOREST = register("is_birch_forest");
-	public static final TagKey<Biome> IS_OCEAN = register("is_ocean");
-	public static final TagKey<Biome> IS_DESERT = register("is_desert");
-	public static final TagKey<Biome> IS_RIVER = register("is_river");
-	public static final TagKey<Biome> IS_SWAMP = register("is_swamp");
-	public static final TagKey<Biome> IS_MUSHROOM = register("is_mushroom");
-	public static final TagKey<Biome> IS_UNDERGROUND = register("is_underground");
-	public static final TagKey<Biome> IS_MOUNTAIN = register("is_mountain");
 
 	public static final TagKey<Biome> IS_HOT = register("is_hot");
 	public static final TagKey<Biome> IS_HOT_OVERWORLD = register("is_hot/overworld");
@@ -112,13 +66,50 @@ public final class ConventionalBiomeTags {
 	public static final TagKey<Biome> IS_JUNGLE_TREE = register("is_tree/jungle");
 	public static final TagKey<Biome> IS_DECIDUOUS_TREE = register("is_tree/deciduous");
 
-	public static final TagKey<Biome> IS_VOID = register("is_void");
+	public static final TagKey<Biome> IS_MOUNTAIN = register("is_mountain");
 	public static final TagKey<Biome> IS_MOUNTAIN_PEAK = register("is_mountain/peak");
 	public static final TagKey<Biome> IS_MOUNTAIN_SLOPE = register("is_mountain/slope");
+
 	/**
-	 * Biomes consisting primarily of water.
+	 * For temperate or warmer plains-like biomes.
+	 * For snowy plains-like biomes, see {@link ConventionalBiomeTags#IS_SNOWY_PLAINS}.
 	 */
-	public static final TagKey<Biome> IS_AQUATIC = register("is_aquatic");
+	public static final TagKey<Biome> IS_PLAINS = register("is_plains");
+	/**
+	 * For snowy plains-like biomes.
+	 * For warmer plains-like biomes, see {@link ConventionalBiomeTags#IS_PLAINS}.
+	 */
+	public static final TagKey<Biome> IS_SNOWY_PLAINS = register("is_snowy_plains");
+	/**
+	 * Biomes densely populated with deciduous trees.
+	 */
+	public static final TagKey<Biome> IS_FOREST = register("is_forest");
+	public static final TagKey<Biome> IS_BIRCH_FOREST = register("is_birch_forest");
+	public static final TagKey<Biome> IS_FLOWER_FOREST = register("is_flower_forest");
+	public static final TagKey<Biome> IS_TAIGA = register("is_taiga");
+	public static final TagKey<Biome> IS_OLD_GROWTH = register("is_old_growth");
+	public static final TagKey<Biome> IS_EXTREME_HILLS = register("is_extreme_hills");
+	public static final TagKey<Biome> IS_WINDSWEPT = register("is_windswept");
+	public static final TagKey<Biome> IS_JUNGLE = register("is_jungle");
+	public static final TagKey<Biome> IS_SAVANNA = register("is_savanna");
+	public static final TagKey<Biome> IS_SWAMP = register("is_swamp");
+	public static final TagKey<Biome> IS_DESERT = register("is_desert");
+	public static final TagKey<Biome> IS_BADLANDS = register("is_badlands");
+	/**
+	 * Biomes that are dedicated to spawning on the shoreline of a body of water.
+	 */
+	public static final TagKey<Biome> IS_BEACH = register("is_beach");
+	public static final TagKey<Biome> IS_STONY_SHORES = register("is_stony_shores");
+	public static final TagKey<Biome> IS_MUSHROOM = register("is_mushroom");
+
+	public static final TagKey<Biome> IS_RIVER = register("is_river");
+	public static final TagKey<Biome> IS_OCEAN = register("is_ocean");
+	public static final TagKey<Biome> IS_DEEP_OCEAN = register("is_deep_ocean");
+	public static final TagKey<Biome> IS_SHALLOW_OCEAN = register("is_shallow_ocean");
+
+	public static final TagKey<Biome> IS_UNDERGROUND = register("is_underground");
+	public static final TagKey<Biome> IS_CAVE = register("is_cave");
+
 	/**
 	 * Biomes that lack any natural life or vegetation.
 	 * (Example, land destroyed and sterilized by nuclear weapons)
@@ -138,24 +129,39 @@ public final class ConventionalBiomeTags {
 	 * Biome with lots of both snow and ice may be in both tags.
 	 */
 	public static final TagKey<Biome> IS_SNOWY = register("is_snowy");
+	/**
+	 * For land biomes where ice naturally spawns.
+	 * For biomes where snow alone spawns, see {@link ConventionalBiomeTags#IS_SNOWY}.
+	 */
+	public static final TagKey<Biome> IS_ICY = register("is_icy");
+	/**
+	 * Biomes consisting primarily of water.
+	 */
+	public static final TagKey<Biome> IS_AQUATIC = register("is_aquatic");
+	/**
+	 * For water biomes where ice naturally spawns.
+	 * For biomes where snow alone spawns, see {@link ConventionalBiomeTags#IS_SNOWY}.
+	 */
+	public static final TagKey<Biome> IS_AQUATIC_ICY = register("is_aquatic_icy");
 
-	public static final TagKey<Biome> IS_BADLANDS = register("is_badlands");
-	public static final TagKey<Biome> IS_CAVE = register("is_cave");
+	/**
+	 * Biomes that spawn in the Nether.
+	 * (This is for people who want to tag their biomes as Nether without getting
+	 * side effects from {@link net.minecraft.registry.tag.BiomeTags.IS_NETHER})
+	 */
+	public static final TagKey<Biome> IS_NETHER = register("is_nether");
+	public static final TagKey<Biome> IS_NETHER_FOREST = register("is_nether_forest");
+
+	/**
+	 * Biomes that spawn in the End.
+	 * (This is for people who want to tag their biomes as End without getting
+	 * side effects from {@link net.minecraft.registry.tag.BiomeTags.IS_END})
+	 */
+	public static final TagKey<Biome> IS_END = register("is_end");
 	/**
 	 * Biomes that spawn as part of the large islands outside the center island in The End dimension.
 	 */
 	public static final TagKey<Biome> IS_OUTER_END_ISLAND = register("is_outer_end_island");
-	public static final TagKey<Biome> IS_NETHER_FOREST = register("is_nether_forest");
-	/**
-	 * For snowy plains-like biomes.
-	 * For warmer plains-like biomes, see {@link ConventionalBiomeTags#IS_PLAINS}.
-	 */
-	public static final TagKey<Biome> IS_SNOWY_PLAINS = register("is_snowy_plains");
-	public static final TagKey<Biome> IS_STONY_SHORES = register("is_stony_shores");
-	public static final TagKey<Biome> IS_FLOWER_FOREST = register("is_flower_forest");
-	public static final TagKey<Biome> IS_OLD_GROWTH = register("is_old_growth");
-	public static final TagKey<Biome> IS_DEEP_OCEAN = register("is_deep_ocean");
-	public static final TagKey<Biome> IS_SHALLOW_OCEAN = register("is_shallow_ocean");
 
 	/**
 	 * For biomes that should not spawn monsters over time the normal way.
