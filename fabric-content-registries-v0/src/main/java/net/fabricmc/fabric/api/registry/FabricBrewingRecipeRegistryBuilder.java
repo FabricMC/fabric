@@ -21,7 +21,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.recipe.BrewingRecipeRegistry;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.resource.featuretoggle.FeatureFlag;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -39,15 +39,19 @@ public interface FabricBrewingRecipeRegistryBuilder {
 		}
 	});
 
-	default void registerItemRecipe(Item input, Ingredient ingredient, Item output, FeatureFlag... requiredFeatures) {
+	default void registerItemRecipe(Item input, Ingredient ingredient, Item output) {
 		throw new AssertionError("Must be implemented via interface injection");
 	}
 
-	default void registerPotionRecipe(RegistryEntry<Potion> input, Ingredient ingredient, RegistryEntry<Potion> output, FeatureFlag... requiredFeatures) {
+	default void registerPotionRecipe(RegistryEntry<Potion> input, Ingredient ingredient, RegistryEntry<Potion> output) {
 		throw new AssertionError("Must be implemented via interface injection");
 	}
 
-	default void registerRecipes(Ingredient ingredient, RegistryEntry<Potion> potion, FeatureFlag... requiredFeatures) {
+	default void registerRecipes(Ingredient ingredient, RegistryEntry<Potion> potion) {
+		throw new AssertionError("Must be implemented via interface injection");
+	}
+
+	default FeatureSet getEnabledFeatures() {
 		throw new AssertionError("Must be implemented via interface injection");
 	}
 

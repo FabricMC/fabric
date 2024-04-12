@@ -31,8 +31,6 @@ import net.minecraft.potion.Potions;
 import net.minecraft.recipe.BrewingRecipeRegistry;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.resource.featuretoggle.FeatureFlag;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
@@ -61,8 +59,8 @@ public abstract class BrewingRecipeRegistryBuilderMixin implements FabricBrewing
 	}
 
 	@Override
-	public void registerItemRecipe(Item input, Ingredient ingredient, Item output, FeatureFlag... requiredFeatures) {
-		if (input.isEnabled(this.enabledFeatures) && FeatureFlags.FEATURE_MANAGER.featureSetOf(requiredFeatures).isSubsetOf(this.enabledFeatures) && output.isEnabled(this.enabledFeatures)) {
+	public void registerItemRecipe(Item input, Ingredient ingredient, Item output) {
+		if (input.isEnabled(this.enabledFeatures) && output.isEnabled(this.enabledFeatures)) {
 			assertPotion(input);
 			assertPotion(output);
 			this.itemRecipes.add(new BrewingRecipeRegistry.Recipe<>(input.getRegistryEntry(), ingredient, output.getRegistryEntry()));
@@ -70,17 +68,22 @@ public abstract class BrewingRecipeRegistryBuilderMixin implements FabricBrewing
 	}
 
 	@Override
-	public void registerPotionRecipe(RegistryEntry<Potion> input, Ingredient ingredient, RegistryEntry<Potion> output, FeatureFlag... requiredFeatures) {
-		if (input.value().isEnabled(this.enabledFeatures) && FeatureFlags.FEATURE_MANAGER.featureSetOf(requiredFeatures).isSubsetOf(this.enabledFeatures) && output.value().isEnabled(this.enabledFeatures)) {
+	public void registerPotionRecipe(RegistryEntry<Potion> input, Ingredient ingredient, RegistryEntry<Potion> output) {
+		if (input.value().isEnabled(this.enabledFeatures) && output.value().isEnabled(this.enabledFeatures)) {
 			this.potionRecipes.add(new BrewingRecipeRegistry.Recipe<>(input, ingredient, output));
 		}
 	}
 
 	@Override
-	public void registerRecipes(Ingredient ingredient, RegistryEntry<Potion> potion, FeatureFlag... requiredFeatures) {
+	public void registerRecipes(Ingredient ingredient, RegistryEntry<Potion> potion) {
 		if (potion.value().isEnabled(this.enabledFeatures)) {
-			this.registerPotionRecipe(Potions.WATER, ingredient, Potions.MUNDANE, requiredFeatures);
-			this.registerPotionRecipe(Potions.AWKWARD, ingredient, potion, requiredFeatures);
+			this.registerPotionRecipe(Potions.WATER, ingredient, Potions.MUNDANE);
+			this.registerPotionRecipe(Potions.AWKWARD, ingredient, potion);
 		}
+	}
+
+	@Override
+	public FeatureSet getEnabledFeatures() {
+		return this.enabledFeatures;
 	}
 }
