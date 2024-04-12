@@ -147,6 +147,7 @@ public final class ConventionalBlockTags {
 
 	/**
 	 * Tag that holds all blocks that recipe viewers should not show to users.
+	 * Recipe viewers may use this to automatically find the corresponding BlockItem to hide.
 	 */
 	public static final TagKey<Block> HIDDEN_FROM_RECIPE_VIEWERS = register("hidden_from_recipe_viewers");
 
