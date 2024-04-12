@@ -30,6 +30,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.PotionItem;
+import net.minecraft.potion.Potions;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -37,6 +39,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
@@ -47,8 +50,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.registry.BrewingRecipeRegistryBuilderCallback;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
+import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
@@ -84,6 +87,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - assign a loot table to the nitwit villager type
 		//  - right-clicking a 'test_event' block will emit a 'test_event' game event, which will have a sculk sensor frequency of 2
 		//  - instant health potions can be brewed from awkward potions with any item in the 'minecraft:small_flowers' tag
+		//  - if Bundle experiment is enabled, luck potions can be brewed from awkward potions with a bundle
 		//  - dirty potions can be brewed by adding any item in the 'minecraft:dirt' tag to any standard potion
 
 		CompostingChanceRegistry.INSTANCE.add(Items.OBSIDIAN, 0.5F);
@@ -156,11 +160,11 @@ public final class ContentRegistryTest implements ModInitializer {
 				dirtyPotion);
 		/* Mods should use BrewingRecipeRegistry.registerPotionType(Item), which is access widened by fabric-transitive-access-wideners-v1
 		 * This testmod uses an accessor due to Loom limitations that prevent TAWs from applying across Gradle subproject boundaries */
-		BrewingRecipeRegistryBuilderCallback.BUILD.register(builder -> {
-			builder.method_59702(dirtyPotion);
-			// TODO 1.20.5 Ingredient.fromTag(ItemTags.DIRT)
-			builder.method_59703(Items.POTION, Items.DIRT, dirtyPotion);
-			// registerPotionRecipe(Potions.AWKWARD, Ingredient.fromTag(ItemTags.SMALL_FLOWERS), Potions.HEALING);
+		FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> {
+			builder.registerPotionType(dirtyPotion);
+			builder.registerItemRecipe(Items.POTION, Ingredient.fromTag(ItemTags.DIRT), dirtyPotion);
+			builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.fromTag(ItemTags.SMALL_FLOWERS), Potions.HEALING);
+			builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.ofItems(Items.BUNDLE), Potions.LUCK, FeatureFlags.BUNDLE);
 		});
 	}
 
