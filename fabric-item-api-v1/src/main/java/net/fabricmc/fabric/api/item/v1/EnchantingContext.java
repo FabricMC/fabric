@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.item.v1;
 
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.math.random.Random;
 
 /*
@@ -36,7 +37,7 @@ public enum EnchantingContext {
 	 * When generating a random enchantment for the item. This includes the enchanting table, random
 	 * mob equipment, and the {@code enchant_with_levels} loot function.
 	 *
-	 * @see EnchantmentHelper#generateEnchantments(Random, ItemStack, int, boolean)
+	 * @see EnchantmentHelper#generateEnchantments(FeatureSet, Random, ItemStack, int, boolean)
 	 */
 	RANDOM_ENCHANTMENT,
 	/**
