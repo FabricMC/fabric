@@ -42,7 +42,6 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> HIDDEN_FROM_LOCATOR_SELECTION = register("hidden_from_locator_selection");
 
-
 	public static final TagKey<Biome> IS_VOID = register("is_void");
 
 	/**
