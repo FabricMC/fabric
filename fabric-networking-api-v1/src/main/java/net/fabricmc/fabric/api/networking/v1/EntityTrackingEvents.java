@@ -99,17 +99,16 @@ public final class EntityTrackingEvents {
 	/**
 	 * @deprecated Use {#BEFORE_START_TRACKING} or {@link #AFTER_START_TRACKING} instead
 	 */
-	@Deprecated(forRemoval = true)
-	public static final Event<BeforeStartTracking> START_TRACKING = BEFORE_START_TRACKING;
-
-	@Deprecated(forRemoval = true)
-	@FunctionalInterface
-	public interface StartTracking extends BeforeStartTracking {
-		void onStartTracking(Entity trackedEntity, ServerPlayerEntity player);
-
-		@Override
-		default void beforeStartTracking(Entity trackedEntity, ServerPlayerEntity player) {
-			onStartTracking(trackedEntity, player);
+	@Deprecated()
+	public static final Event<StartTracking> START_TRACKING = EventFactory.createArrayBacked(StartTracking.class, callbacks -> (trackedEntity, player) -> {
+		for (StartTracking callback : callbacks) {
+			callback.onStartTracking(trackedEntity, player);
 		}
+	});
+
+	@Deprecated()
+	@FunctionalInterface
+	public interface StartTracking {
+		void onStartTracking(Entity trackedEntity, ServerPlayerEntity player);
 	}
 }
