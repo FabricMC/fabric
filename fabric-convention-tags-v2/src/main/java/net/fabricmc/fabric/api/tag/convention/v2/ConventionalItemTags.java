@@ -279,6 +279,7 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> WOODEN_RODS = register("rods/wooden");
 	public static final TagKey<Item> BLAZE_RODS = register("rods/blaze");
+	public static final TagKey<Item> BREEZE_RODS = register("rods/breeze");
 	public static final TagKey<Item> ROPES = register("ropes");
 	public static final TagKey<Item> CHAINS = register("chains");
 

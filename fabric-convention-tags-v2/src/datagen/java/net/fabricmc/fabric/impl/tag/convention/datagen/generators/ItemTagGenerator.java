@@ -297,7 +297,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 		// Vanilla instances
 		getOrCreateTagBuilder(ConventionalItemTags.NORMAL_BRICKS)
-				.add(Items.BRICKS);
+				.add(Items.BRICK);
 		getOrCreateTagBuilder(ConventionalItemTags.NETHER_BRICKS)
 				.add(Items.NETHER_BRICK);
 
@@ -455,9 +455,13 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.BLAZE_RODS)
 				.add(Items.BLAZE_ROD);
 
+		getOrCreateTagBuilder(ConventionalItemTags.BREEZE_RODS)
+				.add(Items.BREEZE_ROD);
+
 		getOrCreateTagBuilder(ConventionalItemTags.RODS)
 				.addOptionalTag(ConventionalItemTags.WOODEN_RODS)
-				.addOptionalTag(ConventionalItemTags.BLAZE_RODS);
+				.addOptionalTag(ConventionalItemTags.BLAZE_RODS)
+				.addOptionalTag(ConventionalItemTags.BREEZE_RODS);
 
 		getOrCreateTagBuilder(ConventionalItemTags.ROPES); // Generate tag so others can see it exists through JSON.
 
