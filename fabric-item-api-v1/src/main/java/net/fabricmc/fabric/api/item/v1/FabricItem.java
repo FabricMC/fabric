@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.item.v1;
 
 import net.minecraft.component.type.AttributeModifiersComponent;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -105,6 +106,26 @@ public interface FabricItem {
 	 */
 	default ItemStack getRecipeRemainder(ItemStack stack) {
 		return ((Item) this).hasRecipeRemainder() ? ((Item) this).getRecipeRemainder().getDefaultStack() : ItemStack.EMPTY;
+	}
+
+	/**
+	 * Determines if the item is allowed to receive an {@link Enchantment}. This can be used to manually override what
+	 * enchantments a modded item is able to receive.
+	 *
+	 * <p>For example, one might want a modded item to be able to receive Unbreaking, but not Mending, which cannot be
+	 * achieved with the vanilla tag system alone. Alternatively, one might want to do the same thing with enchantments
+	 * from other mods, which don't have a similar tag system in general.</p>
+	 *
+	 * <p>Note that this method is only called <em>after</em> the {@link EnchantmentEvents#ALLOW_ENCHANTING} event, and
+	 * only if none of the listeners to that event override the result.</p>
+	 *
+	 * @param stack the current stack
+	 * @param enchantment the enchantment to check
+	 * @param context the context in which the enchantment is being checked
+	 * @return whether the enchantment is allowed to apply to the stack
+	 */
+	default boolean canBeEnchantedWith(ItemStack stack, Enchantment enchantment, EnchantingContext context) {
+		return enchantment.isAcceptableItem(stack);
 	}
 
 	/**
