@@ -47,49 +47,18 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 
 	private void generateDimensionTags() {
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_NETHER)
-				.addOptionalTag(BiomeTags.IS_NETHER)
-				.add(BiomeKeys.CRIMSON_FOREST)
-				.add(BiomeKeys.WARPED_FOREST)
-				.add(BiomeKeys.NETHER_WASTES)
-				.add(BiomeKeys.SOUL_SAND_VALLEY)
-				.add(BiomeKeys.BASALT_DELTAS);
+				.addOptionalTag(BiomeTags.IS_NETHER);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_END)
-				.addOptionalTag(BiomeTags.IS_END)
-				.add(BiomeKeys.END_BARRENS)
-				.add(BiomeKeys.END_MIDLANDS)
-				.add(BiomeKeys.END_HIGHLANDS)
-				.add(BiomeKeys.THE_END)
-				.add(BiomeKeys.SMALL_END_ISLANDS);
+				.addOptionalTag(BiomeTags.IS_END);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_OVERWORLD)
-				.addOptionalTag(BiomeTags.IS_OVERWORLD)
-				.add(BiomeKeys.RIVER, BiomeKeys.FROZEN_RIVER)
-				.add(BiomeKeys.COLD_OCEAN, BiomeKeys.DEEP_COLD_OCEAN)
-				.add(BiomeKeys.DEEP_FROZEN_OCEAN, BiomeKeys.DEEP_OCEAN)
-				.add(BiomeKeys.DEEP_LUKEWARM_OCEAN, BiomeKeys.WARM_OCEAN, BiomeKeys.LUKEWARM_OCEAN)
-				.add(BiomeKeys.FROZEN_OCEAN, BiomeKeys.OCEAN)
-				.add(BiomeKeys.BEACH, BiomeKeys.SNOWY_BEACH, BiomeKeys.STONY_SHORE)
-				.add(BiomeKeys.PLAINS, BiomeKeys.SUNFLOWER_PLAINS, BiomeKeys.SNOWY_PLAINS)
-				.add(BiomeKeys.ICE_SPIKES, BiomeKeys.DESERT)
-				.add(BiomeKeys.FOREST, BiomeKeys.FLOWER_FOREST, BiomeKeys.BIRCH_FOREST, BiomeKeys.DARK_FOREST)
-				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST, BiomeKeys.OLD_GROWTH_PINE_TAIGA, BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA)
-				.add(BiomeKeys.TAIGA, BiomeKeys.SNOWY_TAIGA)
-				.add(BiomeKeys.SWAMP, BiomeKeys.MANGROVE_SWAMP)
-				.add(BiomeKeys.SAVANNA, BiomeKeys.SAVANNA_PLATEAU)
-				.add(BiomeKeys.WINDSWEPT_HILLS, BiomeKeys.WINDSWEPT_GRAVELLY_HILLS, BiomeKeys.WINDSWEPT_FOREST, BiomeKeys.WINDSWEPT_SAVANNA)
-				.add(BiomeKeys.JUNGLE, BiomeKeys.SPARSE_JUNGLE, BiomeKeys.BAMBOO_JUNGLE)
-				.add(BiomeKeys.BADLANDS, BiomeKeys.ERODED_BADLANDS, BiomeKeys.WOODED_BADLANDS)
-				.add(BiomeKeys.MEADOW, BiomeKeys.GROVE, BiomeKeys.CHERRY_GROVE, BiomeKeys.SNOWY_SLOPES)
-				.add(BiomeKeys.FROZEN_PEAKS, BiomeKeys.JAGGED_PEAKS, BiomeKeys.STONY_PEAKS)
-				.add(BiomeKeys.MUSHROOM_FIELDS)
-				.add(BiomeKeys.DRIPSTONE_CAVES, BiomeKeys.LUSH_CAVES, BiomeKeys.DEEP_DARK);
+				.addOptionalTag(BiomeTags.IS_OVERWORLD);
 	}
 
 	private void generateCategoryTags() {
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TAIGA)
 				.addOptionalTag(BiomeTags.IS_TAIGA);
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_EXTREME_HILLS)
-				.add(BiomeKeys.WINDSWEPT_GRAVELLY_HILLS)
-				.add(BiomeKeys.WINDSWEPT_HILLS);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_HILL)
+				.addOptionalTag(BiomeTags.IS_HILL);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_WINDSWEPT)
 				.add(BiomeKeys.WINDSWEPT_HILLS)
 				.add(BiomeKeys.WINDSWEPT_GRAVELLY_HILLS)
@@ -101,10 +70,7 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.SUNFLOWER_PLAINS)
 				.add(BiomeKeys.PLAINS);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SAVANNA)
-				.addOptionalTag(BiomeTags.IS_SAVANNA)
-				.add(BiomeKeys.SAVANNA_PLATEAU)
-				.add(BiomeKeys.WINDSWEPT_SAVANNA)
-				.add(BiomeKeys.SAVANNA);
+				.addOptionalTag(BiomeTags.IS_SAVANNA);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_ICY)
 				.add(BiomeKeys.FROZEN_PEAKS)
 				.add(BiomeKeys.ICE_SPIKES);
@@ -122,17 +88,16 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.JAGGED_PEAKS)
 				.add(BiomeKeys.FROZEN_PEAKS);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_BEACH)
-				.addOptionalTag(BiomeTags.IS_BEACH)
-				.add(BiomeKeys.STONY_SHORE);
+				.addOptionalTag(BiomeTags.IS_BEACH);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_FOREST)
 				.addOptionalTag(BiomeTags.IS_FOREST);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_BIRCH_FOREST)
 				.add(BiomeKeys.BIRCH_FOREST)
 				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_OCEAN)
+				.addOptionalTag(BiomeTags.IS_OCEAN)
 				.addOptionalTag(ConventionalBiomeTags.IS_DEEP_OCEAN)
-				.addOptionalTag(ConventionalBiomeTags.IS_SHALLOW_OCEAN)
-				.addOptionalTag(BiomeTags.IS_OCEAN);
+				.addOptionalTag(ConventionalBiomeTags.IS_SHALLOW_OCEAN);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_DESERT)
 				.add(BiomeKeys.DESERT);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_RIVER)
@@ -145,7 +110,9 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_UNDERGROUND)
 				.addOptionalTag(ConventionalBiomeTags.IS_CAVE);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_MOUNTAIN)
-				.addOptionalTag(BiomeTags.IS_MOUNTAIN);
+				.addOptionalTag(BiomeTags.IS_MOUNTAIN)
+				.addOptionalTag(ConventionalBiomeTags.IS_MOUNTAIN_PEAK)
+				.addOptionalTag(ConventionalBiomeTags.IS_MOUNTAIN_SLOPE);
 	}
 
 	private void generateOtherBiomeTypes() {
@@ -158,11 +125,7 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VOID)
 				.add(BiomeKeys.THE_VOID);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_DEEP_OCEAN)
-				.addOptionalTag(BiomeTags.IS_DEEP_OCEAN)
-				.add(BiomeKeys.DEEP_OCEAN)
-				.add(BiomeKeys.DEEP_LUKEWARM_OCEAN)
-				.add(BiomeKeys.DEEP_COLD_OCEAN)
-				.add(BiomeKeys.DEEP_FROZEN_OCEAN);
+				.addOptionalTag(BiomeTags.IS_DEEP_OCEAN);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SHALLOW_OCEAN)
 				.add(BiomeKeys.OCEAN)
 				.add(BiomeKeys.LUKEWARM_OCEAN)

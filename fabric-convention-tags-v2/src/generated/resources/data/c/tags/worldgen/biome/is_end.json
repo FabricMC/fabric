@@ -4,11 +4,6 @@
       "id": "#minecraft:is_end",
       "required": false
     },
-    "minecraft:end_barrens",
-    "minecraft:end_midlands",
-    "minecraft:end_highlands",
-    "minecraft:the_end",
-    "minecraft:small_end_islands",
     {
       "id": "#c:in_the_end",
       "required": false

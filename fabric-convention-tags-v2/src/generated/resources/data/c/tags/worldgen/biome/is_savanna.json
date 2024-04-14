@@ -3,9 +3,6 @@
     {
       "id": "#minecraft:is_savanna",
       "required": false
-    },
-    "minecraft:savanna_plateau",
-    "minecraft:windswept_savanna",
-    "minecraft:savanna"
+    }
   ]
 }

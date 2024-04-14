@@ -4,11 +4,6 @@
       "id": "#minecraft:is_nether",
       "required": false
     },
-    "minecraft:crimson_forest",
-    "minecraft:warped_forest",
-    "minecraft:nether_wastes",
-    "minecraft:soul_sand_valley",
-    "minecraft:basalt_deltas",
     {
       "id": "#c:in_nether",
       "required": false

@@ -103,7 +103,10 @@ public final class ConventionalBiomeTags {
 	public static final TagKey<Biome> IS_FLOWER_FOREST = register("is_flower_forest");
 	public static final TagKey<Biome> IS_TAIGA = register("is_taiga");
 	public static final TagKey<Biome> IS_OLD_GROWTH = register("is_old_growth");
-	public static final TagKey<Biome> IS_EXTREME_HILLS = register("is_extreme_hills");
+	/**
+	 * Biomes that spawn as a hills biome. (Previously was called Extreme Hills biome in past)
+	 */
+	public static final TagKey<Biome> IS_HILL = register("is_hill");
 	public static final TagKey<Biome> IS_WINDSWEPT = register("is_windswept");
 	public static final TagKey<Biome> IS_JUNGLE = register("is_jungle");
 	public static final TagKey<Biome> IS_SAVANNA = register("is_savanna");

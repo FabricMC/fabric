@@ -1,7 +1,7 @@
 {
   "values": [
     {
-      "id": "#minecraft:is_beach",
+      "id": "#minecraft:is_hill",
       "required": false
     }
   ]
