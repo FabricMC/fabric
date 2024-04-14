@@ -115,7 +115,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @param <T> the type of entity
 	 *
 	 * @return a new living entity type builder
-	 * @deprecated use {@link FabricEntityType.Builder#createLiving(UnaryOperator)}
+	 * @deprecated use {@link FabricEntityType.Builder#createLiving(EntityType.EntityFactory, SpawnGroup, UnaryOperator)}
 	 */
 	@Deprecated
 	public static <T extends LivingEntity> FabricEntityTypeBuilder.Living<T> createLiving() {
@@ -128,7 +128,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @param <T> the type of entity
 	 *
 	 * @return a new mob entity type builder
-	 * @deprecated use {@link FabricEntityType.Builder#createMob(UnaryOperator)}
+	 * @deprecated use {@link FabricEntityType.Builder#createMob(EntityType.EntityFactory, SpawnGroup, UnaryOperator)}
 	 */
 	public static <T extends MobEntity> FabricEntityTypeBuilder.Mob<T> createMob() {
 		return new FabricEntityTypeBuilder.Mob<>(SpawnGroup.MISC, FabricEntityTypeBuilder::emptyFactory);
@@ -203,7 +203,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @param dimensions the dimensions representing the entity's size
 	 *
 	 * @return this builder for chaining
-	 * @deprecated use {@link EntityType.Builder#setDimensions(float, float)}
+	 * @deprecated use {@link EntityType.Builder#dimensions(float, float)}
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> dimensions(EntityDimensions dimensions) {
@@ -347,7 +347,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * An extended version of {@link FabricEntityTypeBuilder} with support for features on present on {@link LivingEntity living entities}, such as default attributes.
 	 *
 	 * @param <T> Entity class.
-	 * @deprecated use {@link EntityType.Builder#createLiving(UnaryOperator)}
+	 * @deprecated use {@link EntityType.Builder#createLiving(EntityType.EntityFactory, SpawnGroup, UnaryOperator)}
 	 */
 	@Deprecated
 	public static class Living<T extends LivingEntity> extends FabricEntityTypeBuilder<T> {
@@ -606,7 +606,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		 * <p>This is used by mobs to determine whether Minecraft should spawn an entity within a certain context.
 		 *
 		 * @return this builder for chaining.
-		 * @deprecated use {@link FabricEntityType.Builder.Mob#spawnRestriction(SpawnRestriction.Location, Heightmap.Type, SpawnRestriction.SpawnPredicate)}
+		 * @deprecated use {@link FabricEntityType.Builder.Mob#spawnRestriction(SpawnLocation, Heightmap.Type, SpawnRestriction.SpawnPredicate)}
 		 */
 		@Deprecated
 		public FabricEntityTypeBuilder.Mob<T> spawnRestriction(SpawnLocation spawnLocation, Heightmap.Type heightmap, SpawnRestriction.SpawnPredicate<T> spawnPredicate) {

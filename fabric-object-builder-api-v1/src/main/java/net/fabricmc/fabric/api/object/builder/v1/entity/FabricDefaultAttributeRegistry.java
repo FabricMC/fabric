@@ -71,11 +71,11 @@ public final class FabricDefaultAttributeRegistry {
 	 * <p>If a registration overrides another, a debug log message will be emitted. Existing registrations
 	 * can be checked at {@link net.minecraft.entity.attribute.DefaultAttributeRegistry#hasDefinitionFor(EntityType)}.</p>
 	 *
-	 * <p>For convenience, this can also be done on the {@link FabricEntityTypeBuilder} to simplify the building process.
+	 * <p>For convenience, this can also be done on the {@link FabricEntityType.Builder} to simplify the building process.
 	 *
 	 * @param type      the entity type
 	 * @param container the container for the default attribute
-	 * @see	FabricEntityTypeBuilder.Living#defaultAttributes(Supplier)
+	 * @see	FabricEntityType.Builder.Living#defaultAttributes(Supplier)
 	 */
 	public static void register(EntityType<? extends LivingEntity> type, DefaultAttributeContainer container) {
 		if (DefaultAttributeRegistryAccessor.getRegistry().put(type, container) != null) {

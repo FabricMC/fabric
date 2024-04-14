@@ -21,7 +21,7 @@ import net.minecraft.registry.DynamicRegistryManager;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-public class CommonLifecycleEvents {
+public final class CommonLifecycleEvents {
 	private CommonLifecycleEvents() {
 	}
 

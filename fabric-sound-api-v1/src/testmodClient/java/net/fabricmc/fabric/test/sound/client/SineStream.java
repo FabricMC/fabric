@@ -39,7 +39,7 @@ class SineStream implements AudioStream {
 	}
 
 	@Override
-	public ByteBuffer getBuffer(int capacity) {
+	public ByteBuffer read(int capacity) {
 		ByteBuffer buffer = BufferUtils.createByteBuffer(capacity);
 
 		for (int i = 0; i < capacity; i++) {
