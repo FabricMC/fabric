@@ -164,6 +164,7 @@ public final class ContentRegistryTest implements ModInitializer {
 			builder.registerPotionType(dirtyPotion);
 			builder.registerItemRecipe(Items.POTION, Ingredient.fromTag(ItemTags.DIRT), dirtyPotion);
 			builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.fromTag(ItemTags.SMALL_FLOWERS), Potions.HEALING);
+
 			if (builder.getEnabledFeatures().contains(FeatureFlags.BUNDLE)) {
 				builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.ofItems(Items.BUNDLE), Potions.LUCK);
 			}
