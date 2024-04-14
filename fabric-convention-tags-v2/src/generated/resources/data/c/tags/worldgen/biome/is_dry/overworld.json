@@ -1,21 +1,12 @@
 {
   "values": [
-    {
-      "id": "#c:is_nether",
-      "required": false
-    },
-    {
-      "id": "#c:is_badlands",
-      "required": false
-    },
-    {
-      "id": "#c:is_desert",
-      "required": false
-    },
-    {
-      "id": "#c:is_savanna",
-      "required": false
-    },
+    "minecraft:desert",
+    "minecraft:badlands",
+    "minecraft:wooded_badlands",
+    "minecraft:eroded_badlands",
+    "minecraft:savanna",
+    "minecraft:savanna_plateau",
+    "minecraft:windswept_savanna",
     {
       "id": "#c:climate_dry",
       "required": false

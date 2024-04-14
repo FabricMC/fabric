@@ -57,18 +57,22 @@ public final class ConventionalBiomeTags {
 
 	public static final TagKey<Biome> IS_HOT = register("is_hot");
 	public static final TagKey<Biome> IS_HOT_OVERWORLD = register("is_hot/overworld");
+	public static final TagKey<Biome> IS_HOT_NETHER = register("is_hot/nether");
 
 	public static final TagKey<Biome> IS_TEMPERATE = register("is_temperate");
 	public static final TagKey<Biome> IS_TEMPERATE_OVERWORLD = register("is_temperate/overworld");
 
 	public static final TagKey<Biome> IS_COLD = register("is_cold");
 	public static final TagKey<Biome> IS_COLD_OVERWORLD = register("is_cold/overworld");
+	public static final TagKey<Biome> IS_COLD_END = register("is_cold/end");
 
 	public static final TagKey<Biome> IS_WET = register("is_wet");
 	public static final TagKey<Biome> IS_WET_OVERWORLD = register("is_wet/overworld");
 
 	public static final TagKey<Biome> IS_DRY = register("is_dry");
 	public static final TagKey<Biome> IS_DRY_OVERWORLD = register("is_dry/overworld");
+	public static final TagKey<Biome> IS_DRY_NETHER = register("is_dry/nether");
+	public static final TagKey<Biome> IS_DRY_END = register("is_dry/end");
 
 	public static final TagKey<Biome> IS_VEGETATION_SPARSE = register("is_sparse_vegetation");
 	public static final TagKey<Biome> IS_VEGETATION_SPARSE_OVERWORLD = register("is_sparse_vegetation/overworld");
