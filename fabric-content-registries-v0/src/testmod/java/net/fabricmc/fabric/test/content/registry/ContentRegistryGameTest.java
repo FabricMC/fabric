@@ -67,7 +67,7 @@ public class ContentRegistryGameTest {
 		context.complete();
 	}
 
-	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 120)
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 110)
 	public void testFuelRegistry(TestContext context) {
 		BlockPos pos = new BlockPos(0, 1, 0);
 		// Use blast furnace to make it cook faster (100 ticks / 200 ticks)
@@ -89,9 +89,9 @@ public class ContentRegistryGameTest {
 		hopper.setStack(0, new ItemStack(Items.OBSIDIAN, 2));
 		hopper.setStack(1, new ItemStack(Items.DIRT));
 
-		context.waitAndRun(110, () -> {
+		context.waitAndRun(105, () -> {
 			context.assertTrue(hopper.isEmpty(), "fuel hopper should have been emptied");
-			context.assertTrue(ItemStack.areEqual(hopper.getStack(2), new ItemStack(Items.IRON_INGOT, 1)), "one iron ingot should have been smelted");
+			context.assertTrue(ItemStack.areEqual(furnace.getStack(2), new ItemStack(Items.IRON_INGOT, 1)), "one iron ingot should have been smelted");
 			context.complete();
 		});
 	}
