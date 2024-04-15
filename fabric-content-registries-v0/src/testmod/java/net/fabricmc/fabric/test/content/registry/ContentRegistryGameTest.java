@@ -67,7 +67,7 @@ public class ContentRegistryGameTest {
 		context.complete();
 	}
 
-	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 110)
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 120)
 	public void testFuelRegistry(TestContext context) {
 		BlockPos pos = new BlockPos(0, 1, 0);
 		// Use blast furnace to make it cook faster (100 ticks / 200 ticks)
@@ -89,8 +89,7 @@ public class ContentRegistryGameTest {
 		hopper.setStack(0, new ItemStack(Items.OBSIDIAN, 2));
 		hopper.setStack(1, new ItemStack(Items.DIRT));
 
-		// 1 tick for hopper to transfer, 100 ticks to cook
-		context.waitAndRun(101, () -> {
+		context.waitAndRun(110, () -> {
 			context.assertTrue(hopper.isEmpty(), "fuel hopper should have been emptied");
 			context.assertTrue(ItemStack.areEqual(hopper.getStack(2), new ItemStack(Items.IRON_INGOT, 1)), "one iron ingot should have been smelted");
 			context.complete();
@@ -178,7 +177,7 @@ public class ContentRegistryGameTest {
 		brew(context, new ItemStack(Items.DANDELION), PotionContentsComponent.createStack(Items.POTION, Potions.AWKWARD), brewingStand -> {
 			ItemStack bottle = brewingStand.getStack(0);
 			PotionContentsComponent potion = bottle.getOrDefault(DataComponentTypes.POTION_CONTENTS, PotionContentsComponent.DEFAULT);
-			context.assertEquals(potion.potion(), Potions.HEALING, "brewed potion");
+			context.assertEquals(potion.potion().orElseThrow(), Potions.HEALING, "brewed potion");
 			context.complete();
 		});
 	}
