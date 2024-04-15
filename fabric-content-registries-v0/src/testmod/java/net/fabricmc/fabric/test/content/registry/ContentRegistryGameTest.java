@@ -67,7 +67,7 @@ public class ContentRegistryGameTest {
 		context.complete();
 	}
 
-	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 110)
 	public void testFuelRegistry(TestContext context) {
 		BlockPos pos = new BlockPos(0, 1, 0);
 		// Use blast furnace to make it cook faster (100 ticks / 200 ticks)
@@ -173,7 +173,7 @@ public class ContentRegistryGameTest {
 		context.waitAndRun(401, () -> callback.accept(brewingStand));
 	}
 
-	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 410)
 	public void testBrewingFlower(TestContext context) {
 		brew(context, new ItemStack(Items.DANDELION), PotionContentsComponent.createStack(Items.POTION, Potions.AWKWARD), brewingStand -> {
 			ItemStack bottle = brewingStand.getStack(0);
@@ -183,7 +183,7 @@ public class ContentRegistryGameTest {
 		});
 	}
 
-	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 410)
 	public void testBrewingDirt(TestContext context) {
 		brew(context, new ItemStack(Items.DIRT), PotionContentsComponent.createStack(Items.POTION, Potions.AWKWARD), brewingStand -> {
 			ItemStack bottle = brewingStand.getStack(0);
