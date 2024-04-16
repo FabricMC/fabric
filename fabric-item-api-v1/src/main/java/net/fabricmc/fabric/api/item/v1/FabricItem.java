@@ -137,7 +137,7 @@ public interface FabricItem {
 	 * as an {@link ItemEntity}. This is in ticks. The standard result is 6000 ticks, or 5 minutes.
 	 *
 	 * @param stack the current {@link ItemStack}
-	 * @param world The level the entity is in
+	 * @param world the world the entity is in
 	 * @return the normal lifespan in ticks
 	 */
 	default int getEntityLifespan(ItemStack stack, World world) {
