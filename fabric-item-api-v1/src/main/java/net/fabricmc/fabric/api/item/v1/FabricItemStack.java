@@ -63,7 +63,7 @@ public interface FabricItemStack {
 
 	/**
 	 * Retrieves the normal 'lifespan' of this item when it is dropped on the ground
-	 * as an ItemEntity. This is in ticks, standard result is 6000, or 5 mins.
+	 * as an {@link net.minecraft.entity.ItemEntity}. This is in ticks. The standard result is 6000 ticks, or 5 minutes.
 	 *
 	 * @param world the world the entity is in
 	 * @return the normal lifespan in ticks
