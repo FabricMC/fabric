@@ -9,6 +9,7 @@
     "EnchantCommandMixin",
     "EnchantmentHelperMixin",
     "EnchantRandomlyLootFunctionMixin",
+    "ItemEntityMixin",
     "ItemMixin",
     "ItemSettingsMixin",
     "ItemStackMixin",

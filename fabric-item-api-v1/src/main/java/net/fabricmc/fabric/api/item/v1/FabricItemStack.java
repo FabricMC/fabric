@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.item.v1;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.util.TriState;
 
@@ -47,7 +48,7 @@ public interface FabricItemStack {
 	 * {@link Enchantment#isAcceptableItem(ItemStack)}</p>
 	 *
 	 * @param enchantment the enchantment to check
-	 * @param context the context in which the enchantment is being checked
+	 * @param context     the context in which the enchantment is being checked
 	 * @return whether the enchantment is allowed to apply to the stack
 	 * @see FabricItem#canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)
 	 */
@@ -58,5 +59,16 @@ public interface FabricItemStack {
 				context
 		);
 		return result.orElseGet(() -> ((ItemStack) this).getItem().canBeEnchantedWith((ItemStack) this, enchantment, context));
+	}
+
+	/**
+	 * Retrieves the normal 'lifespan' of this item when it is dropped on the ground
+	 * as an ItemEntity. This is in ticks, standard result is 6000, or 5 mins.
+	 *
+	 * @param world The level the entity is in
+	 * @return The normal lifespan in ticks.
+	 */
+	default int getEntityLifespan(World world) {
+		return ((ItemStack) this).getItem().getEntityLifeSpan(((ItemStack) this), world);
 	}
 }

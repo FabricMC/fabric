@@ -22,6 +22,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 
@@ -119,13 +120,25 @@ public interface FabricItem {
 	 * <p>Note that this method is only called <em>after</em> the {@link EnchantmentEvents#ALLOW_ENCHANTING} event, and
 	 * only if none of the listeners to that event override the result.</p>
 	 *
-	 * @param stack the current stack
+	 * @param stack       the current stack
 	 * @param enchantment the enchantment to check
-	 * @param context the context in which the enchantment is being checked
+	 * @param context     the context in which the enchantment is being checked
 	 * @return whether the enchantment is allowed to apply to the stack
 	 */
 	default boolean canBeEnchantedWith(ItemStack stack, Enchantment enchantment, EnchantingContext context) {
 		return enchantment.isAcceptableItem(stack);
+	}
+
+	/**
+	 * Retrieves the normal 'lifespan' of this item when it is dropped on the ground
+	 * as a EntityItem. This is in ticks, standard result is 6000, or 5 mins.
+	 *
+	 * @param stack The current ItemStack
+	 * @param world The level the entity is in
+	 * @return The normal lifespan in ticks.
+	 */
+	default int getEntityLifeSpan(ItemStack stack, World world) {
+		return 6000;
 	}
 
 	/**
