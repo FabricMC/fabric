@@ -164,6 +164,14 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 				assert Arrays.equals(data, "123456789".getBytes(StandardCharsets.UTF_8));
 			});
 		});
+
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			if (!handler.transferred) return;
+
+			ServerPlayNetworking.getCookie(handler, testCookie).whenComplete((data, throwable) -> {
+				assert Arrays.equals(data, "123456789".getBytes(StandardCharsets.UTF_8));
+			});
+		});
 	}
 
 	public record OverlayPacket(Text message) implements CustomPayload {
@@ -171,11 +179,11 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		public static final PacketCodec<RegistryByteBuf, OverlayPacket> CODEC = CustomPayload.codecOf(OverlayPacket::write, OverlayPacket::new);
 
 		public OverlayPacket(RegistryByteBuf buf) {
-			this(TextCodecs.REGISTRY_PACKET_CODEC.decode(buf));
+			this(TextCodecs.PACKET_CODEC.decode(buf));
 		}
 
 		public void write(RegistryByteBuf buf) {
-			TextCodecs.REGISTRY_PACKET_CODEC.encode(buf, this.message);
+			TextCodecs.PACKET_CODEC.encode(buf, this.message);
 		}
 
 		@Override

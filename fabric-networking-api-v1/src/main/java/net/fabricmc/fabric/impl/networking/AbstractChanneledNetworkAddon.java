@@ -21,13 +21,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-
-import net.minecraft.network.packet.s2c.common.CookieRequestS2CPacket;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -242,12 +238,6 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	public CompletableFuture<byte[]> getCookie(Identifier cookieId) {
-		CompletableFuture<byte[]> future = pendingCookieRequests.get(cookieId);
-		if (future != null) return future;
-
-		future = new CompletableFuture<>();
-		pendingCookieRequests.put(cookieId, future);
-		connection.send(new CookieRequestS2CPacket(cookieId));
-		return future;
+		return getCookie(connection, cookieId);
 	}
 }
