@@ -16,15 +16,9 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
-import java.util.concurrent.CompletableFuture;
-
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
-import com.llamalad7.mixinextras.sugar.Share;
-import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.authlib.GameProfile;
-
-import net.minecraft.network.packet.s2c.common.StoreCookieS2CPacket;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -43,17 +37,15 @@ import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
-import net.fabricmc.fabric.impl.networking.ServerCookieStore;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
 
 @Mixin(ServerLoginNetworkHandler.class)
-abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtensions, DisconnectPacketSource, PacketCallbackListener, ServerCookieStore {
+abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtensions, DisconnectPacketSource, PacketCallbackListener {
 	@Shadow
 	protected abstract void tickVerify(GameProfile profile);
 
@@ -96,14 +88,9 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 		return -1;
 	}
 
-	@Inject(method = "onCookieResponse", at = @At("HEAD"))
-	private void triggerCookieFuture(CookieResponseC2SPacket packet, CallbackInfo ci, @Share("allowedCookie") LocalBooleanRef allowedCookie) {
-		allowedCookie.set(getAddon().triggerCookieFuture(packet.key(), packet.payload()));
-	}
-
 	@WrapWithCondition(method = "onCookieResponse", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;disconnect(Lnet/minecraft/text/Text;)V"))
-	private boolean cancelDisconnect(ServerLoginNetworkHandler instance, Text reason, @Share("allowedCookie") LocalBooleanRef allowedCookie) {
-		return !allowedCookie.get();
+	private boolean cancelDisconnect(ServerLoginNetworkHandler instance, Text reason, @Local(argsOnly = true) CookieResponseC2SPacket packet) {
+        return !getAddon().triggerCookieFuture(packet.key(), packet.payload());
 	}
 
 	@Override
@@ -121,15 +108,5 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 	@Override
 	public Packet<?> createDisconnectPacket(Text message) {
 		return new LoginDisconnectS2CPacket(message);
-	}
-
-	@Override
-	public void setCookie(Identifier cookieId, byte[] cookie) {
-		connection.send(new StoreCookieS2CPacket(cookieId, cookie));
-	}
-
-	@Override
-	public CompletableFuture<byte[]> getCookie(Identifier cookieId) {
-		return addon.getCookie(connection, cookieId);
 	}
 }

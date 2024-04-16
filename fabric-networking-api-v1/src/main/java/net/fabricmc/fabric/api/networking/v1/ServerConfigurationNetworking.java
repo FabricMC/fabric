@@ -26,12 +26,12 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.listener.ClientCommonPacketListener;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.common.StoreCookieS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ThreadExecutor;
 
-import net.fabricmc.fabric.impl.networking.ServerCookieStore;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
@@ -244,7 +244,7 @@ public final class ServerConfigurationNetworking {
 	 * @param cookie The data to be set on the client.
 	 */
 	public static void setCookie(ServerConfigurationNetworkHandler handler, Identifier cookieId, byte[] cookie) {
-		((ServerCookieStore) handler).setCookie(cookieId, cookie);
+		getSender(handler).sendPacket(new StoreCookieS2CPacket(cookieId, cookie));
 	}
 
 	/**
@@ -254,7 +254,7 @@ public final class ServerConfigurationNetworking {
 	 * @return The cookie data or an empty byte[] if there was no cookie found with that id.
 	 */
 	public static CompletableFuture<byte[]> getCookie(ServerConfigurationNetworkHandler handler, Identifier cookieId) {
-		return ((ServerCookieStore) handler).getCookie(cookieId);
+		return ServerNetworkingImpl.getAddon(handler).getCookie(cookieId);
 	}
 
 	private ServerConfigurationNetworking() {

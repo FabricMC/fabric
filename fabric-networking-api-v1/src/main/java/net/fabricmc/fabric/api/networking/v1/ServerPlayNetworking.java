@@ -26,11 +26,11 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.listener.ClientCommonPacketListener;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.common.StoreCookieS2CPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.networking.ServerCookieStore;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 
 /**
@@ -297,21 +297,45 @@ public final class ServerPlayNetworking {
 	/**
 	 * Sets the cookie data on the client.
 	 *
+	 * @param handler the network handler, representing the connection to the player/client
+	 * @param cookieId The id to tag the data with.
+	 * @param cookie The data to be set on the client.
+	 */
+	public static void setCookie(ServerPlayNetworkHandler handler, Identifier cookieId, byte[] cookie) {
+		getSender(handler).sendPacket(new StoreCookieS2CPacket(cookieId, cookie));
+	}
+
+	/**
+	 * Sets the cookie data on the client.
+	 *
+	 * @param player The player to set the cookie data on.
 	 * @param cookieId The id to tag the data with.
 	 * @param cookie The data to be set on the client.
 	 */
 	public static void setCookie(ServerPlayerEntity player, Identifier cookieId, byte[] cookie) {
-		((ServerCookieStore) player.networkHandler).setCookie(cookieId, cookie);
+		setCookie(player.networkHandler, cookieId, cookie);
 	}
 
 	/**
 	 * Retrieves cookie data from the client.
 	 *
+	 * @param handler the network handler, representing the connection to the player/client
+	 * @param cookieId The id the data was tagged with.
+	 * @return The cookie data or an empty byte[] if there was no cookie found with that id.
+	 */
+	public static CompletableFuture<byte[]> getCookie(ServerPlayNetworkHandler handler, Identifier cookieId) {
+		return ServerNetworkingImpl.getAddon(handler).getCookie(cookieId);
+	}
+
+	/**
+	 * Retrieves cookie data from the client.
+	 *
+	 * @param player The player to get the cookie from.
 	 * @param cookieId The id the data was tagged with.
 	 * @return The cookie data or an empty byte[] if there was no cookie found with that id.
 	 */
 	public static CompletableFuture<byte[]> getCookie(ServerPlayerEntity player, Identifier cookieId) {
-		return ((ServerCookieStore) player.networkHandler).getCookie(cookieId);
+		return getCookie(player.networkHandler, cookieId);
 	}
 
 	private ServerPlayNetworking() {

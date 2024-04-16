@@ -28,9 +28,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
-import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.RegistryByteBuf;
@@ -42,6 +39,8 @@ import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
@@ -52,6 +51,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 import net.fabricmc.loader.api.FabricLoader;
@@ -118,19 +118,6 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 					});
 					return Command.SINGLE_SUCCESS;
 				})));
-				
-				/*.then(literal("setCookie").executes(ctx -> {
-					((ServerCookieStore) ctx.getSource().getPlayer().networkHandler).setCookie(new Identifier("fabric:test"), "123456789".getBytes(StandardCharsets.UTF_8));
-					return Command.SINGLE_SUCCESS;
-				}))
-				.then(literal("getCookie").executes(ctx -> {
-					ServerPlayerEntity player = ctx.getSource().getPlayer();
-					((ServerCookieStore) player.networkHandler).getCookie(new Identifier("fabric:test")).whenComplete((data, throwable) -> {
-						if (data.length == 0) return;
-						player.sendMessage(Text.of(new String(data)));
-					});
-					return Command.SINGLE_SUCCESS;
-				})))*/
 	}
 
 	@Override
@@ -181,15 +168,15 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 
 	public record OverlayPacket(Text message) implements CustomPayload {
 		public static final CustomPayload.Id<OverlayPacket> ID = new Id<>(NetworkingTestmods.id("test_channel"));
-		//public static final PacketCodec<RegistryByteBuf, OverlayPacket> CODEC = CustomPayload.codecOf(OverlayPacket::write, OverlayPacket::new);
+		public static final PacketCodec<RegistryByteBuf, OverlayPacket> CODEC = CustomPayload.codecOf(OverlayPacket::write, OverlayPacket::new);
 
-		/*public OverlayPacket(RegistryByteBuf buf) {
+		public OverlayPacket(RegistryByteBuf buf) {
 			this(TextCodecs.REGISTRY_PACKET_CODEC.decode(buf));
 		}
 
 		public void write(RegistryByteBuf buf) {
 			TextCodecs.REGISTRY_PACKET_CODEC.encode(buf, this.message);
-		}*/
+		}
 
 		@Override
 		public Id<? extends CustomPayload> getId() {
