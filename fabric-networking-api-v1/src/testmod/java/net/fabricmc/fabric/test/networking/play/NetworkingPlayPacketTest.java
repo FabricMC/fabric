@@ -20,6 +20,7 @@ import static com.mojang.brigadier.arguments.StringArgumentType.string;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,23 +37,28 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.packet.s2c.common.ServerTransferS2CPacket;
 import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class NetworkingPlayPacketTest implements ModInitializer {
 	private static boolean spamUnknownPackets = false;
+	private static final Identifier testCookie = new Identifier("fabric:test");
 
 	public static void sendToTestChannel(ServerPlayerEntity player, String stuff) {
 		ServerPlayNetworking.getSender(player).sendPacket(new OverlayPacket(Text.literal(stuff)), PacketCallbacks.always(() -> {
@@ -92,6 +98,24 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 							ServerPlayNetworking.createS2CPacket(new OverlayPacket(Text.literal("bundled #2")))
 					));
 					ServerPlayNetworking.getSender(ctx.getSource().getPlayer()).sendPacket(packet);
+					return Command.SINGLE_SUCCESS;
+				}))
+				.then(literal("transfer").executes(ctx -> {
+					ServerPlayerEntity player = ctx.getSource().getPlayer();
+					ServerPlayNetworking.setCookie(player, testCookie, "123456789".getBytes(StandardCharsets.UTF_8));
+					player.networkHandler.sendPacket(new ServerTransferS2CPacket("localhost", 25565));
+					return Command.SINGLE_SUCCESS;
+				}))
+				.then(literal("setCookie").executes(ctx -> {
+					ServerPlayNetworking.setCookie(ctx.getSource().getPlayer(), testCookie, "123456789".getBytes(StandardCharsets.UTF_8));
+					return Command.SINGLE_SUCCESS;
+				}))
+				.then(literal("getCookie").executes(ctx -> {
+					ServerPlayerEntity player = ctx.getSource().getPlayer();
+					ServerPlayNetworking.getCookie(player, new Identifier("fabric:test")).whenComplete((data, throwable) -> {
+						if (data.length == 0) return;
+						player.sendMessage(Text.of(new String(data)));
+					});
 					return Command.SINGLE_SUCCESS;
 				})));
 				
@@ -138,12 +162,21 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 			}
 		});
 
-		/*ServerLoginConnectionEvents.INIT.register((handler, server) -> {
-			((ServerCookieStore) handler).getCookie(new Identifier("fabric:test")).whenComplete((data, throwable) -> {
-				if (data.length == 0) return;
+		ServerLoginConnectionEvents.INIT.register((handler, server) -> {
+			if (!handler.transferred) return;
+
+			ServerLoginNetworking.getCookie(handler, testCookie).whenComplete((data, throwable) -> {
 				assert Arrays.equals(data, "123456789".getBytes(StandardCharsets.UTF_8));
 			});
-		});*/
+		});
+
+		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
+			if (!handler.transferred) return;
+
+			ServerConfigurationNetworking.getCookie(handler, testCookie).whenComplete((data, throwable) -> {
+				assert Arrays.equals(data, "123456789".getBytes(StandardCharsets.UTF_8));
+			});
+		});
 	}
 
 	public record OverlayPacket(Text message) implements CustomPayload {
