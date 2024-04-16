@@ -1,0 +1,9 @@
+{
+  "values": [
+    "minecraft:purple_dye",
+    {
+      "id": "#c:purple_dyes",
+      "required": false
+    }
+  ]
+}
