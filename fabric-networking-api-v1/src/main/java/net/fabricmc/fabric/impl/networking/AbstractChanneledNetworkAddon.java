@@ -242,6 +242,12 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	public CompletableFuture<byte[]> getCookie(Identifier cookieId) {
-		return getCookie(connection, cookieId);
+		CompletableFuture<byte[]> future = pendingCookieRequests.get(cookieId);
+		if (future != null) return future;
+
+		future = new CompletableFuture<>();
+		pendingCookieRequests.put(cookieId, future);
+		connection.send(new CookieRequestS2CPacket(cookieId));
+		return future;
 	}
 }

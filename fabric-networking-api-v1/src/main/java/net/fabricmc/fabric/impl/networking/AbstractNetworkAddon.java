@@ -28,13 +28,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import net.minecraft.network.ClientConnection;
-
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.network.packet.s2c.common.CookieRequestS2CPacket;
 import net.minecraft.util.Identifier;
 
 /**
@@ -51,7 +48,7 @@ public abstract class AbstractNetworkAddon<H> {
 	// All access to this map is guarded by the lock
 	private final Map<Identifier, H> handlers = new HashMap<>();
 	private final AtomicBoolean disconnected = new AtomicBoolean(); // blocks redundant disconnect notifications
-	private final Map<Identifier, CompletableFuture<byte[]>> pendingCookieRequests = new ConcurrentHashMap<>();
+	protected final Map<Identifier, CompletableFuture<byte[]>> pendingCookieRequests = new ConcurrentHashMap<>();
 
 	protected AbstractNetworkAddon(GlobalReceiverRegistry<H> receiver, String description) {
 		this.receiver = receiver;
@@ -184,15 +181,5 @@ public abstract class AbstractNetworkAddon<H> {
 		if (future == null) return false;
 		future.complete(cookie);
 		return true;
-	}
-
-	public CompletableFuture<byte[]> getCookie(ClientConnection connection, Identifier cookieId) {
-		CompletableFuture<byte[]> future = pendingCookieRequests.get(cookieId);
-		if (future != null) return future;
-
-		future = new CompletableFuture<>();
-		pendingCookieRequests.put(cookieId, future);
-		connection.send(new CookieRequestS2CPacket(cookieId));
-		return future;
 	}
 }
