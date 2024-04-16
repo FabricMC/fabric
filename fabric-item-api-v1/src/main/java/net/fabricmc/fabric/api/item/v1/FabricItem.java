@@ -138,7 +138,7 @@ public interface FabricItem {
 	 *
 	 * @param stack the current {@link ItemStack}
 	 * @param world The level the entity is in
-	 * @return The normal lifespan in ticks.
+	 * @return the normal lifespan in ticks
 	 */
 	default int getEntityLifespan(ItemStack stack, World world) {
 		return ItemEntityAccessor.getDespawnAge();
