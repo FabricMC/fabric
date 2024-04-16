@@ -1,0 +1,8 @@
+{
+  "values": [
+    {
+      "id": "#c:is_sparse_vegetation/overworld",
+      "required": false
+    }
+  ]
+}
