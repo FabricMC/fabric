@@ -69,6 +69,6 @@ public interface FabricItemStack {
 	 * @return The normal lifespan in ticks.
 	 */
 	default int getEntityLifespan(World world) {
-		return ((ItemStack) this).getItem().getEntityLifeSpan(((ItemStack) this), world);
+		return ((ItemStack) this).getItem().getEntityLifespan(((ItemStack) this), world);
 	}
 }

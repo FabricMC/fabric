@@ -38,9 +38,9 @@ public abstract class ItemEntityMixin extends Entity {
 		super(type, world);
 	}
 
-	@Inject(at = @At("HEAD"), method = "setDespawnImmediately")
+	@Inject(at = @At("TAIL"), method = "setDespawnImmediately")
 	private void modifyDespawnImmediately(CallbackInfo ci) {
-		this.itemAge = getStack().getEntityLifespan(this.getWorld()) - 1;
+		this.itemAge = getStack().getEntityLifespan(this.getWorld());
 	}
 
 	@Shadow
