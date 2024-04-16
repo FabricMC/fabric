@@ -65,7 +65,7 @@ public interface FabricItemStack {
 	 * Retrieves the normal 'lifespan' of this item when it is dropped on the ground
 	 * as an ItemEntity. This is in ticks, standard result is 6000, or 5 mins.
 	 *
-	 * @param world The level the entity is in
+	 * @param world the world the entity is in
 	 * @return The normal lifespan in ticks.
 	 */
 	default int getEntityLifespan(World world) {
