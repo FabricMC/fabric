@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {
-	@Redirect(method = "loadDataPacks", at = @At(value = "INVOKE", target = "Ljava/util/List;contains(Ljava/lang/Object;)Z"))
+	@Redirect(method = "loadDataPacks(Lnet/minecraft/resource/ResourcePackManager;Lnet/minecraft/resource/DataConfiguration;ZZ)Lnet/minecraft/resource/DataConfiguration;", at = @At(value = "INVOKE", target = "Ljava/util/List;contains(Ljava/lang/Object;)Z"))
 	private static boolean onCheckDisabled(List<String> list, Object o, ResourcePackManager resourcePackManager) {
 		String profileId = (String) o;
 		boolean contains = list.contains(profileId);
