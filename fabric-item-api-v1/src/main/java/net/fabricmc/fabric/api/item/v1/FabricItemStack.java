@@ -66,7 +66,7 @@ public interface FabricItemStack {
 	 * as an ItemEntity. This is in ticks, standard result is 6000, or 5 mins.
 	 *
 	 * @param world the world the entity is in
-	 * @return The normal lifespan in ticks.
+	 * @return the normal lifespan in ticks
 	 */
 	default int getEntityLifespan(World world) {
 		return ((ItemStack) this).getItem().getEntityLifespan(((ItemStack) this), world);
