@@ -41,8 +41,8 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 	 * Logs out modded item tags that do not have translations when running on integrated server.
 	 * Defaults to SILENCED.
 	 */
-	private static final String LOG_UNTRANSLATED_WARNING_MODE = System.getProperty("fabric-tag-conventions-v2.missingTagTranslationWarning", LOG_WARNING_MODES.SILENCED.name());
-	private enum LOG_WARNING_MODES {
+	private static final String LOG_UNTRANSLATED_WARNING_MODE = System.getProperty("fabric-tag-conventions-v2.missingTagTranslationWarning", LogWarningModes.SILENCED.name());
+	private enum LogWarningModes {
 		SILENCED,
 		DEV_SHORT,
 		DEV_VERBOSE
@@ -50,7 +50,7 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		if (!LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LOG_WARNING_MODES.SILENCED.name())) {
+		if (!LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LogWarningModes.SILENCED.name())) {
 			setupUntranslatedItemTagWarning();
 		}
 	}
@@ -59,8 +59,8 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 		// Log missing item tag translations only in development environment and not running dedicated server.
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			boolean isConfigSetToDev =
-					LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LOG_WARNING_MODES.DEV_SHORT.name())
-							|| LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LOG_WARNING_MODES.DEV_VERBOSE.name());
+					LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LogWarningModes.DEV_SHORT.name())
+							|| LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LogWarningModes.DEV_VERBOSE.name());
 
 			if (FabricLoader.getInstance().isDevelopmentEnvironment() == isConfigSetToDev) {
 				Registry<Item> itemRegistry = server.getRegistryManager().get(RegistryKeys.ITEM);
@@ -89,7 +89,7 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 							""");
 
 					// Print out all untranslated tags when desired.
-					boolean isConfigSetToVerbose = LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LOG_WARNING_MODES.DEV_VERBOSE.name());
+					boolean isConfigSetToVerbose = LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LogWarningModes.DEV_VERBOSE.name());
 
 					if (isConfigSetToVerbose) {
 						stringBuilder.append("\nUntranslated item tags:");
