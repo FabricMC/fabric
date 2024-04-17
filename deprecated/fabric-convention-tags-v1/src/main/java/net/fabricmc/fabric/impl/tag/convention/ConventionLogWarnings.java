@@ -37,7 +37,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalEnchantmentTags;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalFluidTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
 import net.fabricmc.loader.api.FabricLoader;
