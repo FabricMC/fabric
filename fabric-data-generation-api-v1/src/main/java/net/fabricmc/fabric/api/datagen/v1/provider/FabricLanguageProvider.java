@@ -27,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraft.registry.tag.TagKey;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.block.Block;
@@ -226,6 +227,16 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 */
 		default void add(Identifier identifier, String value) {
 			add(identifier.toTranslationKey(), value);
+		}
+
+		/**
+		 * Adds a translation for an {@link TagKey}.
+		 *
+		 * @param tagKey The {@link TagKey} to get the translation key from.
+		 * @param value      The value of the entry.
+		 */
+		default void add(TagKey<?> tagKey, String value) {
+			add(tagKey.getTagTranslationKey(), value);
 		}
 
 		/**
