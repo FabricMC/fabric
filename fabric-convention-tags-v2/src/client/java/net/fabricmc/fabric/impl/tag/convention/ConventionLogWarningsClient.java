@@ -83,8 +83,8 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 					stringBuilder.append("""
 							\n	Dev warning - Untranslated Item Tags detected. Please translate your item tags so other mods such as recipe viewers can properly display your tag's name.
 								The format desired is tag.item.<namespace>.<path> for the translation key with slashes in path turned into periods.
-								You can disable this message by this system property to your runs: `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=SILENCED`.
-								To see individual legacy tags found, set the system property to `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=DEV_VERBOSE` or `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=DEV_SHORT`.
+								To be warned when there is any untranslated item tag, set this system property in your runs: `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=DEV_SHORT`.
+								To see individual legacy tags found, set the system property to `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=DEV_VERBOSE`.
 								Default is `SILENCED`.
 							""");
 
