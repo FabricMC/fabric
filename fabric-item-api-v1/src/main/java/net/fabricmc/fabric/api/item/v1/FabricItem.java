@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import net.fabricmc.fabric.mixin.item.ItemEntityAccessor;
-
 import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.ItemEntity;
@@ -28,6 +26,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
+import net.fabricmc.fabric.mixin.item.ItemEntityAccessor;
 
 /**
  * General-purpose Fabric-provided extensions for {@link Item} subclasses.
@@ -133,14 +132,16 @@ public interface FabricItem {
 	}
 
 	/**
-	 * Retrieves the normal 'lifespan' of this item when it is dropped on the ground
-	 * as an {@link ItemEntity}. This is in ticks. The standard result is 6000 ticks, or 5 minutes.
+	 * Retrieves the {@link ItemEntityAccessor#getDespawnAge() default spawn age} of 6000 ticks or 5 minutes of this item when it is dropped on the ground
+	 * as an {@link ItemEntity}.
+	 * <p>
+	 * This is in ticks.
 	 *
 	 * @param stack the current {@link ItemStack}
 	 * @param world the world the entity is in
 	 * @return the normal lifespan in ticks
 	 */
-	default int getEntityLifespan(ItemStack stack, World world) {
+	default int getEntityLifespan(ItemStack stack, ItemEntity entity, World world) {
 		return ItemEntityAccessor.getDespawnAge();
 	}
 

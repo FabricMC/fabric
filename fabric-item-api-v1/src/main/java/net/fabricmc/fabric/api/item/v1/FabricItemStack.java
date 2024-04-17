@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.item.v1;
 
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -68,7 +69,7 @@ public interface FabricItemStack {
 	 * @param world the world the entity is in
 	 * @return the normal lifespan in ticks
 	 */
-	default int getEntityLifespan(World world) {
-		return ((ItemStack) this).getItem().getEntityLifespan(((ItemStack) this), world);
+	default int getEntityLifespan(ItemEntity entity, World world) {
+		return ((ItemStack) this).getItem().getEntityLifespan(((ItemStack) this), entity, world);
 	}
 }
