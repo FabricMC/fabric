@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.tag.convention.client;
+package net.fabricmc.fabric.impl.tag.convention;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 	/**
 	 * A config option mainly for developers.
 	 * Logs out modded item tags that do not have translations when running on integrated server.
-	 * Defaults to DEV_SHORT.
+	 * Defaults to SILENCED.
 	 */
 	private static final String LOG_UNTRANSLATED_WARNING_MODE = System.getProperty("fabric-tag-conventions-v2.missingTagTranslationWarning", LOG_WARNING_MODES.SILENCED.name());
 	private enum LOG_WARNING_MODES {
@@ -84,7 +84,8 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 							\n	Dev warning - Untranslated Item Tags detected. Please translate your item tags so other mods such as recipe viewers can properly display your tag's name.
 								The format desired is tag.item.<namespace>.<path> for the translation key with slashes in path turned into periods.
 								You can disable this message by this system property to your runs: `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=SILENCED`.
-								To see individual legacy tags found, set the system property to `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=DEV_VERBOSE` instead. Default is `SILENCED`.
+								To see individual legacy tags found, set the system property to `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=DEV_VERBOSE` or `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=DEV_SHORT`.
+								Default is `SILENCED`.
 							""");
 
 					// Print out all untranslated tags when desired.
