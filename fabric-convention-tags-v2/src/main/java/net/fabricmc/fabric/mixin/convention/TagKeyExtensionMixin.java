@@ -20,8 +20,8 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.registry.tag.TagKey;
 
-import net.fabricmc.fabric.api.tag.convention.v2.FabricTagKeyExtension;
+import net.fabricmc.fabric.api.tag.convention.v2.FabricTagKey;
 
 @Mixin(TagKey.class)
-public interface TagKeyExtensionMixin extends FabricTagKeyExtension {
+public interface TagKeyExtensionMixin extends FabricTagKey {
 }

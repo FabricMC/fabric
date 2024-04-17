@@ -28,7 +28,7 @@ import net.minecraft.util.Identifier;
  *
  * <p>Note: This interface is automatically implemented on all {@link TagKey} instances via Mixin and interface injection.
  */
-public interface FabricTagKeyExtension {
+public interface FabricTagKey {
 	/**
 	 * Use this to get a TagKey's translation key safely on any side.
 	 *
