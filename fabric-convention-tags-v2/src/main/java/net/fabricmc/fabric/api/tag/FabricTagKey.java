@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tag.convention.v2;
+package net.fabricmc.fabric.api.tag;
 
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.Text;
