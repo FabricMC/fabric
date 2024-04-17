@@ -155,6 +155,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.COAL, "Coal");
 		translationBuilder.add(ConventionalItemTags.POTIONS, "Potions");
 		translationBuilder.add(ConventionalItemTags.FOODS, "Foods");
+		translationBuilder.add(ConventionalItemTags.FRUITS_FOODS, "Fruits");
 		translationBuilder.add(ConventionalItemTags.VEGETABLES_FOODS, "Vegetables");
 		translationBuilder.add(ConventionalItemTags.BERRIES_FOODS, "Berries");
 		translationBuilder.add(ConventionalItemTags.BREADS_FOODS, "Breads");
