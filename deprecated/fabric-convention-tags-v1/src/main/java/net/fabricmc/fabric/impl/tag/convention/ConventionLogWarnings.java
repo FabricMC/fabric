@@ -42,8 +42,8 @@ import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ConventionLogWarnings implements ModInitializer {
-	private static final String LOG_LEGACY_WARNING_MODE = System.getProperty("fabric-tag-conventions-v1.legacyTagWarning", LogWarningModes.DEV_SHORT.name());
-	private enum LogWarningModes {
+	private static final String LOG_LEGACY_WARNING_MODE = System.getProperty("fabric-tag-conventions-v1.legacyTagWarning", LogWarningMode.DEV_SHORT.name());
+	private enum LogWarningMode {
 		SILENCED,
 		DEV_SHORT,
 		DEV_VERBOSE
@@ -201,7 +201,7 @@ public class ConventionLogWarnings implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		if (FabricLoader.getInstance().isDevelopmentEnvironment() && !LOG_LEGACY_WARNING_MODE.equalsIgnoreCase(LogWarningModes.SILENCED.name())) {
+		if (FabricLoader.getInstance().isDevelopmentEnvironment() && !LOG_LEGACY_WARNING_MODE.equalsIgnoreCase(LogWarningMode.SILENCED.name())) {
 			setupLegacyTagWarning();
 		}
 	}
@@ -237,7 +237,7 @@ public class ConventionLogWarnings implements ModInitializer {
 						""");
 
 				// Print out all legacy tags when desired.
-				boolean isConfigSetToVerbose = LOG_LEGACY_WARNING_MODE.equalsIgnoreCase(LogWarningModes.DEV_VERBOSE.name());
+				boolean isConfigSetToVerbose = LOG_LEGACY_WARNING_MODE.equalsIgnoreCase(LogWarningMode.DEV_VERBOSE.name());
 
 				if (isConfigSetToVerbose) {
 					stringBuilder.append("\nLegacy tags and their replacement:");

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.convention;
+package net.fabricmc.fabric.mixin.tag;
 
 import org.spongepowered.asm.mixin.Mixin;
 
