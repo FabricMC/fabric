@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.biome;
 
 import static net.fabricmc.fabric.test.biome.DataGeneratorEntrypoint.PLACED_COMMON_DESERT_WELL;
+import static net.fabricmc.fabric.test.biome.DataGeneratorEntrypoint.PLACED_COMMON_ORE;
 
 import com.google.common.base.Preconditions;
 
@@ -78,7 +79,10 @@ public class FabricBiomeTest implements ModInitializer {
 						})
 				.add(ModificationPhase.ADDITIONS,
 						BiomeSelectors.tag(TagKey.of(RegistryKeys.BIOME, new Identifier(MOD_ID, "tag_selector_test"))),
-						context -> context.getEffects().setSkyColor(0x770000));
+						context -> context.getEffects().setSkyColor(0x770000))
+				.add(ModificationPhase.ADDITIONS, BiomeSelectors.foundInOverworld(), context ->
+						context.getGenerationSettings().addFeature(GenerationStep.Feature.UNDERGROUND_ORES, PLACED_COMMON_ORE)
+				);
 
 		// Make sure data packs can define dynamic registry contents
 		// See #2225, #2261
