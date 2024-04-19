@@ -623,6 +623,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.SPEARS_TOOLS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "spears"));
 		getOrCreateTagBuilder(ConventionalItemTags.BOWS_TOOLS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "bows"));
 		getOrCreateTagBuilder(ConventionalItemTags.SHIELDS_TOOLS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "shields"));
-		getOrCreateTagBuilder(ConventionalItemTags.STRINGS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "strings"));
+		getOrCreateTagBuilder(ConventionalItemTags.STRINGS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "string"));
 	}
 }
