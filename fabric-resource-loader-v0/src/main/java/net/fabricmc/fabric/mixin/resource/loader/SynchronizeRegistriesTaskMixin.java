@@ -21,9 +21,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -34,6 +37,8 @@ import net.minecraft.server.network.SynchronizeRegistriesTask;
 
 @Mixin(SynchronizeRegistriesTask.class)
 public abstract class SynchronizeRegistriesTaskMixin {
+	@Unique
+	private static final Logger LOGGER = LoggerFactory.getLogger("SynchronizeRegistriesTaskMixin");
 	@Shadow
 	@Final
 	private List<VersionedIdentifier> knownPacks;
@@ -47,5 +52,10 @@ public abstract class SynchronizeRegistriesTaskMixin {
 			this.syncRegistryAndTags(sender, Set.copyOf(clientKnownPacks));
 			ci.cancel();
 		}
+	}
+
+	@Inject(method = "syncRegistryAndTags", at = @At("HEAD"))
+	public void syncRegistryAndTags(Consumer<Packet<?>> sender, Set<VersionedIdentifier> commonKnownPacks, CallbackInfo ci) {
+		LOGGER.debug("Syncronizing registries with common known packs: {}", commonKnownPacks);
 	}
 }

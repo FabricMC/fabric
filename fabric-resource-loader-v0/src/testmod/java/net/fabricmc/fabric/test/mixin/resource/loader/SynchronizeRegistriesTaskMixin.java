@@ -40,7 +40,5 @@ public class SynchronizeRegistriesTaskMixin {
 		if (commonKnownPacks.stream().noneMatch(knownPack -> knownPack.namespace().equals("fabric") && knownPack.id().equals("fabric-resource-loader-v0-testmod"))) {
 			LOGGER.error("fabric:fabric-resource-loader-v0-testmod is not in commonKnownPacks");
 		}
-
-		LOGGER.info("CommonKnownPacks: {}", commonKnownPacks);
 	}
 }
