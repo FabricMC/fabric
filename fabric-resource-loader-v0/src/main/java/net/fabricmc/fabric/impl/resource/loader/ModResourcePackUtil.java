@@ -241,7 +241,7 @@ public final class ModResourcePackUtil {
 	 * Creates the ResousePackManager used by the ClientDataPackManager and replaces
 	 * {@code VanillaDataPackProvider.createClientManager} used by vanilla.
 	 */
-	public static ResourcePackManager createClientManager(){
+	public static ResourcePackManager createClientManager() {
 		return new ResourcePackManager(new VanillaDataPackProvider(new SymlinkFinder((path) -> true)), new ModResourcePackCreator(ResourceType.SERVER_DATA));
 	}
 }
