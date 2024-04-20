@@ -7,12 +7,12 @@
     "KeyedResourceReloadListenerMixin",
     "LifecycledResourceManagerImplMixin",
     "MinecraftServerMixin",
-    "RegistryLoaderMixin",
     "ResourceMixin",
     "ResourcePackManagerMixin",
     "ResourcePackProfileMixin",
     "ServerPropertiesHandlerMixin",
     "SimpleResourceReloadMixin",
+    "SynchronizeRegistriesTaskMixin",
     "TestServerMixin"
   ],
   "server": [
