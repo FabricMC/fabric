@@ -44,7 +44,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.QUARTZ_ORES, "Quartz Ores");
 		translationBuilder.add(ConventionalBlockTags.NETHERITE_SCRAP_ORES, "Netherite Scrap Ores");
 		translationBuilder.add(ConventionalBlockTags.BARRELS, "Barrels");
-		translationBuilder.add(ConventionalBlockTags.WOODEN_BARRELS, "Barrels Wooden");
+		translationBuilder.add(ConventionalBlockTags.WOODEN_BARRELS, "Wooden Barrels");
 		translationBuilder.add(ConventionalBlockTags.BOOKSHELVES, "Bookshelves");
 		translationBuilder.add(ConventionalBlockTags.CHESTS, "Chests");
 		translationBuilder.add(ConventionalBlockTags.WOODEN_CHESTS, "Wooden Chests");

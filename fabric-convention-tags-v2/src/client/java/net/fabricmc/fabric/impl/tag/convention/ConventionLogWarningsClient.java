@@ -71,11 +71,7 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 	private static void setupUntranslatedItemTagWarning() {
 		// Log missing item tag translations only in development environment and not running dedicated server.
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			boolean isConfigSetToDev =
-					LOG_UNTRANSLATED_WARNING_MODE == LogWarningMode.DEV_SHORT
-							|| LOG_UNTRANSLATED_WARNING_MODE == LogWarningMode.DEV_VERBOSE;
-
-			if (FabricLoader.getInstance().isDevelopmentEnvironment() != isConfigSetToDev) {
+			if (!FabricLoader.getInstance().isDevelopmentEnvironment()) {
 				return;
 			}
 
