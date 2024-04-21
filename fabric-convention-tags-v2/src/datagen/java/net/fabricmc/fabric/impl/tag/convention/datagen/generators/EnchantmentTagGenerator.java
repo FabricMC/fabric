@@ -62,5 +62,7 @@ public final class EnchantmentTagGenerator extends FabricTagProvider.Enchantment
 		// TODO: Remove backwards compat tag entries in 1.22
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENTS)
 				.addOptionalTag(new Identifier("c", "entity_movement_enhancement"));
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENTS)
+				.addOptionalTag(new Identifier("c", "entity_defense_enhancement"));
 	}
 }
