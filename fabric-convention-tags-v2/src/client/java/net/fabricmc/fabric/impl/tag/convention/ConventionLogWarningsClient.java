@@ -34,7 +34,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ConventionLogWarningsClient implements ClientModInitializer {
-	public static final Logger LOGGER = LoggerFactory.getLogger(ConventionLogWarningsClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConventionLogWarningsClient.class);
 
 	/**
 	 * A config option mainly for developers.
@@ -62,46 +62,50 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 					LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LogWarningMode.DEV_SHORT.name())
 							|| LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LogWarningMode.DEV_VERBOSE.name());
 
-			if (FabricLoader.getInstance().isDevelopmentEnvironment() == isConfigSetToDev) {
-				Registry<Item> itemRegistry = server.getRegistryManager().get(RegistryKeys.ITEM);
-				List<TagKey<Item>> untranslatedItemTags = new ObjectArrayList<>();
-				itemRegistry.streamTags().forEach(itemTagKey -> {
-					// We do not translate vanilla's tags at this moment.
-					if (itemTagKey.id().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
-						return;
-					}
+			if (FabricLoader.getInstance().isDevelopmentEnvironment() != isConfigSetToDev) {
+				return;
+			}
 
-					String translationKey = itemTagKey.getTagTranslationKey();
+			Registry<Item> itemRegistry = server.getRegistryManager().get(RegistryKeys.ITEM);
+			List<TagKey<Item>> untranslatedItemTags = new ObjectArrayList<>();
+			itemRegistry.streamTags().forEach(itemTagKey -> {
+				// We do not translate vanilla's tags at this moment.
+				if (itemTagKey.id().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
+					return;
+				}
 
-					if (!I18n.hasTranslation(translationKey)) {
-						untranslatedItemTags.add(itemTagKey);
-					}
-				});
+				String translationKey = itemTagKey.getTranslationKey();
 
-				if (!untranslatedItemTags.isEmpty()) {
-					StringBuilder stringBuilder = new StringBuilder();
-					stringBuilder.append("""
-							\n	Dev warning - Untranslated Item Tags detected. Please translate your item tags so other mods such as recipe viewers can properly display your tag's name.
-								The format desired is tag.item.<namespace>.<path> for the translation key with slashes in path turned into periods.
-								To be warned when there is any untranslated item tag, set this system property in your runs: `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=DEV_SHORT`.
-								To see individual legacy tags found, set the system property to `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=DEV_VERBOSE`.
-								Default is `SILENCED`.
-							""");
+				if (!I18n.hasTranslation(translationKey)) {
+					untranslatedItemTags.add(itemTagKey);
+				}
+			});
 
-					// Print out all untranslated tags when desired.
-					boolean isConfigSetToVerbose = LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LogWarningMode.DEV_VERBOSE.name());
+			if (untranslatedItemTags.isEmpty()) {
+				return;
+			}
 
-					if (isConfigSetToVerbose) {
-						stringBuilder.append("\nUntranslated item tags:");
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append("""
+					\n	Dev warning - Untranslated Item Tags detected. Please translate your item tags so other mods such as recipe viewers can properly display your tag's name.
+						The format desired is tag.item.<namespace>.<path> for the translation key with slashes in path turned into periods.
+						To be warned when there is any untranslated item tag, set this system property in your runs: `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=DEV_SHORT`.
+						To see individual legacy tags found, set the system property to `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=DEV_VERBOSE`.
+						Default is `SILENCED`.
+					""");
 
-						for (TagKey<Item> tagKey : untranslatedItemTags) {
-							stringBuilder.append("\n     ").append(tagKey.id());
-						}
-					}
+			// Print out all untranslated tags when desired.
+			boolean isConfigSetToVerbose = LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LogWarningMode.DEV_VERBOSE.name());
 
-					LOGGER.warn(stringBuilder.toString());
+			if (isConfigSetToVerbose) {
+				stringBuilder.append("\nUntranslated item tags:");
+
+				for (TagKey<Item> tagKey : untranslatedItemTags) {
+					stringBuilder.append("\n     ").append(tagKey.id());
 				}
 			}
+
+			LOGGER.warn(stringBuilder.toString());
 		});
 	}
 }

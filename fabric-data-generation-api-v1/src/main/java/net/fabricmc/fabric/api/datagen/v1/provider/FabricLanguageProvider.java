@@ -236,7 +236,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param value      The value of the entry.
 		 */
 		default void add(TagKey<?> tagKey, String value) {
-			add(tagKey.getTagTranslationKey(), value);
+			add(tagKey.getTranslationKey(), value);
 		}
 
 		/**

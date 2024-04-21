@@ -42,7 +42,7 @@ public interface FabricTagKey {
 	 *
 	 * @return the translation key for a TagKey.
 	 */
-	default String getTagTranslationKey() {
+	default String getTranslationKey() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("tag.");
 
@@ -67,12 +67,12 @@ public interface FabricTagKey {
 	/**
 	 * Use this to get a TagKey's translatable text for display purposes.
 	 *
-	 * <p>The text uses the result of {@link TagKey#getTagTranslationKey} for the translation key
+	 * <p>The text uses the result of {@link TagKey#getTranslationKey} for the translation key
 	 * and will fall back to displaying #tag_namespace:tag_path if no translation exists.
 	 *
 	 * @return the translatable text for a TagKey.
 	 */
 	default Text getTagTranslatableText() {
-		return Text.translatableWithFallback(getTagTranslationKey(), "#" + ((TagKey<?>) this).id().toString());
+		return Text.translatableWithFallback(getTranslationKey(), "#" + ((TagKey<?>) this).id().toString());
 	}
 }
