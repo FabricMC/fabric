@@ -168,10 +168,12 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.CANDIES_FOODS, "Candies");
 		translationBuilder.add(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS, "Edible When Placed");
 		translationBuilder.add(ConventionalItemTags.FOOD_POISONING_FOODS, "Food Poisoning");
+		translationBuilder.add(ConventionalItemTags.BUCKETS, "Buckets");
 		translationBuilder.add(ConventionalItemTags.WATER_BUCKETS, "Water Buckets");
 		translationBuilder.add(ConventionalItemTags.ENTITY_WATER_BUCKETS, "Entity Water Buckets");
 		translationBuilder.add(ConventionalItemTags.LAVA_BUCKETS, "Lava Buckets");
 		translationBuilder.add(ConventionalItemTags.MILK_BUCKETS, "Milk Buckets");
+		translationBuilder.add(ConventionalItemTags.POWDER_SNOW_BUCKETS, "Powder Snow Buckets");
 		translationBuilder.add(ConventionalItemTags.EMPTY_BUCKETS, "Empty Buckets");
 		translationBuilder.add(ConventionalItemTags.BARRELS, "Barrels");
 		translationBuilder.add(ConventionalItemTags.WOODEN_BARRELS, "Wooden Barrels");
@@ -262,7 +264,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalEnchantmentTags.WEAPON_DAMAGE_ENHANCEMENTS, "Weapon Damage Enhancements");
 		translationBuilder.add(ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENTS, "Entity Speed Enhancements");
 		translationBuilder.add(ConventionalEnchantmentTags.ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENTS, "Entity Auxiliary Movement Enhancements");
-		translationBuilder.add(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENT, "Entity Defense Enhancements");
+		translationBuilder.add(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENTS, "Entity Defense Enhancements");
 
 		// Entity Types
 		translationBuilder.add(ConventionalEntityTypeTags.BOSSES, "Bosses");
