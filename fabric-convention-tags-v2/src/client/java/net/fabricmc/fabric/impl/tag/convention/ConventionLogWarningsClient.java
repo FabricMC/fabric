@@ -46,10 +46,10 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 
 	private static LogWarningMode setupLogWarningModeProperty() {
 		String property = System.getProperty("fabric-tag-conventions-v2.missingTagTranslationWarning", LogWarningMode.SILENCED.name()).toUpperCase(Locale.ROOT);
+
 		try {
 			return LogWarningMode.valueOf(property);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			LOGGER.error("Unknown entry `{}` for property `fabric-tag-conventions-v2.missingTagTranslationWarning`.", property);
 			return LogWarningMode.SILENCED;
 		}
