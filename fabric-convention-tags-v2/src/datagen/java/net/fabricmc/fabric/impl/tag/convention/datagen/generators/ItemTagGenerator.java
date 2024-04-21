@@ -179,6 +179,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 		getOrCreateTagBuilder(ConventionalItemTags.RAW_MEATS_FOODS)
 				.add(Items.BEEF)
+				.add(Items.PORKCHOP)
 				.add(Items.CHICKEN)
 				.add(Items.RABBIT)
 				.add(Items.MUTTON);
@@ -191,6 +192,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 		getOrCreateTagBuilder(ConventionalItemTags.COOKED_MEATS_FOODS)
 				.add(Items.COOKED_BEEF)
+				.add(Items.COOKED_PORKCHOP)
 				.add(Items.COOKED_CHICKEN)
 				.add(Items.COOKED_RABBIT)
 				.add(Items.COOKED_MUTTON);
@@ -254,6 +256,15 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.WATER_BUCKET);
 		getOrCreateTagBuilder(ConventionalItemTags.MILK_BUCKETS)
 				.add(Items.MILK_BUCKET);
+		getOrCreateTagBuilder(ConventionalItemTags.POWDER_SNOW_BUCKETS)
+				.add(Items.POWDER_SNOW_BUCKET);
+		getOrCreateTagBuilder(ConventionalItemTags.BUCKETS)
+				.addOptionalTag(ConventionalItemTags.EMPTY_BUCKETS)
+				.addOptionalTag(ConventionalItemTags.WATER_BUCKETS)
+				.addOptionalTag(ConventionalItemTags.LAVA_BUCKETS)
+				.addOptionalTag(ConventionalItemTags.MILK_BUCKETS)
+				.addOptionalTag(ConventionalItemTags.POWDER_SNOW_BUCKETS)
+				.addOptionalTag(ConventionalItemTags.ENTITY_WATER_BUCKETS);
 	}
 
 	private void generateOreAndRelatedTags() {
