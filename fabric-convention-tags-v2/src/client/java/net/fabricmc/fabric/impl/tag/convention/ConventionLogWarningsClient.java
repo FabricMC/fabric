@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.tag.convention;
 
 import java.util.List;
+import java.util.Locale;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.slf4j.Logger;
@@ -41,7 +42,19 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 	 * Logs out modded item tags that do not have translations when running on integrated server.
 	 * Defaults to SILENCED.
 	 */
-	private static final String LOG_UNTRANSLATED_WARNING_MODE = System.getProperty("fabric-tag-conventions-v2.missingTagTranslationWarning", LogWarningMode.SILENCED.name());
+	private static final LogWarningMode LOG_UNTRANSLATED_WARNING_MODE = setupLogWarningModeProperty();
+
+	private static LogWarningMode setupLogWarningModeProperty() {
+		String property = System.getProperty("fabric-tag-conventions-v2.missingTagTranslationWarning", LogWarningMode.SILENCED.name()).toUpperCase(Locale.ROOT);
+		try {
+			return LogWarningMode.valueOf(property);
+		}
+		catch (Exception e) {
+			LOGGER.error("Unknown entry `{}` for property `fabric-tag-conventions-v2.missingTagTranslationWarning`.", property);
+			return LogWarningMode.SILENCED;
+		}
+	}
+
 	private enum LogWarningMode {
 		SILENCED,
 		DEV_SHORT,
@@ -50,7 +63,7 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		if (!LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LogWarningMode.SILENCED.name())) {
+		if (LOG_UNTRANSLATED_WARNING_MODE != LogWarningMode.SILENCED) {
 			setupUntranslatedItemTagWarning();
 		}
 	}
@@ -59,8 +72,8 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 		// Log missing item tag translations only in development environment and not running dedicated server.
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			boolean isConfigSetToDev =
-					LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LogWarningMode.DEV_SHORT.name())
-							|| LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LogWarningMode.DEV_VERBOSE.name());
+					LOG_UNTRANSLATED_WARNING_MODE == LogWarningMode.DEV_SHORT
+							|| LOG_UNTRANSLATED_WARNING_MODE == LogWarningMode.DEV_VERBOSE;
 
 			if (FabricLoader.getInstance().isDevelopmentEnvironment() != isConfigSetToDev) {
 				return;
@@ -95,7 +108,7 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 					""");
 
 			// Print out all untranslated tags when desired.
-			boolean isConfigSetToVerbose = LOG_UNTRANSLATED_WARNING_MODE.equalsIgnoreCase(LogWarningMode.DEV_VERBOSE.name());
+			boolean isConfigSetToVerbose = LOG_UNTRANSLATED_WARNING_MODE == LogWarningMode.DEV_VERBOSE;
 
 			if (isConfigSetToVerbose) {
 				stringBuilder.append("\nUntranslated item tags:");
