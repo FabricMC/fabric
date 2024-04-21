@@ -50,7 +50,7 @@ public final class EnchantmentTagGenerator extends FabricTagProvider.Enchantment
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENTS)
 				.add(Enchantments.FEATHER_FALLING)
 				.add(Enchantments.FROST_WALKER);
-		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENT)
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENTS)
 				.add(Enchantments.PROTECTION)
 				.add(Enchantments.BLAST_PROTECTION)
 				.add(Enchantments.PROJECTILE_PROTECTION)
@@ -62,5 +62,7 @@ public final class EnchantmentTagGenerator extends FabricTagProvider.Enchantment
 		// TODO: Remove backwards compat tag entries in 1.22
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENTS)
 				.addOptionalTag(new Identifier("c", "entity_movement_enhancement"));
+		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENTS)
+				.addOptionalTag(new Identifier("c", "entity_defense_enhancement"));
 	}
 }
