@@ -48,6 +48,12 @@ public class DefaultItemComponentGameTest implements FabricGameTest {
 		text = new ItemStack(Items.GOLD_INGOT).getComponents().get(DataComponentTypes.ITEM_NAME);
 		checkText.accept(text);
 
+		boolean isBeefFood = Items.BEEF.getComponents().contains(DataComponentTypes.FOOD);
+
+		if (isBeefFood) {
+			throw new GameTestException("Food component not removed from beef");
+		}
+
 		context.complete();
 	}
 

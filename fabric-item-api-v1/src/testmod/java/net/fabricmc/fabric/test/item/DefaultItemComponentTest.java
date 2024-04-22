@@ -42,6 +42,10 @@ public class DefaultItemComponentTest implements ModInitializer {
 					new FireworkExplosionComponent(FireworkExplosionComponent.Type.STAR, IntList.of(0x32a852), IntList.of(0x32a852), true, true)
 				)));
 			});
+			context.modify(Items.BEEF, builder -> {
+				// Remove the food component from beef
+				builder.add(DataComponentTypes.FOOD, null);
+			});
 		});
 
 		// Make all fireworks glint
