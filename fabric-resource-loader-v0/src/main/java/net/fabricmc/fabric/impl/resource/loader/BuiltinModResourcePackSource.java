@@ -16,19 +16,11 @@
 
 package net.fabricmc.fabric.impl.resource.loader;
 
-import java.util.Objects;
-
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class BuiltinModResourcePackSource implements ResourcePackSource {
-	private final String modId;
-
-	public BuiltinModResourcePackSource(String modId) {
-		this.modId = modId;
-	}
-
+public record BuiltinModResourcePackSource(String modId) implements ResourcePackSource {
 	@Override
 	public boolean canBeEnabledLater() {
 		return true;
@@ -37,23 +29,5 @@ public class BuiltinModResourcePackSource implements ResourcePackSource {
 	@Override
 	public Text decorate(Text packName) {
 		return Text.translatable("pack.nameAndSource", packName, Text.translatable("pack.source.builtinMod", modId)).formatted(Formatting.GRAY);
-	}
-
-	@Override
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
-
-		if (other instanceof BuiltinModResourcePackSource otherSources) {
-			return Objects.equals(this.modId, otherSources.modId);
-		}
-
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(modId);
 	}
 }
