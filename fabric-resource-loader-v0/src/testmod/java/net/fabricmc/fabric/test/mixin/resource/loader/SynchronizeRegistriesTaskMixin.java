@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.test.mixin.resource.loader;
 
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -31,14 +31,20 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.registry.VersionedIdentifier;
 import net.minecraft.server.network.SynchronizeRegistriesTask;
 
+import net.fabricmc.fabric.test.resource.loader.BuiltinResourcePackTestMod;
+
 @Mixin(SynchronizeRegistriesTask.class)
 public class SynchronizeRegistriesTaskMixin {
-	@Unique private static final Logger LOGGER = LoggerFactory.getLogger(SynchronizeRegistriesTaskMixin.class);
+	@Shadow
+	@Final
+	private List<VersionedIdentifier> knownPacks;
 
 	@Inject(method = "syncRegistryAndTags", at = @At("HEAD"))
 	public void syncRegistryAndTags(Consumer<Packet<?>> sender, Set<VersionedIdentifier> commonKnownPacks, CallbackInfo ci) {
-		if (commonKnownPacks.stream().noneMatch(knownPack -> knownPack.namespace().equals("fabric") && knownPack.id().equals("fabric-resource-loader-v0-testmod"))) {
-			LOGGER.error("fabric:fabric-resource-loader-v0-testmod is not in commonKnownPacks");
+		BuiltinResourcePackTestMod.LOGGER.info("Syncronizing registries with common known packs: {}", commonKnownPacks);
+
+		if (!commonKnownPacks.containsAll(this.knownPacks)) {
+			BuiltinResourcePackTestMod.LOGGER.error("(Ignore when not local client) Not all server mod data packs known to client. Missing: {}", this.knownPacks.stream().filter(knownPack -> !commonKnownPacks.contains(knownPack)).toList());
 		}
 	}
 }
