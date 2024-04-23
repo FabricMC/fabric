@@ -57,8 +57,8 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 
 	private enum LogWarningMode {
 		SILENCED,
-		DEV_SHORT,
-		DEV_VERBOSE
+		SHORT,
+		VERBOSE
 	}
 
 	@Override
@@ -71,10 +71,6 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 	private static void setupUntranslatedItemTagWarning() {
 		// Log missing item tag translations only in development environment and not running dedicated server.
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			if (!FabricLoader.getInstance().isDevelopmentEnvironment()) {
-				return;
-			}
-
 			Registry<Item> itemRegistry = server.getRegistryManager().get(RegistryKeys.ITEM);
 			List<TagKey<Item>> untranslatedItemTags = new ObjectArrayList<>();
 			itemRegistry.streamTags().forEach(itemTagKey -> {
@@ -98,13 +94,13 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 			stringBuilder.append("""
 					\n	Dev warning - Untranslated Item Tags detected. Please translate your item tags so other mods such as recipe viewers can properly display your tag's name.
 						The format desired is tag.item.<namespace>.<path> for the translation key with slashes in path turned into periods.
-						To be warned when there is any untranslated item tag, set this system property in your runs: `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=DEV_SHORT`.
-						To see individual legacy tags found, set the system property to `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=DEV_VERBOSE`.
+						To be warned when there is any untranslated item tag, set this system property in your runs: `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=SHORT`.
+						To see individual legacy tags found, set the system property to `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=VERBOSE`.
 						Default is `SILENCED`.
 					""");
 
 			// Print out all untranslated tags when desired.
-			boolean isConfigSetToVerbose = LOG_UNTRANSLATED_WARNING_MODE == LogWarningMode.DEV_VERBOSE;
+			boolean isConfigSetToVerbose = LOG_UNTRANSLATED_WARNING_MODE == LogWarningMode.VERBOSE;
 
 			if (isConfigSetToVerbose) {
 				stringBuilder.append("\nUntranslated item tags:");
