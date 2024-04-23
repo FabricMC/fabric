@@ -20,13 +20,7 @@ import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class BuiltinModResourcePackSource implements ResourcePackSource {
-	private final String modId;
-
-	public BuiltinModResourcePackSource(String modId) {
-		this.modId = modId;
-	}
-
+public record BuiltinModResourcePackSource(String modId) implements ResourcePackSource {
 	@Override
 	public boolean canBeEnabledLater() {
 		return true;
