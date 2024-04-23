@@ -242,6 +242,6 @@ public final class ModResourcePackUtil {
 	 * {@code VanillaDataPackProvider.createClientManager} used by vanilla.
 	 */
 	public static ResourcePackManager createClientManager() {
-		return new ResourcePackManager(new VanillaDataPackProvider(new SymlinkFinder((path) -> true)), new ModResourcePackCreator(ResourceType.SERVER_DATA));
+		return new ResourcePackManager(new VanillaDataPackProvider(new SymlinkFinder((path) -> true)), new ModResourcePackCreator(ResourceType.SERVER_DATA, true));
 	}
 }
