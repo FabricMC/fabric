@@ -32,7 +32,6 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.loader.api.FabricLoader;
 
 public class ConventionLogWarningsClient implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConventionLogWarningsClient.class);
