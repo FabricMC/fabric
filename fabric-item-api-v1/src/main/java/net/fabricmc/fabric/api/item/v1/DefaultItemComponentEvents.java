@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentType;
@@ -55,13 +55,32 @@ public final class DefaultItemComponentEvents {
 		/**
 		 * Modify the default data components of the specified item.
 		 *
+		 * @param itemPredicate A predicate to match items to modify
+		 * @param builderConsumer A consumer that provides a {@link ComponentMap.Builder} to modify the item's components.
+		 */
+		void modify(Predicate<Item> itemPredicate, Consumer<ComponentMap.Builder> builderConsumer);
+
+		/**
+		 * Modify the default data components of the specified item.
+		 *
 		 * @param item The item to modify
 		 * @param builderConsumer A consumer that provides a {@link ComponentMap.Builder} to modify the item's components.
 		 */
-		void modify(Item item, Consumer<ComponentMap.Builder> builderConsumer);
+		default void modify(Item item, Consumer<ComponentMap.Builder> builderConsumer) {
+			modify(Predicate.isEqual(item), builderConsumer);
+		}
 	}
 
 	public interface AfterModifyContext {
+		/**
+		 * Modify the default data components of any item with the specified {@link DataComponentType}.
+		 *
+		 * @param itemPredicate A predicate to match items to modify
+		 * @param builderConsumer A consumer that provides a {@link ComponentMap.Builder} to modify the item's components.
+		 * @param <T> The value type of the data component
+		 */
+		<T> void modify(Predicate<Item> itemPredicate, Consumer<ComponentMap.Builder> builderConsumer);
+
 		/**
 		 * Modify the default data components of any item with the specified {@link DataComponentType}.
 		 *
@@ -69,7 +88,9 @@ public final class DefaultItemComponentEvents {
 		 * @param builderConsumer A consumer that provides a {@link ComponentMap.Builder} to modify the item's components.
 		 * @param <T> The value type of the data component
 		 */
-		<T> void modify(DataComponentType<T> type, BiConsumer<T, ComponentMap.Builder> builderConsumer);
+		default <T> void modify(DataComponentType<T> type, Consumer<ComponentMap.Builder> builderConsumer) {
+			modify((item) -> item.getComponents().contains(type), builderConsumer);
+		}
 	}
 
 	@FunctionalInterface

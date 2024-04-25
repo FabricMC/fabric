@@ -50,7 +50,7 @@ public class DefaultItemComponentTest implements ModInitializer {
 
 		// Make all fireworks glint
 		DefaultItemComponentEvents.AFTER_MODIFY.register(context -> {
-			context.modify(DataComponentTypes.FIREWORKS, (fireworksComponent, builder) -> {
+			context.modify(DataComponentTypes.FIREWORKS, (builder) -> {
 				builder.add(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
 			});
 		});
