@@ -32,8 +32,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.config.SelectKnownPacksS2CPacket;
 import net.minecraft.registry.VersionedIdentifier;
 import net.minecraft.server.network.SynchronizeRegistriesTask;
+
+import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
 @Mixin(SynchronizeRegistriesTask.class)
 public abstract class SynchronizeRegistriesTaskMixin {
@@ -57,5 +60,14 @@ public abstract class SynchronizeRegistriesTaskMixin {
 	@Inject(method = "syncRegistryAndTags", at = @At("HEAD"))
 	public void syncRegistryAndTags(Consumer<Packet<?>> sender, Set<VersionedIdentifier> commonKnownPacks, CallbackInfo ci) {
 		LOGGER.debug("Syncronizing registries with common known packs: {}", commonKnownPacks);
+	}
+
+	@Inject(method = "sendPacket", at = @At("HEAD"), cancellable = true)
+	private void sendPacket(Consumer<Packet<?>> sender, CallbackInfo ci) {
+		if (this.knownPacks.size() > ModResourcePackCreator.MAX_KNOWN_PACKS) {
+			LOGGER.warn("Too many knownPacks: Found {}; max {}. Increase -Dfabric-resource-loader-v0:maxKnownPacks to prevent unnecesary registry syncing.", this.knownPacks.size(), ModResourcePackCreator.MAX_KNOWN_PACKS);
+			sender.accept(new SelectKnownPacksS2CPacket(this.knownPacks.subList(0, ModResourcePackCreator.MAX_KNOWN_PACKS)));
+			ci.cancel();
+		}
 	}
 }
