@@ -24,13 +24,13 @@ import net.minecraft.component.DataComponentType;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 
-import net.fabricmc.fabric.api.item.v1.DefaultItemComponentsCallback;
+import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 import net.fabricmc.fabric.mixin.item.ItemAccessor;
 
 public class DefaultItemComponentImpl {
 	public static void modifyItemComponents() {
-		DefaultItemComponentsCallback.MODIFY.invoker().modify(ModifyContextImpl.INSTANCE);
-		DefaultItemComponentsCallback.AFTER_MODIFY.invoker().afterModify(AfterModifyContextImpl.INSTANCE);
+		DefaultItemComponentEvents.MODIFY.invoker().modify(ModifyContextImpl.INSTANCE);
+		DefaultItemComponentEvents.AFTER_MODIFY.invoker().afterModify(AfterModifyContextImpl.INSTANCE);
 	}
 
 	private static void modifyItem(Item item, Consumer<ComponentMap.Builder> builderConsumer) {
@@ -39,7 +39,7 @@ public class DefaultItemComponentImpl {
 		((ItemAccessor) item).setComponents(builder.build());
 	}
 
-	static class ModifyContextImpl implements DefaultItemComponentsCallback.ModifyContext {
+	static class ModifyContextImpl implements DefaultItemComponentEvents.ModifyContext {
 		private static final ModifyContextImpl INSTANCE = new ModifyContextImpl();
 
 		private ModifyContextImpl() {
@@ -51,7 +51,7 @@ public class DefaultItemComponentImpl {
 		}
 	}
 
-	static class AfterModifyContextImpl implements DefaultItemComponentsCallback.AfterModifyContext {
+	static class AfterModifyContextImpl implements DefaultItemComponentEvents.AfterModifyContext {
 		private static final AfterModifyContextImpl INSTANCE = new AfterModifyContextImpl();
 
 		private AfterModifyContextImpl() {

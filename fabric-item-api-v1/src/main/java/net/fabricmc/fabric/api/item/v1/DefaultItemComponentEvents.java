@@ -29,11 +29,11 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Events to modify the default {@link ComponentMap} of items.
  */
-public interface DefaultItemComponentsCallback {
+public final class DefaultItemComponentEvents {
 	/**
-	 * Event used to add new data components to known items.
+	 * Event used to add or remove data components to known items.
 	 */
-	Event<ModifyCallback> MODIFY = EventFactory.createArrayBacked(ModifyCallback.class, listeners -> context -> {
+	public static final Event<ModifyCallback> MODIFY = EventFactory.createArrayBacked(ModifyCallback.class, listeners -> context -> {
 		for (ModifyCallback listener : listeners) {
 			listener.modify(context);
 		}
@@ -42,13 +42,16 @@ public interface DefaultItemComponentsCallback {
 	/**
 	 * Event used to modify the default data components of items after they have been modified by other mods during {@link #MODIFY}.
 	 */
-	Event<AfterModifyCallback> AFTER_MODIFY = EventFactory.createArrayBacked(AfterModifyCallback.class, listeners -> context -> {
+	public static final Event<AfterModifyCallback> AFTER_MODIFY = EventFactory.createArrayBacked(AfterModifyCallback.class, listeners -> context -> {
 		for (AfterModifyCallback listener : listeners) {
 			listener.afterModify(context);
 		}
 	});
 
-	interface ModifyContext {
+	private DefaultItemComponentEvents() {
+	}
+
+	public interface ModifyContext {
 		/**
 		 * Modify the default data components of the specified item.
 		 *
@@ -58,7 +61,7 @@ public interface DefaultItemComponentsCallback {
 		void modify(Item item, Consumer<ComponentMap.Builder> builderConsumer);
 	}
 
-	interface AfterModifyContext {
+	public interface AfterModifyContext {
 		/**
 		 * Modify the default data components of any item with the specified {@link DataComponentType}.
 		 *
@@ -70,7 +73,7 @@ public interface DefaultItemComponentsCallback {
 	}
 
 	@FunctionalInterface
-	interface ModifyCallback {
+	public interface ModifyCallback {
 		/**
 		 * Modify the default data components of items using the provided {@link ModifyContext} instance.
 		 *
@@ -80,7 +83,7 @@ public interface DefaultItemComponentsCallback {
 	}
 
 	@FunctionalInterface
-	interface AfterModifyCallback {
+	public interface AfterModifyCallback {
 		/**
 		 * Modify the default data components of items using the provided {@link AfterModifyContext} instance.
 		 *

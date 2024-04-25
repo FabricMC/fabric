@@ -28,12 +28,12 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.v1.DefaultItemComponentsCallback;
+import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 
 public class DefaultItemComponentTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		DefaultItemComponentsCallback.MODIFY.register(context -> {
+		DefaultItemComponentEvents.MODIFY.register(context -> {
 			context.modify(Items.GOLD_INGOT, builder -> {
 				builder.add(DataComponentTypes.ITEM_NAME, Text.literal("Fool's Gold").formatted(Formatting.GOLD));
 			});
@@ -49,7 +49,7 @@ public class DefaultItemComponentTest implements ModInitializer {
 		});
 
 		// Make all fireworks glint
-		DefaultItemComponentsCallback.AFTER_MODIFY.register(context -> {
+		DefaultItemComponentEvents.AFTER_MODIFY.register(context -> {
 			context.modify(DataComponentTypes.FIREWORKS, (fireworksComponent, builder) -> {
 				builder.add(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
 			});
