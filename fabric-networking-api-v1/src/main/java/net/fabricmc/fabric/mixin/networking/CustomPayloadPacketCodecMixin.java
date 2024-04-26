@@ -46,15 +46,31 @@ public abstract class CustomPayloadPacketCodecMixin<B extends PacketByteBuf> imp
 	}
 
 	@WrapOperation(method = {
-			"encode(Lnet/minecraft/network/PacketByteBuf;Lnet/minecraft/network/packet/CustomPayload$Id;Lnet/minecraft/network/packet/CustomPayload;)V",
 			"decode(Lnet/minecraft/network/PacketByteBuf;)Lnet/minecraft/network/packet/CustomPayload;"
 	}, at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/CustomPayload$1;getCodec(Lnet/minecraft/util/Identifier;)Lnet/minecraft/network/codec/PacketCodec;"))
-	private PacketCodec<B, ? extends CustomPayload> wrapGetCodec(@Coerce PacketCodec<B, CustomPayload> instance, Identifier identifier, Operation<PacketCodec<B, CustomPayload>> original, B packetByteBuf) {
+	private PacketCodec<B, ? extends CustomPayload> wrapGetCodecDecode(@Coerce PacketCodec<B, CustomPayload> instance, Identifier identifier, Operation<PacketCodec<B, CustomPayload>> original, B packetByteBuf) {
 		if (customPayloadTypeProvider != null) {
 			CustomPayload.Type<B, ? extends CustomPayload> payloadType = customPayloadTypeProvider.get(packetByteBuf, identifier);
 
 			if (payloadType != null) {
 				return payloadType.codec();
+			}
+		}
+
+		return original.call(instance, identifier);
+	}
+
+	@WrapOperation(method = {
+			"encode(Lnet/minecraft/network/PacketByteBuf;Lnet/minecraft/network/packet/CustomPayload$Id;Lnet/minecraft/network/packet/CustomPayload;)V",
+	}, at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/CustomPayload$1;getCodec(Lnet/minecraft/util/Identifier;)Lnet/minecraft/network/codec/PacketCodec;"))
+	private PacketCodec<B, ? extends CustomPayload> wrapGetCodecEncode(@Coerce PacketCodec<B, CustomPayload> instance, Identifier identifier, Operation<PacketCodec<B, CustomPayload>> original, B packetByteBuf) {
+		if (customPayloadTypeProvider != null) {
+			CustomPayload.Type<B, ? extends CustomPayload> payloadType = customPayloadTypeProvider.get(packetByteBuf, identifier);
+
+			if (payloadType != null) {
+				return payloadType.codec();
+			} else if (!identifier.getNamespace().equals("minecraft")) {
+				throw new RuntimeException("Failed to find encoder for custom payload channel \"" + identifier + "\". Are you sure you registered one using PayloadTypeRegistry for both the client and server?");
 			}
 		}
 
