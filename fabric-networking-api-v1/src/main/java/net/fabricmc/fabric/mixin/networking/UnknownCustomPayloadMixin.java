@@ -38,7 +38,7 @@ public class UnknownCustomPayloadMixin {
 
 			@Override
 			public void encode(T buf, CustomPayload value) {
-				throw new RuntimeException("Failed to find encoder for custom payload '" + value.getId().id() + "'");
+				throw new RuntimeException("Custom payload '" + value.getId().id() + "' has no registered codec");
 			}
 		};
 	}
