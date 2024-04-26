@@ -12,6 +12,7 @@
     "EntityTrackerEntryMixin",
     "LoginQueryRequestS2CPacketMixin",
     "LoginQueryResponseC2SPacketMixin",
+    "UnknownCustomPayloadMixin",
     "PlayerManagerMixin",
     "ServerCommonNetworkHandlerMixin",
     "ServerConfigurationNetworkHandlerMixin",
