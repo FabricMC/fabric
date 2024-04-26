@@ -21,7 +21,7 @@
   "depends": {
     "fabricloader": ">=0.15.6",
     "java": ">=21",
-    "minecraft": ">=1.20.5- <1.20.6-"
+    "minecraft": ">=1.20.5- <1.20.7-"
   },
   "description": "Core API module providing key hooks and intercompatibility features."
 }
