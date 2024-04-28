@@ -160,7 +160,7 @@ public class BiomeModificationImpl {
 						dimensionOptions.chunkGenerator().indexedFeaturesListSupplier = Suppliers.memoize(
 							() -> PlacedFeatureIndexer.collectIndexedFeatures(
 									List.copyOf(dimensionOptions.chunkGenerator().getBiomeSource().getBiomes()),
-									(biomeEntry) -> (biomeEntry.value().generationSettings).getFeatures(),
+									biomeEntry -> dimensionOptions.chunkGenerator().getGenerationSettings(biomeEntry).getFeatures(),
 									true
 							)
 						);
