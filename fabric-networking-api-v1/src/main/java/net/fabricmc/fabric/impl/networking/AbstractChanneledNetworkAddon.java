@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -234,5 +235,9 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		case CONFIGURATION -> CommonRegisterPayload.CONFIGURATION_PHASE;
 		default -> null; // We don't support receiving this packet on any other phase
 		};
+	}
+
+	public CompletableFuture<byte[]> getCookie(Identifier cookieId) {
+		return getCookie(connection, cookieId);
 	}
 }

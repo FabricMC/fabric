@@ -18,12 +18,14 @@ package net.fabricmc.fabric.api.networking.v1;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.s2c.common.StoreCookieS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.util.Identifier;
@@ -126,6 +128,26 @@ public final class ServerLoginNetworking {
 		Objects.requireNonNull(handler, "Network handler cannot be null");
 
 		return ((ServerLoginNetworkHandlerAccessor) handler).getServer();
+	}
+
+	/**
+	 * Sets the cookie data on the client.
+	 *
+	 * @param cookieId The id to tag the data with.
+	 * @param cookie The data to be set on the client.
+	 */
+	public static void setCookie(ServerLoginNetworkHandler handler, Identifier cookieId, byte[] cookie) {
+		ServerNetworkingImpl.getAddon(handler).sendPacket(new StoreCookieS2CPacket(cookieId, cookie));
+	}
+
+	/**
+	 * Retrieves cookie data from the client.
+	 *
+	 * @param cookieId The id the data was tagged with.
+	 * @return The cookie data or an empty byte[] if there was no cookie found with that id.
+	 */
+	public static CompletableFuture<byte[]> getCookie(ServerLoginNetworkHandler handler, Identifier cookieId) {
+		return ServerNetworkingImpl.getAddon(handler).getCookie(((ServerLoginNetworkHandlerAccessor) handler).getConnection(), cookieId);
 	}
 
 	private ServerLoginNetworking() {

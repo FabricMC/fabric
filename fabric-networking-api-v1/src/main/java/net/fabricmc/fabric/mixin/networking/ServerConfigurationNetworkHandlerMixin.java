@@ -108,6 +108,12 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 			}
 		}
 
+		// Wait until all cookie requests have responded
+		if (this.addon.awaitingCookies()) {
+			ci.cancel();
+			return;
+		}
+
 		// All early tasks should have been completed
 		assert currentTask == null;
 		assert tasks.isEmpty();
