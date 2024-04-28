@@ -138,10 +138,10 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.COPPER_RAW_BLOCKS, "Raw Copper Blocks");
 		translationBuilder.add(ConventionalItemTags.NORMAL_BRICKS, "Bricks");
 		translationBuilder.add(ConventionalItemTags.NETHER_BRICKS, "Nether Bricks");
-		translationBuilder.add(ConventionalItemTags.IRON_INGOTS, "Ingots Iron");
-		translationBuilder.add(ConventionalItemTags.GOLD_INGOTS, "Ingots Gold");
-		translationBuilder.add(ConventionalItemTags.COPPER_INGOTS, "Ingots Copper");
-		translationBuilder.add(ConventionalItemTags.NETHERITE_INGOTS, "Ingots Netherite");
+		translationBuilder.add(ConventionalItemTags.IRON_INGOTS, "Iron Ingots");
+		translationBuilder.add(ConventionalItemTags.GOLD_INGOTS, "Gold Ingots");
+		translationBuilder.add(ConventionalItemTags.COPPER_INGOTS, "Copper Ingots");
+		translationBuilder.add(ConventionalItemTags.NETHERITE_INGOTS, "Netherite Ingots");
 		translationBuilder.add(ConventionalItemTags.NETHERITE_SCRAP_ORES, "Netherite Scrap Ores");
 		translationBuilder.add(ConventionalItemTags.QUARTZ_ORES, "Quartz Ores");
 		translationBuilder.add(ConventionalItemTags.QUARTZ_GEMS, "Quartz Gems");
