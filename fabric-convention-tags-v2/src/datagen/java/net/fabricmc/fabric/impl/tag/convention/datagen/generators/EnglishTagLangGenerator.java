@@ -282,11 +282,11 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 
 		// Structures
 		translationBuilder.add(ConventionalStructureTags.HIDDEN_FROM_DISPLAYERS, "Hidden From Displayers");
-		translationBuilder.add(ConventionalStructureTags.HIDDEN_FROM_LOCATOR_SELECTION, "Hidden From Locator's Selection");
+		translationBuilder.add(ConventionalStructureTags.HIDDEN_FROM_LOCATOR_SELECTION, "Hidden From Locator Selection");
 
 		// Biomes
 		translationBuilder.add(ConventionalBiomeTags.NO_DEFAULT_MONSTERS, "No Default Monsters");
-		translationBuilder.add(ConventionalBiomeTags.HIDDEN_FROM_LOCATOR_SELECTION, "Hidden From Locator's Selection");
+		translationBuilder.add(ConventionalBiomeTags.HIDDEN_FROM_LOCATOR_SELECTION, "Hidden From Locator Selection");
 		translationBuilder.add(ConventionalBiomeTags.IS_VOID, "Void");
 		translationBuilder.add(ConventionalBiomeTags.IS_OVERWORLD, "Overworld");
 		translationBuilder.add(ConventionalBiomeTags.IS_HOT, "Hot");

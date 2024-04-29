@@ -232,7 +232,7 @@
   "tag.item.c.tools.shields": "Shields",
   "tag.item.c.tools.spears": "Spears",
   "tag.item.c.villager_job_sites": "Villager Job Sites",
-  "tag.worldgen.biome.c.hidden_from_locator_selection": "Hidden From Locator's Selection",
+  "tag.worldgen.biome.c.hidden_from_locator_selection": "Hidden From Locator Selection",
   "tag.worldgen.biome.c.is_aquatic": "Aquatic",
   "tag.worldgen.biome.c.is_aquatic_icy": "Icy Aquatic",
   "tag.worldgen.biome.c.is_badlands": "Badlands",
@@ -296,5 +296,5 @@
   "tag.worldgen.biome.c.is_windswept": "Windswept",
   "tag.worldgen.biome.c.no_default_monsters": "No Default Monsters",
   "tag.worldgen.structure.c.hidden_from_displayers": "Hidden From Displayers",
-  "tag.worldgen.structure.c.hidden_from_locator_selection": "Hidden From Locator's Selection"
+  "tag.worldgen.structure.c.hidden_from_locator_selection": "Hidden From Locator Selection"
 }

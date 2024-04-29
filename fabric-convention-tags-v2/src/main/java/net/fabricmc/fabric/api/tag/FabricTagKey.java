@@ -46,7 +46,7 @@ public interface FabricTagKey {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("tag.");
 
-		TagKey<?> tagKey = ((TagKey<?>) this);
+		TagKey<?> tagKey = (TagKey<?>) this;
 		Identifier registryIdentifier = tagKey.registry().getValue();
 		Identifier tagIdentifier = tagKey.id();
 
@@ -72,7 +72,7 @@ public interface FabricTagKey {
 	 *
 	 * @return the translatable text for a TagKey.
 	 */
-	default Text getTagTranslatableText() {
+	default Text getName() {
 		return Text.translatableWithFallback(getTranslationKey(), "#" + ((TagKey<?>) this).id().toString());
 	}
 }
