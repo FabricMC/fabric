@@ -51,7 +51,7 @@ public final class Networking implements ModInitializer {
 	// title: text
 	// customData: buf
 	public static final Identifier OPEN_ID = new Identifier("fabric-screen-handler-api-v1", "open_screen");
-	public static final Map<Identifier, PacketCodec<RegistryByteBuf, ?>> CODEC_BY_ID = new HashMap<>();
+	public static final Map<Identifier, PacketCodec<? super RegistryByteBuf, ?>> CODEC_BY_ID = new HashMap<>();
 
 	/**
 	 * Opens an extended screen handler by sending a custom packet to the client.

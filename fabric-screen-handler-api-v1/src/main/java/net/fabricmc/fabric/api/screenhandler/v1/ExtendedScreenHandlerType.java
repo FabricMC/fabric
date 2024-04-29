@@ -74,14 +74,14 @@ import net.minecraft.screen.ScreenHandlerType;
  */
 public class ExtendedScreenHandlerType<T extends ScreenHandler, D> extends ScreenHandlerType<T> {
 	private final ExtendedFactory<T, D> factory;
-	private final PacketCodec<RegistryByteBuf, D> packetCodec;
+	private final PacketCodec<? super RegistryByteBuf, D> packetCodec;
 
 	/**
 	 * Constructs an extended screen handler type.
 	 *
 	 * @param factory the screen handler factory used for {@link #create(int, PlayerInventory, Object)}
 	 */
-	public ExtendedScreenHandlerType(ExtendedFactory<T, D> factory, PacketCodec<RegistryByteBuf, D> packetCodec) {
+	public ExtendedScreenHandlerType(ExtendedFactory<T, D> factory, PacketCodec<? super RegistryByteBuf, D> packetCodec) {
 		super(null, FeatureFlags.VANILLA_FEATURES);
 		this.factory = Objects.requireNonNull(factory, "screen handler factory cannot be null");
 		this.packetCodec = Objects.requireNonNull(packetCodec, "packet codec cannot be null");
@@ -112,7 +112,7 @@ public class ExtendedScreenHandlerType<T extends ScreenHandler, D> extends Scree
 	/**
 	 * @return the packet codec for serializing the data of this screen handler
 	 */
-	public PacketCodec<RegistryByteBuf, D> getPacketCodec() {
+	public PacketCodec<? super RegistryByteBuf, D> getPacketCodec() {
 		return packetCodec;
 	}
 
