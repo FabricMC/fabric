@@ -11,6 +11,7 @@
     "ResourcePackManagerMixin",
     "ResourcePackProfileMixin",
     "SelectKnownPacksC2SPacketMixin",
+    "ServerConfigurationNetworkHandlerMixin",
     "ServerPropertiesHandlerMixin",
     "SimpleResourceReloadMixin",
     "SynchronizeRegistriesTaskMixin",
