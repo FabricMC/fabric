@@ -65,7 +65,7 @@ public abstract class SynchronizeRegistriesTaskMixin {
 	@Inject(method = "sendPacket", at = @At("HEAD"), cancellable = true)
 	private void sendPacket(Consumer<Packet<?>> sender, CallbackInfo ci) {
 		if (this.knownPacks.size() > ModResourcePackCreator.MAX_KNOWN_PACKS) {
-			LOGGER.warn("Too many knownPacks: Found {}; max {}. Increase -Dfabric-resource-loader-v0:maxKnownPacks to prevent unnecesary registry syncing.", this.knownPacks.size(), ModResourcePackCreator.MAX_KNOWN_PACKS);
+			LOGGER.warn("Too many knownPacks: Found {}; max {}", this.knownPacks.size(), ModResourcePackCreator.MAX_KNOWN_PACKS);
 			sender.accept(new SelectKnownPacksS2CPacket(this.knownPacks.subList(0, ModResourcePackCreator.MAX_KNOWN_PACKS)));
 			ci.cancel();
 		}

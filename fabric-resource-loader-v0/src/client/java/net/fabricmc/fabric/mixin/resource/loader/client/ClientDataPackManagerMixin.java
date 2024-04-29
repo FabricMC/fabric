@@ -46,7 +46,7 @@ public class ClientDataPackManagerMixin {
 	@ModifyReturnValue(method = "getCommonKnownPacks", at = @At("RETURN"))
 	List<VersionedIdentifier> getCommonKnownPacksReturn(List<VersionedIdentifier> original) {
 		if (original.size() > ModResourcePackCreator.MAX_KNOWN_PACKS) {
-			LOGGER.warn("Too many knownPacks: Found {}; max {}. Increase -Dfabric-resource-loader-v0:maxKnownPacks to prevent unnecesary registry syncing.", original.size(), ModResourcePackCreator.MAX_KNOWN_PACKS);
+			LOGGER.warn("Too many knownPacks: Found {}; max {}", original.size(), ModResourcePackCreator.MAX_KNOWN_PACKS);
 			return original.subList(0, ModResourcePackCreator.MAX_KNOWN_PACKS);
 		}
 
