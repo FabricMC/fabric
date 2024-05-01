@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.test.networking.unit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -34,6 +31,8 @@ import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PayloadTypeRegistryTests {
 	@BeforeAll
@@ -110,6 +109,17 @@ public class PayloadTypeRegistryTests {
 		} else {
 			fail();
 		}
+	}
+
+	@Test
+	void handleUnregisteredCustomPayloadError() {
+		// Create packet with no registered codec
+		var packetToSend = new CustomPayloadS2CPacket(() -> CustomPayload.id("no_codec"));
+
+		// Should be *exactly* RuntimeException (with our custom message), NOT ClassCastException
+		assertThrowsExactly(RuntimeException.class, () -> {
+			CustomPayloadS2CPacket.CONFIGURATION_CODEC.encode(PacketByteBufs.create(), packetToSend);
+		});
 	}
 
 	private record C2SPlayPayload(String value) implements CustomPayload {
