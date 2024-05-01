@@ -95,7 +95,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_RAW_COPPER, "Raw Copper Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_RAW_GOLD, "Raw Gold Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_RAW_IRON, "Raw Iron Storage Blocks");
-		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE, "Raw Redstone Storage Blocks");
+		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE, "Redstone Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_SLIME, "Slime Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT, "Wheat Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, "Crafting Tables");
@@ -244,7 +244,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_RAW_COPPER, "Raw Copper Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_RAW_GOLD, "Raw Gold Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_RAW_IRON, "Raw Iron Storage Blocks");
-		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_REDSTONE, "Raw Redstone Storage Blocks");
+		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_REDSTONE, "Redstone Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_SLIME, "Slime Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_WHEAT, "Wheat Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, "Crafting Tables");
