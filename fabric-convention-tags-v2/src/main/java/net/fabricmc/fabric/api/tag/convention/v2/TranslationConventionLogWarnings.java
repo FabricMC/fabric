@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.tag.convention;
+package net.fabricmc.fabric.api.tag.convention.v2;
 
 import java.util.List;
 import java.util.Locale;
@@ -23,18 +23,18 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
-public class ConventionLogWarningsClient implements ClientModInitializer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ConventionLogWarningsClient.class);
+public class TranslationConventionLogWarnings implements ModInitializer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(TranslationConventionLogWarnings.class);
 
 	/**
 	 * A config option mainly for developers.
@@ -60,15 +60,14 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 		VERBOSE
 	}
 
-	@Override
-	public void onInitializeClient() {
+	public void onInitialize() {
 		if (LOG_UNTRANSLATED_WARNING_MODE != LogWarningMode.SILENCED) {
 			setupUntranslatedItemTagWarning();
 		}
 	}
 
 	private static void setupUntranslatedItemTagWarning() {
-		// Log missing item tag translations only in development environment and not running dedicated server.
+		// Log missing item tag translations only when world is started.
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			Registry<Item> itemRegistry = server.getRegistryManager().get(RegistryKeys.ITEM);
 			List<TagKey<Item>> untranslatedItemTags = new ObjectArrayList<>();
@@ -79,8 +78,7 @@ public class ConventionLogWarningsClient implements ClientModInitializer {
 				}
 
 				String translationKey = itemTagKey.getTranslationKey();
-
-				if (!I18n.hasTranslation(translationKey)) {
+				if (Text.translatable(translationKey).getString().equals(translationKey)) {
 					untranslatedItemTags.add(itemTagKey);
 				}
 			});
