@@ -41,7 +41,7 @@ public interface ResourceCondition {
 	/**
 	 * A codec for parsing load conditions. Can either be an array of conditions or a single condition.
 	 */
-	Codec<ResourceCondition> CONDITION_CODEC = Codec.withAlternative(CODEC, CODEC.listOf(), conditions -> ResourceConditions.and(conditions.toArray(new ResourceCondition[0])));
+	Codec<ResourceCondition> CONDITION_CODEC = Codec.withAlternative(CODEC, LIST_CODEC, conditions -> ResourceConditions.and(conditions.toArray(new ResourceCondition[0])));
 
 	/**
 	 * @return the type of the condition
