@@ -43,7 +43,6 @@ public interface ResourceCondition {
 	 */
 	Codec<ResourceCondition> CONDITION_CODEC = Codec.withAlternative(CODEC, CODEC.listOf(), conditions -> ResourceConditions.and(conditions.toArray(new ResourceCondition[0])));
 
-
 	/**
 	 * @return the type of the condition
 	 */
