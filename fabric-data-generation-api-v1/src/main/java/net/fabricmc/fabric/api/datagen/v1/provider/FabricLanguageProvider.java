@@ -230,7 +230,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		}
 
 		/**
-		 * Adds a translation for an {@link TagKey}.
+		 * Adds a translation for a {@link TagKey}.
 		 *
 		 * @param tagKey The {@link TagKey} to get the translation key from.
 		 * @param value  The value of the entry.
