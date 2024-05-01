@@ -40,7 +40,7 @@ public interface FabricTagKey {
 	 *
 	 * <p>The registry's path and tag path's slashes will be converted to periods.
 	 *
-	 * @return the translation key for a TagKey.
+	 * @return the translation key for a TagKey
 	 */
 	default String getTranslationKey() {
 		StringBuilder stringBuilder = new StringBuilder();
