@@ -27,8 +27,8 @@ import net.minecraft.item.Item;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Language;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -69,6 +69,7 @@ public class TranslationConventionLogWarnings implements ModInitializer {
 	private static void setupUntranslatedItemTagWarning() {
 		// Log missing item tag translations only when world is started.
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			Language language = Language.getInstance();
 			Registry<Item> itemRegistry = server.getRegistryManager().get(RegistryKeys.ITEM);
 			List<TagKey<Item>> untranslatedItemTags = new ObjectArrayList<>();
 			itemRegistry.streamTags().forEach(itemTagKey -> {
@@ -77,9 +78,7 @@ public class TranslationConventionLogWarnings implements ModInitializer {
 					return;
 				}
 
-				String translationKey = itemTagKey.getTranslationKey();
-
-				if (Text.translatable(translationKey).getString().equals(translationKey)) {
+				if (!language.hasTranslation(itemTagKey.getTranslationKey())) {
 					untranslatedItemTags.add(itemTagKey);
 				}
 			});
