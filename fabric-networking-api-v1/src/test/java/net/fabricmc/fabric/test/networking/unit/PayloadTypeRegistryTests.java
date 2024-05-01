@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.test.networking.unit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -31,8 +35,6 @@ import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PayloadTypeRegistryTests {
 	@BeforeAll
