@@ -70,7 +70,7 @@ public interface FabricTagKey {
 	 * <p>The text uses the result of {@link TagKey#getTranslationKey} for the translation key
 	 * and will fall back to displaying #tag_namespace:tag_path if no translation exists.
 	 *
-	 * @return the translatable text for a TagKey.
+	 * @return the translatable text for a TagKey
 	 */
 	default Text getName() {
 		return Text.translatableWithFallback(getTranslationKey(), "#" + ((TagKey<?>) this).id().toString());
