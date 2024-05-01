@@ -20,6 +20,9 @@ import java.util.List;
 
 import net.minecraft.registry.VersionedIdentifier;
 
-public interface FabricKnownPacksGetter {
-	List<VersionedIdentifier> fabric_getKnownPacks();
+public interface FabricOriginalKnownPacksGetter {
+	/**
+	 * @return the data packs known at server start
+	 */
+	List<VersionedIdentifier> fabric_getOriginalKnownPacks();
 }

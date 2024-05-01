@@ -29,7 +29,7 @@ import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 
-import net.fabricmc.fabric.impl.resource.loader.FabricKnownPacksGetter;
+import net.fabricmc.fabric.impl.resource.loader.FabricOriginalKnownPacksGetter;
 
 @Mixin(ServerConfigurationNetworkHandler.class)
 public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommonNetworkHandler {
@@ -38,11 +38,12 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 	}
 
 	/**
-	 * Use packs stored at server start. This avoids a descync when packs have been enabled or disabled before the client
-	 * joins. Since the server registry contents aren't reloaded, we want the client to also use the old data pack data.
+	 * Only use packs that were enabled at server start and are enabled now. This avoids a descync when packs have been
+	 * enabled or disabled before the client joins. Since the server registry contents aren't reloaded, we don't want
+	 * the client to use the new data pack data.
 	 */
 	@ModifyArg(method = "sendConfigurations", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/SynchronizeRegistriesTask;<init>(Ljava/util/List;Lnet/minecraft/registry/CombinedDynamicRegistries;)V", ordinal = 0))
-	public List<VersionedIdentifier> test(List<VersionedIdentifier> knownPacks) {
-		return ((FabricKnownPacksGetter) this.server).fabric_getKnownPacks();
+	public List<VersionedIdentifier> filterKnownPacks(List<VersionedIdentifier> currentKnownPacks) {
+		return ((FabricOriginalKnownPacksGetter) this.server).fabric_getOriginalKnownPacks().stream().filter(currentKnownPacks::contains).toList();
 	}
 }
