@@ -17,7 +17,7 @@
   ],
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.api.tag.convention.v2.TranslationConventionLogWarnings"
+      "net.fabricmc.fabric.tag.convention.TranslationConventionLogWarnings"
     ]
   },
   "depends": {
