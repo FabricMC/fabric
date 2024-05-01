@@ -79,6 +79,10 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 					ctx.getSource().sendMessage(Text.literal("Spamming unknown packets state:" + spamUnknownPackets));
 					return Command.SINGLE_SUCCESS;
 				}))
+				.then(literal("sendMissingCodec").executes(ctx -> {
+					ServerPlayNetworking.getSender(ctx.getSource().getPlayer()).sendPacket(new CustomPayloadWithoutCodec());
+					return Command.SINGLE_SUCCESS;
+				}))
 				.then(literal("simple").executes(ctx -> {
 					ServerPlayNetworking.send(ctx.getSource().getPlayer(), new OverlayPacket(Text.literal("simple")));
 					return Command.SINGLE_SUCCESS;
@@ -121,6 +125,15 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 				}
 			}
 		});
+	}
+
+	public record CustomPayloadWithoutCodec() implements CustomPayload {
+		public static final CustomPayload.Id<CustomPayloadWithoutCodec> ID = new Id<>(NetworkingTestmods.id("no_codec"));
+
+		@Override
+		public Id<? extends CustomPayload> getId() {
+			return ID;
+		}
 	}
 
 	public record OverlayPacket(Text message) implements CustomPayload {
