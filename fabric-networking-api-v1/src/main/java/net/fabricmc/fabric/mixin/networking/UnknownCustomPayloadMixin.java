@@ -28,6 +28,19 @@ import net.minecraft.network.packet.UnknownCustomPayload;
 
 @Mixin(UnknownCustomPayload.class)
 public class UnknownCustomPayloadMixin {
+	/*
+	This mixin fixes an issue where a CustomPayload with no registered codec throws a confusing ClassCastException
+	when encoded
+
+	The root cause is that the vanilla encode() method has its second argument as UnknownCustomPayload
+	Even though the encode() method is empty, Java will still do an implicit cast to UnknownCustomPayload
+	This will result in a ClassCastException being thrown
+
+	This mixin creates a wrapper around the PacketCodec that uses the base interface CustomPayload as the argument to encode()
+	Without the explicit `throw new RuntimeException`, this would actually not cause any errors and encoding would succeed
+	However, it may be confusing for mod developers ("why isn't my packet being serialized?!")
+	Therefore, we opt to instead throw an explicit error stating that the payload type has no registered codec
+	*/
 	@ModifyReturnValue(method = "createCodec", at = @At("RETURN"))
 	private static <T extends PacketByteBuf> PacketCodec<T, CustomPayload> createCodec(@Coerce PacketCodec<T, CustomPayload> codec) {
 		return new PacketCodec<>() {
