@@ -30,6 +30,7 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.packet.UnknownCustomPayload;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 
@@ -114,7 +115,7 @@ public class PayloadTypeRegistryTests {
 	}
 
 	@Test
-	void handleUnregisteredCustomPayloadError() {
+	void handleUnregisteredCustomPayloadEncodeError() {
 		// Create packet with no registered codec
 		var packetToSend = new CustomPayloadS2CPacket(() -> CustomPayload.id("no_codec"));
 
@@ -122,6 +123,15 @@ public class PayloadTypeRegistryTests {
 		assertThrowsExactly(RuntimeException.class, () -> {
 			CustomPayloadS2CPacket.CONFIGURATION_CODEC.encode(PacketByteBufs.create(), packetToSend);
 		});
+	}
+
+	@Test
+	void handleUnregisteredCustomPayloadDecodeAsUnknownCustomPayload() {
+		PacketByteBuf buf = PacketByteBufs.create();
+
+		buf.writeString("minecraft:no_codec");
+
+		assertEquals(UnknownCustomPayload.class, CustomPayloadS2CPacket.CONFIGURATION_CODEC.decode(buf).payload().getClass());
 	}
 
 	private record C2SPlayPayload(String value) implements CustomPayload {
