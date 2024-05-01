@@ -41,4 +41,9 @@ public class DatagenEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider(EntityTypeTagGenerator::new);
 		pack.addProvider(EnglishTagLangGenerator::new);
 	}
+
+	@Override
+	public String getEffectiveModId() {
+		return "fabric-convention-tags-v2";
+	}
 }
