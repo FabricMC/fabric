@@ -58,7 +58,7 @@ public class SimpleResourceReloadMixin {
 		return sorted;
 	}
 
-	@Redirect(method = "start", at = @At(value = "NEW", target = "Lnet/minecraft/resource/ProfiledResourceReload;<init>"))
+	@Redirect(method = "start", at = @At(value = "NEW", target = "(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;)Lnet/minecraft/resource/ProfiledResourceReload;"))
 	private static ProfiledResourceReload sortProfiled(ResourceManager manager, List<ResourceReloader> reloaders, Executor prepareExecutor, Executor applyExecutor, CompletableFuture<Unit> initialStage) {
 		List<ResourceReloader> sorted = ResourceManagerHelperImpl.sort(fabric_resourceType.get(), reloaders);
 		fabric_resourceType.set(null);

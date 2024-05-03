@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-	@Inject(method = "render", at = @At(value = "TAIL"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;render(Lnet/minecraft/client/gui/DrawContext;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V")))
+	@Inject(method = "render", at = @At(value = "TAIL"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;F)V")))
 	public void render(DrawContext drawContext, float tickDelta, CallbackInfo callbackInfo) {
 		HudRenderCallback.EVENT.invoker().onHudRender(drawContext, tickDelta);
 	}
