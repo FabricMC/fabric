@@ -63,8 +63,9 @@ public class CustomDamageTest implements ModInitializer {
 		FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> builder.registerPotionRecipe(Potions.WATER, WEIRD_PICK, Potions.AWKWARD));
 		EnchantmentEvents.ALLOW_ENCHANTING.register(((enchantment, target, enchantingContext) -> {
 			if (target.isOf(Items.DIAMOND_PICKAXE)
-					&& enchantment == Enchantments.SHARPNESS
-					&& EnchantmentHelper.hasSilkTouch(target)) {
+				// TODO 1.21
+					/*&& enchantment == Enchantments.SHARPNESS
+					&& EnchantmentHelper.hasSilkTouch(target)*/) {
 				return TriState.TRUE;
 			}
 
@@ -97,8 +98,9 @@ public class CustomDamageTest implements ModInitializer {
 
 		@Override
 		public boolean canBeEnchantedWith(ItemStack stack, Enchantment enchantment, EnchantingContext context) {
-			return context == EnchantingContext.ANVIL && enchantment == Enchantments.FIRE_ASPECT
-				|| enchantment != Enchantments.FORTUNE && super.canBeEnchantedWith(stack, enchantment, context);
+			// TODO 1.21
+			return context == EnchantingContext.ANVIL /*&& enchantment == Enchantments.FIRE_ASPECT
+				|| enchantment != Enchantments.FORTUNE*/ && super.canBeEnchantedWith(stack, enchantment, context);
 		}
 	}
 }

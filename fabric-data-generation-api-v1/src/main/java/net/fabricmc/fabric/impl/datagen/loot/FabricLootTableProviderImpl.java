@@ -58,7 +58,7 @@ public final class FabricLootTableProviderImpl {
 		HashMap<Identifier, ResourceCondition[]> conditionMap = new HashMap<>();
 
 		return registryLookup.thenCompose(lookup -> {
-			provider.accept(lookup, (registryKey, builder) -> {
+			provider.accept((registryKey, builder) -> {
 				ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(builder);
 				conditionMap.put(registryKey.getValue(), conditions);
 

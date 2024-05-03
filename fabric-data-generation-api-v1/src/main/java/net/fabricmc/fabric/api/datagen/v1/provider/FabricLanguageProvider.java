@@ -27,6 +27,9 @@ import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import net.minecraft.text.Text;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.block.Block;
@@ -185,7 +188,11 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param value       The value of the entry.
 		 */
 		default void add(Enchantment enchantment, String value) {
-			add(enchantment.getTranslationKey(), value);
+			// TODO 1.21
+			Text description = enchantment.description();
+			if (description instanceof TranslatableTextContent translatable) {
+				add(translatable.getKey(), value);
+			}
 		}
 
 		/**

@@ -22,6 +22,9 @@ import net.minecraft.data.server.loottable.BlockLootTableGenerator;
 
 import net.fabricmc.fabric.api.datagen.v1.loot.FabricBlockLootTableGenerator;
 
+import org.spongepowered.asm.mixin.gen.Accessor;
+
 @Mixin(BlockLootTableGenerator.class)
 public class BlockLootTableGeneratorMixin implements FabricBlockLootTableGenerator {
+
 }

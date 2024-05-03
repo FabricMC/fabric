@@ -54,8 +54,9 @@ public class FabricRegistryInit implements ModInitializer {
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in EnchantmentScreenHandler
-		RegistryAttributeHolder.get(Registries.ENCHANTMENT)
-				.addAttribute(RegistryAttribute.SYNCED);
+		// TODO 1.21
+//		RegistryAttributeHolder.get(Registries.ENCHANTMENT)
+//				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in EntitySpawnS2CPacket and RegistryTagManager
 		RegistryAttributeHolder.get(Registries.ENTITY_TYPE)
@@ -102,8 +103,9 @@ public class FabricRegistryInit implements ModInitializer {
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in PaintingSpawnS2CPacket
-		RegistryAttributeHolder.get(Registries.PAINTING_VARIANT)
-				.addAttribute(RegistryAttribute.SYNCED);
+		// TODO 1.21
+//		RegistryAttributeHolder.get(Registries.PAINTING_VARIANT)
+//				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced via PacketCodecs.registry
 		RegistryAttributeHolder.get(Registries.CUSTOM_STAT)
@@ -138,8 +140,9 @@ public class FabricRegistryInit implements ModInitializer {
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Uses a data tracker (and thus, raw IDs) to sync painting entities to the client
-		RegistryAttributeHolder.get(Registries.PAINTING_VARIANT)
-				.addAttribute(RegistryAttribute.SYNCED);
+		// TODO 1.21 (why twice?)
+//		RegistryAttributeHolder.get(Registries.PAINTING_VARIANT)
+//				.addAttribute(RegistryAttribute.SYNCED);
 
 		//  Uses the raw ID when syncing the command tree to the client
 		RegistryAttributeHolder.get(Registries.COMMAND_ARGUMENT_TYPE)

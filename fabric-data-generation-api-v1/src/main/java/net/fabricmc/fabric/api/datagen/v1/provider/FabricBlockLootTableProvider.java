@@ -52,7 +52,8 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup;
 
 	protected FabricBlockLootTableProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
-		super(Collections.emptySet(), FeatureFlags.FEATURE_MANAGER.getFeatureSet());
+		// TODO 1.21 JOIN...
+		super(Collections.emptySet(), FeatureFlags.FEATURE_MANAGER.getFeatureSet(), registryLookup.join());
 		this.output = dataOutput;
 		this.registryLookup = registryLookup;
 	}
@@ -73,7 +74,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 	}
 
 	@Override
-	public void accept(RegistryWrapper.WrapperLookup registryLookup, BiConsumer<RegistryKey<LootTable>, LootTable.Builder> biConsumer) {
+	public void accept(BiConsumer<RegistryKey<LootTable>, LootTable.Builder> biConsumer) {
 		generate();
 
 		for (Map.Entry<RegistryKey<LootTable>, LootTable.Builder> entry : lootTables.entrySet()) {

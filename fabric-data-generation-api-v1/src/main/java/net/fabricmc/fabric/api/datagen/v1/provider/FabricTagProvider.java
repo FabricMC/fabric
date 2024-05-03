@@ -208,17 +208,18 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 	/**
 	 * Extend this class to create {@link Enchantment} tags in the "/enchantments" tag directory.
 	 */
-	public abstract static class EnchantmentTagProvider extends FabricTagProvider<Enchantment> {
-		public EnchantmentTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-			super(output, RegistryKeys.ENCHANTMENT, completableFuture);
-		}
-
-		@Override
-		protected RegistryKey<Enchantment> reverseLookup(Enchantment element) {
-			return Registries.ENCHANTMENT.getKey(element)
-					.orElseThrow(() -> new IllegalArgumentException("Enchantment " + element + " is not registered"));
-		}
-	}
+	// TODO 1.21
+//	public abstract static class EnchantmentTagProvider extends FabricTagProvider<Enchantment> {
+//		public EnchantmentTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
+//			super(output, RegistryKeys.ENCHANTMENT, completableFuture);
+//		}
+//
+//		@Override
+//		protected RegistryKey<Enchantment> reverseLookup(Enchantment element) {
+//			return Registries.ENCHANTMENT.getKey(element)
+//					.orElseThrow(() -> new IllegalArgumentException("Enchantment " + element + " is not registered"));
+//		}
+//	}
 
 	/**
 	 * Extend this class to create {@link EntityType} tags in the "/entity_types" tag directory.
