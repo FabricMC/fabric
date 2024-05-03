@@ -28,12 +28,11 @@ import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 
 @Mixin(EnchantRandomlyLootFunction.class)
 abstract class EnchantRandomlyLootFunctionMixin {
-	// TODO 1.21
-//	@Redirect(
-//			method = "method_53327",
-//			at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/Enchantment;isAcceptableItem(Lnet/minecraft/item/ItemStack;)Z")
-//	)
-//	private static boolean callAllowEnchantingEvent(Enchantment instance, ItemStack stack) {
-//		return stack.canBeEnchantedWith(instance, EnchantingContext.LOOT_RANDOM_ENCHANTMENT);
-//	}
+	@Redirect(
+			method = "method_60291",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/Enchantment;isAcceptableItem(Lnet/minecraft/item/ItemStack;)Z")
+	)
+	private static boolean callAllowEnchantingEvent(Enchantment instance, ItemStack stack) {
+		return stack.canBeEnchantedWith(instance, EnchantingContext.LOOT_RANDOM_ENCHANTMENT);
+	}
 }
