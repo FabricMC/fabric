@@ -20,7 +20,6 @@ import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.BiomeTagGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.BlockTagGenerator;
-import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EnchantmentTagGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EntityTypeTagGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.FluidTagGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.ItemTagGenerator;
@@ -34,7 +33,7 @@ public class DatagenEntrypoint implements DataGeneratorEntrypoint {
 		BlockTagGenerator blockTags = pack.addProvider(BlockTagGenerator::new);
 		pack.addProvider((output, wrapperLookup) -> new ItemTagGenerator(output, wrapperLookup, blockTags));
 		pack.addProvider(FluidTagGenerator::new);
-		pack.addProvider(EnchantmentTagGenerator::new);
+//		pack.addProvider(EnchantmentTagGenerator::new);
 		pack.addProvider(BiomeTagGenerator::new);
 		pack.addProvider(StructureTagGenerator::new);
 		pack.addProvider(EntityTypeTagGenerator::new);

@@ -58,7 +58,6 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
 import net.minecraft.loot.condition.BlockStatePropertyLootCondition;
 import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.condition.LootConditionTypes;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
@@ -435,7 +434,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 	private static class TestPredicateProvider extends FabricCodecDataProvider<LootCondition> {
 		private TestPredicateProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-			super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, "predicates", LootConditionTypes.CODEC);
+			super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, "predicates", LootCondition.field_51809);
 		}
 
 		@Override
