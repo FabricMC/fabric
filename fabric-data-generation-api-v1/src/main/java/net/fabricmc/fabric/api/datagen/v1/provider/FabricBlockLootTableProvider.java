@@ -52,7 +52,6 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup;
 
 	protected FabricBlockLootTableProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
-		// TODO 1.21 JOIN...
 		super(Collections.emptySet(), FeatureFlags.FEATURE_MANAGER.getFeatureSet(), registryLookup.join());
 		this.output = dataOutput;
 		this.registryLookup = registryLookup;
