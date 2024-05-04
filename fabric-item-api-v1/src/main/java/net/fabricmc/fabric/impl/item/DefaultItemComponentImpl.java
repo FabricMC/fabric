@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.impl.item;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 import net.minecraft.component.ComponentMap;
@@ -30,58 +28,24 @@ import net.fabricmc.fabric.mixin.item.ItemAccessor;
 
 public class DefaultItemComponentImpl {
 	public static void modifyItemComponents() {
-		var modifyContext = new ModifyContextImpl();
-		var afterModifyContext = new AfterModifyContextImpl();
-
-		DefaultItemComponentEvents.MODIFY.invoker().modify(modifyContext);
-		DefaultItemComponentEvents.AFTER_MODIFY.invoker().afterModify(afterModifyContext);
-
-		for (Item item : Registries.ITEM) {
-			apply(item, modifyContext.modifications);
-			apply(item, afterModifyContext.modifications);
-		}
-	}
-
-	private static void apply(Item item, List<Modification> modifications) {
-		List<Modification> modificationsToApply = new ArrayList<>();
-
-		for (Modification modification : modifications) {
-			if (modification.predicate().test(item)) {
-				modificationsToApply.add(modification);
-			}
-		}
-
-		if (modificationsToApply.isEmpty()) {
-			return;
-		}
-
-		ComponentMap.Builder builder = ComponentMap.builder().addAll(item.getComponents());
-
-		for (Modification modification : modificationsToApply) {
-			modification.builderConsumer().accept(builder);
-		}
-
-		((ItemAccessor) item).setComponents(builder.build());
-	}
-
-	private record Modification(Predicate<Item> predicate, Consumer<ComponentMap.Builder> builderConsumer) {
+		DefaultItemComponentEvents.MODIFY.invoker().modify(ModifyContextImpl.INSTANCE);
 	}
 
 	static class ModifyContextImpl implements DefaultItemComponentEvents.ModifyContext {
-		private final List<Modification> modifications = new ArrayList<>();
+		private static final ModifyContextImpl INSTANCE = new ModifyContextImpl();
 
-		@Override
-		public void modify(Predicate<Item> itemPredicate, Consumer<ComponentMap.Builder> builderConsumer) {
-			modifications.add(new Modification(itemPredicate, builderConsumer));
+		private ModifyContextImpl() {
 		}
-	}
-
-	static class AfterModifyContextImpl implements DefaultItemComponentEvents.AfterModifyContext {
-		private final List<Modification> modifications = new ArrayList<>();
 
 		@Override
-		public <T> void modify(Predicate<Item> itemPredicate, Consumer<ComponentMap.Builder> builderConsumer) {
-			modifications.add(new Modification(itemPredicate, builderConsumer));
+		public void modify(Predicate<Item> itemPredicate, BiConsumer<ComponentMap.Builder, Item> builderConsumer) {
+			for (Item item : Registries.ITEM) {
+				if (itemPredicate.test(item)) {
+					ComponentMap.Builder builder = ComponentMap.builder().addAll(item.getComponents());
+					builderConsumer.accept(builder, item);
+					((ItemAccessor) item).setComponents(builder.build());
+				}
+			}
 		}
 	}
 }

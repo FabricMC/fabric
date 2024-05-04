@@ -26,13 +26,18 @@ import net.minecraft.component.type.FireworksComponent;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 
 public class DefaultItemComponentTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
+		Identifier latePhase = new Identifier("fabric-item-api-v1-testmod", "late");
+		DefaultItemComponentEvents.MODIFY.addPhaseOrdering(Event.DEFAULT_PHASE, latePhase);
+
 		DefaultItemComponentEvents.MODIFY.register(context -> {
 			context.modify(Items.GOLD_INGOT, builder -> {
 				builder.add(DataComponentTypes.ITEM_NAME, Text.literal("Fool's Gold").formatted(Formatting.GOLD));
@@ -49,8 +54,8 @@ public class DefaultItemComponentTest implements ModInitializer {
 		});
 
 		// Make all fireworks glint
-		DefaultItemComponentEvents.AFTER_MODIFY.register(context -> {
-			context.modify(DataComponentTypes.FIREWORKS, (builder) -> {
+		DefaultItemComponentEvents.MODIFY.register(latePhase, context -> {
+			context.modify(item -> item.getComponents().contains(DataComponentTypes.FIREWORKS), (builder, item) -> {
 				builder.add(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
 			});
 		});
