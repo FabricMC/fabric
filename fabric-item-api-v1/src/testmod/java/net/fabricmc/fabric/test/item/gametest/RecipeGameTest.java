@@ -39,8 +39,7 @@ public class RecipeGameTest implements FabricGameTest {
 	public void vanillaRemainderTest(TestContext context) {
 		Recipe<CraftingRecipeInput> testRecipe = createTestingRecipeInstance();
 
-		// TODO 1.21
-		CraftingRecipeInput inventory = CraftingRecipeInput.create(3, 3, List.of(
+		CraftingRecipeInput inventory = CraftingRecipeInput.create(1, 2, List.of(
 				new ItemStack(Items.WATER_BUCKET),
 				new ItemStack(Items.DIAMOND)));
 
@@ -57,8 +56,7 @@ public class RecipeGameTest implements FabricGameTest {
 	public void fabricRemainderTest(TestContext context) {
 		Recipe<CraftingRecipeInput> testRecipe = createTestingRecipeInstance();
 
-		// TODO 1.21
-		CraftingRecipeInput inventory = CraftingRecipeInput.create(3, 3, List.of(
+		CraftingRecipeInput inventory = CraftingRecipeInput.create(1, 4, List.of(
 				new ItemStack(CustomDamageTest.WEIRD_PICK),
 				withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 10),
 				withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 31),
