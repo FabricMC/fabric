@@ -3,11 +3,12 @@
   "package": "net.fabricmc.fabric.mixin.datagen",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "loot.BlockLootTableGeneratorMixin",
     "DataProviderMixin",
-    "TagProviderMixin",
     "ModelProviderMixin",
-    "TagBuilderMixin"
+    "TagBuilderMixin",
+    "TagProviderMixin",
+    "loot.BlockLootTableGeneratorAccessor",
+    "loot.BlockLootTableGeneratorMixin"
   ],
   "server": [
     "server.MainMixin"

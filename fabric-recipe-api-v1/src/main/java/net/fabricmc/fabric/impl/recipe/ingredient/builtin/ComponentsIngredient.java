@@ -28,7 +28,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.DataComponentType;
+import net.minecraft.component.ComponentType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -58,8 +58,8 @@ public class ComponentsIngredient implements CustomIngredient {
 		if (!base.test(stack)) return false;
 
 		// None strict matching
-		for (Map.Entry<DataComponentType<?>, Optional<?>> entry : components.entrySet()) {
-			final DataComponentType<?> type = entry.getKey();
+		for (Map.Entry<ComponentType<?>, Optional<?>> entry : components.entrySet()) {
+			final ComponentType<?> type = entry.getKey();
 			final Optional<?> value = entry.getValue();
 
 			if (value.isPresent()) {

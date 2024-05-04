@@ -47,6 +47,7 @@ import net.minecraft.stat.StatType;
 import net.minecraft.text.TextContent;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -184,8 +185,8 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param enchantment The {@link Enchantment} to get the translation key from.
 		 * @param value       The value of the entry.
 		 */
-		default void add(Enchantment enchantment, String value) {
-			add(enchantment.getTranslationKey(), value);
+		default void addEnchantment(RegistryKey<Enchantment> enchantment, String value) {
+			add(Util.createTranslationKey("enchantment", enchantment.getValue()), value);
 		}
 
 		/**

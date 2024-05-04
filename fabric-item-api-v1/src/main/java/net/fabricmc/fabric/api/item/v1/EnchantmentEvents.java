@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.item.v1;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -44,7 +45,7 @@ public final class EnchantmentEvents {
 	 * <p>Note that allowing an enchantment using this event does not guarantee the item will receive that enchantment,
 	 * only that it isn't forbidden from doing so.</p>
 	 *
-	 * @see AllowEnchanting#allowEnchanting(Enchantment, ItemStack, EnchantingContext)
+	 * @see AllowEnchanting#allowEnchanting(RegistryEntry, ItemStack, EnchantingContext)
 	 * @see Enchantment#isAcceptableItem(ItemStack)
 	 * @see FabricItem#canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)
 	 */
@@ -76,7 +77,7 @@ public final class EnchantmentEvents {
 		 * @see EnchantingContext
 		 */
 		TriState allowEnchanting(
-				Enchantment enchantment,
+				RegistryEntry<Enchantment> enchantment,
 				ItemStack target,
 				EnchantingContext enchantingContext
 		);

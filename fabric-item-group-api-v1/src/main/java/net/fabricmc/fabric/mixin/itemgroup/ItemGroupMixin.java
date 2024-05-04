@@ -52,7 +52,7 @@ abstract class ItemGroupMixin implements FabricItemGroup {
 	private int fabric_page = -1;
 
 	@SuppressWarnings("ConstantConditions")
-	@Inject(method = "updateEntries", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemGroup;reloadSearchProvider()V"))
+	@Inject(method = "updateEntries", at = @At("TAIL"))
 	public void getStacks(ItemGroup.DisplayContext context, CallbackInfo ci) {
 		final ItemGroup self = (ItemGroup) (Object) this;
 		final RegistryKey<ItemGroup> registryKey = Registries.ITEM_GROUP.getKey(self).orElseThrow(() -> new IllegalStateException("Unregistered item group : " + self));

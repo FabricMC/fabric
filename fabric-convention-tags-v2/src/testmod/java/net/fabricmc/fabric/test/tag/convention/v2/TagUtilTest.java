@@ -37,7 +37,7 @@ public class TagUtilTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			if (!TagUtil.isIn(ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS, Enchantments.FORTUNE)) {
+			if (!TagUtil.isIn(server.getRegistryManager(), ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS, server.getRegistryManager().get(RegistryKeys.ENCHANTMENT).get(Enchantments.FORTUNE))) {
 				throw new AssertionError("Failed to find fortune in c:increase_block_drops!");
 			}
 

@@ -114,6 +114,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 
 			@Override
 			public Advancement.Builder getAdvancementBuilder() {
+				//noinspection removal
 				return Advancement.Builder.createUntelemetered().parent(CraftingRecipeJsonBuilder.ROOT);
 			}
 		});

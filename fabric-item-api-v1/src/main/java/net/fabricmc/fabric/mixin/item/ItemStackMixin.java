@@ -28,7 +28,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.server.world.ServerWorld;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.FabricItemStack;
@@ -38,8 +38,8 @@ import net.fabricmc.fabric.impl.item.ItemExtensions;
 public abstract class ItemStackMixin implements FabricItemStack {
 	@Shadow public abstract Item getItem();
 
-	@WrapOperation(method = "damage(ILnet/minecraft/entity/LivingEntity;Lnet/minecraft/entity/EquipmentSlot;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;damage(ILnet/minecraft/util/math/random/Random;Lnet/minecraft/server/network/ServerPlayerEntity;Ljava/lang/Runnable;)V"))
-	private void hookDamage(ItemStack instance, int amount, Random random, ServerPlayerEntity serverPlayerEntity, Runnable runnable, Operation<Void> original, @Local(argsOnly = true) EquipmentSlot slot) {
+	@WrapOperation(method = "damage(ILnet/minecraft/entity/LivingEntity;Lnet/minecraft/entity/EquipmentSlot;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;damage(ILnet/minecraft/server/world/ServerWorld;Lnet/minecraft/server/network/ServerPlayerEntity;Ljava/lang/Runnable;)V"))
+	private void hookDamage(ItemStack instance, int amount, ServerWorld serverWorld, ServerPlayerEntity serverPlayerEntity, Runnable runnable, Operation<Void> original, @Local(argsOnly = true) EquipmentSlot slot) {
 		CustomDamageHandler handler = ((ItemExtensions) getItem()).fabric_getCustomDamageHandler();
 
 		if (handler != null) {
@@ -54,6 +54,6 @@ public abstract class ItemStackMixin implements FabricItemStack {
 			if (mut.booleanValue()) return;
 		}
 
-		original.call(instance, amount, random, serverPlayerEntity, runnable);
+		original.call(instance, amount, serverWorld, serverPlayerEntity, runnable);
 	}
 }

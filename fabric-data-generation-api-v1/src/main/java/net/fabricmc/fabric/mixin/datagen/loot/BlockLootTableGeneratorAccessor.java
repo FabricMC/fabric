@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.transfer.v1.storage.base;
+package net.fabricmc.fabric.mixin.datagen.loot;
 
-/**
- * An immutable object storing both a resource and an amount, provided for convenience.
- * @param <T> The type of the stored resource.
- */
-public record ResourceAmount<T>(T resource, long amount) {
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
+import net.minecraft.data.server.loottable.BlockLootTableGenerator;
+import net.minecraft.registry.RegistryWrapper;
+
+@Mixin(BlockLootTableGenerator.class)
+public interface BlockLootTableGeneratorAccessor {
+	@Accessor()
+	RegistryWrapper.WrapperLookup getRegistryLookup();
 }
