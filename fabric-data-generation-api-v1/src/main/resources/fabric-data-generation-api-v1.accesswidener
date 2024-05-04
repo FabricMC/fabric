@@ -253,6 +253,10 @@ transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerRoots	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	addJigsawOrientationToVariant	(Lnet/minecraft/block/enums/Orientation;Lnet/minecraft/data/client/BlockStateVariant;)Lnet/minecraft/data/client/BlockStateVariant;
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerCandle	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	createSilkTouchCondition	()Lnet/minecraft/loot/condition/LootCondition$Builder;
+transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	createWithoutSilkTouchCondition	()Lnet/minecraft/loot/condition/LootCondition$Builder;
+transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	createWithShearsOrSilkTouchCondition	()Lnet/minecraft/loot/condition/LootCondition$Builder;
+transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	createWithoutShearsOrSilkTouchCondition	()Lnet/minecraft/loot/condition/LootCondition$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	applyExplosionDecay	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/loot/function/LootFunctionConsumingBuilder;)Lnet/minecraft/loot/function/LootFunctionConsumingBuilder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	addSurvivesExplosionCondition	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/loot/condition/LootConditionConsumingBuilder;)Lnet/minecraft/loot/condition/LootConditionConsumingBuilder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	drops	(Lnet/minecraft/block/Block;Lnet/minecraft/loot/condition/LootCondition$Builder;Lnet/minecraft/loot/entry/LootPoolEntry$Builder;)Lnet/minecraft/loot/LootTable$Builder;

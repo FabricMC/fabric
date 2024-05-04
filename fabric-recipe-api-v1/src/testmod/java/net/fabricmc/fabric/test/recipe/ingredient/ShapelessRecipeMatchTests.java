@@ -20,10 +20,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.class_9694;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.ShapelessRecipe;
+import net.minecraft.recipe.input.CraftingRecipeInput;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
 import net.minecraft.test.TestContext;
@@ -46,14 +46,14 @@ public class ShapelessRecipeMatchTests {
 
 		List<ItemStack> damagedPickaxes = Collections.nCopies(9, damagedPickaxe);
 
-		if (recipe.matches(class_9694.method_59986(3, 3, damagedPickaxes), context.getWorld())) {
+		if (recipe.matches(CraftingRecipeInput.create(3, 3, damagedPickaxes), context.getWorld())) {
 			throw new GameTestException("Recipe should not match with only damaged pickaxes");
 		}
 
 		List<ItemStack> oneUndamagedPickaxe = new LinkedList<>(damagedPickaxes);
 		oneUndamagedPickaxe.set(0, undamagedPickaxe);
 
-		if (!recipe.matches(class_9694.method_59986(3, 3, oneUndamagedPickaxe), context.getWorld())) {
+		if (!recipe.matches(CraftingRecipeInput.create(3, 3, oneUndamagedPickaxe), context.getWorld())) {
 			throw new GameTestException("Recipe should match with at least one undamaged pickaxe");
 		}
 

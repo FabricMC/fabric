@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.item;
 
-import net.minecraft.component.DataComponentType;
+import net.minecraft.component.ComponentType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -29,6 +29,7 @@ import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.potion.Potions;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
@@ -42,8 +43,8 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.util.TriState;
 
 public class CustomDamageTest implements ModInitializer {
-	public static final DataComponentType<Integer> WEIRD = Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier("fabric-item-api-v1-testmod", "weird"),
-																DataComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
+	public static final ComponentType<Integer> WEIRD = Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier("fabric-item-api-v1-testmod", "weird"),
+																			ComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
 	public static final CustomDamageHandler WEIRD_DAMAGE_HANDLER = (stack, amount, entity, slot, breakCallback) -> {
 		// If sneaking, apply all damage to vanilla. Otherwise, increment a tag on the stack by one and don't apply any damage
 		if (entity.isSneaking()) {
@@ -62,10 +63,17 @@ public class CustomDamageTest implements ModInitializer {
 		FuelRegistry.INSTANCE.add(WEIRD_PICK, 200);
 		FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> builder.registerPotionRecipe(Potions.WATER, WEIRD_PICK, Potions.AWKWARD));
 		EnchantmentEvents.ALLOW_ENCHANTING.register(((enchantment, target, enchantingContext) -> {
-			if (target.isOf(Items.DIAMOND_PICKAXE)
-				// TODO 1.21
-					/*&& enchantment == Enchantments.SHARPNESS
-					&& EnchantmentHelper.hasSilkTouch(target)*/) {
+			// TODO 1.21 this is clearly wrong
+			boolean hasSilkTouch = false;
+
+			for (RegistryEntry<Enchantment> entry : EnchantmentHelper.getEnchantments(target).getEnchantments()) {
+				if (entry.getKey().orElse(null) == Enchantments.SILK_TOUCH) {
+					hasSilkTouch = true;
+					break;
+				}
+			}
+
+			if (target.isOf(Items.DIAMOND_PICKAXE) && enchantment == Enchantments.SHARPNESS && hasSilkTouch) {
 				return TriState.TRUE;
 			}
 
@@ -97,10 +105,9 @@ public class CustomDamageTest implements ModInitializer {
 		}
 
 		@Override
-		public boolean canBeEnchantedWith(ItemStack stack, Enchantment enchantment, EnchantingContext context) {
-			// TODO 1.21
-			return context == EnchantingContext.ANVIL /*&& enchantment == Enchantments.FIRE_ASPECT
-				|| enchantment != Enchantments.FORTUNE*/ && super.canBeEnchantedWith(stack, enchantment, context);
+		public boolean canBeEnchantedWith(ItemStack stack, RegistryEntry<Enchantment> enchantment, EnchantingContext context) {
+			return context == EnchantingContext.ANVIL && enchantment == Enchantments.FIRE_ASPECT
+				|| enchantment != Enchantments.FORTUNE && super.canBeEnchantedWith(stack, enchantment, context);
 		}
 	}
 }

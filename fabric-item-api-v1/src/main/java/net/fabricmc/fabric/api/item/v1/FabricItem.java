@@ -21,6 +21,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Hand;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
@@ -124,8 +125,8 @@ public interface FabricItem {
 	 * @param context the context in which the enchantment is being checked
 	 * @return whether the enchantment is allowed to apply to the stack
 	 */
-	default boolean canBeEnchantedWith(ItemStack stack, Enchantment enchantment, EnchantingContext context) {
-		return enchantment.isAcceptableItem(stack);
+	default boolean canBeEnchantedWith(ItemStack stack, RegistryEntry<Enchantment> enchantment, EnchantingContext context) {
+		return enchantment.value().isAcceptableItem(stack);
 	}
 
 	/**

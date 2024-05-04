@@ -16,13 +16,14 @@
 
 package net.fabricmc.fabric.test.item.gametest;
 
-import net.minecraft.class_9694;
-import net.minecraft.inventory.SimpleInventory;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.input.CraftingRecipeInput;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
@@ -33,15 +34,13 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.fabric.test.item.CustomDamageTest;
 
-import java.util.List;
-
 public class RecipeGameTest implements FabricGameTest {
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void vanillaRemainderTest(TestContext context) {
-		Recipe<class_9694> testRecipe = createTestingRecipeInstance();
+		Recipe<CraftingRecipeInput> testRecipe = createTestingRecipeInstance();
 
 		// TODO 1.21
-		class_9694 inventory = class_9694.method_59986(3, 3, List.of(
+		CraftingRecipeInput inventory = CraftingRecipeInput.create(3, 3, List.of(
 				new ItemStack(Items.WATER_BUCKET),
 				new ItemStack(Items.DIAMOND)));
 
@@ -56,10 +55,10 @@ public class RecipeGameTest implements FabricGameTest {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void fabricRemainderTest(TestContext context) {
-		Recipe<class_9694> testRecipe = createTestingRecipeInstance();
+		Recipe<CraftingRecipeInput> testRecipe = createTestingRecipeInstance();
 
 		// TODO 1.21
-		class_9694 inventory = class_9694.method_59986(3,3, List.of(
+		CraftingRecipeInput inventory = CraftingRecipeInput.create(3, 3, List.of(
 				new ItemStack(CustomDamageTest.WEIRD_PICK),
 				withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 10),
 				withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 31),
@@ -76,15 +75,15 @@ public class RecipeGameTest implements FabricGameTest {
 		context.complete();
 	}
 
-	private Recipe<class_9694> createTestingRecipeInstance() {
+	private Recipe<CraftingRecipeInput> createTestingRecipeInstance() {
 		return new Recipe<>() {
 			@Override
-			public boolean matches(class_9694 inventory, World world) {
+			public boolean matches(CraftingRecipeInput recipeInput, World world) {
 				return true;
 			}
 
 			@Override
-			public ItemStack craft(class_9694 inventory, RegistryWrapper.WrapperLookup wrapperLookup) {
+			public ItemStack craft(CraftingRecipeInput recipeInput, RegistryWrapper.WrapperLookup wrapperLookup) {
 				return null;
 			}
 
