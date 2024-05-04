@@ -63,7 +63,7 @@ class ItemTests extends AbstractTransferApiTest {
 	static void beforeAll() {
 		bootstrap();
 		ENERGY = Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier(TransferTestInitializer.MOD_ID, "energy"),
-		                           ComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
+								ComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
 	}
 
 	@Test
