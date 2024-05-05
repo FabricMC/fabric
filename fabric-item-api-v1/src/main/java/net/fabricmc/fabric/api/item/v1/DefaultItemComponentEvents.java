@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
+import java.util.Collection;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -59,6 +60,15 @@ public final class DefaultItemComponentEvents {
 		 */
 		default void modify(Item item, Consumer<ComponentMap.Builder> builderConsumer) {
 			modify(Predicate.isEqual(item), (builder, _item) -> builderConsumer.accept(builder));
+		}
+
+		/**
+		 * Modify the default data components of the specified items.
+		 * @param items The items to modify
+		 * @param builderConsumer A consumer that provides a {@link ComponentMap.Builder} to modify the item's components.
+		 */
+		default void modify(Collection<Item> items, BiConsumer<ComponentMap.Builder, Item> builderConsumer) {
+			modify(items::contains, builderConsumer);
 		}
 	}
 
