@@ -21,6 +21,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.BiomeTagGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.BlockTagGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EnchantmentTagGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EnglishTagLangGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EntityTypeTagGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.FluidTagGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.ItemTagGenerator;
@@ -38,5 +39,11 @@ public class DatagenEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider(BiomeTagGenerator::new);
 		pack.addProvider(StructureTagGenerator::new);
 		pack.addProvider(EntityTypeTagGenerator::new);
+		pack.addProvider(EnglishTagLangGenerator::new);
+	}
+
+	@Override
+	public String getEffectiveModId() {
+		return "fabric-convention-tags-v2";
 	}
 }
