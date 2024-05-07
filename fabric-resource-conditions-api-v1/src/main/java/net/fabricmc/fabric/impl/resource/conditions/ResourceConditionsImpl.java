@@ -65,10 +65,10 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		boolean debugLogEnabled = ResourceConditionsImpl.LOGGER.isDebugEnabled();
 
 		if (obj.has(ResourceConditions.CONDITIONS_KEY)) {
-			DataResult<List<ResourceCondition>> conditions = ResourceCondition.LIST_CODEC.parse(JsonOps.INSTANCE, obj.get(ResourceConditions.CONDITIONS_KEY));
+			DataResult<ResourceCondition> conditions = ResourceCondition.CONDITION_CODEC.parse(JsonOps.INSTANCE, obj.get(ResourceConditions.CONDITIONS_KEY));
 
 			if (conditions.isSuccess()) {
-				boolean matched = ResourceConditionsImpl.conditionsMet(conditions.getOrThrow(), registryLookup, true);
+				boolean matched = conditions.getOrThrow().test(registryLookup);
 
 				if (debugLogEnabled) {
 					String verdict = matched ? "Allowed" : "Rejected";
