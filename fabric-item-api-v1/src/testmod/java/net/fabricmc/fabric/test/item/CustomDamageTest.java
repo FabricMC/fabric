@@ -30,6 +30,7 @@ import net.minecraft.potion.Potions;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.EnchantmentTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
@@ -63,17 +64,7 @@ public class CustomDamageTest implements ModInitializer {
 		FuelRegistry.INSTANCE.add(WEIRD_PICK, 200);
 		FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> builder.registerPotionRecipe(Potions.WATER, WEIRD_PICK, Potions.AWKWARD));
 		EnchantmentEvents.ALLOW_ENCHANTING.register(((enchantment, target, enchantingContext) -> {
-			// TODO 1.21 this is clearly wrong
-			boolean hasSilkTouch = false;
-
-			for (RegistryEntry<Enchantment> entry : EnchantmentHelper.getEnchantments(target).getEnchantments()) {
-				if (entry.getKey().orElse(null) == Enchantments.SILK_TOUCH) {
-					hasSilkTouch = true;
-					break;
-				}
-			}
-
-			if (target.isOf(Items.DIAMOND_PICKAXE) && enchantment == Enchantments.SHARPNESS && hasSilkTouch) {
+			if (target.isOf(Items.DIAMOND_PICKAXE) && enchantment.matchesKey(Enchantments.SHARPNESS) && EnchantmentHelper.hasAnyEnchantmentsIn(target, EnchantmentTags.MINING_EXCLUSIVE_SET)) {
 				return TriState.TRUE;
 			}
 
@@ -106,8 +97,8 @@ public class CustomDamageTest implements ModInitializer {
 
 		@Override
 		public boolean canBeEnchantedWith(ItemStack stack, RegistryEntry<Enchantment> enchantment, EnchantingContext context) {
-			return context == EnchantingContext.ANVIL && enchantment == Enchantments.FIRE_ASPECT
-				|| enchantment != Enchantments.FORTUNE && super.canBeEnchantedWith(stack, enchantment, context);
+			return context == EnchantingContext.ANVIL && enchantment.matchesKey(Enchantments.FIRE_ASPECT)
+				|| !enchantment.matchesKey(Enchantments.FORTUNE) && super.canBeEnchantedWith(stack, enchantment, context);
 		}
 	}
 }
