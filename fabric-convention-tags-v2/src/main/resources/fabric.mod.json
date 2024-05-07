@@ -15,14 +15,24 @@
   "authors": [
     "FabricMC"
   ],
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.tag.convention.v2.TranslationConventionLogWarnings"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.15.6",
     "minecraft": ">=1.20.5-beta.1",
     "fabric-lifecycle-events-v1": "*"
   },
-  "mixins": [],
+  "mixins": [
+    "fabric-convention-tags-api-v2.mixins.json"
+  ],
   "description": "Contains common tags used by mods for better inter-mod compatibility.",
   "custom": {
-    "fabric-api:module-lifecycle": "stable"
+    "fabric-api:module-lifecycle": "stable",
+    "loom:injected_interfaces": {
+      "net/minecraft/class_6862": ["net/fabricmc/fabric/api/tag/FabricTagKey"]
+    }
   }
 }
