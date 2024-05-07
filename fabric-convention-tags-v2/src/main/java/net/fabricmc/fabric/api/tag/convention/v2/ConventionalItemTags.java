@@ -290,6 +290,13 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> HIDDEN_FROM_RECIPE_VIEWERS = register("hidden_from_recipe_viewers");
 
+	/**
+	 * For items that should not be destroyed under any circumstances.
+	 * This does not prevent vanilla ways of destruction. These need to be handled by the mod itself (Explosions, Burning as Fuel, Crafting, Durability Breaking)
+	 */
+	public static final TagKey<Item> INDESTRUCTIBLE = register("indestructible");
+
+
 	private static TagKey<Item> register(String tagId) {
 		return TagRegistration.ITEM_TAG.registerC(tagId);
 	}
