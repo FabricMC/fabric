@@ -38,6 +38,6 @@ abstract class EnchantCommandMixin {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/Enchantment;isAcceptableItem(Lnet/minecraft/item/ItemStack;)Z")
 	)
 	private static boolean callAllowEnchantingEvent(Enchantment instance, ItemStack stack, ServerCommandSource source, Collection<? extends Entity> targets, RegistryEntry<Enchantment> enchantment) {
-		return stack.canBeEnchantedWith(enchantment, EnchantingContext.ENCHANT_COMMAND);
+		return stack.canBeEnchantedWith(enchantment, EnchantingContext.ACCEPTABLE);
 	}
 }

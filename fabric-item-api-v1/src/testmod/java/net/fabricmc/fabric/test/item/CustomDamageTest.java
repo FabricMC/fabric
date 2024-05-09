@@ -106,7 +106,7 @@ public class CustomDamageTest implements ModInitializer {
 
 		@Override
 		public boolean canBeEnchantedWith(ItemStack stack, RegistryEntry<Enchantment> enchantment, EnchantingContext context) {
-			return context == EnchantingContext.ANVIL && enchantment == Enchantments.FIRE_ASPECT
+			return context == EnchantingContext.ACCEPTABLE && enchantment == Enchantments.FIRE_ASPECT
 				|| enchantment != Enchantments.FORTUNE && super.canBeEnchantedWith(stack, enchantment, context);
 		}
 	}

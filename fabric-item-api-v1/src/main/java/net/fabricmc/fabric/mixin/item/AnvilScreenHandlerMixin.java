@@ -47,6 +47,6 @@ abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
 			)
 	)
 	private boolean callAllowEnchantingEvent(Enchantment instance, ItemStack stack, @Local RegistryEntry<Enchantment> registryEntry) {
-		return stack.canBeEnchantedWith(registryEntry, EnchantingContext.ANVIL);
+		return stack.canBeEnchantedWith(registryEntry, EnchantingContext.ACCEPTABLE);
 	}
 }

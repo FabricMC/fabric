@@ -34,6 +34,6 @@ abstract class EnchantRandomlyLootFunctionMixin {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/Enchantment;isAcceptableItem(Lnet/minecraft/item/ItemStack;)Z")
 	)
 	private static boolean callAllowEnchantingEvent(Enchantment enchantment, ItemStack stack, boolean bl, ItemStack itemStack, RegistryEntry<Enchantment> registryEntry) {
-		return stack.canBeEnchantedWith(registryEntry, EnchantingContext.LOOT_RANDOM_ENCHANTMENT);
+		return stack.canBeEnchantedWith(registryEntry, EnchantingContext.ACCEPTABLE);
 	}
 }
