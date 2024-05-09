@@ -11,11 +11,13 @@
     "EnchantRandomlyLootFunctionMixin",
     "ItemEntityAccessor",
     "ItemEntityMixin",
+    "ItemAccessor",
     "ItemMixin",
     "ItemSettingsMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "RecipeMixin"
+    "RecipeMixin",
+    "RegistriesMixin"
   ],
   "injectors": {
     "defaultRequire": 1
