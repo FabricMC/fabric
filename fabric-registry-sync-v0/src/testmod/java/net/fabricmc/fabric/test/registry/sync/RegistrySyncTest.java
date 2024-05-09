@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.registry.sync;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -58,6 +60,11 @@ public class RegistrySyncTest implements ModInitializer {
 	public static final boolean REGISTER_BLOCKS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.blocks", "true"));
 	public static final boolean REGISTER_ITEMS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.items", "true"));
 
+	// Store a list of Registries used with PacketCodecs.registry, and then check that they are marked as synced when the server starts.
+	// We check them later as they may be used before the registry attributes are assigned.
+	private static boolean hasCheckedEarlyRegistries = false;
+	private static final List<RegistryKey<? extends Registry<?>>> sycnedRegistriesToCheck = new ArrayList<>();
+
 	@Override
 	public void onInitialize() {
 		if (REGISTER_BLOCKS) {
@@ -95,6 +102,9 @@ public class RegistrySyncTest implements ModInitializer {
 		});
 
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+			hasCheckedEarlyRegistries = true;
+			sycnedRegistriesToCheck.forEach(RegistrySyncTest::checkSyncedRegistry);
+
 			if (!setupCalled.get()) {
 				throw new IllegalStateException("DRM setup was not called before startup!");
 			}
@@ -124,6 +134,22 @@ public class RegistrySyncTest implements ModInitializer {
 
 					throw new IllegalStateException();
 				})));
+	}
+
+	public static void checkSyncedRegistry(RegistryKey<? extends Registry<?>> registry) {
+		if (!Registries.REGISTRIES.containsId(registry.getValue())) {
+			// Skip dynamic registries, as there are always synced.
+			return;
+		}
+
+		if (!hasCheckedEarlyRegistries) {
+			sycnedRegistriesToCheck.add(registry);
+			return;
+		}
+
+		if (!RegistryAttributeHolder.get(registry).hasAttribute(RegistryAttribute.SYNCED)) {
+			throw new IllegalStateException("Registry " + registry.getValue() + " is not marked as SYNCED!");
+		}
 	}
 
 	private static void registerBlocks(String namespace, int amount, int startingId) {

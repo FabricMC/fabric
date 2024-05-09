@@ -51,7 +51,7 @@ public final class ConventionalEnchantmentTags {
 	/**
 	 * For enchantments that decrease damage taken or otherwise benefit, in regard to damage, the entity wearing armor enchanted with it.
 	 */
-	public static final TagKey<Enchantment> ENTITY_DEFENSE_ENHANCEMENT = register("entity_defense_enhancement");
+	public static final TagKey<Enchantment> ENTITY_DEFENSE_ENHANCEMENTS = register("entity_defense_enhancements");
 
 	private static TagKey<Enchantment> register(String tagId) {
 		return TagRegistration.ENCHANTMENT_TAG.registerC(tagId);

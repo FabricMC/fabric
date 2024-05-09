@@ -94,8 +94,8 @@ public final class ContentRegistryTest implements ModInitializer {
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.DIAMOND_BLOCK, 4, 4);
 		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.getDefaultState());
-		FuelRegistry.INSTANCE.add(Items.OBSIDIAN, 60);
-		FuelRegistry.INSTANCE.add(ItemTags.DIRT, 120);
+		FuelRegistry.INSTANCE.add(Items.OBSIDIAN, 50);
+		FuelRegistry.INSTANCE.add(ItemTags.DIRT, 100);
 		LandPathNodeTypesRegistry.register(Blocks.DEAD_BUSH, PathNodeType.DAMAGE_OTHER, PathNodeType.DANGER_OTHER);
 		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
 

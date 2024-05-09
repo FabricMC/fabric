@@ -155,14 +155,16 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> FOOD_POISONING_FOODS = register("foods/food_poisoning");
 
 	// Buckets
+	public static final TagKey<Item> BUCKETS = register("buckets");
+	public static final TagKey<Item> EMPTY_BUCKETS = register("buckets/empty");
 	/**
 	 * Does not include entity water buckets.
 	 */
 	public static final TagKey<Item> WATER_BUCKETS = register("buckets/water");
-	public static final TagKey<Item> ENTITY_WATER_BUCKETS = register("buckets/entity_water");
 	public static final TagKey<Item> LAVA_BUCKETS = register("buckets/lava");
 	public static final TagKey<Item> MILK_BUCKETS = register("buckets/milk");
-	public static final TagKey<Item> EMPTY_BUCKETS = register("buckets/empty");
+	public static final TagKey<Item> POWDER_SNOW_BUCKETS = register("buckets/powder_snow");
+	public static final TagKey<Item> ENTITY_WATER_BUCKETS = register("buckets/entity_water");
 
 	public static final TagKey<Item> BARRELS = register("barrels");
 	public static final TagKey<Item> WOODEN_BARRELS = register("barrels/wooden");
