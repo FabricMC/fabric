@@ -37,9 +37,9 @@ public final class EnchantmentEvents {
 	 * where 'external' means either vanilla or from another mod. For instance, a mod might allow enchanting a pickaxe
 	 * with Sharpness (and only Sharpness) under certain specific conditions.</p>
 	 *
-	 * <p>To modify the behavior of your own modded <em>enchantments</em>, use {@link Enchantment#isAcceptableItem(ItemStack)} instead.
-	 * To modify the behavior of your own modded <em>items</em>, use {@link FabricItem#canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)} instead.
-	 * Note that this event triggers <em>before</em> {@link FabricItem#canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)},
+	 * <p>To modify the behavior of your own modded <em>enchantments</em>, specify a custom tag for {@link Enchantment.Definition#supportedItems()} instead.
+	 * To modify the behavior of your own modded <em>items</em>, add to the applicable tags instead, when that suffices.
+	 * Note that this event triggers <em>before</em> {@link FabricItem#canBeEnchantedWith(ItemStack, RegistryEntry, EnchantingContext)},
 	 * and that method will only be called if no listeners override it.</p>
 	 *
 	 * <p>Note that allowing an enchantment using this event does not guarantee the item will receive that enchantment,
