@@ -126,7 +126,9 @@ public interface FabricItem {
 	 * @return whether the enchantment is allowed to apply to the stack
 	 */
 	default boolean canBeEnchantedWith(ItemStack stack, RegistryEntry<Enchantment> enchantment, EnchantingContext context) {
-		return enchantment.value().isAcceptableItem(stack);
+		return context == EnchantingContext.PRIMARY
+				? enchantment.value().isPrimaryItem(stack)
+				: enchantment.value().isAcceptableItem(stack);
 	}
 
 	/**

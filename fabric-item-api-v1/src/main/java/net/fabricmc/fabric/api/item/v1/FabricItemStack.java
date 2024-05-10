@@ -45,7 +45,8 @@ public interface FabricItemStack {
 	 * Determines whether this {@link ItemStack} can be enchanted with the given {@link Enchantment}.
 	 *
 	 * <p>When checking whether an enchantment can be applied to an {@link ItemStack}, use this method instead of
-	 * {@link Enchantment#isAcceptableItem(ItemStack)}</p>
+	 * {@link Enchantment#isAcceptableItem(ItemStack)} or {@link Enchantment#isPrimaryItem(ItemStack)}, with the appropriate
+	 * {@link EnchantingContext}.</p>
 	 *
 	 * @param enchantment the enchantment to check
 	 * @param context the context in which the enchantment is being checked
