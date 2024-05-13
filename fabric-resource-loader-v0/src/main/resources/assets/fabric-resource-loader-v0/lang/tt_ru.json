@@ -1,7 +1,9 @@
 {
-  "pack.description.modResources": "Мод ресурслары.",
-  "pack.source.fabricmod": "Fabric моды",
+  "pack.description.modResources": "Өстәмәләр ресурслары",
+  "pack.source.fabricmod": "Fabric өстәмәсе белән өстәлгән",
   "pack.source.builtinMod": "кертелгән: %s",
-  "pack.name.fabricMod": "«%s» Fabric моды",
-  "pack.name.fabricMods": "Fabric модлары"
+  "pack.name.fabricMod": "Fabric өстәмә «%s»",
+  "pack.name.fabricMods": "Fabric өстәмәләре",
+  "pack.name.fabricMod.subPack": "Fabric өстәмә «%s» (%s)",
+  "commands.datapack.fabric.internal": "«%s» Fabric эчтәге җыелмасын кушып яки сүндереп булмый."
 }
