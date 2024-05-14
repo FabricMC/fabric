@@ -214,14 +214,14 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		}
 	}
 
-	private record EntryWithConditions<T>(T value, @Nullable ResourceCondition... conditions) {
+	private record ConditionalEntry<T>(T value, @Nullable ResourceCondition... conditions) {
 	}
 
 	private static class RegistryEntries<T> {
 		final RegistryEntryOwner<T> lookup;
 		final RegistryKey<? extends Registry<T>> registry;
 		final Codec<T> elementCodec;
-		Map<RegistryKey<T>, EntryWithConditions<T>> entries = new IdentityHashMap<>();
+		Map<RegistryKey<T>, ConditionalEntry<T>> entries = new IdentityHashMap<>();
 
 		RegistryEntries(RegistryEntryOwner<T> lookup,
 						RegistryKey<? extends Registry<T>> registry,
@@ -237,7 +237,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		}
 
 		RegistryEntry<T> add(RegistryKey<T> key, T value, @Nullable ResourceCondition[] conditions) {
-			if (entries.put(key, new EntryWithConditions<>(value, conditions)) != null) {
+			if (entries.put(key, new ConditionalEntry<>(value, conditions)) != null) {
 				throw new IllegalArgumentException("Trying to add registry key " + key + " more than once.");
 			}
 
@@ -274,7 +274,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		final DataOutput.PathResolver pathResolver = output.getResolver(DataOutput.OutputType.DATA_PACK, directoryName);
 		final List<CompletableFuture<?>> futures = new ArrayList<>();
 
-		for (Map.Entry<RegistryKey<T>, EntryWithConditions<T>> entry : entries.entries.entrySet()) {
+		for (Map.Entry<RegistryKey<T>, ConditionalEntry<T>> entry : entries.entries.entrySet()) {
 			Path path = pathResolver.resolveJson(entry.getKey().getValue());
 			futures.add(writeToPath(path, writer, ops, entries.elementCodec, entry.getValue().value(), entry.getValue().conditions()));
 		}
