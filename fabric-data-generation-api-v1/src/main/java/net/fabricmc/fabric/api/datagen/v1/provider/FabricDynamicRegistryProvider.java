@@ -292,7 +292,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 
 			if (conditions != null && conditions.length > 0) {
 				if (!jsonElement.isJsonObject()) {
-					LOGGER.error("Cannot add conditions to {}: JSOn is a non-object value", path);
+					throw new IllegalStateException("Cannot add conditions to " + path + ": JSON is a non-object value");
 				} else {
 					FabricDataGenHelper.addConditions(jsonElement.getAsJsonObject(), conditions);
 				}
