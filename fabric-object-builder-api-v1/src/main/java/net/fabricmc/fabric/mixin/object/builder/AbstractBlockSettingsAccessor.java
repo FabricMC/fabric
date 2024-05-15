@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MapColor;
-import net.minecraft.block.enums.Instrument;
+import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.EntityType;
 import net.minecraft.loot.LootTable;
@@ -125,7 +125,7 @@ public interface AbstractBlockSettingsAccessor {
 	PistonBehavior getPistonBehavior();
 
 	@Accessor
-	Instrument getInstrument();
+	NoteBlockInstrument getInstrument();
 
 	@Accessor
 	boolean getReplaceable();

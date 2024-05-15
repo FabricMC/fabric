@@ -28,6 +28,7 @@ import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
@@ -56,7 +57,7 @@ public class AttachmentCopyTests implements FabricGameTest {
 		entity.setAttached(DUMMY, () -> 10);
 		entity.setAttached(COPY_ON_DEATH, () -> 10);
 
-		Entity moved = entity.moveToWorld(end);
+		Entity moved = entity.moveToWorld(() -> new TeleportTarget(end));
 		if (moved == null) throw new GameTestException("Cross-world teleportation failed");
 
 		IntSupplier attached1 = moved.getAttached(DUMMY);

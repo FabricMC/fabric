@@ -78,15 +78,15 @@ public class FabricDimensionTest implements ModInitializer {
 			if (entity == null) throw new AssertionError("Could not create entity!");
 			if (!entity.getWorld().getRegistryKey().equals(World.OVERWORLD)) throw new AssertionError("Entity starting world isn't the overworld");
 
-			TeleportTarget target = new TeleportTarget(Vec3d.ZERO, new Vec3d(1, 1, 1), 45f, 60f);
+			TeleportTarget target = new TeleportTarget(world, Vec3d.ZERO, new Vec3d(1, 1, 1), 45f, 60f);
 
-			Entity teleported = FabricDimensions.teleport(entity, world, target);
+			Entity teleported = FabricDimensions.teleport(entity, target);
 
 			if (teleported == null) throw new AssertionError("Entity didn't teleport");
 
 			if (!teleported.getWorld().getRegistryKey().equals(WORLD_KEY)) throw new AssertionError("Target world not reached.");
 
-			if (!teleported.getPos().equals(target.position)) throw new AssertionError("Target Position not reached.");
+			if (!teleported.getPos().equals(target.position())) throw new AssertionError("Target Position not reached.");
 		});
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
@@ -124,8 +124,8 @@ public class FabricDimensionTest implements ModInitializer {
 		ServerWorld modWorld = getModWorld(context);
 
 		if (serverWorld != modWorld) {
-			TeleportTarget target = new TeleportTarget(new Vec3d(0.5, 101, 0.5), Vec3d.ZERO, 0, 0);
-			FabricDimensions.teleport(player, modWorld, target);
+			TeleportTarget target = new TeleportTarget(modWorld, new Vec3d(0.5, 101, 0.5), Vec3d.ZERO, 0, 0);
+			FabricDimensions.teleport(player, target);
 
 			if (player.getWorld() != modWorld) {
 				throw FAILED_EXCEPTION.create();
@@ -134,9 +134,9 @@ public class FabricDimensionTest implements ModInitializer {
 			modWorld.setBlockState(new BlockPos(0, 100, 0), Blocks.DIAMOND_BLOCK.getDefaultState());
 			modWorld.setBlockState(new BlockPos(0, 101, 0), Blocks.TORCH.getDefaultState());
 		} else {
-			TeleportTarget target = new TeleportTarget(new Vec3d(0, 100, 0), Vec3d.ZERO,
+			TeleportTarget target = new TeleportTarget(getWorld(context, World.OVERWORLD), new Vec3d(0, 100, 0), Vec3d.ZERO,
 					(float) Math.random() * 360 - 180, (float) Math.random() * 360 - 180);
-			FabricDimensions.teleport(player, getWorld(context, World.OVERWORLD), target);
+			FabricDimensions.teleport(player, target);
 		}
 
 		return 1;
@@ -150,8 +150,8 @@ public class FabricDimensionTest implements ModInitializer {
 			return 1;
 		}
 
-		TeleportTarget target = new TeleportTarget(player.getPos().add(5, 0, 0), player.getVelocity(), player.getYaw(), player.getPitch());
-		FabricDimensions.teleport(player, (ServerWorld) player.getWorld(), target);
+		TeleportTarget target = new TeleportTarget((ServerWorld) player.getWorld(), player.getPos().add(5, 0, 0), player.getVelocity(), player.getYaw(), player.getPitch());
+		FabricDimensions.teleport(player, target);
 
 		return 1;
 	}
@@ -175,16 +175,16 @@ public class FabricDimensionTest implements ModInitializer {
 			return 1;
 		}
 
-		TeleportTarget target = new TeleportTarget(player.getPos(), player.getVelocity(), player.getYaw(), player.getPitch());
-		FabricDimensions.teleport(entity, (ServerWorld) entity.getWorld(), target);
+		TeleportTarget target = new TeleportTarget((ServerWorld) entity.getWorld(), player.getPos(), player.getVelocity(), player.getYaw(), player.getPitch());
+		FabricDimensions.teleport(entity, target);
 
 		return 1;
 	}
 
 	private int testVanillaTeleport(CommandContext<ServerCommandSource> context, ServerWorld targetWorld) throws CommandSyntaxException {
 		Entity entity = context.getSource().getEntityOrThrow();
-		TeleportTarget target = new TeleportTarget(entity.getPos(), entity.getVelocity(), entity.getYaw(), entity.getPitch());
-		FabricDimensions.teleport(entity, targetWorld, target);
+		TeleportTarget target = new TeleportTarget(targetWorld, entity.getPos(), entity.getVelocity(), entity.getYaw(), entity.getPitch());
+		FabricDimensions.teleport(entity, target);
 
 		return 1;
 	}

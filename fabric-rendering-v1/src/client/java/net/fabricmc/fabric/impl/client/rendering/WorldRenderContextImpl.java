@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.client.rendering;
 import org.joml.Matrix4f;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.class_9779;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
@@ -37,9 +38,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 
 public final class WorldRenderContextImpl implements WorldRenderContext.BlockOutlineContext, WorldRenderContext {
 	private WorldRenderer worldRenderer;
+	private class_9779 delta;
 	private MatrixStack matrixStack;
-	private float tickDelta;
-	private long limitTime;
 	private boolean blockOutlines;
 	private Camera camera;
 	private Frustum frustum;
@@ -63,8 +63,7 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 
 	public void prepare(
 			WorldRenderer worldRenderer,
-			float tickDelta,
-			long limitTime,
+			class_9779 delta,
 			boolean blockOutlines,
 			Camera camera,
 			GameRenderer gameRenderer,
@@ -77,9 +76,8 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 			ClientWorld world
 	) {
 		this.worldRenderer = worldRenderer;
+		this.delta = delta;
 		this.matrixStack = null;
-		this.tickDelta = tickDelta;
-		this.limitTime = limitTime;
 		this.blockOutlines = blockOutlines;
 		this.camera = camera;
 		this.gameRenderer = gameRenderer;
@@ -127,13 +125,8 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	}
 
 	@Override
-	public float tickDelta() {
-		return tickDelta;
-	}
-
-	@Override
-	public long limitTime() {
-		return limitTime;
+	public class_9779 delta() {
+		return this.delta;
 	}
 
 	@Override

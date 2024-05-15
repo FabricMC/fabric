@@ -38,7 +38,7 @@ abstract class EntityMixin {
 	public World world;
 
 	@Inject(method = "moveToWorld", at = @At("RETURN"))
-	private void afterWorldChanged(ServerWorld destination, CallbackInfoReturnable<Entity> cir) {
+	private void afterWorldChanged(Entity.class_9776 arg, CallbackInfoReturnable<Entity> cir) {
 		// Ret will only have an entity if the teleport worked (entity not removed, teleportTarget was valid, entity was successfully created)
 		Entity ret = cir.getReturnValue();
 

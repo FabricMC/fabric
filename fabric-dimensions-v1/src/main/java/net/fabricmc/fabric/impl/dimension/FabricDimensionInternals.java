@@ -29,30 +29,24 @@ public final class FabricDimensionInternals {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <E extends Entity> E changeDimension(E teleported, ServerWorld dimension, TeleportTarget target) {
+	public static <E extends Entity> E changeDimension(E teleported, TeleportTarget target) {
 		Preconditions.checkArgument(!teleported.getWorld().isClient, "Entities can only be teleported on the server side");
 		Preconditions.checkArgument(Thread.currentThread() == ((ServerWorld) teleported.getWorld()).getServer().getThread(), "Entities must be teleported from the main server thread");
 
-		try {
-			((Teleportable) teleported).fabric_setCustomTeleportTarget(target);
-
-			// Fast path for teleporting within the same dimension.
-			if (teleported.getWorld() == dimension) {
-				if (teleported instanceof ServerPlayerEntity serverPlayerEntity) {
-					serverPlayerEntity.networkHandler.requestTeleport(target.position.x, target.position.y, target.position.z, target.yaw, target.pitch);
-				} else {
-					teleported.refreshPositionAndAngles(target.position.x, target.position.y, target.position.z, target.yaw, target.pitch);
-				}
-
-				teleported.setVelocity(target.velocity);
-				teleported.setHeadYaw(target.yaw);
-
-				return teleported;
+		// Fast path for teleporting within the same dimension.
+		if (teleported.getWorld() == target.newDimension()) {
+			if (teleported instanceof ServerPlayerEntity serverPlayerEntity) {
+				serverPlayerEntity.networkHandler.requestTeleport(target.position().x, target.position().y, target.position().z, target.yaw(), target.pitch());
+			} else {
+				teleported.refreshPositionAndAngles(target.position().x, target.position().y, target.position().z, target.yaw(), target.pitch());
 			}
 
-			return (E) teleported.moveToWorld(dimension);
-		} finally {
-			((Teleportable) teleported).fabric_setCustomTeleportTarget(null);
+			teleported.setVelocity(target.velocity());
+			teleported.setHeadYaw(target.yaw());
+
+			return teleported;
 		}
+
+		return (E) teleported.moveToWorld(() -> target);
 	}
 }

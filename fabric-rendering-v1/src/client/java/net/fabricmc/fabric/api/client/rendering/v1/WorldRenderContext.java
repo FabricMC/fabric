@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.class_9779;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
@@ -51,9 +52,8 @@ public interface WorldRenderContext {
 	@Nullable
 	MatrixStack matrixStack();
 
-	float tickDelta();
-
-	long limitTime();
+	// TODO 1.21
+	class_9779 delta();
 
 	boolean blockOutlines();
 

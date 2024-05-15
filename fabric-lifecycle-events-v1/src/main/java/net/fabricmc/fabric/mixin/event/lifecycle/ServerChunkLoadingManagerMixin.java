@@ -24,14 +24,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.server.world.ChunkHolder;
+import net.minecraft.server.world.ServerChunkLoadingManager;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.server.world.ThreadedAnvilChunkStorage;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 
-@Mixin(ThreadedAnvilChunkStorage.class)
-public abstract class ThreadedAnvilChunkStorageMixin {
+@Mixin(ServerChunkLoadingManager.class)
+public abstract class ServerChunkLoadingManagerMixin {
 	@Shadow
 	@Final
 	private ServerWorld world;
@@ -45,6 +45,6 @@ public abstract class ThreadedAnvilChunkStorageMixin {
 	 */
 	@Inject(method = "method_60440", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/WorldChunk;setLoadedToWorld(Z)V", shift = At.Shift.AFTER))
 	private void onChunkUnload(ChunkHolder chunkHolder, long l, CallbackInfo ci) {
-		ServerChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.world, (WorldChunk) chunkHolder.method_60471());
+		ServerChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.world, (WorldChunk) chunkHolder.getLatest());
 	}
 }

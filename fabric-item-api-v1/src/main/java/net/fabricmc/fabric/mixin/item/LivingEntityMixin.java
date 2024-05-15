@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.item.ItemExtensions;
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin {
 	@Inject(method = "getPreferredEquipmentSlot", at = @At(value = "HEAD"), cancellable = true)
-	private static void onGetPreferredEquipmentSlot(ItemStack stack, CallbackInfoReturnable<EquipmentSlot> info) {
+	private void onGetPreferredEquipmentSlot(ItemStack stack, CallbackInfoReturnable<EquipmentSlot> info) {
 		EquipmentSlotProvider equipmentSlotProvider = ((ItemExtensions) stack.getItem()).fabric_getEquipmentSlotProvider();
 
 		if (equipmentSlotProvider != null) {

@@ -23,7 +23,7 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MapColor;
-import net.minecraft.block.enums.Instrument;
+import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.EntityType;
 import net.minecraft.loot.LootTable;
@@ -375,7 +375,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 
 	@Deprecated
 	@Override
-	public FabricBlockSettings instrument(Instrument instrument) {
+	public FabricBlockSettings instrument(NoteBlockInstrument instrument) {
 		super.instrument(instrument);
 		return this;
 	}
