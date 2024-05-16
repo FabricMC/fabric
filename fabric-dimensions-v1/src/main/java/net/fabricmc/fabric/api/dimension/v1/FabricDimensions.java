@@ -32,7 +32,6 @@ public final class FabricDimensions {
 		throw new AssertionError();
 	}
 
-	// TODO 1.21 - This is just a Vanilla wrapper now
 	/**
 	 * Teleports an entity to a different dimension, placing it at the specified destination.
 	 *
