@@ -36,9 +36,9 @@ public final class FabricDimensionInternals {
 		// Fast path for teleporting within the same dimension.
 		if (teleported.getWorld() == target.newDimension()) {
 			if (teleported instanceof ServerPlayerEntity serverPlayerEntity) {
-				serverPlayerEntity.networkHandler.requestTeleport(target.position().x, target.position().y, target.position().z, target.yaw(), target.pitch());
+				serverPlayerEntity.networkHandler.requestTeleport(target.pos().x, target.pos().y, target.pos().z, target.yaw(), target.pitch());
 			} else {
-				teleported.refreshPositionAndAngles(target.position().x, target.position().y, target.position().z, target.yaw(), target.pitch());
+				teleported.refreshPositionAndAngles(target.pos().x, target.pos().y, target.pos().z, target.yaw(), target.pitch());
 			}
 
 			teleported.setVelocity(target.velocity());

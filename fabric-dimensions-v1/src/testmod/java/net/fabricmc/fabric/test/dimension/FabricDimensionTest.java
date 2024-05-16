@@ -86,7 +86,7 @@ public class FabricDimensionTest implements ModInitializer {
 
 			if (!teleported.getWorld().getRegistryKey().equals(WORLD_KEY)) throw new AssertionError("Target world not reached.");
 
-			if (!teleported.getPos().equals(target.position())) throw new AssertionError("Target Position not reached.");
+			if (!teleported.getPos().equals(target.pos())) throw new AssertionError("Target Position not reached.");
 		});
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {

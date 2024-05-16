@@ -20,11 +20,11 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.class_9779;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
@@ -52,8 +52,7 @@ public interface WorldRenderContext {
 	@Nullable
 	MatrixStack matrixStack();
 
-	// TODO 1.21
-	class_9779 delta();
+	RenderTickCounter tickCounter();
 
 	boolean blockOutlines();
 

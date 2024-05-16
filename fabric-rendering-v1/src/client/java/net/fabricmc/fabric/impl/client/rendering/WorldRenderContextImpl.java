@@ -19,12 +19,12 @@ package net.fabricmc.fabric.impl.client.rendering;
 import org.joml.Matrix4f;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.class_9779;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 
 public final class WorldRenderContextImpl implements WorldRenderContext.BlockOutlineContext, WorldRenderContext {
 	private WorldRenderer worldRenderer;
-	private class_9779 delta;
+	private RenderTickCounter tickCounter;
 	private MatrixStack matrixStack;
 	private boolean blockOutlines;
 	private Camera camera;
@@ -63,7 +63,7 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 
 	public void prepare(
 			WorldRenderer worldRenderer,
-			class_9779 delta,
+			RenderTickCounter delta,
 			boolean blockOutlines,
 			Camera camera,
 			GameRenderer gameRenderer,
@@ -76,7 +76,7 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 			ClientWorld world
 	) {
 		this.worldRenderer = worldRenderer;
-		this.delta = delta;
+		this.tickCounter = delta;
 		this.matrixStack = null;
 		this.blockOutlines = blockOutlines;
 		this.camera = camera;
@@ -125,8 +125,8 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	}
 
 	@Override
-	public class_9779 delta() {
-		return this.delta;
+	public RenderTickCounter tickCounter() {
+		return this.tickCounter;
 	}
 
 	@Override
