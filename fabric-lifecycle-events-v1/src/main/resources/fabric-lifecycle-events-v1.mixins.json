@@ -10,7 +10,7 @@
     "PlayerManagerMixin",
     "ServerWorldServerEntityHandlerMixin",
     "ServerWorldMixin",
-    "ThreadedAnvilChunkStorageMixin",
+    "ServerChunkLoadingManagerMixin",
     "WorldMixin"
   ],
   "server": [
