@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.item.gametest;
 
-import java.util.Objects;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.component.DataComponentTypes;
@@ -41,7 +39,7 @@ public class BrewingStandGameTest implements FabricGameTest {
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void basicBrewing(TestContext context) {
 		context.setBlockState(POS, Blocks.BREWING_STAND);
-		BrewingStandBlockEntity blockEntity = (BrewingStandBlockEntity) Objects.requireNonNull(context.getBlockEntity(POS));
+		BrewingStandBlockEntity blockEntity = context.getBlockEntity(POS);
 
 		loadFuel(blockEntity, context);
 
@@ -62,7 +60,7 @@ public class BrewingStandGameTest implements FabricGameTest {
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void vanillaRemainderTest(TestContext context) {
 		context.setBlockState(POS, Blocks.BREWING_STAND);
-		BrewingStandBlockEntity blockEntity = (BrewingStandBlockEntity) Objects.requireNonNull(context.getBlockEntity(POS));
+		BrewingStandBlockEntity blockEntity = context.getBlockEntity(POS);
 
 		loadFuel(blockEntity, context);
 
@@ -84,7 +82,7 @@ public class BrewingStandGameTest implements FabricGameTest {
 	// Skip see: https://github.com/FabricMC/fabric/pull/2874
 	public void fabricRemainderTest(TestContext context) {
 		context.setBlockState(POS, Blocks.BREWING_STAND);
-		BrewingStandBlockEntity blockEntity = (BrewingStandBlockEntity) Objects.requireNonNull(context.getBlockEntity(POS));
+		BrewingStandBlockEntity blockEntity = context.getBlockEntity(POS);
 
 		loadFuel(blockEntity, context);
 
