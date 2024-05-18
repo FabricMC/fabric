@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,7 +45,7 @@ public abstract class ServerChunkLoadingManagerMixin {
 	 * We inject just after "setLoadedToWorld" is made false, since here the WorldChunk is guaranteed to be unloaded.
 	 */
 	@Inject(method = "method_60440", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/WorldChunk;setLoadedToWorld(Z)V", shift = At.Shift.AFTER))
-	private void onChunkUnload(ChunkHolder chunkHolder, long l, CallbackInfo ci) {
-		ServerChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.world, (WorldChunk) chunkHolder.getLatest());
+	private void onChunkUnload(ChunkHolder chunkHolder, long l, CallbackInfo ci, @Local WorldChunk chunk) {
+		ServerChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.world, chunk);
 	}
 }
