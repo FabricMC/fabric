@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.test.resource.conditions;
 
+import net.minecraft.block.entity.BannerPattern;
 import net.minecraft.loot.LootTable;
 import net.minecraft.recipe.RecipeManager;
+import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.ReloadableRegistries;
@@ -100,6 +102,21 @@ public class ConditionalResourcesTest {
 
 		if (registries.getLootTable(RegistryKey.of(RegistryKeys.LOOT_TABLE, id("blocks/not_loaded"))) != LootTable.EMPTY) {
 			throw new AssertionError("not_loaded loot table should not have been loaded.");
+		}
+
+		context.complete();
+	}
+
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void conditionalDynamicRegistry(TestContext context) {
+		Registry<BannerPattern> registry = context.getWorld().getRegistryManager().get(RegistryKeys.BANNER_PATTERN);
+
+		if (registry.get(id("loaded")) == null) {
+			throw new AssertionError("loaded banner pattern should have been loaded.");
+		}
+
+		if (registry.get(id("not_loaded")) != null) {
+			throw new AssertionError("not_loaded banner pattern should not have been loaded.");
 		}
 
 		context.complete();
