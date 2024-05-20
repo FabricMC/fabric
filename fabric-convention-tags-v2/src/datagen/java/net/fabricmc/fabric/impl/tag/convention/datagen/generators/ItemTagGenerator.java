@@ -301,10 +301,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.COPPER_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.IRON_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.GOLD_RAW_MATERIALS);
-		getOrCreateTagBuilder(ConventionalItemTags.RAW_BLOCKS)
-				.addOptionalTag(ConventionalItemTags.COPPER_RAW_BLOCKS)
-				.addOptionalTag(ConventionalItemTags.GOLD_RAW_BLOCKS)
-				.addOptionalTag(ConventionalItemTags.IRON_RAW_BLOCKS);
 
 		// Vanilla instances
 		getOrCreateTagBuilder(ConventionalItemTags.NORMAL_BRICKS)
@@ -320,13 +316,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.GOLD_INGOT);
 		getOrCreateTagBuilder(ConventionalItemTags.NETHERITE_INGOTS)
 				.add(Items.NETHERITE_INGOT);
-
-		getOrCreateTagBuilder(ConventionalItemTags.IRON_RAW_BLOCKS)
-				.add(Items.RAW_IRON_BLOCK);
-		getOrCreateTagBuilder(ConventionalItemTags.COPPER_RAW_BLOCKS)
-				.add(Items.RAW_COPPER_BLOCK);
-		getOrCreateTagBuilder(ConventionalItemTags.GOLD_RAW_BLOCKS)
-				.add(Items.RAW_GOLD_BLOCK);
 
 		getOrCreateTagBuilder(ConventionalItemTags.IRON_RAW_MATERIALS)
 				.add(Items.RAW_IRON);
@@ -480,6 +469,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.CHAIN);
 
 		getOrCreateTagBuilder(ConventionalItemTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
+		getOrCreateTagBuilder(ConventionalItemTags.INDESTRUCTIBLE);
 	}
 
 	private void generateDyedTags() {

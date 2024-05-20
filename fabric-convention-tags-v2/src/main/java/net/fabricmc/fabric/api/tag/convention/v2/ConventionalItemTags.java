@@ -74,15 +74,11 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> NUGGETS = register("nuggets");
 	public static final TagKey<Item> ORES = register("ores");
 	public static final TagKey<Item> RAW_MATERIALS = register("raw_materials");
-	public static final TagKey<Item> RAW_BLOCKS = register("raw_blocks");
 
 	// Raw material and blocks - vanilla instances
 	public static final TagKey<Item> IRON_RAW_MATERIALS = register("raw_materials/iron");
 	public static final TagKey<Item> GOLD_RAW_MATERIALS = register("raw_materials/gold");
 	public static final TagKey<Item> COPPER_RAW_MATERIALS = register("raw_materials/copper");
-	public static final TagKey<Item> IRON_RAW_BLOCKS = register("raw_blocks/iron");
-	public static final TagKey<Item> GOLD_RAW_BLOCKS = register("raw_blocks/gold");
-	public static final TagKey<Item> COPPER_RAW_BLOCKS = register("raw_blocks/copper");
 
 	// Bricks - vanilla instances
 	public static final TagKey<Item> NORMAL_BRICKS = register("bricks/normal");
@@ -289,6 +285,11 @@ public final class ConventionalItemTags {
 	 * Tag that holds all items that recipe viewers should not show to users.
 	 */
 	public static final TagKey<Item> HIDDEN_FROM_RECIPE_VIEWERS = register("hidden_from_recipe_viewers");
+	/**
+	 * For items that should not be destroyed under any circumstances.
+	 * This does not prevent vanilla ways of destruction. These need to be handled by the mod itself (Explosions, Burning as Fuel, Crafting, Durability Breaking)
+	 */
+	public static final TagKey<Item> INDESTRUCTIBLE = register("indestructible");
 
 	private static TagKey<Item> register(String tagId) {
 		return TagRegistration.ITEM_TAG.registerC(tagId);

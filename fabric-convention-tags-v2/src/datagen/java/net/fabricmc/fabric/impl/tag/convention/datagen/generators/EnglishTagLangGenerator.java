@@ -129,13 +129,9 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.NUGGETS, "Nuggets");
 		translationBuilder.add(ConventionalItemTags.ORES, "Ores");
 		translationBuilder.add(ConventionalItemTags.RAW_MATERIALS, "Raw Materials");
-		translationBuilder.add(ConventionalItemTags.RAW_BLOCKS, "Raw Blocks");
 		translationBuilder.add(ConventionalItemTags.IRON_RAW_MATERIALS, "Raw Iron Materials");
 		translationBuilder.add(ConventionalItemTags.GOLD_RAW_MATERIALS, "Raw Gold Materials");
 		translationBuilder.add(ConventionalItemTags.COPPER_RAW_MATERIALS, "Raw Copper Materials");
-		translationBuilder.add(ConventionalItemTags.IRON_RAW_BLOCKS, "Raw Iron Blocks");
-		translationBuilder.add(ConventionalItemTags.GOLD_RAW_BLOCKS, "Raw Gold Blocks");
-		translationBuilder.add(ConventionalItemTags.COPPER_RAW_BLOCKS, "Raw Copper Blocks");
 		translationBuilder.add(ConventionalItemTags.NORMAL_BRICKS, "Bricks");
 		translationBuilder.add(ConventionalItemTags.NETHER_BRICKS, "Nether Bricks");
 		translationBuilder.add(ConventionalItemTags.IRON_INGOTS, "Iron Ingots");
@@ -257,6 +253,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.ROPES, "Ropes");
 		translationBuilder.add(ConventionalItemTags.CHAINS, "Chains");
 		translationBuilder.add(ConventionalItemTags.HIDDEN_FROM_RECIPE_VIEWERS, "Hidden From Recipe Viewers");
+		translationBuilder.add(ConventionalItemTags.INDESTRUCTIBLE, "Indestructible");
 
 		// Enchantments
 		translationBuilder.add(ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS, "Increases Block Drops");
@@ -348,5 +345,6 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBiomeTags.IS_NETHER_FOREST, "Nether Forest");
 		translationBuilder.add(ConventionalBiomeTags.IS_END, "The End");
 		translationBuilder.add(ConventionalBiomeTags.IS_OUTER_END_ISLAND, "Outer End Island");
+
 	}
 }
