@@ -121,7 +121,7 @@ abstract class AbstractRenderContext implements RenderContext {
 			vertexConsumer.color((color >>> 16) & 0xFF, (color >>> 8) & 0xFF, color & 0xFF, (color >>> 24) & 0xFF);
 			vertexConsumer.texture(quad.u(i), quad.v(i));
 			vertexConsumer.overlay(overlay);
-			vertexConsumer.light(quad.lightmap(i));
+			vertexConsumer.method_60803(quad.lightmap(i));
 
 			if (useNormals) {
 				quad.copyNormal(i, normalVec);
@@ -129,7 +129,6 @@ abstract class AbstractRenderContext implements RenderContext {
 			}
 
 			vertexConsumer.normal(normalVec.x(), normalVec.y(), normalVec.z());
-			vertexConsumer.next();
 		}
 	}
 }

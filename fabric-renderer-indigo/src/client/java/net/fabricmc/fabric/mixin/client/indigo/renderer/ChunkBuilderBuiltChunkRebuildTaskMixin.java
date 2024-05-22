@@ -30,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.class_9810;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.BlockRenderManager;
@@ -73,9 +74,9 @@ public abstract class ChunkBuilderBuiltChunkRebuildTaskMixin {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPos;iterate(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Ljava/lang/Iterable;"),
 			locals = LocalCapture.CAPTURE_FAILHARD)
 	private void hookChunkBuild(float cameraX, float cameraY, float cameraZ,
-			BlockBufferBuilderStorage builder,
-			CallbackInfoReturnable<BuiltChunk.RebuildTask.RenderData> ci,
-			BuiltChunk.RebuildTask.RenderData renderData, int i, BlockPos blockPos, BlockPos blockPos2, ChunkOcclusionDataBuilder chunkOcclusionDataBuilder, ChunkRendererRegion region, MatrixStack matrixStack, Set<RenderLayer> initializedLayers, Random abstractRandom, BlockRenderManager blockRenderManager) {
+								BlockBufferBuilderStorage builder,
+								CallbackInfoReturnable<class_9810.class_9811> ci,
+								class_9810.class_9811 renderData, int i, BlockPos blockPos, BlockPos blockPos2, ChunkOcclusionDataBuilder chunkOcclusionDataBuilder, ChunkRendererRegion region, MatrixStack matrixStack, Set<RenderLayer> initializedLayers, Random abstractRandom, BlockRenderManager blockRenderManager) {
 		// hook just before iterating over the render chunk's chunks blocks, captures the used renderlayer set
 		// accessing this.region is unsafe due to potential async cancellation, the LV has to be used!
 

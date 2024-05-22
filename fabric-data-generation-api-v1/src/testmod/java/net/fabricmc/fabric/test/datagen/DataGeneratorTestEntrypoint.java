@@ -373,7 +373,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							SIMPLE_BLOCK,
 							Text.translatable("advancements.test.root.title"),
 							Text.translatable("advancements.test.root.description"),
-							Identifier.method_60655("textures/gui/advancements/backgrounds/end.png"),
+							Identifier.method_60656("textures/gui/advancements/backgrounds/end.png"),
 							AdvancementFrame.TASK,
 							false, false, false)
 					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
@@ -383,7 +383,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							SIMPLE_BLOCK,
 							Text.translatable("advancements.test.root_not_loaded.title"),
 							Text.translatable("advancements.test.root_not_loaded.description"),
-							Identifier.method_60655("textures/gui/advancements/backgrounds/end.png"),
+							Identifier.method_60656("textures/gui/advancements/backgrounds/end.png"),
 							AdvancementFrame.TASK,
 							false, false, false)
 					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
@@ -466,7 +466,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 	private static class TestPredicateProvider extends FabricCodecDataProvider<LootCondition> {
 		private TestPredicateProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-			super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, "predicates", LootCondition.CODEC);
+			super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, "predicate", LootCondition.CODEC);
 		}
 
 		@Override

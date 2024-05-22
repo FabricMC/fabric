@@ -23,8 +23,11 @@ import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.class_9810;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
 import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
@@ -69,7 +72,7 @@ public class ChunkRenderInfo {
 	private final Long2FloatOpenHashMap aoLevelCache;
 
 	private final BlockPos.Mutable chunkOrigin = new BlockPos.Mutable();
-	BuiltChunk.RebuildTask.RenderData renderData;
+	class_9810.class_9811 renderData;
 	BuiltChunk chunkRenderer;
 	BlockBufferBuilderStorage builders;
 	Set<RenderLayer> initializedLayers;
@@ -84,7 +87,7 @@ public class ChunkRenderInfo {
 		aoLevelCache.defaultReturnValue(Float.MAX_VALUE);
 	}
 
-	void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, BuiltChunk.RebuildTask.RenderData renderData, BlockBufferBuilderStorage builders, Set<RenderLayer> initializedLayers) {
+	void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, class_9810.class_9811 renderData, BlockBufferBuilderStorage builders, Set<RenderLayer> initializedLayers) {
 		this.blockView = blockView;
 		this.chunkOrigin.set(chunkRenderer.getOrigin());
 		this.renderData = renderData;
@@ -107,12 +110,8 @@ public class ChunkRenderInfo {
 		BufferBuilder builder = buffers.get(renderLayer);
 
 		if (builder == null) {
-			builder = builders.get(renderLayer);
-
-			if (initializedLayers.add(renderLayer)) {
-				chunkRenderer.beginBufferBuilding(builder);
-			}
-
+			builder = new BufferBuilder(builders.get(renderLayer), VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
+			initializedLayers.add(renderLayer);
 			buffers.put(renderLayer, builder);
 		}
 
