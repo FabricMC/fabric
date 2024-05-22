@@ -20,20 +20,25 @@ import java.util.ConcurrentModificationException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.llamalad7.mixinextras.sugar.Local;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.render.chunk.ChunkRendererRegionBuilder;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 
@@ -41,11 +46,14 @@ import net.fabricmc.fabric.impl.blockview.client.RenderDataMapConsumer;
 
 @Mixin(ChunkRendererRegionBuilder.class)
 public abstract class ChunkRendererRegionBuilderMixin {
+	@Shadow
+	@Final
+	private Long2ObjectMap<ChunkRendererRegionBuilder.ClientChunk> chunks;
 	private static final AtomicInteger ERROR_COUNTER = new AtomicInteger();
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChunkRendererRegionBuilderMixin.class);
 
-	@Inject(method = "build", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private void createDataMap(World world, BlockPos startPos, BlockPos endPos, int offset, CallbackInfoReturnable<ChunkRendererRegion> cir, int startX, int startZ, int endX, int endZ, ChunkRendererRegionBuilder.ClientChunk[][] chunksXZ) {
+	@Inject(method = "build", at = @At("RETURN"))
+	private void createDataMap(World world, ChunkSectionPos chunkSectionPos, CallbackInfoReturnable<ChunkRendererRegion> cir, @Local(ordinal = 0) int startX, @Local(ordinal = 1) int startZ, @Local(ordinal = 2) int endX, @Local(ordinal = 3) int endZ) {
 		ChunkRendererRegion rendererRegion = cir.getReturnValue();
 
 		if (rendererRegion == null) {
@@ -55,8 +63,9 @@ public abstract class ChunkRendererRegionBuilderMixin {
 		// instantiated lazily - avoids allocation for chunks without any data objects - which is most of them!
 		Long2ObjectOpenHashMap<Object> map = null;
 
-		for (ChunkRendererRegionBuilder.ClientChunk[] chunksZ : chunksXZ) {
-			for (ChunkRendererRegionBuilder.ClientChunk chunk : chunksZ) {
+		for(int z = startZ; z <= endZ; ++z) {
+			for (int x = startX; x <= endX; ++x) {
+				ChunkRendererRegionBuilder.ClientChunk chunk = chunks.get(ChunkPos.toLong(x, z));
 				// Hash maps in chunks should generally not be modified outside of client thread
 				// but does happen in practice, due to mods or inconsistent vanilla behaviors, causing
 				// CMEs when we iterate the map. (Vanilla does not iterate these maps when it builds
@@ -65,7 +74,7 @@ public abstract class ChunkRendererRegionBuilderMixin {
 				// We handle this simply by retrying until it works. Ugly but effective.
 				while (true) {
 					try {
-						map = mapChunk(chunk.getChunk(), startPos, endPos, map);
+						map = mapChunk(chunk.getChunk(), chunkSectionPos, map);
 						break;
 					} catch (ConcurrentModificationException e) {
 						final int count = ERROR_COUNTER.incrementAndGet();
@@ -88,13 +97,13 @@ public abstract class ChunkRendererRegionBuilderMixin {
 	}
 
 	@Unique
-	private static Long2ObjectOpenHashMap<Object> mapChunk(WorldChunk chunk, BlockPos posFrom, BlockPos posTo, Long2ObjectOpenHashMap<Object> map) {
-		final int xMin = posFrom.getX();
-		final int xMax = posTo.getX();
-		final int yMin = posFrom.getY();
-		final int yMax = posTo.getY();
-		final int zMin = posFrom.getZ();
-		final int zMax = posTo.getZ();
+	private static Long2ObjectOpenHashMap<Object> mapChunk(WorldChunk chunk, ChunkSectionPos chunkSectionPos, Long2ObjectOpenHashMap<Object> map) {
+		final int xMin = chunkSectionPos.getMinX();
+		final int xMax = chunkSectionPos.getMaxX();
+		final int yMin = chunkSectionPos.getMinY();
+		final int yMax = chunkSectionPos.getMaxY();
+		final int zMin = chunkSectionPos.getMinZ();
+		final int zMax = chunkSectionPos.getMaxZ();
 
 		for (Map.Entry<BlockPos, BlockEntity> entry : chunk.getBlockEntities().entrySet()) {
 			final BlockPos pos = entry.getKey();
