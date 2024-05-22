@@ -81,7 +81,7 @@ public final class FabricLootTableProviderImpl {
 	}
 
 	private static Path getOutputPath(FabricDataOutput dataOutput, Identifier lootTableId) {
-		return dataOutput.getResolver(DataOutput.OutputType.DATA_PACK, "loot_tables").resolveJson(lootTableId);
+		return dataOutput.getResolver(DataOutput.OutputType.DATA_PACK, "loot_table").resolveJson(lootTableId);
 	}
 
 	private FabricLootTableProviderImpl() {

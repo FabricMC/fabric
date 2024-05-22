@@ -34,6 +34,7 @@ import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
@@ -55,7 +56,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 
 	protected FabricAdvancementProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
 		this.output = output;
-		this.pathResolver = output.getResolver(DataOutput.OutputType.DATA_PACK, "advancements");
+		this.pathResolver = output.method_60917(RegistryKeys.ADVANCEMENT);
 		this.registryLookup = registryLookup;
 	}
 
