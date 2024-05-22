@@ -29,6 +29,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
+
+import net.minecraft.registry.RegistryKeys;
+
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,7 +114,7 @@ public class ClientTagsLoader {
 	 * @return the paths to all tag json files within the available mods
 	 */
 	private static HashSet<Path> getTagFiles(RegistryKey<? extends Registry<?>> registryKey, Identifier identifier) {
-		return getTagFiles(TagManagerLoader.getPath(registryKey), identifier);
+		return getTagFiles(RegistryKeys.method_60916(registryKey), identifier);
 	}
 
 	/**
