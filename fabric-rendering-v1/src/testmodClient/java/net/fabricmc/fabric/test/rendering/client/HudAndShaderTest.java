@@ -44,7 +44,7 @@ public class HudAndShaderTest implements ClientModInitializer {
 	public void onInitializeClient() {
 		CoreShaderRegistrationCallback.EVENT.register(context -> {
 			// Register a custom shader taking POSITION vertices.
-			Identifier id = new Identifier("fabric-rendering-v1-testmod", "test");
+			Identifier id = Identifier.method_60655("fabric-rendering-v1-testmod", "test");
 			context.register(id, VertexFormats.POSITION, program -> testShader = program);
 		});
 

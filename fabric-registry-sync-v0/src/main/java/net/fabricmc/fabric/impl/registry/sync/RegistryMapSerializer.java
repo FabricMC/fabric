@@ -37,10 +37,10 @@ public class RegistryMapSerializer {
 			NbtCompound idNbt = mainNbt.getCompound(registryId);
 
 			for (String id : idNbt.getKeys()) {
-				idMap.put(new Identifier(id), idNbt.getInt(id));
+				idMap.put(Identifier.method_60654(id), idNbt.getInt(id));
 			}
 
-			map.put(new Identifier(registryId), idMap);
+			map.put(Identifier.method_60654(registryId), idMap);
 		}
 
 		return map;

@@ -41,10 +41,10 @@ public record TagRegistration<T>(RegistryKey<Registry<T>> registryKey) {
 	public static final TagRegistration<Enchantment> ENCHANTMENT_TAG = new TagRegistration<>(RegistryKeys.ENCHANTMENT);
 
 	public TagKey<T> registerFabric(String tagId) {
-		return TagKey.of(registryKey, new Identifier(TagUtil.FABRIC_TAG_NAMESPACE, tagId));
+		return TagKey.of(registryKey, Identifier.method_60655(TagUtil.FABRIC_TAG_NAMESPACE, tagId));
 	}
 
 	public TagKey<T> registerC(String tagId) {
-		return TagKey.of(registryKey, new Identifier(TagUtil.C_TAG_NAMESPACE, tagId));
+		return TagKey.of(registryKey, Identifier.method_60655(TagUtil.C_TAG_NAMESPACE, tagId));
 	}
 }

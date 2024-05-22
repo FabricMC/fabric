@@ -51,16 +51,16 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 public class FabricDimensionTest implements ModInitializer {
 	// The dimension options refer to the JSON-file in the dimension subfolder of the data pack,
 	// which will always share its ID with the world that is created from it
-	private static final RegistryKey<DimensionOptions> DIMENSION_KEY = RegistryKey.of(RegistryKeys.DIMENSION, new Identifier("fabric_dimension", "void"));
+	private static final RegistryKey<DimensionOptions> DIMENSION_KEY = RegistryKey.of(RegistryKeys.DIMENSION, Identifier.method_60655("fabric_dimension", "void"));
 	private static final SimpleCommandExceptionType FAILED_EXCEPTION = new SimpleCommandExceptionType(Text.literal("Teleportation failed!"));
 
 	private static RegistryKey<World> WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, DIMENSION_KEY.getValue());
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.CHUNK_GENERATOR, new Identifier("fabric_dimension", "void"), VoidChunkGenerator.CODEC);
+		Registry.register(Registries.CHUNK_GENERATOR, Identifier.method_60655("fabric_dimension", "void"), VoidChunkGenerator.CODEC);
 
-		WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier("fabric_dimension", "void"));
+		WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, Identifier.method_60655("fabric_dimension", "void"));
 
 		if (System.getProperty("fabric-api.gametest") != null) {
 			// The gametest server does not support custom worlds

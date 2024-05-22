@@ -57,7 +57,7 @@ public class NetworkingConfigurationTest implements ModInitializer {
 	}
 
 	public record TestConfigurationTask(String data) implements ServerPlayerConfigurationTask {
-		public static final Key KEY = new Key(new Identifier(NetworkingTestmods.ID, "configure").toString());
+		public static final Key KEY = new Key(Identifier.method_60655(NetworkingTestmods.ID, "configure").toString());
 
 		@Override
 		public void sendPacket(Consumer<Packet<?>> sender) {
@@ -72,7 +72,7 @@ public class NetworkingConfigurationTest implements ModInitializer {
 	}
 
 	public record ConfigurationPacket(String data) implements CustomPayload {
-		public static final CustomPayload.Id<ConfigurationPacket> ID = new Id<>(new Identifier(NetworkingTestmods.ID, "configure"));
+		public static final CustomPayload.Id<ConfigurationPacket> ID = new Id<>(Identifier.method_60655(NetworkingTestmods.ID, "configure"));
 		public static final PacketCodec<PacketByteBuf, ConfigurationPacket> CODEC = CustomPayload.codecOf(ConfigurationPacket::write, ConfigurationPacket::new);
 
 		public ConfigurationPacket(PacketByteBuf buf) {
@@ -91,7 +91,7 @@ public class NetworkingConfigurationTest implements ModInitializer {
 
 	public static class ConfigurationCompletePacket implements CustomPayload {
 		public static final ConfigurationCompletePacket INSTANCE = new ConfigurationCompletePacket();
-		public static final CustomPayload.Id<ConfigurationCompletePacket> ID = new Id<>(new Identifier(NetworkingTestmods.ID, "configure_complete"));
+		public static final CustomPayload.Id<ConfigurationCompletePacket> ID = new Id<>(Identifier.method_60655(NetworkingTestmods.ID, "configure_complete"));
 		public static final PacketCodec<PacketByteBuf, ConfigurationCompletePacket> CODEC = PacketCodec.unit(INSTANCE);
 
 		private ConfigurationCompletePacket() {

@@ -76,7 +76,7 @@ abstract class ReloadableRegistriesMixin {
 	@SuppressWarnings("unchecked")
 	@Inject(method = "method_58279", at = @At("RETURN"))
 	private static void onLootTablesLoaded(LootDataType lootDataType, ResourceManager resourceManager, RegistryOps registryOps, CallbackInfoReturnable<MutableRegistry> cir) {
-		if (lootDataType != LootDataType.LOOT_TABLES) return;
+		if (lootDataType != LootDataType.field_44498) return;
 
 		LootTableEvents.ALL_LOADED.invoker().onLootTablesLoaded(resourceManager, (Registry<LootTable>) cir.getReturnValue());
 		LootUtil.SOURCES.remove();

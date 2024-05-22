@@ -39,7 +39,7 @@ public final class FabricShaderProgram extends ShaderProgram {
 	 * @return the corrected full ID string
 	 */
 	public static String rewriteAsId(String input, String containedId) {
-		Identifier contained = new Identifier(containedId);
+		Identifier contained = Identifier.method_60654(containedId);
 		return contained.getNamespace() + Identifier.NAMESPACE_SEPARATOR + input.replace(containedId, contained.getPath());
 	}
 }

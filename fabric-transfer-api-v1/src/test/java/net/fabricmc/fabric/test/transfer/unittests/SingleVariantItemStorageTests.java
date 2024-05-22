@@ -65,7 +65,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 
 		LAVA = FluidVariant.of(Fluids.LAVA);
 		FLUID = Registry.register(
-				Registries.DATA_COMPONENT_TYPE, new Identifier(TransferTestInitializer.MOD_ID, "fluid"),
+				Registries.DATA_COMPONENT_TYPE, Identifier.method_60655(TransferTestInitializer.MOD_ID, "fluid"),
 				ComponentType.<FluidData>builder().codec(FluidData.CODEC).packetCodec(FluidData.PACKET_CODEC).build());
 	}
 

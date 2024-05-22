@@ -44,6 +44,6 @@ public class DefaultResourceConditionTypes {
 	public static final ResourceConditionType<RegistryContainsResourceCondition> REGISTRY_CONTAINS = createResourceConditionType("registry_contains", RegistryContainsResourceCondition.CODEC);
 
 	private static <T extends ResourceCondition> ResourceConditionType<T> createResourceConditionType(String name, MapCodec<T> codec) {
-		return ResourceConditionType.create(new Identifier("fabric", name), codec);
+		return ResourceConditionType.create(Identifier.method_60655("fabric", name), codec);
 	}
 }

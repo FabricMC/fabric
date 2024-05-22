@@ -26,12 +26,12 @@ import net.minecraft.util.dynamic.Codecs;
 import net.fabricmc.api.ModInitializer;
 
 public class ItemUpdateAnimationTest implements ModInitializer {
-	public static final ComponentType<Integer> TICKS = Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier("fabric-item-api-v1-testmod", "ticks"),
+	public static final ComponentType<Integer> TICKS = Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.method_60655("fabric-item-api-v1-testmod", "ticks"),
 																			ComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "updating_allowed"), new UpdatingItem(true));
-		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod", "updating_disallowed"), new UpdatingItem(false));
+		Registry.register(Registries.ITEM, Identifier.method_60655("fabric-item-api-v1-testmod", "updating_allowed"), new UpdatingItem(true));
+		Registry.register(Registries.ITEM, Identifier.method_60655("fabric-item-api-v1-testmod", "updating_disallowed"), new UpdatingItem(false));
 	}
 }

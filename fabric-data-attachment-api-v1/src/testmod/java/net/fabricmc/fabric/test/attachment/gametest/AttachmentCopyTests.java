@@ -39,11 +39,11 @@ import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
 public class AttachmentCopyTests implements FabricGameTest {
 	// using a lambda type because serialization shouldn't play a role in this
 	public static AttachmentType<IntSupplier> DUMMY = AttachmentRegistry.create(
-			new Identifier(AttachmentTestMod.MOD_ID, "dummy")
+			Identifier.method_60655(AttachmentTestMod.MOD_ID, "dummy")
 	);
 	public static AttachmentType<IntSupplier> COPY_ON_DEATH = AttachmentRegistry.<IntSupplier>builder()
 			.copyOnDeath()
-			.buildAndRegister(new Identifier(AttachmentTestMod.MOD_ID, "copy_test"));
+			.buildAndRegister(Identifier.method_60655(AttachmentTestMod.MOD_ID, "copy_test"));
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testCrossWorldTeleport(TestContext context) {

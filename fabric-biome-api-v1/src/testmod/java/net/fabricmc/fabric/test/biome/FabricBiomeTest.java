@@ -66,7 +66,7 @@ public class FabricBiomeTest implements ModInitializer {
 		TheEndBiomes.addMidlandsBiome(TestBiomes.TEST_END_HIGHLANDS, TestBiomes.TEST_END_MIDLANDS, 10.0);
 		TheEndBiomes.addBarrensBiome(TestBiomes.TEST_END_HIGHLANDS, TestBiomes.TEST_END_BARRRENS, 10.0);
 
-		BiomeModifications.create(new Identifier("fabric:test_mod"))
+		BiomeModifications.create(Identifier.method_60655("fabric", "test_mod"))
 				.add(ModificationPhase.ADDITIONS,
 						BiomeSelectors.foundInOverworld(),
 						modification -> modification.getWeather().setDownfall(100))
@@ -78,7 +78,7 @@ public class FabricBiomeTest implements ModInitializer {
 							);
 						})
 				.add(ModificationPhase.ADDITIONS,
-						BiomeSelectors.tag(TagKey.of(RegistryKeys.BIOME, new Identifier(MOD_ID, "tag_selector_test"))),
+						BiomeSelectors.tag(TagKey.of(RegistryKeys.BIOME, Identifier.method_60655(MOD_ID, "tag_selector_test"))),
 						context -> context.getEffects().setSkyColor(0x770000))
 				.add(ModificationPhase.ADDITIONS, BiomeSelectors.foundInOverworld(), context ->
 						context.getGenerationSettings().addFeature(GenerationStep.Feature.UNDERGROUND_ORES, PLACED_COMMON_ORE)
@@ -89,7 +89,7 @@ public class FabricBiomeTest implements ModInitializer {
 		BiomeModifications.addFeature(
 				BiomeSelectors.foundInOverworld(),
 				GenerationStep.Feature.VEGETAL_DECORATION,
-				RegistryKey.of(RegistryKeys.PLACED_FEATURE, new Identifier(MOD_ID, "concrete_pile"))
+				RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.method_60655(MOD_ID, "concrete_pile"))
 		);
 
 		// Make sure data packs can define biomes

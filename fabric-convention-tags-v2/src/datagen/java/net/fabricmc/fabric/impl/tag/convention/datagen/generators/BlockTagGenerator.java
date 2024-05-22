@@ -449,18 +449,18 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
 		// TODO: Remove backwards compat tag entries in 1.22
 
-		getOrCreateTagBuilder(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "movement_restricted"));
-		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "quartz_ores"));
-		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_BARRELS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "wooden_barrels"));
-		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_CHESTS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "wooden_chests"));
-		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_BLOCKS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "sandstone_blocks"));
-		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_SLABS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "sandstone_slabs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_STAIRS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "sandstone_stairs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_BLOCKS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "red_sandstone_blocks"));
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_SLABS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "red_sandstone_slabs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_STAIRS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "red_sandstone_stairs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_blocks"));
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_slabs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_stairs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED).addOptionalTag(Identifier.method_60655(TagUtil.C_TAG_NAMESPACE, "movement_restricted"));
+		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES).addOptionalTag(Identifier.method_60655(TagUtil.C_TAG_NAMESPACE, "quartz_ores"));
+		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_BARRELS).addOptionalTag(Identifier.method_60655(TagUtil.C_TAG_NAMESPACE, "wooden_barrels"));
+		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_CHESTS).addOptionalTag(Identifier.method_60655(TagUtil.C_TAG_NAMESPACE, "wooden_chests"));
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_BLOCKS).addOptionalTag(Identifier.method_60655(TagUtil.C_TAG_NAMESPACE, "sandstone_blocks"));
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_SLABS).addOptionalTag(Identifier.method_60655(TagUtil.C_TAG_NAMESPACE, "sandstone_slabs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_STAIRS).addOptionalTag(Identifier.method_60655(TagUtil.C_TAG_NAMESPACE, "sandstone_stairs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_BLOCKS).addOptionalTag(Identifier.method_60655(TagUtil.C_TAG_NAMESPACE, "red_sandstone_blocks"));
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_SLABS).addOptionalTag(Identifier.method_60655(TagUtil.C_TAG_NAMESPACE, "red_sandstone_slabs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_STAIRS).addOptionalTag(Identifier.method_60655(TagUtil.C_TAG_NAMESPACE, "red_sandstone_stairs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS).addOptionalTag(Identifier.method_60655(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_blocks"));
+		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS).addOptionalTag(Identifier.method_60655(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_slabs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS).addOptionalTag(Identifier.method_60655(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_stairs"));
 	}
 }

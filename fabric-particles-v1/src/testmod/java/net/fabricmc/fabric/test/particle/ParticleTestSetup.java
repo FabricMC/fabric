@@ -58,7 +58,7 @@ public final class ParticleTestSetup implements ModInitializer {
 	}
 
 	private static void registerBlock(String path, Block block) {
-		Identifier id = new Identifier("fabric-particles-v1-testmod", path);
+		Identifier id = Identifier.method_60655("fabric-particles-v1-testmod", path);
 		Registry.register(Registries.BLOCK, id, block);
 		Registry.register(Registries.ITEM, id, new BlockItem(block, new Item.Settings()));
 	}

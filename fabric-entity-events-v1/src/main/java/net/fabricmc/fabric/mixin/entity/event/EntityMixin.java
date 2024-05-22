@@ -18,6 +18,8 @@ package net.fabricmc.fabric.mixin.entity.event;
 
 import java.util.Set;
 
+import net.minecraft.world.TeleportTarget;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -35,10 +37,10 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 @Mixin(Entity.class)
 abstract class EntityMixin {
 	@Shadow
-	public World world;
+	private World world;
 
 	@Inject(method = "moveToWorld", at = @At("RETURN"))
-	private void afterWorldChanged(Entity.TeleportTargetSupplier targetSupplier, CallbackInfoReturnable<Entity> cir) {
+	private void afterWorldChanged(TeleportTarget targetSupplier, CallbackInfoReturnable<Entity> cir) {
 		// Ret will only have an entity if the teleport worked (entity not removed, teleportTarget was valid, entity was successfully created)
 		Entity ret = cir.getReturnValue();
 

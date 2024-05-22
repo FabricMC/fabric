@@ -47,7 +47,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 public class ModelTestModClient implements ClientModInitializer {
 	public static final String ID = "fabric-model-loading-api-v1-testmod";
 
-	public static final Identifier MODEL_ID = new Identifier(ID, "half_red_sand");
+	public static final Identifier MODEL_ID = Identifier.method_60655(ID, "half_red_sand");
 
 	static class DownQuadRemovingModel extends ForwardingBakedModel {
 		DownQuadRemovingModel(BakedModel model) {
@@ -99,7 +99,7 @@ public class ModelTestModClient implements ClientModInitializer {
 
 				// All the block state models are top-level...
 				// Use a delegating unbaked model to make sure the identical models only get baked a single time.
-				Identifier wheatStage0Id = new Identifier("block/wheat_stage0");
+				Identifier wheatStage0Id = Identifier.method_60656("block/wheat_stage0");
 
 				UnbakedModel stage0Model = new DelegatingUnbakedModel(wheatStage0Id);
 
@@ -107,7 +107,7 @@ public class ModelTestModClient implements ClientModInitializer {
 					context.setModel(state.with(CropBlock.AGE, age), stage0Model);
 				}
 
-				context.setModel(state.with(CropBlock.AGE, 7), context.getOrLoadModel(new Identifier("block/wheat_stage7")));
+				context.setModel(state.with(CropBlock.AGE, 7), context.getOrLoadModel(Identifier.method_60656("block/wheat_stage7")));
 			});
 		});
 

@@ -48,21 +48,21 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static Block BLOCK_WITH_VANILLA_LOOT_TABLE;
 	public static Block BLOCK_THAT_DROPS_NOTHING;
 
-	public static final RegistryKey<ItemGroup> SIMPLE_ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, new Identifier(MOD_ID, "simple"));
+	public static final RegistryKey<ItemGroup> SIMPLE_ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.method_60655(MOD_ID, "simple"));
 
 	public static final RegistryKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_REGISTRY_KEY =
-			RegistryKey.ofRegistry(new Identifier("fabric", "test_datagen_dynamic"));
+			RegistryKey.ofRegistry(Identifier.method_60655("fabric", "test_datagen_dynamic"));
 	public static final RegistryKey<TestDatagenObject> TEST_DYNAMIC_REGISTRY_ITEM_KEY = RegistryKey.of(
 			TEST_DATAGEN_DYNAMIC_REGISTRY_KEY,
-			new Identifier(MOD_ID, "tiny_potato")
+			Identifier.method_60655(MOD_ID, "tiny_potato")
 	);
 	public static final RegistryKey<TestDatagenObject> TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY = RegistryKey.of(
 			TEST_DATAGEN_DYNAMIC_REGISTRY_KEY,
-			new Identifier(MOD_ID, "tinier_potato")
+			Identifier.method_60655(MOD_ID, "tinier_potato")
 	);
 	// Empty registry
 	public static final RegistryKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY =
-			RegistryKey.ofRegistry(new Identifier("fabric", "test_datagen_dynamic_empty"));
+			RegistryKey.ofRegistry(Identifier.method_60655("fabric", "test_datagen_dynamic_empty"));
 
 	@Override
 	public void onInitialize() {
@@ -84,7 +84,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 	}
 
 	private static Block createBlock(String name, boolean hasItem, AbstractBlock.Settings settings) {
-		Identifier identifier = new Identifier(MOD_ID, name);
+		Identifier identifier = Identifier.method_60655(MOD_ID, name);
 		Block block = Registry.register(Registries.BLOCK, identifier, new Block(settings));
 
 		if (hasItem) {

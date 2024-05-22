@@ -281,10 +281,10 @@ public class ConventionLogWarnings implements ModInitializer {
 	}
 
 	private static <T> TagKey<T> createTagKeyUnderC(RegistryKey<Registry<T>> registryKey, String tagId) {
-		return TagKey.of(registryKey, new Identifier(TagUtil.C_TAG_NAMESPACE, tagId));
+		return TagKey.of(registryKey, Identifier.method_60655(TagUtil.C_TAG_NAMESPACE, tagId));
 	}
 
 	private static <T> TagKey<T> createTagKeyUnderFabric(RegistryKey<Registry<T>> registryKey, String tagId) {
-		return TagKey.of(registryKey, new Identifier(TagUtil.FABRIC_TAG_NAMESPACE, tagId));
+		return TagKey.of(registryKey, Identifier.method_60655(TagUtil.FABRIC_TAG_NAMESPACE, tagId));
 	}
 }
