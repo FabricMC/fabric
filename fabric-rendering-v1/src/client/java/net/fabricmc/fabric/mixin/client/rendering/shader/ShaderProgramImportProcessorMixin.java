@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.client.rendering.shader;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -41,13 +43,13 @@ abstract class ShaderProgramImportProcessorMixin {
 		capturedImport = name;
 	}
 
-	@ModifyVariable(method = "loadImport", at = @At("STORE"), ordinal = 0, argsOnly = true)
-	private String modifyImportId(String id, boolean inline) {
+	@WrapOperation(method = "loadImport", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;method_60654(Ljava/lang/String;)Lnet/minecraft/util/Identifier;", ordinal = 0))
+	private Identifier modifyImportId(String id, Operation<Identifier> original, boolean inline) {
 		if (!inline && capturedImport.contains(String.valueOf(Identifier.NAMESPACE_SEPARATOR))) {
-			return FabricShaderProgram.rewriteAsId(id, capturedImport);
+			return original.call(FabricShaderProgram.rewriteAsId(id, capturedImport));
 		}
 
-		return id;
+		return original.call(id);
 	}
 
 	@Inject(method = "loadImport", at = @At("RETURN"))

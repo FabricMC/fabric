@@ -56,13 +56,12 @@ public class HudAndShaderTest implements ClientModInitializer {
 			RenderSystem.setShader(() -> testShader);
 			RenderSystem.setShaderColor(0f, 1f, 0f, 1f);
 			Matrix4f positionMatrix = drawContext.getMatrices().peek().getPositionMatrix();
-			BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-			buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-			buffer.vertex(positionMatrix, x, y, 50).next();
-			buffer.vertex(positionMatrix, x, y + 10, 50).next();
-			buffer.vertex(positionMatrix, x + 10, y + 10, 50).next();
-			buffer.vertex(positionMatrix, x + 10, y, 50).next();
-			BufferRenderer.drawWithGlobalProgram(buffer.end());
+			BufferBuilder buffer = Tessellator.getInstance().method_60827(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+			buffer.vertex(positionMatrix, x, y, 50);
+			buffer.vertex(positionMatrix, x, y + 10, 50);
+			buffer.vertex(positionMatrix, x + 10, y + 10, 50);
+			buffer.vertex(positionMatrix, x + 10, y, 50);
+			BufferRenderer.drawWithGlobalProgram(buffer.method_60800());
 			// Reset shader color
 			RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		});
