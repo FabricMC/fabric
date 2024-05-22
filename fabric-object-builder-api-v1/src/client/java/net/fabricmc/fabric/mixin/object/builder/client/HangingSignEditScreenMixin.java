@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.object.builder.client;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -31,13 +33,13 @@ public abstract class HangingSignEditScreenMixin extends AbstractSignEditScreen 
 		super(blockEntity, filtered, bl);
 	}
 
-	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;<init>(Ljava/lang/String;)V"))
-	private String init(String id) {
+	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;method_60656(Ljava/lang/String;)Lnet/minecraft/util/Identifier;"))
+	private Identifier init(String id, Operation<Identifier> original) {
 		if (signType.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
 			Identifier identifier = Identifier.method_60654(signType.name());
-			return identifier.getNamespace() + ":textures/gui/hanging_signs/" + identifier.getPath() + ".png";
+			return Identifier.method_60654(identifier.getNamespace() + ":textures/gui/hanging_signs/" + identifier.getPath() + ".png");
 		}
 
-		return id;
+		return original.call(id);
 	}
 }

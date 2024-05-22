@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.client.rendering.shader;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -30,6 +32,8 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.client.rendering.FabricShaderProgram;
 
+import org.spongepowered.asm.mixin.injection.Redirect;
+
 @Mixin(ShaderProgram.class)
 abstract class ShaderProgramMixin {
 	@Shadow
@@ -37,13 +41,13 @@ abstract class ShaderProgramMixin {
 	private String name;
 
 	// Allow loading FabricShaderPrograms from arbitrary namespaces.
-	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;method_60656(Ljava/lang/String;)Lnet/minecraft/util/Identifier;"), allow = 1)
-	private String modifyProgramId(String id) {
+	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;method_60656(Ljava/lang/String;)Lnet/minecraft/util/Identifier;"), allow = 1)
+	private Identifier modifyProgramId(String id, Operation<Identifier> original) {
 		if ((Object) this instanceof FabricShaderProgram) {
-			return FabricShaderProgram.rewriteAsId(id, name);
+			return Identifier.method_60654(FabricShaderProgram.rewriteAsId(id, name));
 		}
 
-		return id;
+		return original.call(id);
 	}
 
 	// Allow loading shader stages from arbitrary namespaces.
