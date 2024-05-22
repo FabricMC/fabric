@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
-import java.util.Set;
-
 import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -30,7 +28,6 @@ import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
-import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
@@ -73,9 +70,7 @@ public class ChunkRenderInfo {
 
 	private final BlockPos.Mutable chunkOrigin = new BlockPos.Mutable();
 	class_9810.class_9811 renderData;
-	BuiltChunk chunkRenderer;
 	BlockBufferBuilderStorage builders;
-	Set<RenderLayer> initializedLayers;
 	BlockRenderView blockView;
 
 	private final Object2ObjectOpenHashMap<RenderLayer, BufferBuilder> buffers = new Object2ObjectOpenHashMap<>();
@@ -87,13 +82,11 @@ public class ChunkRenderInfo {
 		aoLevelCache.defaultReturnValue(Float.MAX_VALUE);
 	}
 
-	void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, class_9810.class_9811 renderData, BlockBufferBuilderStorage builders, Set<RenderLayer> initializedLayers) {
+	void prepare(ChunkRendererRegion blockView, BlockPos chunkOrigin, class_9810.class_9811 renderData, BlockBufferBuilderStorage builders) {
 		this.blockView = blockView;
-		this.chunkOrigin.set(chunkRenderer.getOrigin());
+		this.chunkOrigin.set(chunkOrigin);
 		this.renderData = renderData;
-		this.chunkRenderer = chunkRenderer;
 		this.builders = builders;
-		this.initializedLayers = initializedLayers;
 		buffers.clear();
 		brightnessCache.clear();
 		aoLevelCache.clear();
@@ -101,7 +94,6 @@ public class ChunkRenderInfo {
 
 	void release() {
 		renderData = null;
-		chunkRenderer = null;
 		buffers.clear();
 	}
 
@@ -111,7 +103,6 @@ public class ChunkRenderInfo {
 
 		if (builder == null) {
 			builder = new BufferBuilder(builders.get(renderLayer), VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
-			initializedLayers.add(renderLayer);
 			buffers.put(renderLayer, builder);
 		}
 

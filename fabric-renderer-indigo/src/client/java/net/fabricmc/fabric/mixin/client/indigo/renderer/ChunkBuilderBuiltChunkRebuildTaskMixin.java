@@ -18,29 +18,26 @@ package net.fabricmc.fabric.mixin.client.indigo.renderer;
 
 import java.util.Set;
 
-import org.spongepowered.asm.mixin.Final;
+import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.systems.VertexSorter;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.class_9810;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
-import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
-import net.minecraft.client.render.chunk.ChunkOcclusionDataBuilder;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
@@ -64,24 +61,22 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderConte
  * Renderer authors are responsible for creating the hooks they need.
  * (Though they can use these as an example if they wish.)
  */
-@Mixin(BuiltChunk.RebuildTask.class)
+@Mixin(class_9810.class)
 public abstract class ChunkBuilderBuiltChunkRebuildTaskMixin {
-	@Final
-	@Shadow
-	BuiltChunk field_20839;
-
-	@Inject(method = "render",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPos;iterate(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Ljava/lang/Iterable;"),
-			locals = LocalCapture.CAPTURE_FAILHARD)
-	private void hookChunkBuild(float cameraX, float cameraY, float cameraZ,
+	@Inject(method = "method_60904",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPos;iterate(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Ljava/lang/Iterable;"))
+	private void hookChunkBuild(ChunkSectionPos chunkSectionPos,
+								ChunkRendererRegion region,
+								VertexSorter vertexSorter,
 								BlockBufferBuilderStorage builder,
-								CallbackInfoReturnable<class_9810.class_9811> ci,
-								class_9810.class_9811 renderData, int i, BlockPos blockPos, BlockPos blockPos2, ChunkOcclusionDataBuilder chunkOcclusionDataBuilder, ChunkRendererRegion region, MatrixStack matrixStack, Set<RenderLayer> initializedLayers, Random abstractRandom, BlockRenderManager blockRenderManager) {
+								CallbackInfoReturnable<class_9810.class_9811> cir,
+								@Local(ordinal = 1) BlockPos chunkOrigin,
+								@Local class_9810.class_9811 renderData) {
 		// hook just before iterating over the render chunk's chunks blocks, captures the used renderlayer set
 		// accessing this.region is unsafe due to potential async cancellation, the LV has to be used!
 
 		TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
-		renderer.prepare(region, field_20839, renderData, builder, initializedLayers);
+		renderer.prepare(region, chunkOrigin, renderData, builder);
 		((AccessChunkRendererRegion) region).fabric_setRenderer(renderer);
 	}
 
@@ -101,7 +96,7 @@ public abstract class ChunkBuilderBuiltChunkRebuildTaskMixin {
 	 * Normally this does nothing but will allow mods to create rendering hooks that are
 	 * driven off of render type. (Not recommended or encouraged, but also not prevented.)
 	 */
-	@Redirect(method = "render", require = 1, at = @At(value = "INVOKE",
+	@Redirect(method = "method_60904", require = 1, at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/render/block/BlockRenderManager;renderBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;ZLnet/minecraft/util/math/random/Random;)V"))
 	private void hookChunkBuildTessellate(BlockRenderManager renderManager, BlockState blockState, BlockPos blockPos, BlockRenderView blockView, MatrixStack matrix, VertexConsumer bufferBuilder, boolean checkSides, Random random) {
 		if (blockState.getRenderType() == BlockRenderType.MODEL) {
@@ -119,7 +114,7 @@ public abstract class ChunkBuilderBuiltChunkRebuildTaskMixin {
 	/**
 	 * Release all references. Probably not necessary but would be $#%! to debug if it is.
 	 */
-	@Inject(method = "render",
+	@Inject(method = "method_60904",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/block/BlockModelRenderer;disableBrightnessCache()V"))
 	private void hookRebuildChunkReturn(CallbackInfoReturnable<Set<BlockEntity>> ci) {
 		// hook after iterating over the render chunk's chunks blocks, must be called if and only if hookChunkBuild happened
