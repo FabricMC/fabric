@@ -42,27 +42,27 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	/**
 	 * The vanilla still water texture identifier.
 	 */
-	public static final Identifier WATER_STILL = Identifier.method_60656("block/water_still");
+	public static final Identifier WATER_STILL = Identifier.ofDefaultNamespace("block/water_still");
 
 	/**
 	 * The vanilla flowing water texture identifier.
 	 */
-	public static final Identifier WATER_FLOWING = Identifier.method_60656("block/water_flow");
+	public static final Identifier WATER_FLOWING = Identifier.ofDefaultNamespace("block/water_flow");
 
 	/**
 	 * The vanilla water overlay texture identifier.
 	 */
-	public static final Identifier WATER_OVERLAY = Identifier.method_60656("block/water_overlay");
+	public static final Identifier WATER_OVERLAY = Identifier.ofDefaultNamespace("block/water_overlay");
 
 	/**
 	 * The vanilla still lava texture identifier.
 	 */
-	public static final Identifier LAVA_STILL = Identifier.method_60656("block/lava_still");
+	public static final Identifier LAVA_STILL = Identifier.ofDefaultNamespace("block/lava_still");
 
 	/**
 	 * The vanilla flowing lava texture identifier.
 	 */
-	public static final Identifier LAVA_FLOWING = Identifier.method_60656("block/lava_flow");
+	public static final Identifier LAVA_FLOWING = Identifier.ofDefaultNamespace("block/lava_flow");
 
 	protected final Identifier stillTexture;
 	protected final Identifier flowingTexture;

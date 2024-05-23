@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 
 public class ArmorRenderingTests implements ClientModInitializer {
 	private BipedEntityModel<LivingEntity> armorModel;
-	private final Identifier texture = Identifier.method_60656("textures/block/dirt.png");
+	private final Identifier texture = Identifier.ofDefaultNamespace("textures/block/dirt.png");
 
 	// Renders a biped model with dirt texture, replacing diamond helmet and diamond chest plate rendering
 	@Override

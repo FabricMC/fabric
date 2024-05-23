@@ -69,7 +69,7 @@ public class CustomizedFluidRenderer extends SimpleFluidRenderHandler {
 	}
 
 	private void vertex(VertexConsumer vertexConsumer, float x, float y, float z, float red, float green, float blue, float u, float v, int light) {
-		vertexConsumer.vertex(x, y, z).color(red, green, blue, 1.0F).texture(u, v).method_60803(light).normal(0.0F, 1.0F, 0.0F);
+		vertexConsumer.vertex(x, y, z).color(red, green, blue, 1.0F).texture(u, v).light(light).normal(0.0F, 1.0F, 0.0F);
 	}
 
 	private int getLight(BlockRenderView world, BlockPos pos) {

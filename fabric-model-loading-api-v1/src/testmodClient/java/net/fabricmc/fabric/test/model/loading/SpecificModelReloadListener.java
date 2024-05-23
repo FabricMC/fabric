@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 
 public class SpecificModelReloadListener extends SinglePreparationResourceReloader<Unit> implements IdentifiableResourceReloadListener {
 	public static final SpecificModelReloadListener INSTANCE = new SpecificModelReloadListener();
-	public static final Identifier ID = Identifier.method_60655(ModelTestModClient.ID, "specific_model");
+	public static final Identifier ID = Identifier.of(ModelTestModClient.ID, "specific_model");
 
 	private BakedModel specificModel;
 

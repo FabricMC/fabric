@@ -116,7 +116,7 @@ public class ComponentsIngredient implements CustomIngredient {
 	}
 
 	private static class Serializer implements CustomIngredientSerializer<ComponentsIngredient> {
-		private static final Identifier ID = Identifier.method_60655("fabric", "components");
+		private static final Identifier ID = Identifier.of("fabric", "components");
 		private static final MapCodec<ComponentsIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
 		private static final MapCodec<ComponentsIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
 		private static final PacketCodec<RegistryByteBuf, ComponentsIngredient> PACKET_CODEC = PacketCodec.tuple(

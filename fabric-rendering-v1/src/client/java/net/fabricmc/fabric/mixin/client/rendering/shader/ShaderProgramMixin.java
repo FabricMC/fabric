@@ -38,7 +38,7 @@ abstract class ShaderProgramMixin {
 	private String name;
 
 	// Allow loading FabricShaderPrograms from arbitrary namespaces.
-	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;method_60656(Ljava/lang/String;)Lnet/minecraft/util/Identifier;"), allow = 1)
+	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;ofDefaultNamespace(Ljava/lang/String;)Lnet/minecraft/util/Identifier;"), allow = 1)
 	private Identifier modifyId(String id, Operation<Identifier> original) {
 		if ((Object) this instanceof FabricShaderProgram) {
 			return FabricShaderProgram.rewriteAsId(id, name);
@@ -57,10 +57,10 @@ abstract class ShaderProgramMixin {
 		return id;
 	}
 
-	@WrapOperation(method = "loadShader", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;method_60656(Ljava/lang/String;)Lnet/minecraft/util/Identifier;"), allow = 1)
+	@WrapOperation(method = "loadShader", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;ofDefaultNamespace(Ljava/lang/String;)Lnet/minecraft/util/Identifier;"), allow = 1)
 	private static Identifier allowNoneMinecraftId(String id, Operation<Identifier> original) {
 		if (id.contains(String.valueOf(Identifier.NAMESPACE_SEPARATOR))) {
-			return Identifier.method_60654(id);
+			return Identifier.of(id);
 		}
 
 		return original.call(id);

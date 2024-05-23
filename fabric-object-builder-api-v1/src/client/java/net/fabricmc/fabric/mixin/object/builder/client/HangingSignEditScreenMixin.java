@@ -32,11 +32,11 @@ public abstract class HangingSignEditScreenMixin extends AbstractSignEditScreen 
 		super(blockEntity, filtered, bl);
 	}
 
-	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;method_60656(Ljava/lang/String;)Lnet/minecraft/util/Identifier;"))
+	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;ofDefaultNamespace(Ljava/lang/String;)Lnet/minecraft/util/Identifier;"))
 	private Identifier init(String id, Operation<Identifier> original) {
 		if (signType.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
-			Identifier identifier = Identifier.method_60654(signType.name());
-			return Identifier.method_60655(identifier.getNamespace(), "textures/gui/hanging_signs/" + identifier.getPath() + ".png");
+			Identifier identifier = Identifier.of(signType.name());
+			return Identifier.of(identifier.getNamespace(), "textures/gui/hanging_signs/" + identifier.getPath() + ".png");
 		}
 
 		return original.call(id);

@@ -142,7 +142,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			}
 		}
 
-		FabricDataGenerator.Pack extraPack = dataGenerator.createBuiltinResourcePack(Identifier.method_60655(MOD_ID, "extra"));
+		FabricDataGenerator.Pack extraPack = dataGenerator.createBuiltinResourcePack(Identifier.of(MOD_ID, "extra"));
 		CompletableFuture<RegistryWrapper.WrapperLookup> extraRegistries = ExperimentalRegistriesValidator.validate(dataGenerator.getRegistries(), new RegistryBuilder()
 				.addRegistry(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY, c ->
 						c.register(TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY, new DataGeneratorTestContent.TestDatagenObject(":tiny_potato:"))
@@ -255,7 +255,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, TranslationBuilder translationBuilder) {
 			translationBuilder.add(SIMPLE_BLOCK, "Simple Block");
-			translationBuilder.add(Identifier.method_60655(MOD_ID, "identifier_test"), "Identifier Test");
+			translationBuilder.add(Identifier.of(MOD_ID, "identifier_test"), "Identifier Test");
 			translationBuilder.add(EntityType.ALLAY, "Allay");
 			translationBuilder.add(EntityAttributes.GENERIC_ARMOR, "Generic Armor");
 
@@ -343,7 +343,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup registries) {
-			getOrCreateTagBuilder(TagKey.of(RegistryKeys.BIOME, Identifier.method_60655(MOD_ID, "biome_tag_test")))
+			getOrCreateTagBuilder(TagKey.of(RegistryKeys.BIOME, Identifier.of(MOD_ID, "biome_tag_test")))
 					.add(BiomeKeys.BADLANDS, BiomeKeys.BAMBOO_JUNGLE)
 					.add(BiomeKeys.BASALT_DELTAS);
 		}
@@ -356,7 +356,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup registries) {
-			getOrCreateTagBuilder(TagKey.of(RegistryKeys.GAME_EVENT, Identifier.method_60655(MOD_ID, "game_event_tag_test")))
+			getOrCreateTagBuilder(TagKey.of(RegistryKeys.GAME_EVENT, Identifier.of(MOD_ID, "game_event_tag_test")))
 					.add(GameEvent.SHRIEK.registryKey());
 		}
 	}
@@ -373,7 +373,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							SIMPLE_BLOCK,
 							Text.translatable("advancements.test.root.title"),
 							Text.translatable("advancements.test.root.description"),
-							Identifier.method_60656("textures/gui/advancements/backgrounds/end.png"),
+							Identifier.ofDefaultNamespace("textures/gui/advancements/backgrounds/end.png"),
 							AdvancementFrame.TASK,
 							false, false, false)
 					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
@@ -383,7 +383,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							SIMPLE_BLOCK,
 							Text.translatable("advancements.test.root_not_loaded.title"),
 							Text.translatable("advancements.test.root_not_loaded.description"),
-							Identifier.method_60656("textures/gui/advancements/backgrounds/end.png"),
+							Identifier.ofDefaultNamespace("textures/gui/advancements/backgrounds/end.png"),
 							AdvancementFrame.TASK,
 							false, false, false)
 					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
@@ -472,7 +472,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		protected void configure(BiConsumer<Identifier, LootCondition> provider, RegistryWrapper.WrapperLookup lookup) {
 			RegistryEntryLookup<Block> blocks = lookup.createRegistryLookup().getOrThrow(RegistryKeys.BLOCK);
-			provider.accept(Identifier.method_60655(MOD_ID, "predicate_test"), BlockStatePropertyLootCondition.builder(
+			provider.accept(Identifier.of(MOD_ID, "predicate_test"), BlockStatePropertyLootCondition.builder(
 					blocks.getOrThrow(BlockKeys.MELON).value()).build()); // Pretend this actually does something and we cannot access the blocks directly
 		}
 
@@ -490,7 +490,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		protected void configure(BiConsumer<Identifier, Entry> provider, RegistryWrapper.WrapperLookup lookup) {
 			RegistryEntryLookup<Biome> biomes = lookup.createRegistryLookup().getOrThrow(RegistryKeys.BIOME);
-			provider.accept(Identifier.method_60655(MOD_ID, "custom_codec_test"), new Entry(biomes.getOrThrow(BiomeKeys.PLAINS)));
+			provider.accept(Identifier.of(MOD_ID, "custom_codec_test"), new Entry(biomes.getOrThrow(BiomeKeys.PLAINS)));
 		}
 
 		@Override

@@ -77,7 +77,7 @@ public record RegistrationPayload(Id<RegistrationPayload> id, List<Identifier> c
 		String literal = sb.toString();
 
 		try {
-			ids.add(Identifier.method_60654(literal));
+			ids.add(Identifier.of(literal));
 		} catch (InvalidIdentifierException ex) {
 			NetworkingImpl.LOGGER.warn("Received invalid channel identifier \"{}\"", literal);
 		}

@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 
 public class DimensionalRenderingTest implements ClientModInitializer {
-	private static final Identifier END_SKY = Identifier.method_60656("textures/block/dirt.png");
+	private static final Identifier END_SKY = Identifier.ofDefaultNamespace("textures/block/dirt.png");
 
 	private static void render(WorldRenderContext context) {
 		RenderSystem.enableBlend();
@@ -84,7 +84,7 @@ public class DimensionalRenderingTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		DimensionRenderingRegistry.registerSkyRenderer(RegistryKey.of(RegistryKeys.WORLD, Identifier.method_60655("fabric_dimension", "void")), DimensionalRenderingTest::render);
-		DimensionRenderingRegistry.registerDimensionEffects(Identifier.method_60655("fabric_dimension", "void"), new DimensionEffects.End());
+		DimensionRenderingRegistry.registerSkyRenderer(RegistryKey.of(RegistryKeys.WORLD, Identifier.of("fabric_dimension", "void")), DimensionalRenderingTest::render);
+		DimensionRenderingRegistry.registerDimensionEffects(Identifier.of("fabric_dimension", "void"), new DimensionEffects.End());
 	}
 }

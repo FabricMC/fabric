@@ -66,12 +66,12 @@ public final class ServerMessageDecoratorEvent {
 	 * The content phase of the event, passed when registering a message decorator. Use this when
 	 * the decorator modifies the text content of the message.
 	 */
-	public static final Identifier CONTENT_PHASE = Identifier.method_60655("fabric", "content");
+	public static final Identifier CONTENT_PHASE = Identifier.of("fabric", "content");
 	/**
 	 * The styling phase of the event, passed when registering a message decorator. Use this when
 	 * the decorator only modifies the styling of the message with the text intact.
 	 */
-	public static final Identifier STYLING_PHASE = Identifier.method_60655("fabric", "styling");
+	public static final Identifier STYLING_PHASE = Identifier.of("fabric", "styling");
 
 	public static final Event<MessageDecorator> EVENT = EventFactory.createWithPhases(MessageDecorator.class, decorators -> (sender, message) -> {
 		Text decorated = message;

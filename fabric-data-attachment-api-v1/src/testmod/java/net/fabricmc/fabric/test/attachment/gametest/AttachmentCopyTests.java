@@ -39,11 +39,11 @@ import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
 public class AttachmentCopyTests implements FabricGameTest {
 	// using a lambda type because serialization shouldn't play a role in this
 	public static AttachmentType<IntSupplier> DUMMY = AttachmentRegistry.create(
-			Identifier.method_60655(AttachmentTestMod.MOD_ID, "dummy")
+			Identifier.of(AttachmentTestMod.MOD_ID, "dummy")
 	);
 	public static AttachmentType<IntSupplier> COPY_ON_DEATH = AttachmentRegistry.<IntSupplier>builder()
 			.copyOnDeath()
-			.buildAndRegister(Identifier.method_60655(AttachmentTestMod.MOD_ID, "copy_test"));
+			.buildAndRegister(Identifier.of(AttachmentTestMod.MOD_ID, "copy_test"));
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testCrossWorldTeleport(TestContext context) {
@@ -57,7 +57,7 @@ public class AttachmentCopyTests implements FabricGameTest {
 		entity.setAttached(DUMMY, () -> 10);
 		entity.setAttached(COPY_ON_DEATH, () -> 10);
 
-		Entity moved = entity.moveToWorld(new TeleportTarget(end));
+		Entity moved = entity.teleportTo(new TeleportTarget(end));
 		if (moved == null) throw new GameTestException("Cross-world teleportation failed");
 
 		IntSupplier attached1 = moved.getAttached(DUMMY);

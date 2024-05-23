@@ -22,7 +22,7 @@ import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.util.Identifier;
 
 public class InspectablePigEntityRenderer extends PigEntityRenderer {
-	private static final Identifier TEXTURE = Identifier.method_60656("missingno");
+	private static final Identifier TEXTURE = Identifier.ofDefaultNamespace("missingno");
 
 	public InspectablePigEntityRenderer(EntityRendererFactory.Context context) {
 		super(context);

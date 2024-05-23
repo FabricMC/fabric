@@ -26,7 +26,7 @@ public final class NetworkingTestmods {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ID);
 
 	public static Identifier id(String name) {
-		return Identifier.method_60655(ID, name);
+		return Identifier.of(ID, name);
 	}
 
 	private NetworkingTestmods() {

@@ -23,7 +23,7 @@ import net.minecraft.util.Identifier;
 
 public record CommonVersionPayload(int[] versions) implements CustomPayload {
 	public static final PacketCodec<PacketByteBuf, CommonVersionPayload> CODEC = CustomPayload.codecOf(CommonVersionPayload::write, CommonVersionPayload::new);
-	public static final CustomPayload.Id<CommonVersionPayload> ID = new Id<>(Identifier.method_60654("c:version"));
+	public static final CustomPayload.Id<CommonVersionPayload> ID = new Id<>(Identifier.of("c:version"));
 
 	private CommonVersionPayload(PacketByteBuf buf) {
 		this(buf.readIntArray());

@@ -61,8 +61,8 @@ public final class EnchantmentTagGenerator extends FabricTagProvider.Enchantment
 		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
 		// TODO: Remove backwards compat tag entries in 1.22
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENTS)
-				.addOptionalTag(Identifier.method_60655("c", "entity_movement_enhancement"));
+				.addOptionalTag(Identifier.of("c", "entity_movement_enhancement"));
 		getOrCreateTagBuilder(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENTS)
-				.addOptionalTag(Identifier.method_60655("c", "entity_defense_enhancement"));
+				.addOptionalTag(Identifier.of("c", "entity_defense_enhancement"));
 	}
 }

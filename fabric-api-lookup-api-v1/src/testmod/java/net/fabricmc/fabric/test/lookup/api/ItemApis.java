@@ -25,9 +25,9 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 
 public final class ItemApis {
 	public static final BlockApiLookup<ItemInsertable, @NotNull Direction> INSERTABLE =
-			BlockApiLookup.get(Identifier.method_60655("testmod", "item_insertable"), ItemInsertable.class, Direction.class);
+			BlockApiLookup.get(Identifier.of("testmod", "item_insertable"), ItemInsertable.class, Direction.class);
 	public static final BlockApiLookup<ItemExtractable, @NotNull Direction> EXTRACTABLE =
-			BlockApiLookup.get(Identifier.method_60655("testmod", "item_extractable"), ItemExtractable.class, Direction.class);
+			BlockApiLookup.get(Identifier.of("testmod", "item_extractable"), ItemExtractable.class, Direction.class);
 
 	private ItemApis() {
 	}

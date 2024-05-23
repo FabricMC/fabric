@@ -37,16 +37,16 @@ public class TexturedRenderLayersMixin {
 	@Inject(method = "createSignTextureId", at = @At("HEAD"), cancellable = true)
 	private static void modifyTextureId(WoodType type, CallbackInfoReturnable<SpriteIdentifier> cir) {
 		if (type.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
-			Identifier identifier = Identifier.method_60654(type.name());
-			cir.setReturnValue(new SpriteIdentifier(SIGNS_ATLAS_TEXTURE, Identifier.method_60655(identifier.getNamespace(), "entity/signs/" + identifier.getPath())));
+			Identifier identifier = Identifier.of(type.name());
+			cir.setReturnValue(new SpriteIdentifier(SIGNS_ATLAS_TEXTURE, Identifier.of(identifier.getNamespace(), "entity/signs/" + identifier.getPath())));
 		}
 	}
 
 	@Inject(method = "createHangingSignTextureId", at = @At("HEAD"), cancellable = true)
 	private static void modifyHangingTextureId(WoodType type, CallbackInfoReturnable<SpriteIdentifier> cir) {
 		if (type.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
-			Identifier identifier = Identifier.method_60654(type.name());
-			cir.setReturnValue(new SpriteIdentifier(SIGNS_ATLAS_TEXTURE, Identifier.method_60655(identifier.getNamespace(), "entity/signs/hanging/" + identifier.getPath())));
+			Identifier identifier = Identifier.of(type.name());
+			cir.setReturnValue(new SpriteIdentifier(SIGNS_ATLAS_TEXTURE, Identifier.of(identifier.getNamespace(), "entity/signs/hanging/" + identifier.getPath())));
 		}
 	}
 }

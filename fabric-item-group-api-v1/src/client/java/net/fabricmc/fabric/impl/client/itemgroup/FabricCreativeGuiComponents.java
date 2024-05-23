@@ -33,7 +33,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.impl.itemgroup.FabricItemGroup;
 
 public class FabricCreativeGuiComponents {
-	private static final Identifier BUTTON_TEX = Identifier.method_60655("fabric", "textures/gui/creative_buttons.png");
+	private static final Identifier BUTTON_TEX = Identifier.of("fabric", "textures/gui/creative_buttons.png");
 	private static final double TABS_PER_PAGE = FabricItemGroup.TABS_PER_PAGE;
 	public static final Set<ItemGroup> COMMON_GROUPS = Set.of(ItemGroups.SEARCH, ItemGroups.INVENTORY, ItemGroups.HOTBAR).stream()
 			.map(Registries.ITEM_GROUP::getOrThrow)

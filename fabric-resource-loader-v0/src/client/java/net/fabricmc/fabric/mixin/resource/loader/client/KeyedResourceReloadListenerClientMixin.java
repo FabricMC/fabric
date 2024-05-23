@@ -58,7 +58,7 @@ public abstract class KeyedResourceReloadListenerClientMixin implements Identifi
 			} else if (self instanceof TextureManager) {
 				this.fabric$id = ResourceReloadListenerKeys.TEXTURES;
 			} else {
-				this.fabric$id = Identifier.method_60656("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
+				this.fabric$id = Identifier.ofDefaultNamespace("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 			}
 		}
 

@@ -56,7 +56,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 
 	protected FabricAdvancementProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
 		this.output = output;
-		this.pathResolver = output.method_60917(RegistryKeys.ADVANCEMENT);
+		this.pathResolver = output.getResolver(RegistryKeys.ADVANCEMENT);
 		this.registryLookup = registryLookup;
 	}
 

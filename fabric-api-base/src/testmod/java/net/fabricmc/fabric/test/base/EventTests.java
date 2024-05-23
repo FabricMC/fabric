@@ -82,8 +82,8 @@ public class EventTests {
 	}
 
 	private static void testMultipleDefaultPhases() {
-		Identifier first = Identifier.method_60655("fabric", "first");
-		Identifier second = Identifier.method_60655("fabric", "second");
+		Identifier first = Identifier.of("fabric", "first");
+		Identifier second = Identifier.of("fabric", "second");
 		Event<Test> event = EventFactory.createWithPhases(Test.class, INVOKER_FACTORY, first, second, Event.DEFAULT_PHASE);
 
 		event.register(second, ensureOrder(1));
@@ -100,10 +100,10 @@ public class EventTests {
 	private static void testAddedPhases() {
 		Event<Test> event = createEvent();
 
-		Identifier veryEarly = Identifier.method_60655("fabric", "very_early");
-		Identifier early = Identifier.method_60655("fabric", "early");
-		Identifier late = Identifier.method_60655("fabric", "late");
-		Identifier veryLate = Identifier.method_60655("fabric", "very_late");
+		Identifier veryEarly = Identifier.of("fabric", "very_early");
+		Identifier early = Identifier.of("fabric", "early");
+		Identifier late = Identifier.of("fabric", "late");
+		Identifier veryLate = Identifier.of("fabric", "very_late");
 
 		event.addPhaseOrdering(veryEarly, early);
 		event.addPhaseOrdering(early, Event.DEFAULT_PHASE);
@@ -131,10 +131,10 @@ public class EventTests {
 	private static void testCycle() {
 		Event<Test> event = createEvent();
 
-		Identifier a = Identifier.method_60655("fabric", "a");
-		Identifier b1 = Identifier.method_60655("fabric", "b1");
-		Identifier b2 = Identifier.method_60655("fabric", "b2");
-		Identifier b3 = Identifier.method_60655("fabric", "b3");
+		Identifier a = Identifier.of("fabric", "a");
+		Identifier b1 = Identifier.of("fabric", "b1");
+		Identifier b2 = Identifier.of("fabric", "b2");
+		Identifier b3 = Identifier.of("fabric", "b3");
 		Identifier c = Event.DEFAULT_PHASE;
 
 		// A always first and C always last.
@@ -184,13 +184,13 @@ public class EventTests {
 	 * We get for the final order: [a, d, e, cycle [b, y, z], f].
 	 */
 	private static void testDeterministicOrdering() {
-		Identifier a = Identifier.method_60655("fabric", "a");
-		Identifier b = Identifier.method_60655("fabric", "b");
-		Identifier d = Identifier.method_60655("fabric", "d");
-		Identifier e = Identifier.method_60655("fabric", "e");
-		Identifier f = Identifier.method_60655("fabric", "f");
-		Identifier y = Identifier.method_60655("fabric", "y");
-		Identifier z = Identifier.method_60655("fabric", "z");
+		Identifier a = Identifier.of("fabric", "a");
+		Identifier b = Identifier.of("fabric", "b");
+		Identifier d = Identifier.of("fabric", "d");
+		Identifier e = Identifier.of("fabric", "e");
+		Identifier f = Identifier.of("fabric", "f");
+		Identifier y = Identifier.of("fabric", "y");
+		Identifier z = Identifier.of("fabric", "z");
 
 		List<Consumer<Event<Test>>> dependencies = List.of(
 				ev -> ev.addPhaseOrdering(a, z),
@@ -229,11 +229,11 @@ public class EventTests {
 	 * </pre>
 	 */
 	private static void testTwoCycles() {
-		Identifier a = Identifier.method_60655("fabric", "a");
-		Identifier b = Identifier.method_60655("fabric", "b");
-		Identifier c = Identifier.method_60655("fabric", "c");
-		Identifier d = Identifier.method_60655("fabric", "d");
-		Identifier e = Identifier.method_60655("fabric", "e");
+		Identifier a = Identifier.of("fabric", "a");
+		Identifier b = Identifier.of("fabric", "b");
+		Identifier c = Identifier.of("fabric", "c");
+		Identifier d = Identifier.of("fabric", "d");
+		Identifier e = Identifier.of("fabric", "e");
 
 		List<Consumer<Event<Test>>> dependencies = List.of(
 				ev -> ev.addPhaseOrdering(e, a),

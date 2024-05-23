@@ -41,7 +41,7 @@ public class AllIngredient extends CombinedIngredient {
 	}
 
 	public static final CustomIngredientSerializer<AllIngredient> SERIALIZER =
-			new Serializer<>(Identifier.method_60655("fabric", "all"), AllIngredient::new, ALLOW_EMPTY_CODEC, DISALLOW_EMPTY_CODEC);
+			new Serializer<>(Identifier.of("fabric", "all"), AllIngredient::new, ALLOW_EMPTY_CODEC, DISALLOW_EMPTY_CODEC);
 
 	public AllIngredient(List<Ingredient> ingredients) {
 		super(ingredients);

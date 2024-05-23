@@ -33,7 +33,7 @@ abstract class TagManagerLoaderMixin {
 			method = "buildRequiredGroup",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/registry/RegistryKeys;method_60916(Lnet/minecraft/registry/RegistryKey;)Ljava/lang/String;"
+					target = "Lnet/minecraft/registry/RegistryKeys;getTagPath(Lnet/minecraft/registry/RegistryKey;)Ljava/lang/String;"
 			)
 	)
 	private String prependDirectoryWithNamespace(RegistryKey<? extends Registry<?>> registryKey, Operation<String> original) {

@@ -88,7 +88,7 @@ public class RegistryLoaderMixin {
 			},
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/registry/RegistryKeys;method_60915(Lnet/minecraft/registry/RegistryKey;)Ljava/lang/String;"
+					target = "Lnet/minecraft/registry/RegistryKeys;getPath(Lnet/minecraft/registry/RegistryKey;)Ljava/lang/String;"
 			)
 	)
 	private static String prependDirectoryWithNamespace(RegistryKey<? extends Registry<?>> registryKey, Operation<String> original) {

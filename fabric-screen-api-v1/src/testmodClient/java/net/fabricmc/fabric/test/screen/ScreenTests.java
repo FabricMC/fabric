@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 
 public final class ScreenTests implements ClientModInitializer {
-	public static final Identifier ARMOR_FULL_TEXTURE = Identifier.method_60656("hud/armor_full");
+	public static final Identifier ARMOR_FULL_TEXTURE = Identifier.ofDefaultNamespace("hud/armor_full");
 	private static final Logger LOGGER = LoggerFactory.getLogger("FabricScreenApiTests");
 
 	@Override

@@ -57,7 +57,7 @@ public final class ModelModifier {
 	/**
 	 * Recommended phase to use when overriding models, e.g. replacing a model with another model.
 	 */
-	public static final Identifier OVERRIDE_PHASE = Identifier.method_60655("fabric", "override");
+	public static final Identifier OVERRIDE_PHASE = Identifier.of("fabric", "override");
 	/**
 	 * Recommended phase to use for transformations that need to happen before wrapping, but after model overrides.
 	 */
@@ -65,12 +65,12 @@ public final class ModelModifier {
 	/**
 	 * Recommended phase to use when wrapping models.
 	 */
-	public static final Identifier WRAP_PHASE = Identifier.method_60655("fabric", "wrap");
+	public static final Identifier WRAP_PHASE = Identifier.of("fabric", "wrap");
 	/**
 	 * Recommended phase to use when wrapping models with transformations that want to happen last,
 	 * e.g. for connected textures or other similar visual effects that should be the final processing step.
 	 */
-	public static final Identifier WRAP_LAST_PHASE = Identifier.method_60655("fabric", "wrap_last");
+	public static final Identifier WRAP_LAST_PHASE = Identifier.of("fabric", "wrap_last");
 
 	@FunctionalInterface
 	public interface OnLoad {

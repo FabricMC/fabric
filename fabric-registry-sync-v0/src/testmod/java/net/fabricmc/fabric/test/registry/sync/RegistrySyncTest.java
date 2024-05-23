@@ -80,14 +80,14 @@ public class RegistrySyncTest implements ModInitializer {
 			}
 		}
 
-		RegistryKey<Registry<String>> fabricRegistryKey = RegistryKey.ofRegistry(Identifier.method_60655("registry_sync", "fabric_registry"));
+		RegistryKey<Registry<String>> fabricRegistryKey = RegistryKey.ofRegistry(Identifier.of("registry_sync", "fabric_registry"));
 		SimpleRegistry<String> fabricRegistry = FabricRegistryBuilder.createSimple(fabricRegistryKey)
 				.attribute(RegistryAttribute.SYNCED)
 				.buildAndRegister();
 
-		Registry.register(fabricRegistry, Identifier.method_60655("registry_sync", "test"), "test");
+		Registry.register(fabricRegistry, Identifier.of("registry_sync", "test"), "test");
 
-		Validate.isTrue(Registries.REGISTRIES.getIds().contains(Identifier.method_60655("registry_sync", "fabric_registry")));
+		Validate.isTrue(Registries.REGISTRIES.getIds().contains(Identifier.of("registry_sync", "fabric_registry")));
 
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.MODDED));
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.SYNCED));
@@ -155,11 +155,11 @@ public class RegistrySyncTest implements ModInitializer {
 	private static void registerBlocks(String namespace, int amount, int startingId) {
 		for (int i = 0; i < amount; i++) {
 			Block block = new Block(AbstractBlock.Settings.create());
-			Registry.register(Registries.BLOCK, Identifier.method_60655(namespace, "block_" + (i + startingId)), block);
+			Registry.register(Registries.BLOCK, Identifier.of(namespace, "block_" + (i + startingId)), block);
 
 			if (REGISTER_ITEMS) {
 				BlockItem blockItem = new BlockItem(block, new Item.Settings());
-				Registry.register(Registries.ITEM, Identifier.method_60655(namespace, "block_" + (i + startingId)), blockItem);
+				Registry.register(Registries.ITEM, Identifier.of(namespace, "block_" + (i + startingId)), blockItem);
 			}
 		}
 	}
@@ -168,7 +168,7 @@ public class RegistrySyncTest implements ModInitializer {
 		Object2IntMap<Identifier> map = new Object2IntOpenHashMap<>();
 
 		for (int i = 0; i < 12; i++) {
-			map.put(Identifier.method_60655("mod_" + i, "entry"), 0);
+			map.put(Identifier.of("mod_" + i, "entry"), 0);
 		}
 
 		return map;

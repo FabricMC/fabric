@@ -89,7 +89,7 @@ public class CustomDataIngredient implements CustomIngredient {
 	}
 
 	private static class Serializer implements CustomIngredientSerializer<CustomDataIngredient> {
-		private static final Identifier ID = Identifier.method_60655("fabric", "custom_data");
+		private static final Identifier ID = Identifier.of("fabric", "custom_data");
 
 		private static final MapCodec<CustomDataIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
 		private static final MapCodec<CustomDataIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);

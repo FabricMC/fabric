@@ -111,7 +111,7 @@ public class ClientTagsLoader {
 	 * @return the paths to all tag json files within the available mods
 	 */
 	private static HashSet<Path> getTagFiles(RegistryKey<? extends Registry<?>> registryKey, Identifier identifier) {
-		return getTagFiles(RegistryKeys.method_60916(registryKey), identifier);
+		return getTagFiles(RegistryKeys.getTagPath(registryKey), identifier);
 	}
 
 	/**

@@ -43,19 +43,19 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint {
 	public static final RegistryKey<ConfiguredFeature<?, ?>> COMMON_DESERT_WELL = RegistryKey.of(
 			RegistryKeys.CONFIGURED_FEATURE,
-			Identifier.method_60655(FabricBiomeTest.MOD_ID, "fab_desert_well")
+			Identifier.of(FabricBiomeTest.MOD_ID, "fab_desert_well")
 	);
 	public static final RegistryKey<PlacedFeature> PLACED_COMMON_DESERT_WELL = RegistryKey.of(
 			RegistryKeys.PLACED_FEATURE,
-			Identifier.method_60655(FabricBiomeTest.MOD_ID, "fab_desert_well")
+			Identifier.of(FabricBiomeTest.MOD_ID, "fab_desert_well")
 	);
 	public static final RegistryKey<ConfiguredFeature<?, ?>> COMMON_ORE = RegistryKey.of(
 			RegistryKeys.CONFIGURED_FEATURE,
-			Identifier.method_60655(FabricBiomeTest.MOD_ID, "common_ore")
+			Identifier.of(FabricBiomeTest.MOD_ID, "common_ore")
 	);
 	public static final RegistryKey<PlacedFeature> PLACED_COMMON_ORE = RegistryKey.of(
 			RegistryKeys.PLACED_FEATURE,
-			Identifier.method_60655(FabricBiomeTest.MOD_ID, "common_ore")
+			Identifier.of(FabricBiomeTest.MOD_ID, "common_ore")
 	);
 
 	@Override

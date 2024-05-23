@@ -33,7 +33,7 @@ public class NestedModelLoadingTest implements ClientModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	private static Identifier id(String path) {
-		return Identifier.method_60655("fabric-model-loading-api-v1-testmod", path);
+		return Identifier.of("fabric-model-loading-api-v1-testmod", path);
 	}
 
 	private static final Identifier BASE_MODEL = id("nested_base");
@@ -42,7 +42,7 @@ public class NestedModelLoadingTest implements ClientModInitializer {
 	private static final Identifier NESTED_MODEL_3 = id("nested_3");
 	private static final Identifier NESTED_MODEL_4 = id("nested_4");
 	private static final Identifier NESTED_MODEL_5 = id("nested_5");
-	private static final Identifier TARGET_MODEL = Identifier.method_60656("block/stone");
+	private static final Identifier TARGET_MODEL = Identifier.ofDefaultNamespace("block/stone");
 
 	@Override
 	public void onInitializeClient() {
