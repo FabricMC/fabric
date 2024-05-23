@@ -59,7 +59,7 @@ public abstract class SynchronizeRegistriesTaskMixin {
 
 	@Inject(method = "syncRegistryAndTags", at = @At("HEAD"))
 	public void syncRegistryAndTags(Consumer<Packet<?>> sender, Set<VersionedIdentifier> commonKnownPacks, CallbackInfo ci) {
-		LOGGER.debug("Syncronizing registries with common known packs: {}", commonKnownPacks);
+		LOGGER.debug("Synchronizing registries with common known packs: {}", commonKnownPacks);
 	}
 
 	@Inject(method = "sendPacket", at = @At("HEAD"), cancellable = true)
