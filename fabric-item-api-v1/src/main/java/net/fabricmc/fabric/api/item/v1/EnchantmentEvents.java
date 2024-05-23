@@ -47,7 +47,7 @@ public final class EnchantmentEvents {
 	 *
 	 * @see AllowEnchanting#allowEnchanting(RegistryEntry, ItemStack, EnchantingContext)
 	 * @see Enchantment#isAcceptableItem(ItemStack)
-	 * @see FabricItem#canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)
+	 * @see FabricItem#canBeEnchantedWith(ItemStack, RegistryEntry, EnchantingContext)
 	 */
 	public static final Event<AllowEnchanting> ALLOW_ENCHANTING = EventFactory.createArrayBacked(
 			AllowEnchanting.class,
