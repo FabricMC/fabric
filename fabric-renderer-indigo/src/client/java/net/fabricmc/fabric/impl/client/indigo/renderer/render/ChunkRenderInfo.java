@@ -17,11 +17,9 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import java.util.Map;
-import java.util.Set;
 
 import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.class_9799;
@@ -31,7 +29,6 @@ import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
-import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
@@ -94,7 +91,6 @@ public class ChunkRenderInfo {
 	}
 
 	void release() {
-
 	}
 
 	/** Lazily retrieves output buffer for given layer, initializing as needed. */

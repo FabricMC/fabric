@@ -24,9 +24,6 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-
-import net.minecraft.util.math.ChunkSectionPos;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,6 +36,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.render.chunk.ChunkRendererRegionBuilder;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 
@@ -74,7 +72,6 @@ public abstract class ChunkRendererRegionBuilderMixin {
 			}
 		}
 	}
-
 
 	@Inject(method = "build", at = @At(value = "RETURN", ordinal = 1))
 	private void createDataMap(World world, ChunkSectionPos chunkSectionPos, CallbackInfoReturnable<ChunkRendererRegion> cir, @Share("dataMap") LocalRef<Long2ObjectOpenHashMap<Object>> mapRef) {
