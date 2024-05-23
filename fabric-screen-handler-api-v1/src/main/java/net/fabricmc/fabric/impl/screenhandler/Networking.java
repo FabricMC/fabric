@@ -50,7 +50,7 @@ public final class Networking implements ModInitializer {
 	// syncId: varInt
 	// title: text
 	// customData: buf
-	public static final Identifier OPEN_ID = new Identifier("fabric-screen-handler-api-v1", "open_screen");
+	public static final Identifier OPEN_ID = Identifier.of("fabric-screen-handler-api-v1", "open_screen");
 	public static final Map<Identifier, PacketCodec<? super RegistryByteBuf, ?>> CODEC_BY_ID = new HashMap<>();
 
 	/**

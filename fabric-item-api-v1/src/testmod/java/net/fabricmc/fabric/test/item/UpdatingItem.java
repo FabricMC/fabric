@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 
 public class UpdatingItem extends Item {
 	private static final EntityAttributeModifier PLUS_FIVE = new EntityAttributeModifier(
-			ATTACK_DAMAGE_MODIFIER_ID, "updating item", 5, EntityAttributeModifier.Operation.ADD_VALUE);
+			BASE_ATTACK_DAMAGE_MODIFIER_ID, 5, EntityAttributeModifier.Operation.ADD_VALUE);
 
 	private final boolean allowUpdateAnimation;
 

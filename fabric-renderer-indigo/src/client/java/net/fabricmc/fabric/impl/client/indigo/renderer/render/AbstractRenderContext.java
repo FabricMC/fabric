@@ -129,7 +129,6 @@ abstract class AbstractRenderContext implements RenderContext {
 			}
 
 			vertexConsumer.normal(normalVec.x(), normalVec.y(), normalVec.z());
-			vertexConsumer.next();
 		}
 	}
 }

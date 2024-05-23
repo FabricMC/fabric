@@ -93,9 +93,8 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 		float b = (color & 255) / 255f;
 		RenderSystem.disableDepthTest();
 
-		RenderSystem.setShader(GameRenderer::getPositionColorTexProgram);
-		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
+		RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+		BufferBuilder bufferBuilder = Tessellator.getInstance().method_60827(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 		float x0 = (float) i;
 		float y0 = (float) j;
 		float x1 = x0 + 16;
@@ -106,11 +105,11 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 		float u1 = sprite.getMaxU();
 		float v1 = sprite.getMaxV();
 		Matrix4f model = drawContext.getMatrices().peek().getPositionMatrix();
-		bufferBuilder.vertex(model, x0, y1, z).color(r, g, b, 1).texture(u0, v1).next();
-		bufferBuilder.vertex(model, x1, y1, z).color(r, g, b, 1).texture(u1, v1).next();
-		bufferBuilder.vertex(model, x1, y0, z).color(r, g, b, 1).texture(u1, v0).next();
-		bufferBuilder.vertex(model, x0, y0, z).color(r, g, b, 1).texture(u0, v0).next();
-		BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+		bufferBuilder.vertex(model, x0, y1, z).color(r, g, b, 1).texture(u0, v1);
+		bufferBuilder.vertex(model, x1, y1, z).color(r, g, b, 1).texture(u1, v1);
+		bufferBuilder.vertex(model, x1, y0, z).color(r, g, b, 1).texture(u1, v0);
+		bufferBuilder.vertex(model, x0, y0, z).color(r, g, b, 1).texture(u0, v0);
+		BufferRenderer.drawWithGlobalProgram(bufferBuilder.method_60800());
 
 		RenderSystem.enableDepthTest();
 	}

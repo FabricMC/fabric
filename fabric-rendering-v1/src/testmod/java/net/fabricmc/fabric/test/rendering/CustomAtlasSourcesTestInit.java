@@ -28,6 +28,6 @@ public class CustomAtlasSourcesTestInit implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.ITEM, new Identifier("fabric-rendering-v1-testmod", "double_iron_ingot"), DOUBLE_IRON_INGOT);
+		Registry.register(Registries.ITEM, Identifier.of("fabric-rendering-v1-testmod", "double_iron_ingot"), DOUBLE_IRON_INGOT);
 	}
 }

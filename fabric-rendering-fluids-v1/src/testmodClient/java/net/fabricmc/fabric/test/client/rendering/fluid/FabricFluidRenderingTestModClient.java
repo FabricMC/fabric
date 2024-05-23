@@ -41,20 +41,20 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.RED_STAINED_GLASS, false);
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.NO_OVERLAY, TestFluids.NO_OVERLAY_FLOWING, new SimpleFluidRenderHandler(
-				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
-				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
+				Identifier.of("fabric-rendering-fluids-v1-testmod", "block/test_fluid_still"),
+				Identifier.of("fabric-rendering-fluids-v1-testmod", "block/test_fluid_flowing"),
 				0xFF5555
 		));
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.OVERLAY, TestFluids.OVERLAY_FLOWING, new SimpleFluidRenderHandler(
-				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_still"),
-				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_flowing"),
-				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay"),
+				Identifier.of("fabric-rendering-fluids-v1-testmod", "block/test_fluid_still"),
+				Identifier.of("fabric-rendering-fluids-v1-testmod", "block/test_fluid_flowing"),
+				Identifier.of("fabric-rendering-fluids-v1-testmod", "block/test_fluid_overlay"),
 				0x5555FF
 		));
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.CUSTOM, TestFluids.CUSTOM_FLOWING, new CustomizedFluidRenderer(
-				new Identifier("fabric-rendering-fluids-v1-testmod:block/test_fluid_overlay")
+				Identifier.of("fabric-rendering-fluids-v1-testmod", "block/test_fluid_overlay")
 		));
 	}
 }

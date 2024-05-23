@@ -35,20 +35,20 @@ public final class CustomDynamicRegistryTest implements ModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	public static final RegistryKey<Registry<TestDynamicObject>> TEST_DYNAMIC_REGISTRY_KEY =
-			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic"));
+			RegistryKey.ofRegistry(Identifier.of("fabric", "test_dynamic"));
 	public static final RegistryKey<Registry<TestNestedDynamicObject>> TEST_NESTED_DYNAMIC_REGISTRY_KEY =
-			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_nested"));
+			RegistryKey.ofRegistry(Identifier.of("fabric", "test_dynamic_nested"));
 	public static final RegistryKey<Registry<TestDynamicObject>> TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY =
-			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_synced_1"));
+			RegistryKey.ofRegistry(Identifier.of("fabric", "test_dynamic_synced_1"));
 	public static final RegistryKey<Registry<TestDynamicObject>> TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY =
-			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_synced_2"));
+			RegistryKey.ofRegistry(Identifier.of("fabric", "test_dynamic_synced_2"));
 	public static final RegistryKey<Registry<TestDynamicObject>> TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY =
-			RegistryKey.ofRegistry(new Identifier("fabric", "test_dynamic_synced_empty"));
+			RegistryKey.ofRegistry(Identifier.of("fabric", "test_dynamic_synced_empty"));
 
 	private static final RegistryKey<TestDynamicObject> SYNCED_ENTRY_KEY =
-			RegistryKey.of(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, new Identifier("fabric-registry-sync-v0-testmod", "synced"));
+			RegistryKey.of(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, Identifier.of("fabric-registry-sync-v0-testmod", "synced"));
 	private static final TagKey<TestDynamicObject> TEST_DYNAMIC_OBJECT_TAG =
-			TagKey.of(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, new Identifier("fabric-registry-sync-v0-testmod", "test"));
+			TagKey.of(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, Identifier.of("fabric-registry-sync-v0-testmod", "test"));
 
 	@Override
 	public void onInitialize() {

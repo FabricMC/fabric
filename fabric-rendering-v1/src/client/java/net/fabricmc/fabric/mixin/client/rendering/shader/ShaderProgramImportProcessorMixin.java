@@ -44,7 +44,7 @@ abstract class ShaderProgramImportProcessorMixin {
 	@ModifyVariable(method = "loadImport", at = @At("STORE"), ordinal = 0, argsOnly = true)
 	private String modifyImportId(String id, boolean inline) {
 		if (!inline && capturedImport.contains(String.valueOf(Identifier.NAMESPACE_SEPARATOR))) {
-			return FabricShaderProgram.rewriteAsId(id, capturedImport);
+			return FabricShaderProgram.rewriteAsId(id, capturedImport).toString();
 		}
 
 		return id;

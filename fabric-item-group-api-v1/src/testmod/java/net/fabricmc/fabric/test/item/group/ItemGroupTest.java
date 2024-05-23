@@ -39,11 +39,11 @@ public class ItemGroupTest implements ModInitializer {
 	private static final String MOD_ID = "fabric-item-group-api-v1-testmod";
 	private static Item TEST_ITEM;
 
-	private static final RegistryKey<ItemGroup> ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, new Identifier(MOD_ID, "test_group"));
+	private static final RegistryKey<ItemGroup> ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(MOD_ID, "test_group"));
 
 	@Override
 	public void onInitialize() {
-		TEST_ITEM = Registry.register(Registries.ITEM, new Identifier("fabric-item-groups-v0-testmod", "item_test_group"), new Item(new Item.Settings()));
+		TEST_ITEM = Registry.register(Registries.ITEM, Identifier.of("fabric-item-groups-v0-testmod", "item_test_group"), new Item(new Item.Settings()));
 
 		Registry.register(Registries.ITEM_GROUP, ITEM_GROUP, FabricItemGroup.builder()
 				.displayName(Text.literal("Test Item Group"))
@@ -86,7 +86,7 @@ public class ItemGroupTest implements ModInitializer {
 		for (int j = 0; j < 20; j++) {
 			Registry.register(
 					Registries.ITEM_GROUP,
-					new Identifier(MOD_ID, "empty_group_" + j),
+					Identifier.of(MOD_ID, "empty_group_" + j),
 					FabricItemGroup.builder()
 							.displayName(Text.literal("Empty Item Group: " + j))
 							.build()
@@ -96,7 +96,7 @@ public class ItemGroupTest implements ModInitializer {
 		for (int i = 0; i < 100; i++) {
 			final int index = i;
 
-			Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "test_group_" + i), FabricItemGroup.builder()
+			Registry.register(Registries.ITEM_GROUP, Identifier.of(MOD_ID, "test_group_" + i), FabricItemGroup.builder()
 					.displayName(Text.literal("Test Item Group: " + i))
 					.icon((Supplier<ItemStack>) () -> new ItemStack(Registries.BLOCK.get(index)))
 					.entries((context, entries) -> {

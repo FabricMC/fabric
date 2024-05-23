@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 public class DefaultItemComponentTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		Identifier latePhase = new Identifier("fabric-item-api-v1-testmod", "late");
+		Identifier latePhase = Identifier.of("fabric-item-api-v1-testmod", "late");
 		DefaultItemComponentEvents.MODIFY.addPhaseOrdering(Event.DEFAULT_PHASE, latePhase);
 
 		DefaultItemComponentEvents.MODIFY.register(context -> {

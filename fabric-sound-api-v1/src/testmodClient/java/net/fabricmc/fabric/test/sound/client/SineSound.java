@@ -28,7 +28,7 @@ import net.minecraft.util.math.Vec3d;
 
 class SineSound extends AbstractSoundInstance {
 	SineSound(Vec3d pos) {
-		super(new Identifier(ClientSoundTest.MOD_ID, "sine_wave"), SoundCategory.BLOCKS, SoundInstance.createRandom());
+		super(Identifier.of(ClientSoundTest.MOD_ID, "sine_wave"), SoundCategory.BLOCKS, SoundInstance.createRandom());
 		x = pos.x;
 		y = pos.y;
 		z = pos.z;

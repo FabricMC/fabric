@@ -36,6 +36,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
 public class NetworkingCommonTest implements ModInitializer {
+	private boolean firstLoad = true;
 	private List<String> receivedPlay = new ArrayList<>();
 	private List<String> receivedConfig = new ArrayList<>();
 
@@ -57,6 +58,13 @@ public class NetworkingCommonTest implements ModInitializer {
 
 		// Ensure that the packets were received on the server
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+			if (!firstLoad) {
+				// No need to check again if the player changes dimensions
+				return;
+			}
+
+			firstLoad = false;
+
 			if (entity instanceof ServerPlayerEntity player) {
 				final String uuid = player.getUuidAsString();
 

@@ -110,7 +110,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	private Path getLangFilePath(String code) {
 		return dataOutput
 				.getResolver(DataOutput.OutputType.RESOURCE_PACK, "lang")
-				.resolveJson(new Identifier(dataOutput.getModId(), code));
+				.resolveJson(Identifier.of(dataOutput.getModId(), code));
 	}
 
 	@Override
