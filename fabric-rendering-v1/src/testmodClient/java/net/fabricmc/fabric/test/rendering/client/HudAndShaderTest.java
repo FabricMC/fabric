@@ -23,6 +23,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.Window;
@@ -55,7 +56,7 @@ public class HudAndShaderTest implements ClientModInitializer {
 			RenderSystem.setShader(() -> testShader);
 			RenderSystem.setShaderColor(0f, 1f, 0f, 1f);
 			Matrix4f positionMatrix = drawContext.getMatrices().peek().getPositionMatrix();
-			BufferBuilder buffer = RenderSystem.renderThreadTesselator().method_60827(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+			BufferBuilder buffer = Tessellator.getInstance().method_60827(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
 			buffer.vertex(positionMatrix, x, y, 50);
 			buffer.vertex(positionMatrix, x, y + 10, 50);
 			buffer.vertex(positionMatrix, x + 10, y + 10, 50);

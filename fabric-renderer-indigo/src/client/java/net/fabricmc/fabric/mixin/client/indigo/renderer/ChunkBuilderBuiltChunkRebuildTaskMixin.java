@@ -16,20 +16,28 @@
 
 package net.fabricmc.fabric.mixin.client.indigo.renderer;
 
+import java.util.Map;
 import java.util.Set;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.VertexSorter;
+
+import net.minecraft.class_9810;
+import net.minecraft.client.render.BufferBuilder;
+
+import net.minecraft.util.math.ChunkSectionPos;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.class_9810;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
@@ -37,7 +45,6 @@ import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
@@ -64,19 +71,16 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderConte
 @Mixin(class_9810.class)
 public abstract class ChunkBuilderBuiltChunkRebuildTaskMixin {
 	@Inject(method = "method_60904",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPos;iterate(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Ljava/lang/Iterable;"))
-	private void hookChunkBuild(ChunkSectionPos chunkSectionPos,
-								ChunkRendererRegion region,
-								VertexSorter vertexSorter,
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPos;iterate(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Ljava/lang/Iterable;"),
+			locals = LocalCapture.CAPTURE_FAILHARD)
+	private void hookChunkBuild(ChunkSectionPos sectionPos, ChunkRendererRegion region, VertexSorter sorter,
 								BlockBufferBuilderStorage builder,
-								CallbackInfoReturnable<class_9810.class_9811> cir,
-								@Local(ordinal = 1) BlockPos chunkOrigin,
-								@Local class_9810.class_9811 renderData) {
-		// hook just before iterating over the render chunk's chunks blocks, captures the used renderlayer set
-		// accessing this.region is unsafe due to potential async cancellation, the LV has to be used!
+								CallbackInfoReturnable<class_9810.class_9811> ci,
+								@Local(ordinal = 0) Map<RenderLayer, BufferBuilder> builderMap) {
+		// hook just before iterating over the render chunk's chunks blocks, captures the buffer builder map
 
 		TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
-		renderer.prepare(region, chunkOrigin, renderData, builder);
+		renderer.prepare(region, sectionPos.getMinPos(), builder, builderMap);
 		((AccessChunkRendererRegion) region).fabric_setRenderer(renderer);
 	}
 
