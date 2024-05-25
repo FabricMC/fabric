@@ -26,11 +26,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 public class UpdatingItem extends Item {
+	private static final Identifier PLUS_FIVE_ID = Identifier.of("fabric-item-api-v1-testmod", "plus_five");
 	private static final EntityAttributeModifier PLUS_FIVE = new EntityAttributeModifier(
-			BASE_ATTACK_DAMAGE_MODIFIER_ID, 5, EntityAttributeModifier.Operation.ADD_VALUE);
+			PLUS_FIVE_ID, 5, EntityAttributeModifier.Operation.ADD_VALUE);
 
 	private final boolean allowUpdateAnimation;
 
