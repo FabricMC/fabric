@@ -466,7 +466,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 	private static class TestPredicateProvider extends FabricCodecDataProvider<LootCondition> {
 		private TestPredicateProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-			super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, "predicate", LootCondition.CODEC);
+			super(dataOutput, registriesFuture, RegistryKeys.PREDICATE, LootCondition.CODEC);
 		}
 
 		@Override
