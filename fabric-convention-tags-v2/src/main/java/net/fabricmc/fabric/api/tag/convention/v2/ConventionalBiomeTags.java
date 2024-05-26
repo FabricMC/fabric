@@ -185,6 +185,16 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_OUTER_END_ISLAND = register("is_outer_end_island");
 
+	public static final TagKey<Biome> HAS_WOLF_VARIANT_ASHEN = register("has_wolf_variant/ashen");
+	public static final TagKey<Biome> HAS_WOLF_VARIANT_BLACK = register("has_wolf_variant/black");
+	public static final TagKey<Biome> HAS_WOLF_VARIANT_CHESTNUT = register("has_wolf_variant/chestnut");
+	public static final TagKey<Biome> HAS_WOLF_VARIANT_PALE = register("has_wolf_variant/pale");
+	public static final TagKey<Biome> HAS_WOLF_VARIANT_RUSTY = register("has_wolf_variant/rusty");
+	public static final TagKey<Biome> HAS_WOLF_VARIANT_SNOWY = register("has_wolf_variant/snowy");
+	public static final TagKey<Biome> HAS_WOLF_VARIANT_SPOTTED = register("has_wolf_variant/spotted");
+	public static final TagKey<Biome> HAS_WOLF_VARIANT_STRIPED = register("has_wolf_variant/striped");
+	public static final TagKey<Biome> HAS_WOLF_VARIANT_WOODS = register("has_wolf_variant/woods");
+
 	private static TagKey<Biome> register(String tagId) {
 		return TagRegistration.BIOME_TAG.registerC(tagId);
 	}

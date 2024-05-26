@@ -347,5 +347,14 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBiomeTags.IS_END, "The End");
 		translationBuilder.add(ConventionalBiomeTags.IS_OUTER_END_ISLAND, "Outer End Island");
 
+		translationBuilder.add(ConventionalBiomeTags.HAS_WOLF_VARIANT_ASHEN, "Ashen Wolves");
+		translationBuilder.add(ConventionalBiomeTags.HAS_WOLF_VARIANT_BLACK, "Black Wolves");
+		translationBuilder.add(ConventionalBiomeTags.HAS_WOLF_VARIANT_CHESTNUT, "Chestnut Wolves");
+		translationBuilder.add(ConventionalBiomeTags.HAS_WOLF_VARIANT_PALE, "Pale Wolves");
+		translationBuilder.add(ConventionalBiomeTags.HAS_WOLF_VARIANT_RUSTY, "Rusty Wolves");
+		translationBuilder.add(ConventionalBiomeTags.HAS_WOLF_VARIANT_SNOWY, "Snowy Wolves");
+		translationBuilder.add(ConventionalBiomeTags.HAS_WOLF_VARIANT_SPOTTED, "Spotted Wolves");
+		translationBuilder.add(ConventionalBiomeTags.HAS_WOLF_VARIANT_STRIPED, "Striped Wolves");
+		translationBuilder.add(ConventionalBiomeTags.HAS_WOLF_VARIANT_WOODS, "Woods Wolves");
 	}
 }

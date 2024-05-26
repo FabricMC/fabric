@@ -43,6 +43,28 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		generateClimateAndVegetationTags();
 		generateTerrainDescriptorTags();
 		generateBackwardsCompatTags();
+		generateWolfVariantTags();
+	}
+
+	private void generateWolfVariantTags() {
+		getOrCreateTagBuilder(ConventionalBiomeTags.HAS_WOLF_VARIANT_ASHEN)
+				.add(BiomeKeys.SNOWY_TAIGA);
+		getOrCreateTagBuilder(ConventionalBiomeTags.HAS_WOLF_VARIANT_BLACK)
+				.add(BiomeKeys.OLD_GROWTH_PINE_TAIGA);
+		getOrCreateTagBuilder(ConventionalBiomeTags.HAS_WOLF_VARIANT_CHESTNUT)
+				.add(BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA);
+		getOrCreateTagBuilder(ConventionalBiomeTags.HAS_WOLF_VARIANT_PALE)
+				.add(BiomeKeys.TAIGA);
+		getOrCreateTagBuilder(ConventionalBiomeTags.HAS_WOLF_VARIANT_RUSTY)
+				.addOptionalTag(BiomeTags.IS_JUNGLE);
+		getOrCreateTagBuilder(ConventionalBiomeTags.HAS_WOLF_VARIANT_SNOWY)
+				.add(BiomeKeys.GROVE);
+		getOrCreateTagBuilder(ConventionalBiomeTags.HAS_WOLF_VARIANT_SPOTTED)
+				.addOptionalTag(BiomeTags.IS_SAVANNA);
+		getOrCreateTagBuilder(ConventionalBiomeTags.HAS_WOLF_VARIANT_STRIPED)
+				.addOptionalTag(BiomeTags.IS_BADLANDS);
+		getOrCreateTagBuilder(ConventionalBiomeTags.HAS_WOLF_VARIANT_WOODS)
+				.add(BiomeKeys.FOREST);
 	}
 
 	private void generateDimensionTags() {
