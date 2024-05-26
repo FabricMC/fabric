@@ -470,6 +470,24 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 		getOrCreateTagBuilder(ConventionalItemTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
 		getOrCreateTagBuilder(ConventionalItemTags.INDESTRUCTIBLE);
+
+		getOrCreateTagBuilder(ConventionalItemTags.MUSIC_DISCS)
+				.add(Items.MUSIC_DISC_13)
+				.add(Items.MUSIC_DISC_CAT)
+				.add(Items.MUSIC_DISC_BLOCKS)
+				.add(Items.MUSIC_DISC_CHIRP)
+				.add(Items.MUSIC_DISC_CREATOR)
+				.add(Items.MUSIC_DISC_CREATOR_MUSIC_BOX)
+				.add(Items.MUSIC_DISC_FAR)
+				.add(Items.MUSIC_DISC_MALL)
+				.add(Items.MUSIC_DISC_MELLOHI)
+				.add(Items.MUSIC_DISC_WAIT)
+				.add(Items.MUSIC_DISC_OTHERSIDE)
+				.add(Items.MUSIC_DISC_RELIC)
+				.add(Items.MUSIC_DISC_5)
+				.add(Items.MUSIC_DISC_PIGSTEP)
+				.add(Items.MUSIC_DISC_PRECIPICE)
+				.add(Items.DISC_FRAGMENT_5);
 	}
 
 	private void generateDyedTags() {

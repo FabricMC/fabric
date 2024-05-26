@@ -291,6 +291,8 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> INDESTRUCTIBLE = register("indestructible");
 
+	public static final TagKey<Item> MUSIC_DISCS = register("music_discs");
+
 	private static TagKey<Item> register(String tagId) {
 		return TagRegistration.ITEM_TAG.registerC(tagId);
 	}
