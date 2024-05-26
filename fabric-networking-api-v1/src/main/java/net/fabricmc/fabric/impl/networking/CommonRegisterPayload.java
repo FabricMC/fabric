@@ -25,7 +25,7 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
 public record CommonRegisterPayload(int version, String phase, Set<Identifier> channels) implements CustomPayload {
-	public static final CustomPayload.Id<CommonRegisterPayload> ID = CustomPayload.id("c:register");
+	public static final CustomPayload.Id<CommonRegisterPayload> ID = new Id<>(Identifier.of("c:register"));
 	public static final PacketCodec<PacketByteBuf, CommonRegisterPayload> CODEC = CustomPayload.codecOf(CommonRegisterPayload::write, CommonRegisterPayload::new);
 
 	public static final String PLAY_PHASE = "play";

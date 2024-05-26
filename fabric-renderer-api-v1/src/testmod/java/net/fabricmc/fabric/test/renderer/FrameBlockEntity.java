@@ -45,7 +45,7 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 		super.readNbt(tag, wrapperLookup);
 
 		if (tag.contains("block", NbtElement.STRING_TYPE)) {
-			this.block = Registries.BLOCK.get(new Identifier(tag.getString("block")));
+			this.block = Registries.BLOCK.get(Identifier.of(tag.getString("block")));
 		} else {
 			this.block = null;
 		}

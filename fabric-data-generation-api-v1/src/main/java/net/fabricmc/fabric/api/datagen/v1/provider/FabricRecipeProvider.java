@@ -125,6 +125,6 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	 * Override this method to change the recipe identifier. The default implementation normalizes the namespace to the mod ID.
 	 */
 	protected Identifier getRecipeIdentifier(Identifier identifier) {
-		return new Identifier(output.getModId(), identifier.getPath());
+		return Identifier.of(output.getModId(), identifier.getPath());
 	}
 }

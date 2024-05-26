@@ -31,8 +31,8 @@ import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
 public class RiverstoneUnbakedModel implements UnbakedModel {
-	private static final Identifier STONE_MODEL_ID = new Identifier("block/stone");
-	private static final Identifier GOLD_BLOCK_MODEL_ID = new Identifier("block/gold_block");
+	private static final Identifier STONE_MODEL_ID = Identifier.ofDefaultNamespace("block/stone");
+	private static final Identifier GOLD_BLOCK_MODEL_ID = Identifier.ofDefaultNamespace("block/gold_block");
 
 	@Override
 	public Collection<Identifier> getModelDependencies() {

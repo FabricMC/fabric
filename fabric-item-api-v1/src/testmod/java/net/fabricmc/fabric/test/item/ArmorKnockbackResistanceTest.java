@@ -34,11 +34,11 @@ import net.minecraft.util.Util;
 import net.fabricmc.api.ModInitializer;
 
 public class ArmorKnockbackResistanceTest implements ModInitializer {
-	private static final RegistryEntry<ArmorMaterial> WOOD_ARMOR = Registry.registerReference(Registries.ARMOR_MATERIAL, new Identifier("fabric-item-api-v1-testmod", "wood"), createTestArmorMaterial());
+	private static final RegistryEntry<ArmorMaterial> WOOD_ARMOR = Registry.registerReference(Registries.ARMOR_MATERIAL, Identifier.of("fabric-item-api-v1-testmod", "wood"), createTestArmorMaterial());
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.ITEM, new Identifier("fabric-item-api-v1-testmod",
+		Registry.register(Registries.ITEM, Identifier.of("fabric-item-api-v1-testmod",
 				"wooden_boots"), new ArmorItem(WOOD_ARMOR, ArmorItem.Type.BOOTS, new Item.Settings()));
 	}
 
@@ -53,7 +53,7 @@ public class ArmorKnockbackResistanceTest implements ModInitializer {
 			0,
 			SoundEvents.ITEM_ARMOR_EQUIP_LEATHER,
 				() -> Ingredient.ofItems(Items.LEATHER),
-			List.of(new ArmorMaterial.Layer(new Identifier("fabric-item-api-v1-testmod", "wood"))),
+			List.of(new ArmorMaterial.Layer(Identifier.of("fabric-item-api-v1-testmod", "wood"))),
 			0,
 			0.5F
 		);

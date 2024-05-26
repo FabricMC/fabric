@@ -283,7 +283,7 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.addOptionalTag(ConventionalBiomeTags.IS_FLOWER_FOREST);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_FLOWER_FOREST)
 				.add(BiomeKeys.FLOWER_FOREST)
-				.addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "flower_forests"));
+				.addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "flower_forests"));
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_OLD_GROWTH)
 				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST)
 				.add(BiomeKeys.OLD_GROWTH_PINE_TAIGA)
@@ -322,25 +322,25 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
 		// TODO: Remove backwards compat tag entries in 1.22
 
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_NETHER).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "in_nether"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_END).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "in_the_end"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_OVERWORLD).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "in_the_overworld"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_CAVE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "caves"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_COLD_OVERWORLD).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "climate_cold"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TEMPERATE_OVERWORLD).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "climate_temperate"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_HOT_OVERWORLD).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "climate_hot"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_WET_OVERWORLD).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "climate_wet"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_DRY_OVERWORLD).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "climate_dry"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_DENSE_OVERWORLD).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "vegetation_dense"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_SPARSE_OVERWORLD).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "vegetation_sparse"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_CONIFEROUS_TREE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "tree_coniferous"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_DECIDUOUS_TREE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "tree_deciduous"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_JUNGLE_TREE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "tree_jungle"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SAVANNA_TREE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "tree_savanna"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_MOUNTAIN_PEAK).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "mountain_peak"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_MOUNTAIN_SLOPE).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "mountain_slope"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_OUTER_END_ISLAND).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "end_islands"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_NETHER_FOREST).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "nether_forests"));
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_FLOWER_FOREST).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "flower_forests"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_NETHER).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "in_nether"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_END).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "in_the_end"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_OVERWORLD).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "in_the_overworld"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_CAVE).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "caves"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_COLD_OVERWORLD).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "climate_cold"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TEMPERATE_OVERWORLD).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "climate_temperate"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_HOT_OVERWORLD).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "climate_hot"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_WET_OVERWORLD).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "climate_wet"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_DRY_OVERWORLD).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "climate_dry"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_DENSE_OVERWORLD).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "vegetation_dense"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_SPARSE_OVERWORLD).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "vegetation_sparse"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_CONIFEROUS_TREE).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "tree_coniferous"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_DECIDUOUS_TREE).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "tree_deciduous"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_JUNGLE_TREE).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "tree_jungle"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SAVANNA_TREE).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "tree_savanna"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_MOUNTAIN_PEAK).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "mountain_peak"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_MOUNTAIN_SLOPE).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "mountain_slope"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_OUTER_END_ISLAND).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "end_islands"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_NETHER_FOREST).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "nether_forests"));
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_FLOWER_FOREST).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "flower_forests"));
 	}
 }

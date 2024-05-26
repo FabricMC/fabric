@@ -41,7 +41,7 @@ public class SynchronizeRegistriesTaskMixin {
 
 	@Inject(method = "syncRegistryAndTags", at = @At("HEAD"))
 	public void syncRegistryAndTags(Consumer<Packet<?>> sender, Set<VersionedIdentifier> commonKnownPacks, CallbackInfo ci) {
-		BuiltinResourcePackTestMod.LOGGER.info("Syncronizing registries with common known packs: {}", commonKnownPacks);
+		BuiltinResourcePackTestMod.LOGGER.info("Synchronizing registries with common known packs: {}", commonKnownPacks);
 
 		if (!commonKnownPacks.containsAll(this.knownPacks)) {
 			BuiltinResourcePackTestMod.LOGGER.error("(Ignore when not local client) Not all server mod data packs known to client. Missing: {}", this.knownPacks.stream().filter(knownPack -> !commonKnownPacks.contains(knownPack)).toList());

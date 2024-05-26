@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.object.builder;
 
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
@@ -98,7 +97,7 @@ public interface AbstractBlockSettingsAccessor {
 	AbstractBlock.ContextPredicate getEmissiveLightingPredicate();
 
 	@Accessor
-	Optional<AbstractBlock.Offsetter> getOffsetter();
+	AbstractBlock.Offsetter getOffsetter();
 
 	@Accessor
 	RegistryKey<LootTable> getLootTableKey();
@@ -162,7 +161,7 @@ public interface AbstractBlockSettingsAccessor {
 	void setRequiredFeatures(FeatureSet requiredFeatures);
 
 	@Accessor
-	void setOffsetter(Optional<AbstractBlock.Offsetter> offsetter);
+	void setOffsetter(AbstractBlock.Offsetter offsetter);
 
 	@Accessor
 	void setBurnable(boolean burnable);

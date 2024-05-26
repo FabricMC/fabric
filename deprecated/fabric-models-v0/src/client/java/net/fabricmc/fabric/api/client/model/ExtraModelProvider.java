@@ -36,7 +36,7 @@ public interface ExtraModelProvider {
 	 * @param out Accepts paths to be loaded. Arguments that are {@link ModelIdentifier} will be
 	 *            loaded through the blockstate JSON system or, if the variant is {@code inventory}, the item model folder.
 	 *            Otherwise, the argument is directly loaded as a JSON.
-	 *            For example, <pre>new Identifier("mymod", "foo/bar")</pre> will request loading of the file
+	 *            For example, <pre>Identifier.of("mymod", "foo/bar")</pre> will request loading of the file
 	 *            <pre>/assets/mymod/models/foo/bar.json</pre>
 	 */
 	void provideExtraModels(ResourceManager manager, Consumer<Identifier> out);

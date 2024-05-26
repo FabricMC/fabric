@@ -37,7 +37,7 @@ public class ShapelessRecipeMatchTests {
 	 */
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testShapelessMatch(TestContext context) {
-		Identifier recipeId = new Identifier("fabric-recipe-api-v1-testmod", "test_shapeless_match");
+		Identifier recipeId = Identifier.of("fabric-recipe-api-v1-testmod", "test_shapeless_match");
 		ShapelessRecipe recipe = (ShapelessRecipe) context.getWorld().getRecipeManager().get(recipeId).get().value();
 
 		ItemStack undamagedPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
