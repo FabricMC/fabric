@@ -74,15 +74,11 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> NUGGETS = register("nuggets");
 	public static final TagKey<Item> ORES = register("ores");
 	public static final TagKey<Item> RAW_MATERIALS = register("raw_materials");
-	public static final TagKey<Item> RAW_BLOCKS = register("raw_blocks");
 
 	// Raw material and blocks - vanilla instances
 	public static final TagKey<Item> IRON_RAW_MATERIALS = register("raw_materials/iron");
 	public static final TagKey<Item> GOLD_RAW_MATERIALS = register("raw_materials/gold");
 	public static final TagKey<Item> COPPER_RAW_MATERIALS = register("raw_materials/copper");
-	public static final TagKey<Item> IRON_RAW_BLOCKS = register("raw_blocks/iron");
-	public static final TagKey<Item> GOLD_RAW_BLOCKS = register("raw_blocks/gold");
-	public static final TagKey<Item> COPPER_RAW_BLOCKS = register("raw_blocks/copper");
 
 	// Bricks - vanilla instances
 	public static final TagKey<Item> NORMAL_BRICKS = register("bricks/normal");
@@ -109,7 +105,6 @@ public final class ConventionalItemTags {
 	// Dusts and Misc - vanilla instances
 	public static final TagKey<Item> REDSTONE_DUSTS = register("dusts/redstone");
 	public static final TagKey<Item> GLOWSTONE_DUSTS = register("dusts/glowstone");
-	public static final TagKey<Item> COAL = register("coal");
 
 	// Consumables
 	public static final TagKey<Item> POTIONS = register("potions");
@@ -271,6 +266,12 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> PLAYER_WORKSTATIONS_CRAFTING_TABLES = register("player_workstations/crafting_tables");
 	public static final TagKey<Item> PLAYER_WORKSTATIONS_FURNACES = register("player_workstations/furnaces");
 	public static final TagKey<Item> STRINGS = register("strings");
+	public static final TagKey<Item> LEATHERS = register("leathers");
+	/**
+	 * For music disc-like materials to be used in recipes.
+	 * A pancake with a Music component attached to play in Jukeboxes as an Easter Egg is not a music disc and would not go in this tag.
+	 */
+	public static final TagKey<Item> MUSIC_DISCS = register("music_discs");
 	/**
 	 * For rod-like materials to be used in recipes.
 	 */

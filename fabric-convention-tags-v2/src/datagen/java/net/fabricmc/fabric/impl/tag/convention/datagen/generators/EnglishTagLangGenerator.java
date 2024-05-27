@@ -129,13 +129,9 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.NUGGETS, "Nuggets");
 		translationBuilder.add(ConventionalItemTags.ORES, "Ores");
 		translationBuilder.add(ConventionalItemTags.RAW_MATERIALS, "Raw Materials");
-		translationBuilder.add(ConventionalItemTags.RAW_BLOCKS, "Raw Blocks");
 		translationBuilder.add(ConventionalItemTags.IRON_RAW_MATERIALS, "Raw Iron Materials");
 		translationBuilder.add(ConventionalItemTags.GOLD_RAW_MATERIALS, "Raw Gold Materials");
 		translationBuilder.add(ConventionalItemTags.COPPER_RAW_MATERIALS, "Raw Copper Materials");
-		translationBuilder.add(ConventionalItemTags.IRON_RAW_BLOCKS, "Raw Iron Blocks");
-		translationBuilder.add(ConventionalItemTags.GOLD_RAW_BLOCKS, "Raw Gold Blocks");
-		translationBuilder.add(ConventionalItemTags.COPPER_RAW_BLOCKS, "Raw Copper Blocks");
 		translationBuilder.add(ConventionalItemTags.NORMAL_BRICKS, "Bricks");
 		translationBuilder.add(ConventionalItemTags.NETHER_BRICKS, "Nether Bricks");
 		translationBuilder.add(ConventionalItemTags.IRON_INGOTS, "Iron Ingots");
@@ -152,7 +148,6 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.PRISMARINE_GEMS, "Prismarine Gems");
 		translationBuilder.add(ConventionalItemTags.REDSTONE_DUSTS, "Redstone Dusts");
 		translationBuilder.add(ConventionalItemTags.GLOWSTONE_DUSTS, "Glowstone Dusts");
-		translationBuilder.add(ConventionalItemTags.COAL, "Coal");
 		translationBuilder.add(ConventionalItemTags.POTIONS, "Potions");
 		translationBuilder.add(ConventionalItemTags.FOODS, "Foods");
 		translationBuilder.add(ConventionalItemTags.FRUITS_FOODS, "Fruits");
@@ -250,6 +245,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, "Crafting Tables");
 		translationBuilder.add(ConventionalItemTags.PLAYER_WORKSTATIONS_FURNACES, "Furnaces");
 		translationBuilder.add(ConventionalItemTags.STRINGS, "Strings");
+		translationBuilder.add(ConventionalItemTags.MUSIC_DISCS, "Music Discs");
 		translationBuilder.add(ConventionalItemTags.RODS, "Rods");
 		translationBuilder.add(ConventionalItemTags.WOODEN_RODS, "Wooden Rods");
 		translationBuilder.add(ConventionalItemTags.BLAZE_RODS, "Blaze Rods");

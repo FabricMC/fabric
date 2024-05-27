@@ -83,6 +83,7 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS),
 			createMapEntry(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS),
 
+			createMapEntry(ConventionalItemTags.COAL, ItemTags.COALS),
 			createMapEntry(ConventionalItemTags.QUARTZ_ORES, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.QUARTZ_ORES),
 			createMapEntry(ConventionalItemTags.WOODEN_BARRELS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WOODEN_BARRELS),
 			createMapEntry(ConventionalItemTags.SANDSTONE_BLOCKS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SANDSTONE_BLOCKS),
@@ -209,8 +210,12 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(RegistryKeys.ITEM, "stew", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUPS_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "stews", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUPS_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "candy", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDIES_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "candies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDIES_FOODS)
-
+			createMapEntry(RegistryKeys.ITEM, "candies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDIES_FOODS),
+			createMapEntry(RegistryKeys.ITEM, "raw_blocks", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STORAGE_BLOCKS),
+			createMapEntry(RegistryKeys.ITEM, "raw_blocks/copper", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STORAGE_BLOCKS_RAW_COPPER),
+			createMapEntry(RegistryKeys.ITEM, "raw_blocks/gold", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STORAGE_BLOCKS_RAW_GOLD),
+			createMapEntry(RegistryKeys.ITEM, "raw_blocks/iron", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STORAGE_BLOCKS_RAW_IRON),
+			createMapEntry(TagKey.of(RegistryKeys.ITEM, Identifier.of("minecraft", "music_discs")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MUSIC_DISCS)
 	);
 
 	@Override

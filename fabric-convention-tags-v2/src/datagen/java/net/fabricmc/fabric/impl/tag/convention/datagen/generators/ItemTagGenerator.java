@@ -301,10 +301,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.COPPER_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.IRON_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.GOLD_RAW_MATERIALS);
-		getOrCreateTagBuilder(ConventionalItemTags.RAW_BLOCKS)
-				.addOptionalTag(ConventionalItemTags.COPPER_RAW_BLOCKS)
-				.addOptionalTag(ConventionalItemTags.GOLD_RAW_BLOCKS)
-				.addOptionalTag(ConventionalItemTags.IRON_RAW_BLOCKS);
 
 		// Vanilla instances
 		getOrCreateTagBuilder(ConventionalItemTags.NORMAL_BRICKS)
@@ -321,13 +317,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.NETHERITE_INGOTS)
 				.add(Items.NETHERITE_INGOT);
 
-		getOrCreateTagBuilder(ConventionalItemTags.IRON_RAW_BLOCKS)
-				.add(Items.RAW_IRON_BLOCK);
-		getOrCreateTagBuilder(ConventionalItemTags.COPPER_RAW_BLOCKS)
-				.add(Items.RAW_COPPER_BLOCK);
-		getOrCreateTagBuilder(ConventionalItemTags.GOLD_RAW_BLOCKS)
-				.add(Items.RAW_GOLD_BLOCK);
-
 		getOrCreateTagBuilder(ConventionalItemTags.IRON_RAW_MATERIALS)
 				.add(Items.RAW_IRON);
 		getOrCreateTagBuilder(ConventionalItemTags.COPPER_RAW_MATERIALS)
@@ -339,8 +328,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.REDSTONE);
 		getOrCreateTagBuilder(ConventionalItemTags.GLOWSTONE_DUSTS)
 				.add(Items.GLOWSTONE_DUST);
-		getOrCreateTagBuilder(ConventionalItemTags.COAL)
-				.addOptionalTag(ItemTags.COALS);
 
 		getOrCreateTagBuilder(ConventionalItemTags.QUARTZ_ORES)
 				.add(Items.NETHER_QUARTZ_ORE);
@@ -459,6 +446,15 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 		getOrCreateTagBuilder(ConventionalItemTags.STRINGS)
 				.add(Items.STRING);
+
+		getOrCreateTagBuilder(ConventionalItemTags.LEATHERS)
+				.add(Items.LEATHER);
+
+		getOrCreateTagBuilder(ConventionalItemTags.MUSIC_DISCS)
+				.add(Items.MUSIC_DISC_13, Items.MUSIC_DISC_CAT, Items.MUSIC_DISC_BLOCKS, Items.MUSIC_DISC_CHIRP, Items.MUSIC_DISC_FAR,
+						Items.MUSIC_DISC_MALL, Items.MUSIC_DISC_MELLOHI, Items.MUSIC_DISC_STAL, Items.MUSIC_DISC_STRAD, Items.MUSIC_DISC_WARD,
+						Items.MUSIC_DISC_11, Items.MUSIC_DISC_WAIT, Items.MUSIC_DISC_OTHERSIDE, Items.MUSIC_DISC_5, Items.MUSIC_DISC_PIGSTEP,
+						Items.MUSIC_DISC_RELIC, Items.MUSIC_DISC_CREATOR, Items.MUSIC_DISC_CREATOR_MUSIC_BOX, Items.MUSIC_DISC_PRECIPICE);
 
 		getOrCreateTagBuilder(ConventionalItemTags.WOODEN_RODS)
 				.add(Items.STICK);
