@@ -269,7 +269,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> LEATHERS = register("leathers");
 	/**
 	 * For music disc-like materials to be used in recipes.
-	 * A pancake with a Music component attached to play in Jukeboxes as an Easter Egg is not a music disc and would not go in this tag.
+	 * A pancake with a JUKEBOX_PLAYABLE component attached to play in Jukeboxes as an Easter Egg is not a music disc and would not go in this tag.
 	 */
 	public static final TagKey<Item> MUSIC_DISCS = register("music_discs");
 	/**
