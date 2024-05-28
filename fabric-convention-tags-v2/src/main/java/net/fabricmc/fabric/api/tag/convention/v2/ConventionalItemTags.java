@@ -291,6 +291,32 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> HIDDEN_FROM_RECIPE_VIEWERS = register("hidden_from_recipe_viewers");
 
+	/**
+	 * This tag is redundant. Please use {@link ConventionalItemTags#STORAGE_BLOCKS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> RAW_BLOCKS = register("raw_blocks");
+	/**
+	 * This tag is redundant. Please use {@link ConventionalItemTags#STORAGE_BLOCKS_RAW_IRON} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> IRON_RAW_BLOCKS = register("raw_blocks/iron");
+	/**
+	 * This tag is redundant. Please use {@link ConventionalItemTags#STORAGE_BLOCKS_RAW_GOLD} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> GOLD_RAW_BLOCKS = register("raw_blocks/gold");
+	/**
+	 * This tag is redundant. Please use {@link ConventionalItemTags#STORAGE_BLOCKS_RAW_COPPER} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> COPPER_RAW_BLOCKS = register("raw_blocks/copper");
+	/**
+	 * This tag is redundant. Please use {@link net.minecraft.registry.tag.ItemTags#COALS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> COAL = register("coal");
+
 	private static TagKey<Item> register(String tagId) {
 		return TagRegistration.ITEM_TAG.registerC(tagId);
 	}

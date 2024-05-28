@@ -302,6 +302,11 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.IRON_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.GOLD_RAW_MATERIALS);
 
+		getOrCreateTagBuilder(ConventionalItemTags.RAW_BLOCKS)
+				.addOptionalTag(ConventionalItemTags.COPPER_RAW_BLOCKS)
+				.addOptionalTag(ConventionalItemTags.GOLD_RAW_BLOCKS)
+				.addOptionalTag(ConventionalItemTags.IRON_RAW_BLOCKS);
+
 		// Vanilla instances
 		getOrCreateTagBuilder(ConventionalItemTags.NORMAL_BRICKS)
 				.add(Items.BRICK);
@@ -317,6 +322,13 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.NETHERITE_INGOTS)
 				.add(Items.NETHERITE_INGOT);
 
+		getOrCreateTagBuilder(ConventionalItemTags.IRON_RAW_BLOCKS)
+				.add(Items.RAW_IRON_BLOCK);
+		getOrCreateTagBuilder(ConventionalItemTags.COPPER_RAW_BLOCKS)
+				.add(Items.RAW_COPPER_BLOCK);
+		getOrCreateTagBuilder(ConventionalItemTags.GOLD_RAW_BLOCKS)
+				.add(Items.RAW_GOLD_BLOCK);
+
 		getOrCreateTagBuilder(ConventionalItemTags.IRON_RAW_MATERIALS)
 				.add(Items.RAW_IRON);
 		getOrCreateTagBuilder(ConventionalItemTags.COPPER_RAW_MATERIALS)
@@ -328,6 +340,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.REDSTONE);
 		getOrCreateTagBuilder(ConventionalItemTags.GLOWSTONE_DUSTS)
 				.add(Items.GLOWSTONE_DUST);
+		getOrCreateTagBuilder(ConventionalItemTags.COAL)
+				.addOptionalTag(ItemTags.COALS);
 
 		getOrCreateTagBuilder(ConventionalItemTags.QUARTZ_ORES)
 				.add(Items.NETHER_QUARTZ_ORE);
