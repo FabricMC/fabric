@@ -30,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.class_9824;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
@@ -77,14 +78,14 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	}
 
 	@Shadow
-	private void putModel(Identifier id, UnbakedModel unbakedModel) {
+	private void method_61076(ModelIdentifier id, UnbakedModel unbakedModel) {
 	}
 
 	@Shadow
 	public abstract JsonUnbakedModel loadModelFromJson(Identifier id);
 
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "net/minecraft/util/profiler/Profiler.swap(Ljava/lang/String;)V", ordinal = 0))
-	private void afterMissingModelInit(BlockColors blockColors, Profiler profiler, Map<Identifier, JsonUnbakedModel> jsonUnbakedModels, Map<Identifier, List<ModelLoader.SourceTrackedData>> blockStates, CallbackInfo info) {
+	private void afterMissingModelInit(BlockColors blockColors, Profiler profiler, Map<Identifier, JsonUnbakedModel> jsonUnbakedModels, Map<Identifier, List<class_9824.SourceTrackedData>> blockStates, CallbackInfo info) {
 		// Sanity check
 		if (!unbakedModels.containsKey(MISSING_ID)) {
 			throw new AssertionError("Missing model not initialized. This is likely a Fabric API porting bug.");
@@ -133,8 +134,8 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 		}
 	}
 
-	@ModifyVariable(method = "putModel", at = @At("HEAD"), argsOnly = true)
-	private UnbakedModel onPutModel(UnbakedModel model, Identifier id) {
+	@ModifyVariable(method = "method_61076", at = @At("HEAD"), argsOnly = true)
+	private UnbakedModel onPutModel(UnbakedModel model, ModelIdentifier id) {
 		fabric_guardGetOrLoadModel++;
 
 		try {

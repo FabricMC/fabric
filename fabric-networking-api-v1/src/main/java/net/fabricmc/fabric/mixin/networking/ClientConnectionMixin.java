@@ -76,7 +76,7 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 		}
 	}
 
-	@Inject(method = "handleDisconnection", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/listener/PacketListener;onDisconnected(Lnet/minecraft/class_9812;)V"))
+	@Inject(method = "handleDisconnection", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/listener/PacketListener;onDisconnected(Lnet/minecraft/network/DisconnectionInfo;)V"))
 	private void disconnectAddon(CallbackInfo ci) {
 		if (packetListener instanceof NetworkHandlerExtensions extension) {
 			extension.getAddon().handleDisconnect();

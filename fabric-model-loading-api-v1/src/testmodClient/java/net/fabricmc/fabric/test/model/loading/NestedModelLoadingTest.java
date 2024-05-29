@@ -42,7 +42,7 @@ public class NestedModelLoadingTest implements ClientModInitializer {
 	private static final Identifier NESTED_MODEL_3 = id("nested_3");
 	private static final Identifier NESTED_MODEL_4 = id("nested_4");
 	private static final Identifier NESTED_MODEL_5 = id("nested_5");
-	private static final Identifier TARGET_MODEL = Identifier.ofDefaultNamespace("block/stone");
+	private static final Identifier TARGET_MODEL = Identifier.ofVanilla("block/stone");
 
 	@Override
 	public void onInitializeClient() {
