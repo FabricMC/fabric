@@ -156,7 +156,7 @@ public class CommonAttachmentTests {
 		var nbt = new NbtCompound();
 		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(nbt, mockDRM()));
 
-		nbt.put(Identifier.ofDefaultNamespace("test").toString(), new NbtCompound());
+		nbt.put(Identifier.ofVanilla("test").toString(), new NbtCompound());
 		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(nbt, mockDRM()));
 	}
 

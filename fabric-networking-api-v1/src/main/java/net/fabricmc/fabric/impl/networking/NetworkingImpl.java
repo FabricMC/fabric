@@ -30,12 +30,12 @@ public final class NetworkingImpl {
 	/**
 	 * Id of packet used to register supported channels.
 	 */
-	public static final Identifier REGISTER_CHANNEL = Identifier.ofDefaultNamespace("register");
+	public static final Identifier REGISTER_CHANNEL = Identifier.ofVanilla("register");
 
 	/**
 	 * Id of packet used to unregister supported channels.
 	 */
-	public static final Identifier UNREGISTER_CHANNEL = Identifier.ofDefaultNamespace("unregister");
+	public static final Identifier UNREGISTER_CHANNEL = Identifier.ofVanilla("unregister");
 
 	public static boolean isReservedCommonChannel(Identifier channelName) {
 		return channelName.equals(REGISTER_CHANNEL) || channelName.equals(UNREGISTER_CHANNEL);

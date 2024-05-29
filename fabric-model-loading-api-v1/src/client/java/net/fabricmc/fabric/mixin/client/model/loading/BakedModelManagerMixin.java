@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import net.minecraft.class_9824;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.render.model.ModelLoader;
@@ -62,8 +63,8 @@ public class BakedModelManagerMixin implements FabricBakedModelManager {
 			allow = 1)
 	private CompletableFuture<ModelLoader> loadModelPluginData(
 			CompletableFuture<Map<Identifier, JsonUnbakedModel>> self,
-			CompletionStage<Map<Identifier, List<ModelLoader.SourceTrackedData>>> otherFuture,
-			BiFunction<Map<Identifier, JsonUnbakedModel>, Map<Identifier, List<ModelLoader.SourceTrackedData>>, ModelLoader> modelLoaderConstructor,
+			CompletionStage<Map<Identifier, List<class_9824.SourceTrackedData>>> otherFuture,
+			BiFunction<Map<Identifier, JsonUnbakedModel>, Map<Identifier, List<class_9824.SourceTrackedData>>, ModelLoader> modelLoaderConstructor,
 			Executor executor,
 			// reload args
 			ResourceReloader.Synchronizer synchronizer,
@@ -73,7 +74,7 @@ public class BakedModelManagerMixin implements FabricBakedModelManager {
 			Executor prepareExecutor,
 			Executor applyExecutor) {
 		CompletableFuture<List<ModelLoadingPlugin>> pluginsFuture = ModelLoadingPluginManager.preparePlugins(manager, prepareExecutor);
-		CompletableFuture<Pair<Map<Identifier, JsonUnbakedModel>, Map<Identifier, List<ModelLoader.SourceTrackedData>>>> pairFuture = self.thenCombine(otherFuture, Pair::new);
+		CompletableFuture<Pair<Map<Identifier, JsonUnbakedModel>, Map<Identifier, List<class_9824.SourceTrackedData>>>> pairFuture = self.thenCombine(otherFuture, Pair::new);
 		return pairFuture.thenCombineAsync(pluginsFuture, (pair, plugins) -> {
 			ModelLoadingPluginManager.CURRENT_PLUGINS.set(plugins);
 			return modelLoaderConstructor.apply(pair.getLeft(), pair.getRight());

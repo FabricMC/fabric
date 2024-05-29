@@ -99,7 +99,7 @@ public class ModelTestModClient implements ClientModInitializer {
 
 				// All the block state models are top-level...
 				// Use a delegating unbaked model to make sure the identical models only get baked a single time.
-				Identifier wheatStage0Id = Identifier.ofDefaultNamespace("block/wheat_stage0");
+				Identifier wheatStage0Id = Identifier.ofVanilla("block/wheat_stage0");
 
 				UnbakedModel stage0Model = new DelegatingUnbakedModel(wheatStage0Id);
 
@@ -107,7 +107,7 @@ public class ModelTestModClient implements ClientModInitializer {
 					context.setModel(state.with(CropBlock.AGE, age), stage0Model);
 				}
 
-				context.setModel(state.with(CropBlock.AGE, 7), context.getOrLoadModel(Identifier.ofDefaultNamespace("block/wheat_stage7")));
+				context.setModel(state.with(CropBlock.AGE, 7), context.getOrLoadModel(Identifier.ofVanilla("block/wheat_stage7")));
 			});
 		});
 

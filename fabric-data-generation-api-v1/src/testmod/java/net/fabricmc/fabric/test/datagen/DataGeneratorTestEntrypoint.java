@@ -373,7 +373,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							SIMPLE_BLOCK,
 							Text.translatable("advancements.test.root.title"),
 							Text.translatable("advancements.test.root.description"),
-							Identifier.ofDefaultNamespace("textures/gui/advancements/backgrounds/end.png"),
+							Identifier.ofVanilla("textures/gui/advancements/backgrounds/end.png"),
 							AdvancementFrame.TASK,
 							false, false, false)
 					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
@@ -383,7 +383,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							SIMPLE_BLOCK,
 							Text.translatable("advancements.test.root_not_loaded.title"),
 							Text.translatable("advancements.test.root_not_loaded.description"),
-							Identifier.ofDefaultNamespace("textures/gui/advancements/backgrounds/end.png"),
+							Identifier.ofVanilla("textures/gui/advancements/backgrounds/end.png"),
 							AdvancementFrame.TASK,
 							false, false, false)
 					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())

@@ -66,7 +66,7 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 		MatrixStack matrices = context.matrixStack();
 		Vec3d camera = context.camera().getPos();
 		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder buffer = tessellator.method_60827(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
+		BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
 		matrices.push();
 		matrices.translate(-camera.x, -camera.y, -camera.z);
@@ -77,7 +77,7 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 		RenderSystem.defaultBlendFunc();
 
 		WorldRenderer.renderFilledBox(matrices, buffer, 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
-		BufferRenderer.drawWithGlobalProgram(buffer.method_60800());
+		BufferRenderer.drawWithGlobalProgram(buffer.end());
 
 		matrices.pop();
 		RenderSystem.disableBlend();
