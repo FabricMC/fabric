@@ -49,7 +49,15 @@ public abstract class ItemStackMixin implements FabricItemStack {
 	private void hookDamage(ItemStack instance, int amount, ServerWorld serverWorld, ServerPlayerEntity serverPlayerEntity, Consumer<Item> consumer, Operation<Void> original, @Local(argsOnly = true) LivingEntity entity, @Local(argsOnly = true) EquipmentSlot slot) {
 		CustomDamageHandler handler = ((ItemExtensions) getItem()).fabric_getCustomDamageHandler();
 
-		if (handler != null) {
+		/*
+			This is called by creative mode players, post-24w21a.
+			The other damage method (which original.call discards) handles the creative mode check.
+			Since it doesn't make sense to call an event to calculate a to-be-discarded value
+			(and to prevent mods from breaking item stacks in Creative mode),
+			we preserve the pre-24w21a behavior of not calling in creative mode.
+		*/
+
+		if (handler != null && !entity.isInCreativeMode()) {
 			// Track whether an item has been broken by custom handler
 			MutableBoolean mut = new MutableBoolean(false);
 			amount = handler.damage((ItemStack) (Object) this, amount, entity, slot, () -> {

@@ -186,7 +186,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			/* Generate test recipes using all types of custom ingredients for easy testing */
 			// Testing procedure for vanilla and fabric clients:
 			// - Create a new fabric server with the ingredient API.
-			// - Copy the generated recipes to a datapack, for example to world/datapacks/<packname>/data/test/recipes/.
+			// - Copy the generated recipes to a datapack, for example to world/datapacks/<packname>/data/test/recipe/.
 			// - Remember to also include a pack.mcmeta file in world/datapacks/<packname>.
 			// (see https://minecraft.wiki/w/Tutorials/Creating_a_data_pack)
 			// - Start the server and connect to it with a vanilla client.
@@ -466,7 +466,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 	private static class TestPredicateProvider extends FabricCodecDataProvider<LootCondition> {
 		private TestPredicateProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-			super(dataOutput, registriesFuture, DataOutput.OutputType.DATA_PACK, "predicate", LootCondition.CODEC);
+			super(dataOutput, registriesFuture, RegistryKeys.PREDICATE, LootCondition.CODEC);
 		}
 
 		@Override
