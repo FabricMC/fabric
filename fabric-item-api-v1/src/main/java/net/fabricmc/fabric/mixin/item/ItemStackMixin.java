@@ -25,7 +25,10 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
+import net.minecraft.component.ComponentType;
+import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
@@ -71,5 +74,28 @@ public abstract class ItemStackMixin implements FabricItemStack {
 		}
 
 		original.call(instance, amount, serverWorld, serverPlayerEntity, consumer);
+	}
+
+	@Redirect(
+			method = "appendAttributeModifiersTooltip",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/item/ItemStack;getOrDefault(Lnet/minecraft/component/ComponentType;Ljava/lang/Object;)Ljava/lang/Object;"
+			)
+	)
+	public Object appendAttributeModifiersTooltip(ItemStack stack, ComponentType<AttributeModifiersComponent> type, Object fallback) {
+		return getItem().getAttributeModifiers(stack);
+	}
+
+	@Redirect(
+			method = {"applyAttributeModifier", "applyAttributeModifiers"},
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/item/Item;getAttributeModifiers()Lnet/minecraft/component/type/AttributeModifiersComponent;"
+			)
+	)
+	public AttributeModifiersComponent applyAttributeModifiers(Item item) {
+		ItemStack stack = (ItemStack) (Object) this;
+		return item.getAttributeModifiers(stack);
 	}
 }
