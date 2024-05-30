@@ -47,12 +47,12 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 
-import net.fabricmc.fabric.impl.itemgroup.FabricItemGroup;
+import net.fabricmc.fabric.impl.itemgroup.FabricItemGroupImpl;
 
 @Mixin(ItemGroups.class)
 public class ItemGroupsMixin {
 	@Unique
-	private static final int TABS_PER_PAGE = FabricItemGroup.TABS_PER_PAGE;
+	private static final int TABS_PER_PAGE = FabricItemGroupImpl.TABS_PER_PAGE;
 
 	@Inject(method = "collect", at = @At("HEAD"), cancellable = true)
 	private static void deferDuplicateCheck(CallbackInfo ci) {
@@ -86,16 +86,16 @@ public class ItemGroupsMixin {
 
 		for (RegistryEntry.Reference<ItemGroup> reference : sortedItemGroups) {
 			final ItemGroup itemGroup = reference.value();
-			final FabricItemGroup fabricItemGroup = (FabricItemGroup) itemGroup;
+			final FabricItemGroupImpl fabricItemGroup = (FabricItemGroupImpl) itemGroup;
 
 			if (vanillaGroups.contains(reference.registryKey())) {
 				// Vanilla group goes on the first page.
-				fabricItemGroup.setPage(0);
+				fabricItemGroup.fabric_setPage(0);
 				continue;
 			}
 
 			final ItemGroupAccessor itemGroupAccessor = (ItemGroupAccessor) itemGroup;
-			fabricItemGroup.setPage((count / TABS_PER_PAGE) + 1);
+			fabricItemGroup.fabric_setPage((count / TABS_PER_PAGE) + 1);
 			int pageIndex = count % TABS_PER_PAGE;
 			ItemGroup.Row row = pageIndex < (TABS_PER_PAGE / 2) ? ItemGroup.Row.TOP : ItemGroup.Row.BOTTOM;
 			itemGroupAccessor.setRow(row);
@@ -110,9 +110,9 @@ public class ItemGroupsMixin {
 
 		for (RegistryKey<ItemGroup> registryKey : Registries.ITEM_GROUP.getKeys()) {
 			final ItemGroup itemGroup = Registries.ITEM_GROUP.getOrThrow(registryKey);
-			final FabricItemGroup fabricItemGroup = (FabricItemGroup) itemGroup;
+			final FabricItemGroupImpl fabricItemGroup = (FabricItemGroupImpl) itemGroup;
 			final String displayName = itemGroup.getDisplayName().getString();
-			final var position = new ItemGroupPosition(itemGroup.getRow(), itemGroup.getColumn(), fabricItemGroup.getPage());
+			final var position = new ItemGroupPosition(itemGroup.getRow(), itemGroup.getColumn(), fabricItemGroup.fabric_getPage());
 			final String existingName = map.put(position, displayName);
 
 			if (existingName != null) {
