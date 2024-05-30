@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -62,19 +61,6 @@ public interface FabricItem {
 	 */
 	default boolean allowContinuingBlockBreaking(PlayerEntity player, ItemStack oldStack, ItemStack newStack) {
 		return false;
-	}
-
-	/**
-	 * Return the attribute modifiers to apply when this stack is worn in a living entity equipment slot.
-	 * Stack-aware version of {@link Item#getAttributeModifiers()}.
-	 *
-	 * <p>Note that attribute modifiers are only updated when the stack changes, i.e. when {@code ItemStack.areEqual(old, new)} is false.
-	 *
-	 * @param stack the current stack
-	 * @return the attribute modifiers
-	 */
-	default AttributeModifiersComponent getAttributeModifiers(ItemStack stack) {
-		return ((Item) this).getAttributeModifiers();
 	}
 
 	/**
