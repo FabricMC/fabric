@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
@@ -90,13 +91,13 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public void fabric_writeAttachmentsToNbt(NbtCompound nbt) {
-		AttachmentSerializingImpl.serializeAttachmentData(nbt, fabric_dataAttachments);
+	public void fabric_writeAttachmentsToNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
+		AttachmentSerializingImpl.serializeAttachmentData(nbt, wrapperLookup, fabric_dataAttachments);
 	}
 
 	@Override
-	public void fabric_readAttachmentsFromNbt(NbtCompound nbt) {
-		fabric_dataAttachments = AttachmentSerializingImpl.deserializeAttachmentData(nbt);
+	public void fabric_readAttachmentsFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
+		fabric_dataAttachments = AttachmentSerializingImpl.deserializeAttachmentData(nbt, wrapperLookup);
 	}
 
 	@Override

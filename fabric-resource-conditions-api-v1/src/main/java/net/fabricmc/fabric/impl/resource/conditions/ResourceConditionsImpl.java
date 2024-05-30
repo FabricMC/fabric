@@ -17,178 +17,89 @@
 package net.fabricmc.fabric.impl.resource.conditions;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
 
-import com.google.common.base.Preconditions;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.TagManagerLoader;
-import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
 
-import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.loader.api.FabricLoader;
 
-public final class ResourceConditionsImpl {
+public final class ResourceConditionsImpl implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("Fabric Resource Conditions");
+	public static FeatureSet currentFeatures = null;
 
-	// Providers
-
-	public static ConditionJsonProvider array(Identifier id, ConditionJsonProvider... values) {
-		Preconditions.checkArgument(values.length > 0, "Must register at least one value.");
-
-		return new ConditionJsonProvider() {
-			@Override
-			public Identifier getConditionId() {
-				return id;
-			}
-
-			@Override
-			public void writeParameters(JsonObject object) {
-				JsonArray array = new JsonArray();
-
-				for (ConditionJsonProvider provider : values) {
-					array.add(provider.toJson());
-				}
-
-				object.add("values", array);
-			}
-		};
+	@Override
+	public void onInitialize() {
+		ResourceConditions.register(DefaultResourceConditionTypes.TRUE);
+		ResourceConditions.register(DefaultResourceConditionTypes.NOT);
+		ResourceConditions.register(DefaultResourceConditionTypes.AND);
+		ResourceConditions.register(DefaultResourceConditionTypes.OR);
+		ResourceConditions.register(DefaultResourceConditionTypes.ALL_MODS_LOADED);
+		ResourceConditions.register(DefaultResourceConditionTypes.ANY_MODS_LOADED);
+		ResourceConditions.register(DefaultResourceConditionTypes.TAGS_POPULATED);
+		ResourceConditions.register(DefaultResourceConditionTypes.FEATURES_ENABLED);
+		ResourceConditions.register(DefaultResourceConditionTypes.REGISTRY_CONTAINS);
 	}
 
-	public static ConditionJsonProvider mods(Identifier id, String... modIds) {
-		Preconditions.checkArgument(modIds.length > 0, "Must register at least one mod id.");
+	public static boolean applyResourceConditions(JsonObject obj, String dataType, Identifier key, @Nullable RegistryWrapper.WrapperLookup registryLookup) {
+		boolean debugLogEnabled = ResourceConditionsImpl.LOGGER.isDebugEnabled();
 
-		return new ConditionJsonProvider() {
-			@Override
-			public Identifier getConditionId() {
-				return id;
-			}
+		if (obj.has(ResourceConditions.CONDITIONS_KEY)) {
+			DataResult<ResourceCondition> conditions = ResourceCondition.CONDITION_CODEC.parse(JsonOps.INSTANCE, obj.get(ResourceConditions.CONDITIONS_KEY));
 
-			@Override
-			public void writeParameters(JsonObject object) {
-				JsonArray array = new JsonArray();
+			if (conditions.isSuccess()) {
+				boolean matched = conditions.getOrThrow().test(registryLookup);
 
-				for (String modId : modIds) {
-					array.add(modId);
+				if (debugLogEnabled) {
+					String verdict = matched ? "Allowed" : "Rejected";
+					ResourceConditionsImpl.LOGGER.debug("{} resource of type {} with id {}", verdict, dataType, key);
 				}
 
-				object.add("values", array);
+				return matched;
+			} else {
+				ResourceConditionsImpl.LOGGER.error("Failed to parse resource conditions for file of type {} with id {}, skipping: {}", dataType, key, conditions.error().get().message());
 			}
-		};
-	}
+		}
 
-	@SafeVarargs
-	public static <T> ConditionJsonProvider tagsPopulated(Identifier id, boolean includeRegistry, TagKey<T>... tags) {
-		Preconditions.checkArgument(tags.length > 0, "Must register at least one tag.");
-		final RegistryKey<? extends Registry<?>> registryRef = tags[0].registry();
-
-		return new ConditionJsonProvider() {
-			@Override
-			public Identifier getConditionId() {
-				return id;
-			}
-
-			@Override
-			public void writeParameters(JsonObject object) {
-				JsonArray array = new JsonArray();
-
-				for (TagKey<T> tag : tags) {
-					array.add(tag.id().toString());
-				}
-
-				object.add("values", array);
-
-				if (includeRegistry && registryRef != RegistryKeys.ITEM) {
-					// tags[0] is guaranteed to exist.
-					// Skip if this is the default (minecraft:item)
-					object.addProperty("registry", registryRef.getValue().toString());
-				}
-			}
-		};
-	}
-
-	public static ConditionJsonProvider featuresEnabled(Identifier id, final FeatureFlag... features) {
-		final Set<Identifier> ids = new TreeSet<>(FeatureFlags.FEATURE_MANAGER.toId(FeatureFlags.FEATURE_MANAGER.featureSetOf(features)));
-
-		return new ConditionJsonProvider() {
-			@Override
-			public Identifier getConditionId() {
-				return id;
-			}
-
-			@Override
-			public void writeParameters(JsonObject object) {
-				JsonArray array = new JsonArray();
-
-				for (Identifier id : ids) {
-					array.add(id.toString());
-				}
-
-				object.add("features", array);
-			}
-		};
-	}
-
-	public static ConditionJsonProvider registryContains(Identifier id, Identifier registry, Identifier... entries) {
-		Preconditions.checkArgument(entries.length > 0, "Must register at least one entry.");
-
-		return new ConditionJsonProvider() {
-			@Override
-			public Identifier getConditionId() {
-				return id;
-			}
-
-			@Override
-			public void writeParameters(JsonObject object) {
-				JsonArray array = new JsonArray();
-
-				for (Identifier entry : entries) {
-					array.add(entry.toString());
-				}
-
-				object.add("values", array);
-
-				if (!RegistryKeys.ITEM.getValue().equals(registry)) {
-					// Skip if this is the default (minecraft:item)
-					object.addProperty("registry", registry.toString());
-				}
-			}
-		};
+		return true;
 	}
 
 	// Condition implementations
 
-	public static boolean modsLoadedMatch(JsonObject object, boolean and) {
-		JsonArray array = JsonHelper.getArray(object, "values");
+	public static boolean conditionsMet(List<ResourceCondition> conditions, @Nullable RegistryWrapper.WrapperLookup registryLookup, boolean and) {
+		for (ResourceCondition condition : conditions) {
+			if (condition.test(registryLookup) != and) {
+				return !and;
+			}
+		}
 
-		for (JsonElement element : array) {
-			if (element.isJsonPrimitive()) {
-				if (FabricLoader.getInstance().isModLoaded(element.getAsString()) != and) {
-					return !and;
-				}
-			} else {
-				throw new JsonParseException("Invalid mod id entry: " + element);
+		return and;
+	}
+
+	public static boolean modsLoaded(List<String> modIds, boolean and) {
+		for (String modId : modIds) {
+			if (FabricLoader.getInstance().isModLoaded(modId) != and) {
+				return !and;
 			}
 		}
 
@@ -200,108 +111,78 @@ public final class ResourceConditionsImpl {
 	 * The tags are set at the end of the "apply" phase in {@link TagManagerLoader}, and cleared in {@link net.minecraft.server.DataPackContents#refresh}.
 	 * If the resource reload fails, the thread local is not cleared and:
 	 * - the map will remain in memory until the next reload;
-	 * - any call to {@link #tagsPopulatedMatch} will check the tags from the failed reload instead of failing directly.
+	 * - any call to {@link #tagsPopulated} will check the tags from the failed reload instead of failing directly.
 	 * This is probably acceptable.
 	 */
-	public static final ThreadLocal<Map<RegistryKey<?>, Map<Identifier, Collection<RegistryEntry<?>>>>> LOADED_TAGS = new ThreadLocal<>();
+	public static final ThreadLocal<Map<RegistryKey<?>, Set<Identifier>>> LOADED_TAGS = new ThreadLocal<>();
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static void setTags(List<TagManagerLoader.RegistryTags<?>> tags) {
-		Map<RegistryKey<?>, Map<Identifier, Collection<RegistryEntry<?>>>> tagMap = new HashMap<>();
+		Map<RegistryKey<?>, Set<Identifier>> tagMap = new IdentityHashMap<>();
 
 		for (TagManagerLoader.RegistryTags<?> registryTags : tags) {
-			tagMap.put(registryTags.key(), (Map) registryTags.tags());
+			tagMap.put(registryTags.key(), registryTags.tags().keySet());
 		}
 
 		LOADED_TAGS.set(tagMap);
 	}
 
-	public static boolean tagsPopulatedMatch(JsonObject object) {
-		String key = JsonHelper.getString(object, "registry", "minecraft:item");
-		RegistryKey<? extends Registry<?>> registryRef = RegistryKey.ofRegistry(new Identifier(key));
-		return tagsPopulatedMatch(object, registryRef);
-	}
+	// Cannot use registry because tags are not loaded to the registry at this stage yet.
+	public static boolean tagsPopulated(Identifier registryId, List<Identifier> tags) {
+		Map<RegistryKey<?>, Set<Identifier>> tagMap = LOADED_TAGS.get();
 
-	public static boolean tagsPopulatedMatch(JsonObject object, RegistryKey<? extends Registry<?>> registryKey) {
-		JsonArray array = JsonHelper.getArray(object, "values");
-		@Nullable
-		Map<RegistryKey<?>, Map<Identifier, Collection<RegistryEntry<?>>>> allTags = LOADED_TAGS.get();
-
-		if (allTags == null) {
-			LOGGER.warn("Can't retrieve deserialized tags. Failing tags_populated resource condition check.");
+		if (tagMap == null) {
+			LOGGER.warn("Can't retrieve registry {}, failing tags_populated resource condition check", registryId);
 			return false;
 		}
 
-		Map<Identifier, Collection<RegistryEntry<?>>> registryTags = allTags.get(registryKey);
+		Set<Identifier> tagSet = tagMap.get(RegistryKey.ofRegistry(registryId));
 
-		if (registryTags == null) {
-			// No tag for this registry
-			return array.isEmpty();
+		if (tagSet == null) {
+			return tags.isEmpty();
+		} else {
+			return tagSet.containsAll(tags);
 		}
-
-		for (JsonElement element : array) {
-			if (element.isJsonPrimitive()) {
-				Identifier id = new Identifier(element.getAsString());
-				Collection<RegistryEntry<?>> tags = registryTags.get(id);
-
-				if (tags == null || tags.isEmpty()) {
-					return false;
-				}
-			} else {
-				throw new JsonParseException("Invalid tag id entry: " + element);
-			}
-		}
-
-		return true;
 	}
 
-	public static final ThreadLocal<FeatureSet> CURRENT_FEATURES = ThreadLocal.withInitial(() -> FeatureFlags.DEFAULT_ENABLED_FEATURES);
-
-	public static boolean featuresEnabledMatch(JsonObject object) {
-		List<Identifier> featureIds = JsonHelper.getArray(object, "features").asList().stream().map((element) -> new Identifier(element.getAsString())).toList();
-		FeatureSet set = FeatureFlags.FEATURE_MANAGER.featureSetOf(featureIds, (id) -> {
-			throw new JsonParseException("Unknown feature flag: " + id);
+	public static boolean featuresEnabled(Collection<Identifier> features) {
+		MutableBoolean foundUnknown = new MutableBoolean();
+		FeatureSet set = FeatureFlags.FEATURE_MANAGER.featureSetOf(features, (id) -> {
+			LOGGER.info("Found unknown feature {}, treating it as failure", id);
+			foundUnknown.setTrue();
 		});
 
-		return set.isSubsetOf(CURRENT_FEATURES.get());
-	}
-
-	public static final ThreadLocal<DynamicRegistryManager.Immutable> CURRENT_REGISTRIES = new ThreadLocal<>();
-
-	public static boolean registryContainsMatch(JsonObject object) {
-		String key = JsonHelper.getString(object, "registry", "minecraft:item");
-		RegistryKey<? extends Registry<?>> registryRef = RegistryKey.ofRegistry(new Identifier(key));
-		return registryContainsMatch(object, registryRef);
-	}
-
-	private static <E> boolean registryContainsMatch(JsonObject object, RegistryKey<? extends Registry<? extends E>> registryRef) {
-		JsonArray array = JsonHelper.getArray(object, "values");
-		DynamicRegistryManager.Immutable registries = CURRENT_REGISTRIES.get();
-
-		if (registries == null) {
-			LOGGER.warn("Can't retrieve current registries. Failing registry_contains resource condition check.");
+		if (foundUnknown.booleanValue()) {
 			return false;
 		}
 
-		Optional<Registry<E>> registry = registries.getOptional(registryRef);
-
-		if (registry.isEmpty()) {
-			// No such registry
-			return array.isEmpty();
+		if (currentFeatures == null) {
+			LOGGER.warn("Can't retrieve current features, failing features_enabled resource condition check.");
+			return false;
 		}
 
-		for (JsonElement element : array) {
-			if (element.isJsonPrimitive()) {
-				Identifier id = new Identifier(element.getAsString());
+		return set.isSubsetOf(currentFeatures);
+	}
 
-				if (!registry.get().containsId(id)) {
+	public static boolean registryContains(@Nullable RegistryWrapper.WrapperLookup registryLookup, Identifier registryId, List<Identifier> entries) {
+		RegistryKey<? extends Registry<Object>> registryKey = RegistryKey.ofRegistry(registryId);
+
+		if (registryLookup == null) {
+			LOGGER.warn("Can't retrieve registry {}, failing registry_contains resource condition check", registryId);
+			return false;
+		}
+
+		Optional<RegistryWrapper.Impl<Object>> wrapper = registryLookup.getOptionalWrapper(registryKey);
+
+		if (wrapper.isPresent()) {
+			for (Identifier id : entries) {
+				if (wrapper.get().getOptional(RegistryKey.of(registryKey, id)).isEmpty()) {
 					return false;
 				}
-			} else {
-				throw new JsonParseException("Invalid registry entry id: " + element);
 			}
-		}
 
-		return true;
+			return true;
+		} else {
+			return entries.isEmpty();
+		}
 	}
 }

@@ -16,20 +16,10 @@
 
 package net.fabricmc.fabric.test.biome;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.DefaultFeatureConfig;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.PlacedFeature;
-import net.minecraft.world.gen.feature.PlacedFeatures;
-import net.minecraft.world.gen.placementmodifier.BiomePlacementModifier;
-import net.minecraft.world.gen.placementmodifier.SquarePlacementModifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
@@ -41,17 +31,9 @@ public class WorldgenProvider extends FabricDynamicRegistryProvider {
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries, Entries entries) {
-		final RegistryWrapper.Impl<Biome> biomeRegistry = registries.getWrapperOrThrow(RegistryKeys.BIOME);
-
-		entries.addAll(biomeRegistry);
-
-		ConfiguredFeature<?, ?> COMMON_DESERT_WELL = new ConfiguredFeature<>(Feature.DESERT_WELL, DefaultFeatureConfig.INSTANCE);
-
-		RegistryEntry<ConfiguredFeature<?, ?>> featureRef = entries.add(FabricBiomeTest.COMMON_DESERT_WELL, COMMON_DESERT_WELL);
-
-		// The placement config is taken from the vanilla desert well, but no randomness
-		PlacedFeature PLACED_COMMON_DESERT_WELL = new PlacedFeature(featureRef, List.of(SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of()));
-		entries.add(FabricBiomeTest.PLACED_COMMON_DESERT_WELL, PLACED_COMMON_DESERT_WELL);
+		entries.addAll(registries.getWrapperOrThrow(RegistryKeys.BIOME));
+		entries.addAll(registries.getWrapperOrThrow(RegistryKeys.PLACED_FEATURE));
+		entries.addAll(registries.getWrapperOrThrow(RegistryKeys.CONFIGURED_FEATURE));
 	}
 
 	@Override

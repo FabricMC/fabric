@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.common.collect.Maps;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 
@@ -32,14 +33,15 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
-import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 public final class FabricLootTableProviderImpl {
@@ -50,29 +52,32 @@ public final class FabricLootTableProviderImpl {
 			DataWriter writer,
 			FabricLootTableProvider provider,
 			LootContextType lootContextType,
-			FabricDataOutput fabricDataOutput) {
+			FabricDataOutput fabricDataOutput,
+			CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
 		HashMap<Identifier, LootTable> builders = Maps.newHashMap();
-		HashMap<Identifier, ConditionJsonProvider[]> conditionMap = new HashMap<>();
+		HashMap<Identifier, ResourceCondition[]> conditionMap = new HashMap<>();
 
-		provider.accept((identifier, builder) -> {
-			ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(builder);
-			conditionMap.put(identifier, conditions);
+		return registryLookup.thenCompose(lookup -> {
+			provider.accept(lookup, (registryKey, builder) -> {
+				ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(builder);
+				conditionMap.put(registryKey.getValue(), conditions);
 
-			if (builders.put(identifier, builder.type(lootContextType).build()) != null) {
-				throw new IllegalStateException("Duplicate loot table " + identifier);
+				if (builders.put(registryKey.getValue(), builder.type(lootContextType).build()) != null) {
+					throw new IllegalStateException("Duplicate loot table " + registryKey.getValue());
+				}
+			});
+
+			RegistryOps<JsonElement> ops = lookup.getOps(JsonOps.INSTANCE);
+			final List<CompletableFuture<?>> futures = new ArrayList<>();
+
+			for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
+				JsonObject tableJson = (JsonObject) LootTable.CODEC.encodeStart(ops, entry.getValue()).getOrThrow(IllegalStateException::new);
+				FabricDataGenHelper.addConditions(tableJson, conditionMap.remove(entry.getKey()));
+				futures.add(DataProvider.writeToPath(writer, tableJson, getOutputPath(fabricDataOutput, entry.getKey())));
 			}
+
+			return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
 		});
-
-		final List<CompletableFuture<?>> futures = new ArrayList<>();
-
-		for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
-			JsonObject tableJson = (JsonObject) Util.getResult(LootTable.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue()), IllegalStateException::new);
-			ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
-
-			futures.add(DataProvider.writeToPath(writer, tableJson, getOutputPath(fabricDataOutput, entry.getKey())));
-		}
-
-		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
 	}
 
 	private static Path getOutputPath(FabricDataOutput dataOutput, Identifier lootTableId) {

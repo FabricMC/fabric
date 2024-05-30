@@ -6,6 +6,7 @@
     "BootstrapMixin",
     "ChunkSerializerMixin",
     "DebugChunkGeneratorAccessor",
+    "ExperimentalRegistriesValidatorMixin",
     "IdListMixin",
     "MinecraftServerMixin",
     "RegistriesAccessor",
@@ -14,7 +15,6 @@
     "SaveLoadingMixin",
     "SerializableRegistriesMixin",
     "SimpleRegistryMixin",
-    "StructuresToConfiguredStructuresFixMixin",
     "TagManagerLoaderMixin"
   ],
   "injectors": {

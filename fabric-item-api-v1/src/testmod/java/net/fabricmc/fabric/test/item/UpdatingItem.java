@@ -16,25 +16,21 @@
 
 package net.fabricmc.fabric.test.item;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-
 import net.minecraft.block.BlockState;
+import net.minecraft.component.type.AttributeModifierSlot;
+import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 public class UpdatingItem extends Item {
 	private static final EntityAttributeModifier PLUS_FIVE = new EntityAttributeModifier(
-			ATTACK_DAMAGE_MODIFIER_ID, "updating item", 5, EntityAttributeModifier.Operation.ADDITION);
+			ATTACK_DAMAGE_MODIFIER_ID, "updating item", 5, EntityAttributeModifier.Operation.ADD_VALUE);
 
 	private final boolean allowUpdateAnimation;
 
@@ -46,13 +42,12 @@ public class UpdatingItem extends Item {
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
 		if (!world.isClient) {
-			NbtCompound tag = stack.getOrCreateNbt();
-			tag.putLong("ticks", tag.getLong("ticks") + 1);
+			stack.set(ItemUpdateAnimationTest.TICKS, Math.max(0, stack.getOrDefault(ItemUpdateAnimationTest.TICKS, 0) + 1));
 		}
 	}
 
 	@Override
-	public boolean allowNbtUpdateAnimation(PlayerEntity player, Hand hand, ItemStack originalStack, ItemStack updatedStack) {
+	public boolean allowComponentsUpdateAnimation(PlayerEntity player, Hand hand, ItemStack originalStack, ItemStack updatedStack) {
 		return allowUpdateAnimation;
 	}
 
@@ -63,27 +58,19 @@ public class UpdatingItem extends Item {
 
 	// True for 15 seconds every 30 seconds
 	private boolean isEnabled(ItemStack stack) {
-		return !stack.hasNbt() || stack.getNbt().getLong("ticks") % 600 < 300;
+		return !stack.contains(ItemUpdateAnimationTest.TICKS) || stack.getOrDefault(ItemUpdateAnimationTest.TICKS, 0) % 600 < 300;
 	}
 
 	@Override
-	public Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
+	public AttributeModifiersComponent getAttributeModifiers(ItemStack stack) {
 		// Give + 5 attack damage for 15 seconds every 30 seconds.
-		if (slot == EquipmentSlot.MAINHAND && isEnabled(stack)) {
-			return ImmutableMultimap.of(EntityAttributes.GENERIC_ATTACK_DAMAGE, PLUS_FIVE);
-		} else {
-			return ImmutableMultimap.of();
-		}
+		return AttributeModifiersComponent.builder()
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, PLUS_FIVE, AttributeModifierSlot.MAINHAND)
+				.build();
 	}
 
 	@Override
-	public boolean isSuitableFor(ItemStack stack, BlockState state) {
-		// Suitable for everything for 15 seconds every 30 seconds.
-		return isEnabled(stack);
-	}
-
-	@Override
-	public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
-		return isEnabled(stack) ? 20 : super.getMiningSpeedMultiplier(stack, state);
+	public float getMiningSpeed(ItemStack stack, BlockState state) {
+		return isEnabled(stack) ? 20 : super.getMiningSpeed(stack, state);
 	}
 }

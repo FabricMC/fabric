@@ -119,6 +119,10 @@ public class VanillaStorageTests {
 		context.setBlockState(comparatorPos, Blocks.COMPARATOR.getDefaultState().with(ComparatorBlock.FACING, Direction.WEST));
 
 		try (Transaction transaction = Transaction.openOuter()) {
+			if (world.getBlockTickScheduler().isQueued(context.getAbsolutePos(comparatorPos), Blocks.COMPARATOR)) {
+				throw new GameTestException("Comparator should not have a tick scheduled.");
+			}
+
 			storage.insert(variant, 1000000, transaction);
 
 			// uncommitted insert should not schedule an update
@@ -282,7 +286,7 @@ public class VanillaStorageTests {
 	/**
 	 * Regression test for <a href="https://github.com/FabricMC/fabric/issues/2810">double chest wrapper only updating modified halves</a>.
 	 */
-	@GameTest(templateName = "fabric-transfer-api-v1-testmod:double_chest_comparators")
+	@GameTest(templateName = "fabric-transfer-api-v1-testmod:double_chest_comparators", skyAccess = true)
 	public void testDoubleChestComparator(TestContext context) {
 		BlockPos chestPos = new BlockPos(2, 2, 2);
 		Storage<ItemVariant> storage = ItemStorage.SIDED.find(context.getWorld(), context.getAbsolutePos(chestPos), Direction.UP);

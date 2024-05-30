@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.screenhandler.v1;
 
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -26,12 +25,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
  *
  * @see ExtendedScreenHandlerType usage examples
  */
-public interface ExtendedScreenHandlerFactory extends NamedScreenHandlerFactory {
+public interface ExtendedScreenHandlerFactory<D> extends NamedScreenHandlerFactory {
 	/**
 	 * Writes additional server -&gt; client screen opening data to the buffer.
 	 *
 	 * @param player the player that is opening the screen
-	 * @param buf    the packet buffer
+	 * @return the screen opening data
 	 */
-	void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf);
+	D getScreenOpeningData(ServerPlayerEntity player);
 }

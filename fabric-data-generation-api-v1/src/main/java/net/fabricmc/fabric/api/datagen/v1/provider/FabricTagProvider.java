@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.data.server.tag.TagProvider;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
@@ -46,7 +47,6 @@ import net.minecraft.registry.tag.TagBuilder;
 import net.minecraft.registry.tag.TagEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.event.GameEvent;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -68,7 +68,6 @@ import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;
  * @see ItemTagProvider
  * @see FluidTagProvider
  * @see EntityTypeTagProvider
- * @see GameEventTagProvider
  */
 public abstract class FabricTagProvider<T> extends TagProvider<T> {
 	/**
@@ -86,7 +85,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 	/**
 	 * Implement this method and then use {@link FabricTagProvider#getOrCreateTagBuilder} to get and register new tag builders.
 	 */
-	protected abstract void configure(RegistryWrapper.WrapperLookup arg);
+	protected abstract void configure(RegistryWrapper.WrapperLookup wrapperLookup);
 
 	/**
 	 * Override to enable adding objects to the tag builder directly.
@@ -127,6 +126,20 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 
 		@Override
 		protected RegistryKey<Block> reverseLookup(Block element) {
+			return element.getRegistryEntry().registryKey();
+		}
+	}
+
+	/**
+	 * Extend this class to create {@link BlockEntityType} tags in the "/block_entity_type" tag directory.
+	 */
+	public abstract static class BlockEntityTypeTagProvider extends FabricTagProvider<BlockEntityType<?>> {
+		public BlockEntityTypeTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
+			super(output, RegistryKeys.BLOCK_ENTITY_TYPE, completableFuture);
+		}
+
+		@Override
+		protected RegistryKey<BlockEntityType<?>> reverseLookup(BlockEntityType<?> element) {
 			return element.getRegistryEntry().registryKey();
 		}
 	}
@@ -217,20 +230,6 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 
 		@Override
 		protected RegistryKey<EntityType<?>> reverseLookup(EntityType<?> element) {
-			return element.getRegistryEntry().registryKey();
-		}
-	}
-
-	/**
-	 * Extend this class to create {@link GameEvent} tags in the "/game_events" tag directory.
-	 */
-	public abstract static class GameEventTagProvider extends FabricTagProvider<GameEvent> {
-		public GameEventTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-			super(output, RegistryKeys.GAME_EVENT, completableFuture);
-		}
-
-		@Override
-		protected RegistryKey<GameEvent> reverseLookup(GameEvent element) {
 			return element.getRegistryEntry().registryKey();
 		}
 	}

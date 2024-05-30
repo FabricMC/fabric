@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.datagen;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -27,7 +28,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.ArrayUtils;
@@ -42,12 +45,15 @@ import net.minecraft.registry.Registerable;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryBuilder;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryLoader;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
@@ -172,7 +178,7 @@ public final class FabricDataGenHelper {
 			BuilderData(RegistryKey key) {
 				this.key = key;
 				this.bootstrapFunctions = new ArrayList<>();
-				this.lifecycle = null;
+				this.lifecycle = Lifecycle.stable();
 			}
 
 			void with(RegistryBuilder.RegistryInfo<?> registryInfo) {
@@ -192,6 +198,11 @@ public final class FabricDataGenHelper {
 		}
 
 		Map<RegistryKey<?>, BuilderData> builderDataMap = new HashMap<>();
+
+		// Ensure all dynamic registries are present.
+		for (RegistryLoader.Entry<?> key : DynamicRegistries.getDynamicRegistries()) {
+			builderDataMap.computeIfAbsent(key.key(), BuilderData::new);
+		}
 
 		for (RegistryBuilder builder : builders) {
 			for (RegistryBuilder.RegistryInfo<?> info : builder.registries) {
@@ -215,14 +226,31 @@ public final class FabricDataGenHelper {
 	/**
 	 * Used to keep track of conditions associated to generated objects.
 	 */
-	private static final Map<Object, ConditionJsonProvider[]> CONDITIONS_MAP = new IdentityHashMap<>();
+	private static final Map<Object, ResourceCondition[]> CONDITIONS_MAP = new IdentityHashMap<>();
 
-	public static void addConditions(Object object, ConditionJsonProvider[] conditions) {
+	public static void addConditions(Object object, ResourceCondition[] conditions) {
 		CONDITIONS_MAP.merge(object, conditions, ArrayUtils::addAll);
 	}
 
 	@Nullable
-	public static ConditionJsonProvider[] consumeConditions(Object object) {
+	public static ResourceCondition[] consumeConditions(Object object) {
 		return CONDITIONS_MAP.remove(object);
+	}
+
+	/**
+	 * Adds {@code conditions} to {@code baseObject}.
+	 * @param baseObject the base JSON object to which the conditions are inserted
+	 * @param conditions the conditions to insert
+	 * @throws IllegalArgumentException if the object already has conditions
+	 */
+	public static void addConditions(JsonObject baseObject, ResourceCondition... conditions) {
+		if (baseObject.has(ResourceConditions.CONDITIONS_KEY)) {
+			throw new IllegalArgumentException("Object already has a condition entry: " + baseObject);
+		} else if (conditions == null || conditions.length == 0) {
+			// Datagen might pass null conditions.
+			return;
+		}
+
+		baseObject.add(ResourceConditions.CONDITIONS_KEY, ResourceCondition.LIST_CODEC.encodeStart(JsonOps.INSTANCE, Arrays.asList(conditions)).getOrThrow());
 	}
 }

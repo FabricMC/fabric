@@ -30,7 +30,7 @@ import net.fabricmc.loader.api.FabricLoader;
 public class BuiltinResourcePackTestMod implements ModInitializer {
 	public static final String MODID = "fabric-resource-loader-v0-testmod";
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BuiltinResourcePackTestMod.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(BuiltinResourcePackTestMod.class);
 
 	@Override
 	public void onInitialize() {

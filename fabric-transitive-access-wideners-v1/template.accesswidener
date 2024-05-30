@@ -35,16 +35,11 @@ transitive-accessible class net/minecraft/village/TradeOffers$SellMapFactory
 transitive-accessible class net/minecraft/village/TradeOffers$SellDyedArmorFactory
 
 # Registering custom entity spawn restrictions
-transitive-accessible method net/minecraft/entity/SpawnRestriction register (Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/SpawnRestriction$Location;Lnet/minecraft/world/Heightmap$Type;Lnet/minecraft/entity/SpawnRestriction$SpawnPredicate;)V
+transitive-accessible method net/minecraft/entity/SpawnRestriction register (Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/SpawnLocation;Lnet/minecraft/world/Heightmap$Type;Lnet/minecraft/entity/SpawnRestriction$SpawnPredicate;)V
 
 # Item usage context constructors
 transitive-accessible method net/minecraft/item/ItemUsageContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
 transitive-accessible method net/minecraft/item/ItemPlacementContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
-
-# Registering custom brewing recipes
-transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerItemRecipe (Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;)V
-transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionType (Lnet/minecraft/item/Item;)V
-transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionRecipe (Lnet/minecraft/potion/Potion;Lnet/minecraft/item/Item;Lnet/minecraft/potion/Potion;)V
 
 # Registering custom scoreboard criteria
 transitive-accessible method net/minecraft/scoreboard/ScoreboardCriterion create (Ljava/lang/String;ZLnet/minecraft/scoreboard/ScoreboardCriterion$RenderType;)Lnet/minecraft/scoreboard/ScoreboardCriterion;
@@ -97,7 +92,7 @@ transitive-accessible method net/minecraft/sound/SoundEvent of (Lnet/minecraft/u
 transitive-accessible method net/minecraft/sound/SoundEvent of (Lnet/minecraft/util/Identifier;)Lnet/minecraft/sound/SoundEvent;
 
 # Creating BlockStateProviderTypes
-transitive-accessible method net/minecraft/world/gen/stateprovider/BlockStateProviderType <init> (Lcom/mojang/serialization/Codec;)V
+transitive-accessible method net/minecraft/world/gen/stateprovider/BlockStateProviderType <init> (Lcom/mojang/serialization/MapCodec;)V
 
 # Creating custom biomes
 transitive-accessible method net/minecraft/world/biome/OverworldBiomeCreator getSkyColor (F)I
@@ -106,10 +101,10 @@ transitive-accessible method net/minecraft/world/biome/OverworldBiomeCreator get
 transitive-accessible field net/minecraft/structure/processor/StructureProcessorLists EMPTY Lnet/minecraft/registry/RegistryKey;
 
 # Creating custom trees
-transitive-accessible method net/minecraft/world/gen/foliage/FoliagePlacerType <init> (Lcom/mojang/serialization/Codec;)V
-transitive-accessible method net/minecraft/world/gen/treedecorator/TreeDecoratorType <init> (Lcom/mojang/serialization/Codec;)V
-transitive-accessible method net/minecraft/world/gen/trunk/TrunkPlacerType <init> (Lcom/mojang/serialization/Codec;)V
-transitive-accessible method net/minecraft/world/gen/root/RootPlacerType <init> (Lcom/mojang/serialization/Codec;)V
+transitive-accessible method net/minecraft/world/gen/foliage/FoliagePlacerType <init> (Lcom/mojang/serialization/MapCodec;)V
+transitive-accessible method net/minecraft/world/gen/treedecorator/TreeDecoratorType <init> (Lcom/mojang/serialization/MapCodec;)V
+transitive-accessible method net/minecraft/world/gen/trunk/TrunkPlacerType <init> (Lcom/mojang/serialization/MapCodec;)V
+transitive-accessible method net/minecraft/world/gen/root/RootPlacerType <init> (Lcom/mojang/serialization/MapCodec;)V
 
 # Working with custom damage sources
 transitive-accessible field net/minecraft/entity/damage/DamageSources registry Lnet/minecraft/registry/Registry;

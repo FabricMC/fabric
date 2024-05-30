@@ -9,7 +9,8 @@
     "KeyedResourceReloadListenerClientMixin",
     "ResourcePackOrganizerMixin",
     "VanillaResourcePackProviderMixin",
-    "GameOptionsWriteVisitorMixin"
+    "GameOptionsWriteVisitorMixin",
+    "ClientDataPackManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

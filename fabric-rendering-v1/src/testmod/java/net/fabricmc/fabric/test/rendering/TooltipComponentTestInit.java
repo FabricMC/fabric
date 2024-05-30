@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.rendering;
 
+import java.util.EnumMap;
+import java.util.List;
 import java.util.Optional;
 
 import net.minecraft.client.item.TooltipData;
@@ -27,15 +29,17 @@ import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 import net.fabricmc.api.ModInitializer;
 
 public class TooltipComponentTestInit implements ModInitializer {
 	public static Item CUSTOM_TOOLTIP_ITEM = new CustomTooltipItem();
-	public static Item CUSTOM_ARMOR_ITEM = new ArmorItem(TestArmorMaterial.INSTANCE, ArmorItem.Type.CHESTPLATE, new Item.Settings());
+	public static RegistryEntry<ArmorMaterial> TEST_ARMOR_MATERIAL = Registry.registerReference(Registries.ARMOR_MATERIAL, new Identifier("fabric-rendering-v1-testmod", "test_material"), createTestArmorMaterial());
+	public static Item CUSTOM_ARMOR_ITEM = new ArmorItem(TEST_ARMOR_MATERIAL, ArmorItem.Type.CHESTPLATE, new Item.Settings());
 
 	@Override
 	public void onInitialize() {
@@ -57,50 +61,20 @@ public class TooltipComponentTestInit implements ModInitializer {
 	public record Data(String string) implements TooltipData {
 	}
 
-	public static final class TestArmorMaterial implements ArmorMaterial {
-		public static final TestArmorMaterial INSTANCE = new TestArmorMaterial();
-
-		private TestArmorMaterial() {
-		}
-
-		@Override
-		public int getDurability(ArmorItem.Type type) {
-			return 0;
-		}
-
-		@Override
-		public int getProtection(ArmorItem.Type type) {
-			return 0;
-		}
-
-		@Override
-		public int getEnchantability() {
-			return 0;
-		}
-
-		@Override
-		public SoundEvent getEquipSound() {
-			return SoundEvents.ITEM_ARMOR_EQUIP_LEATHER;
-		}
-
-		@Override
-		public Ingredient getRepairIngredient() {
-			return Ingredient.ofItems(Items.LEATHER);
-		}
-
-		@Override
-		public String getName() {
-			return "fabric-rendering-v1-testmod:test";
-		}
-
-		@Override
-		public float getToughness() {
-			return 0;
-		}
-
-		@Override
-		public float getKnockbackResistance() {
-			return 0;
-		}
+	private static ArmorMaterial createTestArmorMaterial() {
+		return new ArmorMaterial(Util.make(new EnumMap<>(ArmorItem.Type.class), (map) -> {
+			map.put(ArmorItem.Type.BOOTS, 1);
+			map.put(ArmorItem.Type.LEGGINGS, 2);
+			map.put(ArmorItem.Type.CHESTPLATE, 3);
+			map.put(ArmorItem.Type.HELMET, 1);
+			map.put(ArmorItem.Type.BODY, 3);
+		}),
+			0,
+			SoundEvents.ITEM_ARMOR_EQUIP_LEATHER,
+				() -> Ingredient.ofItems(Items.LEATHER),
+			List.of(new ArmorMaterial.Layer(new Identifier("fabric-rendering-v1-testmod", "test_material"))),
+			0,
+			0
+		);
 	}
 }

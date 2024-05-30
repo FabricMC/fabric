@@ -33,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackInfo;
+import net.minecraft.resource.ResourcePackPosition;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
@@ -112,18 +114,30 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 			// Add the built-in pack only if namespaces for the specified resource type are present.
 			if (!pack.getNamespaces(resourceType).isEmpty()) {
 				// Make the resource pack profile for built-in pack, should never be always enabled.
-				ResourcePackProfile profile = ResourcePackProfile.create(entry.getRight().getName(), entry.getLeft(), pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED, new ResourcePackProfile.PackFactory() {
+				ResourcePackInfo info = new ResourcePackInfo(
+						entry.getRight().getId(),
+						entry.getLeft(),
+						new BuiltinModResourcePackSource(pack.getFabricModMetadata().getName()),
+						entry.getRight().getKnownPackInfo()
+				);
+				ResourcePackPosition info2 = new ResourcePackPosition(
+						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,
+						ResourcePackProfile.InsertionPosition.TOP,
+						false
+				);
+
+				ResourcePackProfile profile = ResourcePackProfile.create(info, new ResourcePackProfile.PackFactory() {
 					@Override
-					public ResourcePack open(String name) {
+					public ResourcePack open(ResourcePackInfo var1) {
 						return entry.getRight();
 					}
 
 					@Override
-					public ResourcePack openWithOverlays(String string, ResourcePackProfile.Metadata metadata) {
+					public ResourcePack openWithOverlays(ResourcePackInfo var1, ResourcePackProfile.Metadata metadata) {
 						// Don't support overlays in builtin res packs.
 						return entry.getRight();
 					}
-				}, resourceType, ResourcePackProfile.InsertionPosition.TOP, new BuiltinModResourcePackSource(pack.getFabricModMetadata().getName()));
+				}, resourceType, info2);
 				consumer.accept(profile);
 			}
 		}

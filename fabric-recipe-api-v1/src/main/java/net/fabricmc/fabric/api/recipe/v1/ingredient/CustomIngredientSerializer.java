@@ -16,10 +16,11 @@
 
 package net.fabricmc.fabric.api.recipe.v1.ingredient;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 
@@ -63,15 +64,12 @@ public interface CustomIngredientSerializer<T extends CustomIngredient> {
 	 * @see Ingredient#ALLOW_EMPTY_CODEC
 	 * @see Ingredient#DISALLOW_EMPTY_CODEC
 	 */
-	Codec<T> getCodec(boolean allowEmpty);
+	MapCodec<T> getCodec(boolean allowEmpty);
 
 	/**
-	 * Deserializes the custom ingredient from a packet buffer.
+	 * {@return the packet codec for serializing this ingredient}.
+	 *
+	 * @see Ingredient#PACKET_CODEC
 	 */
-	T read(PacketByteBuf buf);
-
-	/**
-	 * Serializes the custom ingredient to a packet buffer.
-	 */
-	void write(PacketByteBuf buf, T ingredient);
+	PacketCodec<RegistryByteBuf, T> getPacketCodec();
 }

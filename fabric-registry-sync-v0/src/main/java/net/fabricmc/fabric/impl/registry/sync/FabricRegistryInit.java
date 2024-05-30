@@ -17,22 +17,24 @@
 package net.fabricmc.fabric.impl.registry.sync;
 
 import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
 
 public class FabricRegistryInit implements ModInitializer {
-	public static final Identifier SYNC_COMPLETE_ID = new Identifier("fabric", "registry/sync/complete");
-
 	@Override
 	public void onInitialize() {
+		PayloadTypeRegistry.configurationC2S().register(SyncCompletePayload.ID, SyncCompletePayload.CODEC);
+		PayloadTypeRegistry.configurationS2C().register(DirectRegistryPacketHandler.Payload.ID, DirectRegistryPacketHandler.Payload.CODEC);
+
 		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register(RegistrySyncManager::configureClient);
-		ServerConfigurationNetworking.registerGlobalReceiver(SYNC_COMPLETE_ID, (server, handler, buf, responseSender) -> {
-			handler.completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
+		ServerConfigurationNetworking.registerGlobalReceiver(SyncCompletePayload.ID, (payload, context) -> {
+			context.networkHandler().completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
 		});
 
 		// Synced in PlaySoundS2CPacket.
@@ -63,8 +65,9 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(Registries.ITEM)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Saved and synced using string ID.
-		RegistryAttributeHolder.get(Registries.POTION);
+		// Synced via PacketCodecs.registry
+		RegistryAttributeHolder.get(Registries.POTION)
+				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Doesnt seem to be accessed apart from registering?
 		RegistryAttributeHolder.get(Registries.CARVER);
@@ -102,8 +105,9 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(Registries.PAINTING_VARIANT)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Doesnt seem to be synced or saved, STAT_TYPE seems to handle the syncing.
-		RegistryAttributeHolder.get(Registries.CUSTOM_STAT);
+		// Synced via PacketCodecs.registry
+		RegistryAttributeHolder.get(Registries.CUSTOM_STAT)
+				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registries.CHUNK_STATUS);
@@ -149,10 +153,12 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(Registries.RECIPE_TYPE);
 
 		// Synced by id
-		RegistryAttributeHolder.get(Registries.RECIPE_SERIALIZER);
+		RegistryAttributeHolder.get(Registries.RECIPE_SERIALIZER)
+				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Synced and saved by id
-		RegistryAttributeHolder.get(Registries.ATTRIBUTE);
+		// Synced by rawID in 24w03a+
+		RegistryAttributeHolder.get(Registries.ATTRIBUTE)
+				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in StatisticsS2CPacket
 		RegistryAttributeHolder.get(Registries.STAT_TYPE)
@@ -192,6 +198,26 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Synced in TagManager::toPacket/fromPacket -> TagGroup::serialize/deserialize
 		RegistryAttributeHolder.get(Registries.GAME_EVENT)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Synced by rawID in its serialization code.
+		RegistryAttributeHolder.get(Registries.NUMBER_FORMAT_TYPE)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Synced by rawID.
+		RegistryAttributeHolder.get(Registries.POSITION_SOURCE_TYPE)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Synced by rawID.
+		RegistryAttributeHolder.get(Registries.DATA_COMPONENT_TYPE)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Synced by rawID.
+		RegistryAttributeHolder.get(Registries.MAP_DECORATION_TYPE)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Synced via PacketCodecs.registry
+		RegistryAttributeHolder.get(Registries.ARMOR_MATERIAL)
 				.addAttribute(RegistryAttribute.SYNCED);
 	}
 }

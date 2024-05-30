@@ -55,3 +55,7 @@ accessible field net/minecraft/world/biome/GenerationSettings flowerFeatures Lja
 mutable field net/minecraft/world/biome/GenerationSettings flowerFeatures Ljava/util/function/Supplier;
 accessible field net/minecraft/world/biome/GenerationSettings allowedFeatures Ljava/util/function/Supplier;
 mutable field net/minecraft/world/biome/GenerationSettings allowedFeatures Ljava/util/function/Supplier;
+
+# ChunkGenerator
+accessible field net/minecraft/world/gen/chunk/ChunkGenerator indexedFeaturesListSupplier Ljava/util/function/Supplier;
+mutable field net/minecraft/world/gen/chunk/ChunkGenerator indexedFeaturesListSupplier Ljava/util/function/Supplier;

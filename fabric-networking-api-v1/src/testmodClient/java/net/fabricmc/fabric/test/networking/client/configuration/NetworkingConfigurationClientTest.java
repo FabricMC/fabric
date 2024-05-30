@@ -23,11 +23,11 @@ import net.fabricmc.fabric.test.networking.configuration.NetworkingConfiguration
 public class NetworkingConfigurationClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ClientConfigurationNetworking.registerGlobalReceiver(NetworkingConfigurationTest.ConfigurationPacket.PACKET_TYPE, (packet, responseSender) -> {
+		ClientConfigurationNetworking.registerGlobalReceiver(NetworkingConfigurationTest.ConfigurationPacket.ID, (packet, context) -> {
 			// Handle stuff here
 
 			// Respond back to the server that the task is complete
-			responseSender.sendPacket(new NetworkingConfigurationTest.ConfigurationCompletePacket());
+			context.responseSender().sendPacket(NetworkingConfigurationTest.ConfigurationCompletePacket.INSTANCE);
 		});
 	}
 }

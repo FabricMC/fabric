@@ -21,6 +21,7 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -54,11 +55,11 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default void fabric_writeAttachmentsToNbt(NbtCompound nbt) {
+	default void fabric_writeAttachmentsToNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default void fabric_readAttachmentsFromNbt(NbtCompound nbt) {
+	default void fabric_readAttachmentsFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 

@@ -4,8 +4,8 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AttachmentTargetsMixin",
+    "BannerBlockEntityMixin",
     "BlockEntityMixin",
-    "BlockEntityUpdateS2CPacketMixin",
     "ChunkSerializerMixin",
     "EntityMixin",
     "ServerWorldMixin",

@@ -1,0 +1,12 @@
+{
+  "values": [
+    "minecraft:dark_forest",
+    "minecraft:old_growth_birch_forest",
+    "minecraft:old_growth_spruce_taiga",
+    "minecraft:jungle",
+    {
+      "id": "#c:vegetation_dense",
+      "required": false
+    }
+  ]
+}

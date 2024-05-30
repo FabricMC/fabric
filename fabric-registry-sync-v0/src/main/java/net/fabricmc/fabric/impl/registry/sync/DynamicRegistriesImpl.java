@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.registry.sync;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -52,7 +51,7 @@ public final class DynamicRegistriesImpl {
 		return List.copyOf(DYNAMIC_REGISTRIES);
 	}
 
-	public static <T> void register(RegistryKey<? extends Registry<T>> key, Codec<T> codec) {
+	public static <T> RegistryLoader.Entry<T> register(RegistryKey<? extends Registry<T>> key, Codec<T> codec) {
 		Objects.requireNonNull(key, "Registry key cannot be null");
 		Objects.requireNonNull(codec, "Codec cannot be null");
 
@@ -63,22 +62,29 @@ public final class DynamicRegistriesImpl {
 		var entry = new RegistryLoader.Entry<>(key, codec);
 		DYNAMIC_REGISTRIES.add(entry);
 		FABRIC_DYNAMIC_REGISTRY_KEYS.add(key);
+		return entry;
 	}
 
-	public static <T> void addSyncedRegistry(RegistryKey<? extends Registry<T>> registryKey, Codec<T> networkCodec, DynamicRegistries.SyncOption... options) {
-		Objects.requireNonNull(registryKey, "Registry key cannot be null");
+	public static <T> void addSyncedRegistry(RegistryKey<? extends Registry<T>> key, Codec<T> networkCodec, DynamicRegistries.SyncOption... options) {
+		Objects.requireNonNull(key, "Registry key cannot be null");
 		Objects.requireNonNull(networkCodec, "Network codec cannot be null");
 		Objects.requireNonNull(options, "Options cannot be null");
 
-		if (!(SerializableRegistries.REGISTRIES instanceof HashMap<?, ?>)) {
-			SerializableRegistries.REGISTRIES = new HashMap<>(SerializableRegistries.REGISTRIES);
+		if (!(RegistryLoader.SYNCED_REGISTRIES instanceof ArrayList<RegistryLoader.Entry<?>>)) {
+			RegistryLoader.SYNCED_REGISTRIES = new ArrayList<>(RegistryLoader.SYNCED_REGISTRIES);
 		}
 
-		SerializableRegistries.REGISTRIES.put(registryKey, new SerializableRegistries.Info<>(registryKey, networkCodec));
+		RegistryLoader.SYNCED_REGISTRIES.add(new RegistryLoader.Entry<>(key, networkCodec));
+
+		if (!(SerializableRegistries.SYNCED_REGISTRIES instanceof HashSet<RegistryKey<? extends Registry<?>>>)) {
+			SerializableRegistries.SYNCED_REGISTRIES = new HashSet<>(SerializableRegistries.SYNCED_REGISTRIES);
+		}
+
+		SerializableRegistries.SYNCED_REGISTRIES.add(key);
 
 		for (DynamicRegistries.SyncOption option : options) {
 			if (option == DynamicRegistries.SyncOption.SKIP_WHEN_EMPTY) {
-				SKIP_EMPTY_SYNC_REGISTRIES.add(registryKey);
+				SKIP_EMPTY_SYNC_REGISTRIES.add(key);
 			}
 		}
 	}

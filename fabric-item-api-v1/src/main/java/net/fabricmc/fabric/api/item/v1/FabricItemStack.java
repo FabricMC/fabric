@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.item.FoodComponent;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import net.fabricmc.fabric.api.util.TriState;
 
 /*
  * Fabric-provided extensions for {@link ItemStack}.
@@ -41,12 +41,22 @@ public interface FabricItemStack {
 	}
 
 	/**
-	 * Stack-aware version of {@link Item#getFoodComponent()}.
-	 * See {@link FabricItem#getFoodComponent(ItemStack)} for a more in depth description.
+	 * Determines whether this {@link ItemStack} can be enchanted with the given {@link Enchantment}.
 	 *
-	 * @return this item stack's {@link FoodComponent}, or {@code null} if none was set
+	 * <p>When checking whether an enchantment can be applied to an {@link ItemStack}, use this method instead of
+	 * {@link Enchantment#isAcceptableItem(ItemStack)}</p>
+	 *
+	 * @param enchantment the enchantment to check
+	 * @param context the context in which the enchantment is being checked
+	 * @return whether the enchantment is allowed to apply to the stack
+	 * @see FabricItem#canBeEnchantedWith(ItemStack, Enchantment, EnchantingContext)
 	 */
-	default @Nullable FoodComponent getFoodComponent() {
-		return ((ItemStack) this).getItem().getFoodComponent(((ItemStack) this));
+	default boolean canBeEnchantedWith(Enchantment enchantment, EnchantingContext context) {
+		TriState result = EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
+				enchantment,
+				(ItemStack) this,
+				context
+		);
+		return result.orElseGet(() -> ((ItemStack) this).getItem().canBeEnchantedWith((ItemStack) this, enchantment, context));
 	}
 }

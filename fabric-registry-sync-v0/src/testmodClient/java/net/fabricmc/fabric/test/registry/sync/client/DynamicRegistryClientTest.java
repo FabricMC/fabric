@@ -68,10 +68,9 @@ public final class DynamicRegistryClientTest implements ClientModInitializer {
 				didNotReceive(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY, SYNCED_ID);
 			}
 
-			// The client server check is needed since the registries are passed through in singleplayer.
-			// The network codec flag would always be false in those cases.
-			if (client.getServer() == null && !synced2.usesNetworkCodec()) {
-				throw new AssertionError("Entries in " + TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY + " should use network codec");
+			// In 24w04a, dynamic registries are always serialized and sent even in singleplayer.
+			if (!synced2.usesNetworkCodec()) {
+				LOGGER.error("Entries in " + TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY + " should use network codec");
 			}
 
 			// TODO 1.20.2
@@ -83,8 +82,8 @@ public final class DynamicRegistryClientTest implements ClientModInitializer {
 			//	throw new AssertionError("Did not match up synced nested entry to the other synced value");
 			//}
 
-			// If the registries weren't passed through in SP, check that the empty registry was skipped.
-			if (client.getServer() == null && handler.getRegistryManager().getOptional(TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY).isPresent()) {
+			// See ClientRegistriesDynamicRegistriesMixin
+			if (handler.getRegistryManager().getOptional(TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY).isPresent()) {
 				throw new AssertionError("Received empty registry that should have been skipped");
 			}
 

@@ -54,7 +54,7 @@ public class WeightedBakedModelMixin implements FabricBakedModel {
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void onInit(List<Weighted.Present<BakedModel>> models, CallbackInfo cb) {
 		for (int i = 0; i < models.size(); i++) {
-			if (!models.get(i).getData().isVanillaAdapter()) {
+			if (!models.get(i).data().isVanillaAdapter()) {
 				isVanilla = false;
 				break;
 			}
@@ -71,7 +71,7 @@ public class WeightedBakedModelMixin implements FabricBakedModel {
 		Weighted.Present<BakedModel> selected = Weighting.getAt(this.models, Math.abs((int) randomSupplier.get().nextLong()) % this.totalWeight).orElse(null);
 
 		if (selected != null) {
-			selected.getData().emitBlockQuads(blockView, state, pos, () -> {
+			selected.data().emitBlockQuads(blockView, state, pos, () -> {
 				Random random = randomSupplier.get();
 				random.nextLong(); // Imitate vanilla modifying the random before passing it to the submodel
 				return random;
@@ -84,7 +84,7 @@ public class WeightedBakedModelMixin implements FabricBakedModel {
 		Weighted.Present<BakedModel> selected = Weighting.getAt(this.models, Math.abs((int) randomSupplier.get().nextLong()) % this.totalWeight).orElse(null);
 
 		if (selected != null) {
-			selected.getData().emitItemQuads(stack, () -> {
+			selected.data().emitItemQuads(stack, () -> {
 				Random random = randomSupplier.get();
 				random.nextLong(); // Imitate vanilla modifying the random before passing it to the submodel
 				return random;

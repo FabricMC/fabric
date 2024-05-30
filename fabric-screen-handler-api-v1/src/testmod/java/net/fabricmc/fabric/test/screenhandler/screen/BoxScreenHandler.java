@@ -18,7 +18,6 @@ package net.fabricmc.fabric.test.screenhandler.screen;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.Generic3x3ContainerScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.math.BlockPos;
@@ -28,9 +27,9 @@ import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;
 public class BoxScreenHandler extends Generic3x3ContainerScreenHandler implements PositionedScreenHandler {
 	private final BlockPos pos;
 
-	public BoxScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
+	public BoxScreenHandler(int syncId, PlayerInventory playerInventory, BlockPos pos) {
 		super(syncId, playerInventory);
-		this.pos = buf.readBlockPos();
+		this.pos = pos;
 	}
 
 	public BoxScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory) {

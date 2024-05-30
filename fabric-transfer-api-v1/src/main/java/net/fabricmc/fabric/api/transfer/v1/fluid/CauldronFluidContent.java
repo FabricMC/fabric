@@ -39,7 +39,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.CauldronStorage;
  * <p>The {@code CauldronFluidContent} itself defines:
  * <ul>
  *     <li>The block of the cauldron.</li>
- *     <li>The fluid that can be accepted by the cauldron. NBT is discarded when entering the cauldron.</li>
+ *     <li>The fluid that can be accepted by the cauldron. Components are discarded when entering the cauldron.</li>
  *     <li>Which fluid amounts can be stored in the cauldron, and how they map to the level property of the cauldron.
  *     If {@code levelProperty} is {@code null}, then {@code maxLevel = 1}, and there is only one level.
  *     Otherwise, the levels are all the integer values between {@code 1} and {@code maxLevel} (included).

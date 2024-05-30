@@ -25,6 +25,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -40,8 +41,8 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 	}
 
 	@Override
-	public void readNbt(NbtCompound tag) {
-		super.readNbt(tag);
+	public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup wrapperLookup) {
+		super.readNbt(tag, wrapperLookup);
 
 		if (tag.contains("block", NbtElement.STRING_TYPE)) {
 			this.block = Registries.BLOCK.get(new Identifier(tag.getString("block")));
@@ -56,7 +57,9 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 	}
 
 	@Override
-	public void writeNbt(NbtCompound tag) {
+	public void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup wrapperLookup) {
+		super.writeNbt(tag, wrapperLookup);
+
 		if (this.block != null) {
 			tag.putString("block", Registries.BLOCK.getId(this.block).toString());
 		} else {
@@ -96,7 +99,7 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		return this.createNbt();
+	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup wrapperLookup) {
+		return this.createComponentlessNbt(wrapperLookup);
 	}
 }

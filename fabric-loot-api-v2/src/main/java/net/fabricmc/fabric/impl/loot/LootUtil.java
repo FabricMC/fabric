@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.impl.loot;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.util.Identifier;
 
@@ -27,11 +29,9 @@ import net.fabricmc.fabric.impl.resource.loader.FabricResource;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
 public final class LootUtil {
-	public static LootTableSource determineSource(Identifier lootTableId, ResourceManager resourceManager) {
-		Identifier resourceId = new Identifier(lootTableId.getNamespace(), "loot_tables/%s.json".formatted(lootTableId.getPath()));
+	public static final ThreadLocal<Map<Identifier, LootTableSource>> SOURCES = ThreadLocal.withInitial(HashMap::new);
 
-		Resource resource = resourceManager.getResource(resourceId).orElse(null);
-
+	public static LootTableSource determineSource(Resource resource) {
 		if (resource != null) {
 			ResourcePackSource packSource = ((FabricResource) resource).getFabricPackSource();
 

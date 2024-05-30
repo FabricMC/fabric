@@ -4,12 +4,7 @@
   "predicate": {
     "type": "minecraft:pig"
   },
-  "fabric:load_conditions": [
-    {
-      "condition": "fabric:all_mods_loaded",
-      "values": [
-        "fabric-resource-conditions-api-v1"
-      ]
-    }
-  ]
+  "fabric:load_conditions": {
+    "condition": "fabric:true"
+  }
 }

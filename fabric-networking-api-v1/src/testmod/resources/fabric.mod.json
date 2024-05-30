@@ -11,6 +11,7 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.networking.channeltest.NetworkingChannelTest",
+      "net.fabricmc.fabric.test.networking.common.NetworkingCommonTest",
       "net.fabricmc.fabric.test.networking.configuration.NetworkingConfigurationTest",
       "net.fabricmc.fabric.test.networking.keybindreciever.NetworkingKeybindPacketTest",
       "net.fabricmc.fabric.test.networking.login.NetworkingLoginQueryTest",
@@ -18,6 +19,7 @@
     ],
     "client": [
       "net.fabricmc.fabric.test.networking.client.channeltest.NetworkingChannelClientTest",
+      "net.fabricmc.fabric.test.networking.client.common.NetworkingCommonClientTest",
       "net.fabricmc.fabric.test.networking.client.configuration.NetworkingConfigurationClientTest",
       "net.fabricmc.fabric.test.networking.client.DisconnectScreenTest",
       "net.fabricmc.fabric.test.networking.client.keybindreciever.NetworkingKeybindClientPacketTest",

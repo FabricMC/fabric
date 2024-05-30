@@ -16,20 +16,26 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.ReloadableRegistries;
 import net.minecraft.server.DataPackContents;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 
 @Mixin(DataPackContents.class)
 public class DataPackContentsMixin {
+	@Shadow
+	@Final
+	private ReloadableRegistries.Lookup reloadableRegistries;
+
 	@Inject(method = "refresh", at = @At("TAIL"))
-	private void hookRefresh(DynamicRegistryManager registries, CallbackInfo ci) {
-		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(registries, false);
+	private void hookRefresh(CallbackInfo ci) {
+		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(this.reloadableRegistries.getRegistryManager(), false);
 	}
 }

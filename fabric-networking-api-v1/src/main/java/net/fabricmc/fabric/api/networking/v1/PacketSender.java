@@ -16,42 +16,26 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
-import java.util.Objects;
-
-import io.netty.channel.ChannelFutureListener;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.util.Identifier;
-
-import net.fabricmc.fabric.impl.networking.GenericFutureListenerHolder;
+import net.minecraft.text.Text;
 
 /**
  * Represents something that supports sending packets to channels.
- * @see PacketByteBufs
+ * Any packets sent must be {@linkplain PayloadTypeRegistry registered} in the appropriate registry.
  */
 @ApiStatus.NonExtendable
 public interface PacketSender {
 	/**
-	 * Makes a packet for a channel.
+	 * Creates a packet from a packet payload.
 	 *
-	 * @param channelName the id of the channel
-	 * @param buf     the content of the packet
+	 * @param payload the packet payload
 	 */
-	Packet<?> createPacket(Identifier channelName, PacketByteBuf buf);
-
-	/**
-	 * Makes a packet for a fabric packet.
-	 *
-	 * @param packet the fabric packet
-	 */
-	Packet<?> createPacket(FabricPacket packet);
+	Packet<?> createPacket(CustomPayload payload);
 
 	/**
 	 * Sends a packet.
@@ -59,15 +43,7 @@ public interface PacketSender {
 	 * @param packet the packet
 	 */
 	default void sendPacket(Packet<?> packet) {
-		sendPacket(packet, (PacketCallbacks) null);
-	}
-
-	/**
-	 * Sends a packet.
-	 * @param packet the packet
-	 */
-	default <T extends FabricPacket> void sendPacket(T packet) {
-		sendPacket(createPacket(packet));
+		sendPacket(packet, null);
 	}
 
 	/**
@@ -75,107 +51,30 @@ public interface PacketSender {
 	 * @param payload the payload
 	 */
 	default void sendPacket(CustomPayload payload) {
-		PacketByteBuf buf = PacketByteBufs.create();
-		payload.write(buf);
-		sendPacket(payload.id(), buf);
+		sendPacket(createPacket(payload));
 	}
 
 	/**
 	 * Sends a packet.
 	 *
 	 * @param packet the packet
-	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
-	 */
-	void sendPacket(Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> callback);
-
-	/**
-	 * Sends a packet.
-	 *
-	 * @param packet the packet
-	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
-	 */
-	default <T extends FabricPacket> void sendPacket(T packet, @Nullable GenericFutureListener<? extends Future<? super Void>> callback) {
-		sendPacket(createPacket(packet), callback);
-	}
-
-	/**
-	 * Sends a packet.
-	 *
-	 * @param payload the payload
-	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
-	 */
-	default void sendPacket(CustomPayload payload, @Nullable GenericFutureListener<? extends Future<? super Void>> callback) {
-		PacketByteBuf buf = PacketByteBufs.create();
-		payload.write(buf);
-		sendPacket(payload.id(), buf, callback);
-	}
-
-	/**
-	 * Sends a packet.
-	 *
-	 * @param packet the packet
-	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
+	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}.
 	 */
 	void sendPacket(Packet<?> packet, @Nullable PacketCallbacks callback);
 
 	/**
 	 * Sends a packet.
 	 *
-	 * @param packet the packet
-	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
-	 */
-	default <T extends FabricPacket> void sendPacket(T packet, @Nullable PacketCallbacks callback) {
-		sendPacket(createPacket(packet), callback);
-	}
-
-	/**
-	 * Sends a packet.
-	 *
 	 * @param payload the payload
-	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
+	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}.
 	 */
 	default void sendPacket(CustomPayload payload, @Nullable PacketCallbacks callback) {
-		PacketByteBuf buf = PacketByteBufs.create();
-		payload.write(buf);
-		sendPacket(payload.id(), buf, callback);
+		sendPacket(createPacket(payload), callback);
 	}
 
 	/**
-	 * Sends a packet to a channel.
-	 *
-	 * @param channel the id of the channel
-	 * @param buf the content of the packet
+	 * Disconnects the player.
+	 * @param disconnectReason the reason for disconnection
 	 */
-	default void sendPacket(Identifier channel, PacketByteBuf buf) {
-		Objects.requireNonNull(channel, "Channel cannot be null");
-		Objects.requireNonNull(buf, "Payload cannot be null");
-
-		this.sendPacket(this.createPacket(channel, buf));
-	}
-
-	/**
-	 * Sends a packet to a channel.
-	 *
-	 * @param channel  the id of the channel
-	 * @param buf the content of the packet
-	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}
-	 */
-	// the generic future listener can accept ChannelFutureListener
-	default void sendPacket(Identifier channel, PacketByteBuf buf, @Nullable GenericFutureListener<? extends Future<? super Void>> callback) {
-		sendPacket(channel, buf, GenericFutureListenerHolder.create(callback));
-	}
-
-	/**
-	 * Sends a packet to a channel.
-	 *
-	 * @param channel  the id of the channel
-	 * @param buf the content of the packet
-	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}
-	 */
-	default void sendPacket(Identifier channel, PacketByteBuf buf, @Nullable PacketCallbacks callback) {
-		Objects.requireNonNull(channel, "Channel cannot be null");
-		Objects.requireNonNull(buf, "Payload cannot be null");
-
-		this.sendPacket(this.createPacket(channel, buf), callback);
-	}
+	void disconnect(Text disconnectReason);
 }

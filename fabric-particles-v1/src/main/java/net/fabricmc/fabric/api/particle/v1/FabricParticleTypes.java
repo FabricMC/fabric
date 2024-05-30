@@ -16,11 +16,15 @@
 
 package net.fabricmc.fabric.api.particle.v1;
 
-import com.mojang.serialization.Codec;
+import java.util.function.Function;
 
-import net.minecraft.particle.DefaultParticleType;
+import com.mojang.serialization.MapCodec;
+
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
+import net.minecraft.particle.SimpleParticleType;
 
 /**
  * Methods for creating particle types, both simple and using an existing attribute factory.
@@ -28,8 +32,8 @@ import net.minecraft.particle.ParticleType;
  * <p>Usage:
  * <blockquote>
  * <pre>
- * public static final DefaultParticleType SIMPLE_TEST_PARTICLE = FabricParticleTypes.simple();
- * public static final DefaultParticleType CUSTOM_TEST_PARTICLE = FabricParticleTypes.simple();
+ * public static final SimpleParticleType SIMPLE_TEST_PARTICLE = FabricParticleTypes.simple();
+ * public static final SimpleParticleType CUSTOM_TEST_PARTICLE = FabricParticleTypes.simple();
  *
  * {@literal @}Override
  * public void onInitialize() {
@@ -45,7 +49,7 @@ public final class FabricParticleTypes {
 	/**
 	 * Creates a new, default particle type for the given id.
 	 */
-	public static DefaultParticleType simple() {
+	public static SimpleParticleType simple() {
 		return simple(false);
 	}
 
@@ -54,31 +58,70 @@ public final class FabricParticleTypes {
 	 *
 	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
 	 */
-	public static DefaultParticleType simple(boolean alwaysSpawn) {
-		return new DefaultParticleType(alwaysSpawn) { };
+	public static SimpleParticleType simple(boolean alwaysSpawn) {
+		return new SimpleParticleType(alwaysSpawn) { };
 	}
 
 	/**
-	 * Creates a new particle type with a custom factory for packet/data serialization.
+	 * Creates a new particle type with a custom factory and codecs for packet/data serialization.
 	 *
-	 * @param factory	 A factory for serializing packet data and string command parameters into a particle effect.
+	 * @param codec The codec for serialization.
+	 * @param packetCodec The packet codec for network serialization.
 	 */
-	public static <T extends ParticleEffect> ParticleType<T> complex(ParticleEffect.Factory<T> factory) {
-		return complex(false, factory);
+	public static <T extends ParticleEffect> ParticleType<T> complex(final MapCodec<T> codec, final PacketCodec<? super RegistryByteBuf, T> packetCodec) {
+		return complex(false, codec, packetCodec);
 	}
 
 	/**
-	 * Creates a new particle type with a custom factory for packet/data serialization.
+	 * Creates a new particle type with a custom factory and codecs for packet/data serialization.
 	 *
 	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
-	 * @param factory	 A factory for serializing packet data and string command parameters into a particle effect.
+	 * @param codec The codec for serialization.
+	 * @param packetCodec The packet codec for network serialization.
 	 */
-	public static <T extends ParticleEffect> ParticleType<T> complex(boolean alwaysSpawn, ParticleEffect.Factory<T> factory) {
-		return new ParticleType<T>(alwaysSpawn, factory) {
+	public static <T extends ParticleEffect> ParticleType<T> complex(boolean alwaysSpawn, final MapCodec<T> codec, final PacketCodec<? super RegistryByteBuf, T> packetCodec) {
+		return new ParticleType<>(alwaysSpawn) {
 			@Override
-			public Codec<T> getCodec() {
-				//TODO fix me
-				return null;
+			public MapCodec<T> getCodec() {
+				return codec;
+			}
+
+			@Override
+			public PacketCodec<? super RegistryByteBuf, T> getPacketCodec() {
+				return packetCodec;
+			}
+		};
+	}
+
+	/**
+	 * Creates a new particle type with a custom factory and codecs for packet/data serialization.
+	 * This method is useful when two different {@link ParticleType}s share the same {@link ParticleEffect} implementation.
+	 *
+	 * @param codecGetter A function that, given the newly created type, returns the codec for serialization.
+	 * @param packetCodecGetter A function that, given the newly created type, returns the packet codec for network serialization.
+	 */
+	public static <T extends ParticleEffect> ParticleType<T> complex(final Function<ParticleType<T>, MapCodec<T>> codecGetter, final Function<ParticleType<T>, PacketCodec<? super RegistryByteBuf, T>> packetCodecGetter) {
+		return complex(false, codecGetter, packetCodecGetter);
+	}
+
+	/**
+	 * Creates a new particle type with a custom factory and codecs for packet/data serialization.
+	 * This method is useful when two different {@link ParticleType}s share the same {@link ParticleEffect} implementation.
+	 *
+	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
+	 * @param codecGetter A function that, given the newly created type, returns the codec for serialization.
+	 * @param packetCodecGetter A function that, given the newly created type, returns the packet codec for network serialization.
+	 */
+	public static <T extends ParticleEffect> ParticleType<T> complex(boolean alwaysSpawn, final Function<ParticleType<T>, MapCodec<T>> codecGetter, final Function<ParticleType<T>, PacketCodec<? super RegistryByteBuf, T>> packetCodecGetter) {
+		return new ParticleType<>(alwaysSpawn) {
+			@Override
+			public MapCodec<T> getCodec() {
+				return codecGetter.apply(this);
+			}
+
+			@Override
+			public PacketCodec<? super RegistryByteBuf, T> getPacketCodec() {
+				return packetCodecGetter.apply(this);
 			}
 		};
 	}

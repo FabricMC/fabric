@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.resource.loader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -25,6 +26,8 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
+import net.minecraft.resource.ResourcePackInfo;
+import net.minecraft.resource.ResourcePackPosition;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
@@ -65,10 +68,23 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 		}
 	};
 	public static final ModResourcePackCreator CLIENT_RESOURCE_PACK_PROVIDER = new ModResourcePackCreator(ResourceType.CLIENT_RESOURCES);
+	/**
+	 * The maximum ammount of known data packs requested from the client, including vanilla data packs.
+	 */
+	public static final int MAX_KNOWN_PACKS = Integer.getInteger("fabric-resource-loader-v0:maxKnownPacks", 1024);
+
 	private final ResourceType type;
+	private final ResourcePackPosition activationInfo;
+	private final boolean forClientDataPackManager;
 
 	public ModResourcePackCreator(ResourceType type) {
+		this(type, false);
+	}
+
+	protected ModResourcePackCreator(ResourceType type, boolean forClientDataPackManager) {
 		this.type = type;
+		this.activationInfo = new ResourcePackPosition(!forClientDataPackManager, ResourcePackProfile.InsertionPosition.TOP, false);
+		this.forClientDataPackManager = forClientDataPackManager;
 	}
 
 	/**
@@ -90,14 +106,18 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			4. User resource packs
 		 */
 
-		consumer.accept(ResourcePackProfile.create(
+		ResourcePackInfo metadata = new ResourcePackInfo(
 				FABRIC,
 				Text.translatable("pack.name.fabricMods"),
-				true,
-				new PlaceholderResourcePack.Factory(this.type),
+				RESOURCE_PACK_SOURCE,
+				Optional.empty()
+		);
+
+		consumer.accept(ResourcePackProfile.create(
+				metadata,
+				new PlaceholderResourcePack.Factory(this.type, metadata),
 				this.type,
-				ResourcePackProfile.InsertionPosition.TOP,
-				RESOURCE_PACK_SOURCE
+				this.activationInfo
 		));
 
 		// Build a list of mod resource packs.
@@ -118,21 +138,18 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 		ModResourcePackUtil.appendModResourcePacks(packs, this.type, subPath);
 
 		for (ModResourcePack pack : packs) {
-			Text displayName = subPath == null
-					? Text.translatable("pack.name.fabricMod", pack.getFabricModMetadata().getName())
-					: Text.translatable("pack.name.fabricMod.subPack", pack.getFabricModMetadata().getName(), Text.translatable("resourcePack." + subPath + ".name"));
 			ResourcePackProfile profile = ResourcePackProfile.create(
-					pack.getName(),
-					displayName,
-					subPath == null,
+					pack.getInfo(),
 					new ModResourcePackFactory(pack),
 					this.type,
-					ResourcePackProfile.InsertionPosition.TOP,
-					RESOURCE_PACK_SOURCE
+					this.activationInfo
 			);
 
 			if (profile != null) {
-				((FabricResourcePackProfile) profile).fabric_setParentsPredicate(parents);
+				if (!forClientDataPackManager) {
+					((FabricResourcePackProfile) profile).fabric_setParentsPredicate(parents);
+				}
+
 				consumer.accept(profile);
 			}
 		}

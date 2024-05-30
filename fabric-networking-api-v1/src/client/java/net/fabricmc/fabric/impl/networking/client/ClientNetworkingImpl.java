@@ -26,19 +26,18 @@ import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.NetworkState;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.NetworkPhase;
+import net.minecraft.network.NetworkSide;
 import net.minecraft.network.listener.ServerCommonPacketListener;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.impl.networking.CommonPacketsImpl;
 import net.fabricmc.fabric.impl.networking.CommonRegisterPayload;
@@ -46,17 +45,14 @@ import net.fabricmc.fabric.impl.networking.CommonVersionPayload;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.payload.ResolvablePayload;
-import net.fabricmc.fabric.impl.networking.payload.ResolvedPayload;
-import net.fabricmc.fabric.impl.networking.payload.TypedPayload;
-import net.fabricmc.fabric.impl.networking.payload.UntypedPayload;
+import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ConnectScreenAccessor;
 import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAccessor;
 
 public final class ClientNetworkingImpl {
-	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>(NetworkState.LOGIN);
-	public static final GlobalReceiverRegistry<ResolvablePayload.Handler<ClientConfigurationNetworkAddon.Handler>> CONFIGURATION = new GlobalReceiverRegistry<>(NetworkState.CONFIGURATION);
-	public static final GlobalReceiverRegistry<ResolvablePayload.Handler<ClientPlayNetworkAddon.Handler>> PLAY = new GlobalReceiverRegistry<>(NetworkState.PLAY);
+	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>(NetworkSide.CLIENTBOUND, NetworkPhase.LOGIN, null);
+	public static final GlobalReceiverRegistry<ClientConfigurationNetworking.ConfigurationPayloadHandler<?>> CONFIGURATION = new GlobalReceiverRegistry<>(NetworkSide.CLIENTBOUND, NetworkPhase.CONFIGURATION, PayloadTypeRegistryImpl.CONFIGURATION_S2C);
+	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayPayloadHandler<?>> PLAY = new GlobalReceiverRegistry<>(NetworkSide.CLIENTBOUND, NetworkPhase.PLAY, PayloadTypeRegistryImpl.PLAY_S2C);
 
 	private static ClientPlayNetworkAddon currentPlayAddon;
 	private static ClientConfigurationNetworkAddon currentConfigurationAddon;
@@ -73,22 +69,15 @@ public final class ClientNetworkingImpl {
 		return (ClientLoginNetworkAddon) ((NetworkHandlerExtensions) handler).getAddon();
 	}
 
-	public static Packet<ServerCommonPacketListener> createC2SPacket(Identifier channelName, PacketByteBuf buf) {
-		return new CustomPayloadC2SPacket(new UntypedPayload(channelName, buf));
-	}
-
-	public static Packet<ServerCommonPacketListener> createC2SPacket(FabricPacket packet) {
-		Objects.requireNonNull(packet, "Packet cannot be null");
-		Objects.requireNonNull(packet.getType(), "Packet#getType cannot return null");
-
-		ResolvedPayload payload = new TypedPayload(packet);
-		if (NetworkingImpl.FORCE_PACKET_SERIALIZATION) payload = payload.resolve(null);
+	public static Packet<ServerCommonPacketListener> createC2SPacket(CustomPayload payload) {
+		Objects.requireNonNull(payload, "Payload cannot be null");
+		Objects.requireNonNull(payload.getId(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
 
 		return new CustomPayloadC2SPacket(payload);
 	}
 
 	/**
-	 * Due to the way logging into a integrated or remote dedicated server will differ, we need to obtain the login client connection differently.
+	 * Due to the way logging into an integrated or remote dedicated server will differ, we need to obtain the login client connection differently.
 	 */
 	@Nullable
 	public static ClientConnection getLoginConnection() {
@@ -153,28 +142,26 @@ public final class ClientNetworkingImpl {
 		});
 
 		// Version packet
-		ClientConfigurationNetworking.registerGlobalReceiver(CommonVersionPayload.PACKET_ID, (client, handler, buf, responseSender) -> {
-			var payload = new CommonVersionPayload(buf);
-			int negotiatedVersion = handleVersionPacket(payload, responseSender);
-			ClientNetworkingImpl.getAddon(handler).onCommonVersionPacket(negotiatedVersion);
+		ClientConfigurationNetworking.registerGlobalReceiver(CommonVersionPayload.ID, (payload, context) -> {
+			int negotiatedVersion = handleVersionPacket(payload, context.responseSender());
+			ClientNetworkingImpl.getClientConfigurationAddon().onCommonVersionPacket(negotiatedVersion);
 		});
 
 		// Register packet
-		ClientConfigurationNetworking.registerGlobalReceiver(CommonRegisterPayload.PACKET_ID, (client, handler, buf, responseSender) -> {
-			var payload = new CommonRegisterPayload(buf);
-			ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getAddon(handler);
+		ClientConfigurationNetworking.registerGlobalReceiver(CommonRegisterPayload.ID, (payload, context) -> {
+			ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
 
 			if (CommonRegisterPayload.PLAY_PHASE.equals(payload.phase())) {
 				if (payload.version() != addon.getNegotiatedVersion()) {
 					throw new IllegalStateException("Negotiated common packet version: %d but received packet with version: %d".formatted(addon.getNegotiatedVersion(), payload.version()));
 				}
 
-				addon.getChannelInfoHolder().getPendingChannelsNames(NetworkState.PLAY).addAll(payload.channels());
+				addon.getChannelInfoHolder().fabric_getPendingChannelsNames(NetworkPhase.PLAY).addAll(payload.channels());
 				NetworkingImpl.LOGGER.debug("Received accepted channels from the server");
-				responseSender.sendPacket(new CommonRegisterPayload(addon.getNegotiatedVersion(), CommonRegisterPayload.PLAY_PHASE, ClientPlayNetworking.getGlobalReceivers()));
+				context.responseSender().sendPacket(new CommonRegisterPayload(addon.getNegotiatedVersion(), CommonRegisterPayload.PLAY_PHASE, ClientPlayNetworking.getGlobalReceivers()));
 			} else {
 				addon.onCommonRegisterPacket(payload);
-				responseSender.sendPacket(addon.createRegisterPayload());
+				context.responseSender().sendPacket(addon.createRegisterPayload());
 			}
 		});
 	}

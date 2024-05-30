@@ -18,22 +18,22 @@ The [`storage/base`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/b
 implementation of `Storage<T>`.
 
 Implementors of inventories with a fixed number of "slots" or "tanks" can use
-[`SingleVariantStorage`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/base/SingleStorage.java),
-and combine them with `CombinedStorage`.
+[`SingleVariantStorage`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/base/SingleVariantStorage.java),
+and combine them with [`CombinedStorage`](src/main/java/net/fabricmc/fabric/api/transfer/v1/storage/base/CombinedStorage.java).
 
 ## Fluid transfer
 A `Storage<FluidVariant>` is any object that can store fluids. It is just a `Storage<T>`, where `T` is
-[`FluidVariant`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidVariant.java), the immutable combination of a `Fluid` and additional NBT data.
+[`FluidVariant`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidVariant.java), the immutable combination of a `Fluid` and additional components.
 Instances can be accessed through the API lookups defined in [`FluidStorage`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidStorage.java).
 
 The unit for fluid transfer is 1/81000ths of a bucket, also known as _droplets_.
 [`FluidConstants`](src/main/java/net/fabricmc/fabric/api/transfer/v1/fluid/FluidConstants.java) contains a few helpful constants
 to work with droplets.
 
-Client-side [Fluid variant rendering](src/main/java/net/fabricmc/fabric/api/transfer/v1/client/fluid/FluidVariantRendering.java) will use regular fluid rendering by default,
-ignoring the additional NBT data.
-`Fluid`s that wish to render differently depending on the stored NBT data can register a
-[`FluidVariantRenderHandler`](src/main/java/net/fabricmc/fabric/api/transfer/v1/client/fluid/FluidVariantRenderHandler.java).
+Client-side [Fluid variant rendering](src/client/java/net/fabricmc/fabric/api/transfer/v1/client/fluid/FluidVariantRendering.java) will use regular fluid rendering by default,
+ignoring the additional components.
+`Fluid`s that wish to render differently depending on the stored components can register a
+[`FluidVariantRenderHandler`](src/client/java/net/fabricmc/fabric/api/transfer/v1/client/fluid/FluidVariantRenderHandler.java).
 
 ## Item transfer
 A `Storage<ItemVariant>` is any object that can store items.

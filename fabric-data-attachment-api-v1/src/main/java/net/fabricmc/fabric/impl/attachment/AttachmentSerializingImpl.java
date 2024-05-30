@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
@@ -36,7 +38,7 @@ public class AttachmentSerializingImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-data-attachment-api-v1");
 
 	@SuppressWarnings("unchecked")
-	public static void serializeAttachmentData(NbtCompound nbt, @Nullable IdentityHashMap<AttachmentType<?>, ?> attachments) {
+	public static void serializeAttachmentData(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup, @Nullable IdentityHashMap<AttachmentType<?>, ?> attachments) {
 		if (attachments == null || attachments.isEmpty()) {
 			return;
 		}
@@ -48,13 +50,13 @@ public class AttachmentSerializingImpl {
 			Codec<Object> codec = (Codec<Object>) type.persistenceCodec();
 
 			if (codec != null) {
-				codec.encodeStart(NbtOps.INSTANCE, entry.getValue())
-						.get()
-						.ifRight(partial -> {
+				RegistryOps<NbtElement> registryOps = wrapperLookup.getOps(NbtOps.INSTANCE);
+				codec.encodeStart(registryOps, entry.getValue())
+						.ifError(partial -> {
 							LOGGER.warn("Couldn't serialize attachment " + type.identifier() + ", skipping. Error:");
 							LOGGER.warn(partial.message());
 						})
-						.ifLeft(serialized -> compound.put(type.identifier().toString(), serialized));
+						.ifSuccess(serialized -> compound.put(type.identifier().toString(), serialized));
 			}
 		}
 
@@ -62,7 +64,7 @@ public class AttachmentSerializingImpl {
 	}
 
 	@Nullable
-	public static IdentityHashMap<AttachmentType<?>, Object> deserializeAttachmentData(NbtCompound nbt) {
+	public static IdentityHashMap<AttachmentType<?>, Object> deserializeAttachmentData(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
 		if (nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY, NbtElement.COMPOUND_TYPE)) {
 			var attachments = new IdentityHashMap<AttachmentType<?>, Object>();
 			NbtCompound compound = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY);
@@ -78,13 +80,13 @@ public class AttachmentSerializingImpl {
 				Codec<?> codec = type.persistenceCodec();
 
 				if (codec != null) {
-					codec.parse(NbtOps.INSTANCE, compound.get(key))
-							.get()
-							.ifRight(partial -> {
+					RegistryOps<NbtElement> registryOps = wrapperLookup.getOps(NbtOps.INSTANCE);
+					codec.parse(registryOps, compound.get(key))
+							.ifError(partial -> {
 								LOGGER.warn("Couldn't deserialize attachment " + type.identifier() + ", skipping. Error:");
 								LOGGER.warn(partial.message());
 							})
-							.ifLeft(
+							.ifSuccess(
 									deserialized -> attachments.put(type, deserialized)
 							);
 				}

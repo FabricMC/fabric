@@ -30,6 +30,7 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
@@ -95,7 +96,7 @@ public class FrameBakedModel implements BakedModel {
 		this.frameMesh.outputTo(context.getEmitter());
 
 		// Emit a scaled-down fence for testing, trying both materials again.
-		RenderMaterial material = stack.hasCustomName() ? translucentEmissiveMaterial : translucentMaterial;
+		RenderMaterial material = stack.contains(DataComponentTypes.CUSTOM_NAME) ? translucentEmissiveMaterial : translucentMaterial;
 
 		ItemStack innerItem = Items.CRAFTING_TABLE.getDefaultStack();
 		BakedModel innerModel = MinecraftClient.getInstance().getItemRenderer().getModel(innerItem, null, null, 0);

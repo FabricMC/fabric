@@ -25,8 +25,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -43,9 +43,8 @@ public class FrameBlock extends Block implements BlockEntityProvider, FabricBloc
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+	public ItemActionResult onUseWithItem(ItemStack stack, BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult blockHitResult) {
 		if (world.getBlockEntity(pos) instanceof FrameBlockEntity frame) {
-			ItemStack stack = player.getStackInHand(hand);
 			Block handBlock = Block.getBlockFromItem(stack.getItem());
 
 			@Nullable
@@ -59,20 +58,20 @@ public class FrameBlock extends Block implements BlockEntityProvider, FabricBloc
 						frame.setBlock(null);
 					}
 
-					return ActionResult.success(world.isClient());
+					return ItemActionResult.success(world.isClient());
 				}
 
-				return ActionResult.PASS;
+				return ItemActionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
 			}
 
 			// getBlockFromItem will return air if we do not have a block item in hand
 			if (handBlock == Blocks.AIR) {
-				return ActionResult.FAIL;
+				return ItemActionResult.FAIL;
 			}
 
 			// Do not allow blocks that may have a block entity
 			if (handBlock instanceof BlockEntityProvider) {
-				return ActionResult.FAIL;
+				return ItemActionResult.FAIL;
 			}
 
 			stack.decrement(1);
@@ -85,10 +84,10 @@ public class FrameBlock extends Block implements BlockEntityProvider, FabricBloc
 				frame.setBlock(handBlock);
 			}
 
-			return ActionResult.success(world.isClient());
+			return ItemActionResult.success(world.isClient());
 		}
 
-		return ActionResult.FAIL;
+		return ItemActionResult.FAIL;
 	}
 
 	@Nullable

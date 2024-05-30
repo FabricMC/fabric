@@ -51,7 +51,7 @@ import net.minecraft.world.chunk.ChunkStatus;
  * <p>
  * Note about {@link BlockEntity} targets: by default, many block entities use their NBT to synchronize with the client.
  * That would mean persistent attachments are automatically synced with the client for those block entities. As this is
- * undesirable behavior, the API completely removes attachments from the result of {@link BlockEntity#toInitialChunkDataNbt()},
+ * undesirable behavior, the API completely removes attachments from the result of {@link BlockEntity#toInitialChunkDataNbt},
  * which takes care of all vanilla types. However, modded block entities may be coded differently, so be wary of this
  * when attaching data to modded block entities.
  * </p>

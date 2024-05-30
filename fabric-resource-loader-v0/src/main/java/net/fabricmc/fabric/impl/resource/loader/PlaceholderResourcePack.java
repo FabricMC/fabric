@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackInfo;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.PackResourceMetadata;
@@ -35,7 +36,7 @@ import net.minecraft.resource.metadata.ResourceMetadataReader;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public record PlaceholderResourcePack(ResourceType type) implements ResourcePack {
+public record PlaceholderResourcePack(ResourceType type, ResourcePackInfo metadata) implements ResourcePack {
 	private static final Text DESCRIPTION_TEXT = Text.translatable("pack.description.modResources");
 
 	public PackResourceMetadata getMetadata() {
@@ -88,7 +89,12 @@ public record PlaceholderResourcePack(ResourceType type) implements ResourcePack
 	}
 
 	@Override
-	public String getName() {
+	public ResourcePackInfo getInfo() {
+		return metadata;
+	}
+
+	@Override
+	public String getId() {
 		return ModResourcePackCreator.FABRIC;
 	}
 
@@ -96,15 +102,15 @@ public record PlaceholderResourcePack(ResourceType type) implements ResourcePack
 	public void close() {
 	}
 
-	public record Factory(ResourceType type) implements ResourcePackProfile.PackFactory {
+	public record Factory(ResourceType type, ResourcePackInfo metadata) implements ResourcePackProfile.PackFactory {
 		@Override
-		public ResourcePack open(String name) {
-			return new PlaceholderResourcePack(this.type);
+		public ResourcePack open(ResourcePackInfo var1) {
+			return new PlaceholderResourcePack(this.type, metadata);
 		}
 
 		@Override
-		public ResourcePack openWithOverlays(String name, ResourcePackProfile.Metadata metadata) {
-			return open(name);
+		public ResourcePack openWithOverlays(ResourcePackInfo var1, ResourcePackProfile.Metadata metadata) {
+			return open(var1);
 		}
 	}
 }

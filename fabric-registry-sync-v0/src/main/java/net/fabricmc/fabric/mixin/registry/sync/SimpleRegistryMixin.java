@@ -43,6 +43,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.registry.MutableRegistry;
@@ -50,6 +51,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryInfo;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -57,7 +59,6 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.impl.registry.sync.ListenableRegistry;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
@@ -84,8 +85,6 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	@Shadow
 	@Final
 	private Map<RegistryKey<T>, RegistryEntry.Reference<T>> keyToEntry;
-	@Shadow
-	private int nextId;
 
 	@Shadow
 	public abstract Optional<RegistryKey<T>> getKey(T entry);
@@ -100,31 +99,10 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	private static final Logger FABRIC_LOGGER = LoggerFactory.getLogger(SimpleRegistryMixin.class);
 
 	@Unique
-	private final Event<RegistryEntryAddedCallback<T>> fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryEntryAddedCallback.class,
-			(callbacks) -> (rawId, id, object) -> {
-				for (RegistryEntryAddedCallback<T> callback : callbacks) {
-					callback.onEntryAdded(rawId, id, object);
-				}
-			}
-	);
+	private Event<RegistryEntryAddedCallback<T>> fabric_addObjectEvent;
 
 	@Unique
-	private final Event<RegistryEntryRemovedCallback<T>> fabric_removeObjectEvent = EventFactory.createArrayBacked(RegistryEntryRemovedCallback.class,
-			(callbacks) -> (rawId, id, object) -> {
-				for (RegistryEntryRemovedCallback<T> callback : callbacks) {
-					callback.onEntryRemoved(rawId, id, object);
-				}
-			}
-	);
-
-	@Unique
-	private final Event<RegistryIdRemapCallback<T>> fabric_postRemapEvent = EventFactory.createArrayBacked(RegistryIdRemapCallback.class,
-			(callbacks) -> (a) -> {
-				for (RegistryIdRemapCallback<T> callback : callbacks) {
-					callback.onRemap(a);
-				}
-			}
-	);
+	private Event<RegistryIdRemapCallback<T>> fabric_postRemapEvent;
 
 	@Unique
 	private Object2IntMap<Identifier> fabric_prevIndexedEntries;
@@ -137,38 +115,30 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	}
 
 	@Override
-	public Event<RegistryEntryRemovedCallback<T>> fabric_getRemoveObjectEvent() {
-		return fabric_removeObjectEvent;
-	}
-
-	@Override
 	public Event<RegistryIdRemapCallback<T>> fabric_getRemapEvent() {
 		return fabric_postRemapEvent;
 	}
 
-	// The rest of the registry isn't thread-safe, so this one need not be either.
-	@Unique
-	private boolean fabric_isObjectNew = false;
-
-	@Inject(method = "add", at = @At("RETURN"))
-	private <V extends T> void add(RegistryKey<Registry<T>> registryKey, V entry, Lifecycle lifecycle, CallbackInfoReturnable<V> info) {
-		onChange(registryKey);
-	}
-
-	@Inject(method = "set", at = @At("RETURN"))
-	private <V extends T> void set(int rawId, RegistryKey<Registry<T>> registryKey, V entry, Lifecycle lifecycle, CallbackInfoReturnable<RegistryEntry<T>> info) {
-		// We need to restore the 1.19 behavior of binding the value to references immediately.
-		// Unfrozen registries cannot be interacted with otherwise, because the references would throw when
-		// trying to access their values.
-		if (info.getReturnValue() instanceof RegistryEntry.Reference<T> reference) {
-			reference.setValue(entry);
-		}
-
-		onChange(registryKey);
+	@Inject(method = "<init>(Lnet/minecraft/registry/RegistryKey;Lcom/mojang/serialization/Lifecycle;Z)V", at = @At("RETURN"))
+	private void init(RegistryKey key, Lifecycle lifecycle, boolean intrusive, CallbackInfo ci) {
+		fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryEntryAddedCallback.class,
+			(callbacks) -> (rawId, id, object) -> {
+				for (RegistryEntryAddedCallback<T> callback : callbacks) {
+					callback.onEntryAdded(rawId, id, object);
+				}
+			}
+		);
+		fabric_postRemapEvent = EventFactory.createArrayBacked(RegistryIdRemapCallback.class,
+			(callbacks) -> (a) -> {
+				for (RegistryIdRemapCallback<T> callback : callbacks) {
+					callback.onRemap(a);
+				}
+			}
+		);
 	}
 
 	@Unique
-	private void onChange(RegistryKey<Registry<T>> registryKey) {
+	private void onChange(RegistryKey<T> registryKey) {
 		if (RegistrySyncManager.postBootstrap || !VANILLA_NAMESPACES.contains(registryKey.getValue().getNamespace())) {
 			RegistryAttributeHolder holder = RegistryAttributeHolder.get(getKey());
 
@@ -180,39 +150,15 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 		}
 	}
 
-	@Inject(method = "set", at = @At("HEAD"))
-	public void setPre(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, CallbackInfoReturnable<RegistryEntry<T>> info) {
-		int indexedEntriesId = entryToRawId.getInt(object);
+	@Inject(method = "add", at = @At("RETURN"))
+	private void set(RegistryKey<T> key, T entry, RegistryEntryInfo arg, CallbackInfoReturnable<RegistryEntry.Reference<T>> info) {
+		// We need to restore the 1.19 behavior of binding the value to references immediately.
+		// Unfrozen registries cannot be interacted with otherwise, because the references would throw when
+		// trying to access their values.
+		info.getReturnValue().setValue(entry);
 
-		if (indexedEntriesId >= 0) {
-			throw new RuntimeException("Attempted to register object " + object + " twice! (at raw IDs " + indexedEntriesId + " and " + id + " )");
-		}
-
-		if (!idToEntry.containsKey(registryId.getValue())) {
-			fabric_isObjectNew = true;
-		} else {
-			RegistryEntry.Reference<T> oldObject = idToEntry.get(registryId.getValue());
-
-			if (oldObject != null && oldObject.value() != null && oldObject.value() != object) {
-				int oldId = entryToRawId.getInt(oldObject.value());
-
-				if (oldId != id) {
-					throw new RuntimeException("Attempted to register ID " + registryId + " at different raw IDs (" + oldId + ", " + id + ")! If you're trying to override an item, use .set(), not .register()!");
-				}
-
-				fabric_removeObjectEvent.invoker().onEntryRemoved(oldId, registryId.getValue(), oldObject.value());
-				fabric_isObjectNew = true;
-			} else {
-				fabric_isObjectNew = false;
-			}
-		}
-	}
-
-	@Inject(method = "set", at = @At("RETURN"))
-	public void setPost(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, CallbackInfoReturnable<RegistryEntry<T>> info) {
-		if (fabric_isObjectNew) {
-			fabric_addObjectEvent.invoker().onEntryAdded(id, registryId.getValue(), object);
-		}
+		fabric_addObjectEvent.invoker().onEntryAdded(entryToRawId.getInt(entry), key.getValue(), entry);
+		onChange(key);
 	}
 
 	@Override
@@ -367,7 +313,6 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 		// entries was handled above, if it was necessary.
 		rawIdToEntry.clear();
 		entryToRawId.clear();
-		nextId = 0;
 
 		List<Identifier> orderedRemoteEntries = new ArrayList<>(remoteIndexedEntries.keySet());
 		orderedRemoteEntries.sort(Comparator.comparingInt(remoteIndexedEntries::getInt));
@@ -389,14 +334,11 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 				continue;
 			}
 
-			// Add the new object, increment nextId to match.
+			// Add the new object
 			rawIdToEntry.size(Math.max(this.rawIdToEntry.size(), id + 1));
+			assert rawIdToEntry.get(id) == null;
 			rawIdToEntry.set(id, object);
 			entryToRawId.put(object.value(), id);
-
-			if (nextId <= id) {
-				nextId = id + 1;
-			}
 		}
 
 		fabric_getRemapEvent().invoker().onRemap(new RemapStateImpl<>(this, oldIdMap, idMap));

@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.attachment;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 
@@ -36,8 +37,8 @@ public class AttachmentPersistentState extends PersistentState {
 		this.wasSerialized = worldTarget.fabric_hasPersistentAttachments();
 	}
 
-	public static AttachmentPersistentState read(ServerWorld world, @Nullable NbtCompound nbt) {
-		((AttachmentTargetImpl) world).fabric_readAttachmentsFromNbt(nbt);
+	public static AttachmentPersistentState read(ServerWorld world, @Nullable NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
+		((AttachmentTargetImpl) world).fabric_readAttachmentsFromNbt(nbt, wrapperLookup);
 		return new AttachmentPersistentState(world);
 	}
 
@@ -48,8 +49,8 @@ public class AttachmentPersistentState extends PersistentState {
 	}
 
 	@Override
-	public NbtCompound writeNbt(NbtCompound nbt) {
-		worldTarget.fabric_writeAttachmentsToNbt(nbt);
+	public NbtCompound writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
+		worldTarget.fabric_writeAttachmentsToNbt(nbt, wrapperLookup);
 		return nbt;
 	}
 }

@@ -25,6 +25,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.LoginPacketSender;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
@@ -94,7 +95,7 @@ public final class NetworkingLoginQueryTest implements ModInitializer {
 		}
 	}
 
-	private void onLoginStart(ServerLoginNetworkHandler networkHandler, MinecraftServer server, PacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer) {
+	private void onLoginStart(ServerLoginNetworkHandler networkHandler, MinecraftServer server, LoginPacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer) {
 		// Send a dummy query when the client starts accepting queries.
 		sender.sendPacket(GLOBAL_TEST_CHANNEL, PacketByteBufs.empty()); // dummy packet
 	}

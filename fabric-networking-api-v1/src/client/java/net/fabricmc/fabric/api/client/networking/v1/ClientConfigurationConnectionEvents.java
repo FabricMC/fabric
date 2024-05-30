@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.networking.v1;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.packet.CustomPayload;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -30,7 +30,7 @@ public final class ClientConfigurationConnectionEvents {
 	/**
 	 * Event indicating a connection entering the CONFIGURATION state, ready for registering channel handlers.
 	 *
-	 * @see ClientConfigurationNetworking#registerReceiver(Identifier, ClientConfigurationNetworking.ConfigurationChannelHandler)
+	 * @see ClientConfigurationNetworking#registerReceiver(CustomPayload.Id, ClientConfigurationNetworking.ConfigurationPayloadHandler)
 	 */
 	public static final Event<ClientConfigurationConnectionEvents.Init> INIT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Init.class, callbacks -> (handler, client) -> {
 		for (ClientConfigurationConnectionEvents.Init callback : callbacks) {

@@ -4,18 +4,18 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AbstractFurnaceBlockEntityMixin",
-    "ArmorItemMixin",
-    "BlockItemMixin",
+    "AnvilScreenHandlerMixin",
     "BrewingStandBlockEntityMixin",
-    "CatEntityMixin",
-    "CookingRecipeJsonBuilderMixin",
-    "FoxEntityMixin",
-    "HungerManagerMixin",
+    "EnchantCommandMixin",
+    "EnchantmentHelperMixin",
+    "EnchantRandomlyLootFunctionMixin",
+    "ItemAccessor",
     "ItemMixin",
+    "ItemSettingsMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
     "RecipeMixin",
-    "WolfEntityMixin"
+    "RegistriesMixin"
   ],
   "injectors": {
     "defaultRequire": 1

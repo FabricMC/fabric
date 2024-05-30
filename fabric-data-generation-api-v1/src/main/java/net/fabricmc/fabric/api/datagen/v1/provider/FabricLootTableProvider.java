@@ -24,10 +24,10 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.server.loottable.LootTableGenerator;
 import net.minecraft.loot.LootTable;
-import net.minecraft.util.Identifier;
+import net.minecraft.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.datagen.v1.loot.FabricBlockLootTableGenerator;
-import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 /**
@@ -44,7 +44,7 @@ public interface FabricLootTableProvider extends LootTableGenerator, DataProvide
 	 *
 	 * <p>For block loot tables, use {@link FabricBlockLootTableGenerator#withConditions} instead.
 	 */
-	default BiConsumer<Identifier, LootTable.Builder> withConditions(BiConsumer<Identifier, LootTable.Builder> exporter, ConditionJsonProvider... conditions) {
+	default BiConsumer<RegistryKey<LootTable>, LootTable.Builder> withConditions(BiConsumer<RegistryKey<LootTable>, LootTable.Builder> exporter, ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 		return (id, table) -> {
 			FabricDataGenHelper.addConditions(table, conditions);

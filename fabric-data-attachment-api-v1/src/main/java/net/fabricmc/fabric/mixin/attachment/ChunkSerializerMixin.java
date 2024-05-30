@@ -43,7 +43,7 @@ abstract class ChunkSerializerMixin {
 			method = "deserialize"
 	)
 	private static WorldChunk readWorldChunkAttachments(WorldChunk chunk, ServerWorld world, PointOfInterestStorage poiStorage, ChunkPos chunkPos, NbtCompound nbt) {
-		((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(nbt);
+		((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(nbt, world.getRegistryManager());
 		return chunk;
 	}
 
@@ -55,7 +55,7 @@ abstract class ChunkSerializerMixin {
 			method = "deserialize"
 	)
 	private static ProtoChunk readProtoChunkAttachments(ProtoChunk chunk, ServerWorld world, PointOfInterestStorage poiStorage, ChunkPos chunkPos, NbtCompound nbt) {
-		((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(nbt);
+		((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(nbt, world.getRegistryManager());
 		return chunk;
 	}
 
@@ -64,6 +64,6 @@ abstract class ChunkSerializerMixin {
 			method = "serialize"
 	)
 	private static void writeChunkAttachments(ServerWorld world, Chunk chunk, CallbackInfoReturnable<NbtCompound> cir) {
-		((AttachmentTargetImpl) chunk).fabric_writeAttachmentsToNbt(cir.getReturnValue());
+		((AttachmentTargetImpl) chunk).fabric_writeAttachmentsToNbt(cir.getReturnValue(), world.getRegistryManager());
 	}
 }

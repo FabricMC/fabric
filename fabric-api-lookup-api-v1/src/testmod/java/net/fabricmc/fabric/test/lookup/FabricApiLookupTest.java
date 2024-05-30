@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.lookup;
 
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -28,7 +29,6 @@ import net.minecraft.util.math.Direction;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.test.lookup.api.ItemApis;
 import net.fabricmc.fabric.test.lookup.api.ItemInsertable;
@@ -41,17 +41,17 @@ public class FabricApiLookupTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-lookup-api-v1-testmod";
 	// Chute - Block without model that transfers item from the container above to the container below.
 	// It's meant to work with unsided containers: chests, dispensers, droppers and hoppers.
-	public static final ChuteBlock CHUTE_BLOCK = new ChuteBlock(FabricBlockSettings.create());
+	public static final ChuteBlock CHUTE_BLOCK = new ChuteBlock(AbstractBlock.Settings.create());
 	public static final BlockItem CHUTE_ITEM = new BlockItem(CHUTE_BLOCK, new Item.Settings());
 	public static BlockEntityType<ChuteBlockEntity> CHUTE_BLOCK_ENTITY_TYPE;
 	// Cobble gen - Block without model that can generate infinite cobblestone when placed above a chute.
 	// It's meant to test BlockApiLookup#registerSelf.
-	public static final CobbleGenBlock COBBLE_GEN_BLOCK = new CobbleGenBlock(FabricBlockSettings.create());
+	public static final CobbleGenBlock COBBLE_GEN_BLOCK = new CobbleGenBlock(AbstractBlock.Settings.create());
 	public static final BlockItem COBBLE_GEN_ITEM = new BlockItem(COBBLE_GEN_BLOCK, new Item.Settings());
 	public static BlockEntityType<CobbleGenBlockEntity> COBBLE_GEN_BLOCK_ENTITY_TYPE;
 	// Testing for item api lookups is done in the `item` package.
 
-	public static final InspectorBlock INSPECTOR_BLOCK = new InspectorBlock(FabricBlockSettings.create());
+	public static final InspectorBlock INSPECTOR_BLOCK = new InspectorBlock(AbstractBlock.Settings.create());
 	public static final BlockItem INSPECTOR_ITEM = new BlockItem(INSPECTOR_BLOCK, new Item.Settings());
 
 	@Override

@@ -3,7 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.loot",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "LootManagerMixin",
+    "JsonDataLoaderMixin",
+    "ReloadableRegistriesMixin",
     "LootPoolAccessor",
     "LootPoolBuilderMixin",
     "LootTableAccessor",
