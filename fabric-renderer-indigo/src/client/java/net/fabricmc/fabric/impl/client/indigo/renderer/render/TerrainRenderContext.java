@@ -85,8 +85,8 @@ public class TerrainRenderContext extends AbstractBlockRenderContext {
 	/** Called from chunk renderer hook. */
 	public void tessellateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model, MatrixStack matrixStack) {
 		try {
-			Vec3d vec3d = blockState.getModelOffset(chunkInfo.blockView, blockPos);
-			matrixStack.translate(vec3d.x, vec3d.y, vec3d.z);
+			Vec3d offset = blockState.getModelOffset(chunkInfo.blockView, blockPos);
+			matrixStack.translate(offset.x, offset.y, offset.z);
 
 			this.matrix = matrixStack.peek().getPositionMatrix();
 			this.normalMatrix = matrixStack.peek().getNormalMatrix();
