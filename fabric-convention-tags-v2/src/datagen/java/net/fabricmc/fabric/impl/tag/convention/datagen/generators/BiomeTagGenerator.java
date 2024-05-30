@@ -248,7 +248,6 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_SPARSE_OVERWORLD)
 				.add(BiomeKeys.WOODED_BADLANDS)
-				.add(BiomeKeys.ERODED_BADLANDS)
 				.add(BiomeKeys.SAVANNA)
 				.add(BiomeKeys.SAVANNA_PLATEAU)
 				.add(BiomeKeys.WINDSWEPT_SAVANNA)
