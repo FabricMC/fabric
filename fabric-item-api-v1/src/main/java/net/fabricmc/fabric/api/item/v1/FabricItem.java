@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
@@ -64,14 +65,9 @@ public interface FabricItem {
 	}
 
 	/**
-	 * Return the attribute modifiers to apply when this stack is worn in a living entity equipment slot.
-	 * Stack-aware version of {@link Item#getAttributeModifiers()}.
-	 *
-	 * <p>Note that attribute modifiers are only updated when the stack changes, i.e. when {@code ItemStack.areEqual(old, new)} is false.
-	 *
-	 * @param stack the current stack
-	 * @return the attribute modifiers
+	 * @deprecated Replaced with {@link DataComponentTypes#ATTRIBUTE_MODIFIERS}
 	 */
+	@Deprecated(forRemoval = true)
 	default AttributeModifiersComponent getAttributeModifiers(ItemStack stack) {
 		return ((Item) this).getAttributeModifiers();
 	}
