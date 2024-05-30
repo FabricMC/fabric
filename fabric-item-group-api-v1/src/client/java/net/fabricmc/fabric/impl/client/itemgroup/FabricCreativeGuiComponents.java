@@ -74,8 +74,8 @@ public class FabricCreativeGuiComponents {
 	}
 
 	public enum Type {
-		NEXT(Text.literal(">"), CreativeInventoryScreen::gotoNextPage, screen -> screen.getCurrentPage() + 1 < screen.getPageCount()),
-		PREVIOUS(Text.literal("<"), CreativeInventoryScreen::gotoPreviousPage, screen -> screen.getCurrentPage() != 0);
+		NEXT(Text.literal(">"), CreativeInventoryScreen::switchToNextPage, screen -> screen.getCurrentPage() + 1 < screen.getPageCount()),
+		PREVIOUS(Text.literal("<"), CreativeInventoryScreen::switchToPreviousPage, screen -> screen.getCurrentPage() != 0);
 
 		final Text text;
 		final Consumer<CreativeInventoryScreen> clickConsumer;

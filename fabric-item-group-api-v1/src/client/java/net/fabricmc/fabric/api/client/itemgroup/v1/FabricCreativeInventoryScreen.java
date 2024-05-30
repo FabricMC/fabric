@@ -41,7 +41,7 @@ public interface FabricCreativeInventoryScreen {
 	 *
 	 * @return Returns true when the page was changed
 	 */
-	default boolean gotoNextPage() {
+	default boolean switchToNextPage() {
 		return switchToPage(getCurrentPage() + 1);
 	}
 
@@ -50,7 +50,7 @@ public interface FabricCreativeInventoryScreen {
 	 *
 	 * @return Returns true when the page was changed
 	 */
-	default boolean gotoPreviousPage() {
+	default boolean switchToPreviousPage() {
 		return switchToPage(getCurrentPage() - 1);
 	}
 
