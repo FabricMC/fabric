@@ -32,6 +32,7 @@ import net.minecraft.util.Language;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class TranslationConventionLogWarnings implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TranslationConventionLogWarnings.class);
@@ -44,7 +45,8 @@ public class TranslationConventionLogWarnings implements ModInitializer {
 	private static final LogWarningMode LOG_UNTRANSLATED_WARNING_MODE = setupLogWarningModeProperty();
 
 	private static LogWarningMode setupLogWarningModeProperty() {
-		String property = System.getProperty("fabric-tag-conventions-v2.missingTagTranslationWarning", LogWarningMode.SHORT.name()).toUpperCase(Locale.ROOT);
+		final LogWarningMode defaultMode = FabricLoader.getInstance().isDevelopmentEnvironment() ? LogWarningMode.SHORT : LogWarningMode.SILENCED;
+		String property = System.getProperty("fabric-tag-conventions-v2.missingTagTranslationWarning", defaultMode.name()).toUpperCase(Locale.ROOT);
 
 		try {
 			return LogWarningMode.valueOf(property);
