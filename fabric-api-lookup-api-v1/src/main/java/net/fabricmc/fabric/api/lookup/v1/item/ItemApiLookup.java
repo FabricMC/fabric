@@ -16,7 +16,11 @@
 
 package net.fabricmc.fabric.api.lookup.v1.item;
 
+import java.util.Map;
+import java.util.Objects;
+
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
@@ -24,6 +28,7 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.impl.lookup.item.ItemApiLookupImpl;
 
@@ -96,14 +101,19 @@ public interface ItemApiLookup<A, C> {
 	/**
 	 * Retrieve the {@link ItemApiLookup} associated with an identifier, or create it if it didn't exist yet.
 	 *
-	 * @param lookupId The unique identifier of the lookup.
-	 * @param apiClass The class of the API.
+	 * @param lookupId     The unique identifier of the lookup.
+	 * @param apiClass     The class of the API.
 	 * @param contextClass The class of the additional context.
 	 * @return The unique lookup with the passed lookupId.
 	 * @throws IllegalArgumentException If another {@code apiClass} or another {@code contextClass} was already registered with the same identifier.
 	 */
 	static <A, C> ItemApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
 		return ItemApiLookupImpl.get(lookupId, apiClass, contextClass);
+	}
+
+	@SuppressWarnings("unchecked")
+	static <A, C> ItemApiLookup<A, C> getUnchecked(Identifier lookupId, Class<?> apiClass, Class<?> contextClass) {
+		return get(lookupId, (Class<A>) apiClass, (Class<C>) contextClass);
 	}
 
 	/**
@@ -115,35 +125,62 @@ public interface ItemApiLookup<A, C> {
 	 * <br>While providers may capture a reference to the stack, it is expected that they do not modify it directly.
 	 *
 	 * @param itemStack The item stack.
-	 * @param context Additional context for the query, defined by type parameter C.
+	 * @param context   Additional context for the query, defined by type parameter C.
 	 * @return The retrieved API, or {@code null} if no API was found.
 	 */
 	@Nullable
-	A find(ItemStack itemStack, C context);
+	default A find(@NotNull ItemStack itemStack, C context) {
+		A api = preliminary().invoker().find(itemStack, context);
+		if (api != null) return api;
 
-	/**
-	 * Expose the API for the passed items directly implementing it.
-	 *
-	 * @param items Items for which to expose the API.
-	 * @throws IllegalArgumentException If the API class is not assignable from a class of one of the items.
-	 */
-	void registerSelf(ItemConvertible... items);
+		if (itemSpecific().containsKey(itemStack.getItem())) {
+			api = getSpecificFor(itemStack.getItem()).invoker().find(itemStack, context);
+			if (api != null) return api;
+		}
 
-	/**
-	 * Expose the API for the passed items.
-	 * The mapping from the parameters of the query to the API is handled by the passed {@link ItemApiProvider}.
-	 *
-	 * @param provider The provider.
-	 * @param items The items.
-	 */
-	void registerForItems(ItemApiProvider<A, C> provider, ItemConvertible... items);
+		return fallback().invoker().find(itemStack, context);
+	}
+
+	@SuppressWarnings("unchecked")
+	default void registerSelf(ItemConvertible... items) {
+		for (ItemConvertible itemConvertible : items) {
+			Item item = itemConvertible.asItem();
+
+			if (!apiClass().isAssignableFrom(item.getClass())) {
+				String errorMessage = String.format(
+						"Failed to register self-implementing items. API class %s is not assignable from item class %s.",
+						apiClass().getCanonicalName(),
+						item.getClass().getCanonicalName()
+				);
+				throw new IllegalArgumentException(errorMessage);
+			}
+		}
+
+		registerForItems((itemStack, context) -> (A) itemStack.getItem(), items);
+	}
+
+	default void registerForItems(@NotNull ItemApiProvider<A, C> provider, ItemConvertible... items) {
+		Objects.requireNonNull(provider, "ItemApiProvider may not be null.");
+
+		if (items.length == 0) {
+			throw new IllegalArgumentException("Must register at least one ItemConvertible instance with an ItemApiProvider.");
+		}
+
+		for (ItemConvertible itemConvertible : items) {
+			Item item = itemConvertible.asItem();
+			Objects.requireNonNull(item, "Item convertible in item form may not be null.");
+			getSpecificFor(item).register(provider);
+		}
+	}
 
 	/**
 	 * Expose the API for all queries: the fallbacks providers will be invoked if no object was found using the regular providers.
 	 *
 	 * @param fallbackProvider The fallback provider.
 	 */
-	void registerFallback(ItemApiProvider<A, C> fallbackProvider);
+	default void registerFallback(@NotNull ItemApiProvider<A, C> fallbackProvider) {
+		fallback().register(fallbackProvider);
+	}
 
 	/**
 	 * Return the identifier of this lookup.
@@ -163,9 +200,36 @@ public interface ItemApiLookup<A, C> {
 	/**
 	 * Return the provider for the passed item (registered with one of the {@code register} functions), or null if none was registered (yet).
 	 * Queries should go through {@link #find}, only use this to inspect registered providers!
+	 *
+	 * @deprecated see {@link #getSpecificFor(Item)}
 	 */
-	@Nullable
-	ItemApiProvider<A, C> getProvider(Item item);
+	@Deprecated(forRemoval = true)
+	@Nullable ItemApiProvider<A, C> getProvider(@NotNull Item item);
+
+	/**
+	 * It is queried before {@link #itemSpecific()} and {@link #fallback()}.
+	 */
+	Event<ItemApiProvider<A, C>> preliminary();
+
+	/**
+	 * <p>It's queried after {@link #preliminary()} while before {@link #fallback()}.</p>
+	 * <p>This is for query existing providers. To register new providers, see {@link #getSpecificFor}.</p>
+	 *
+	 * @return The map that stores providers for different items. If an item doesn't have any specific provider, there is no entry about it in the map ({@code blockSpecific().get(item) == null}).
+	 */
+	Map<@NotNull Item, @NotNull Event<ItemApiProvider<A, C>>> itemSpecific();
+
+	/**
+	 * This is for registering new providers. To query existing providers, see {@link #itemSpecific()}.
+	 *
+	 * @return The event for registering providers for the item. If there has not been any provider for it yet, a new event will be created and put into {@link #itemSpecific()}.
+	 */
+	@NotNull Event<ItemApiProvider<A, C>> getSpecificFor(@NotNull Item item);
+
+	/**
+	 * It's queried after {@link #preliminary()} and {@link #itemSpecific()}.
+	 */
+	Event<ItemApiProvider<A, C>> fallback();
 
 	@FunctionalInterface
 	interface ItemApiProvider<A, C> {
@@ -178,10 +242,10 @@ public interface ItemApiLookup<A, C> {
 		 * <br>While providers may capture a reference to the stack, it is expected that they do not modify it directly.
 		 *
 		 * @param itemStack The item stack.
-		 * @param context Additional context passed to the query.
+		 * @param context   Additional context passed to the query.
 		 * @return An API of type {@code A}, or {@code null} if no API is available.
 		 */
-		@Nullable
-		A find(ItemStack itemStack, C context);
+
+		@Nullable A find(@NotNull ItemStack itemStack, C context);
 	}
 }

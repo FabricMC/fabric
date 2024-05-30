@@ -17,22 +17,29 @@
 package net.fabricmc.fabric.impl.lookup.block;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BiFunction;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.registry.Registries;
-import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
@@ -47,10 +54,34 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 		return (BlockApiLookup<A, C>) LOOKUPS.getLookup(lookupId, apiClass, contextClass);
 	}
 
+	public static <A, C> Event<BlockApiProvider<A, C>> newEvent() {
+		return EventFactory.createArrayBacked(BlockApiProvider.class, providers -> (world, pos, state, blockEntity, context) -> {
+			for (BlockApiProvider<A, C> provider : providers) {
+				A api = provider.find(world, pos, state, blockEntity, context);
+				if (api != null) return api;
+			}
+
+			return null;
+		});
+	}
+
 	private final Identifier identifier;
 	private final Class<A> apiClass;
 	private final Class<C> contextClass;
-	private final ApiProviderMap<Block, BlockApiProvider<A, C>> providerMap = ApiProviderMap.create();
+	private final Event<BlockApiProvider<A, C>> preliminary = newEvent();
+	private final ApiProviderMap<Block, Event<BlockApiProvider<A, C>>> blockSpecific = ApiProviderMap.create();
+	/**
+	 * It can't reflect phase order.<br/>
+	 * It's just for {@link #getProvider}. It should be removed in the future.
+	 */
+	@ApiStatus.Experimental
+	private final Multimap<Block, BlockApiProvider<A, C>> blockSpecificProviders = Multimaps.synchronizedMultimap(ArrayListMultimap.create());
+	private final Event<BlockApiProvider<A, C>> fallback = newEvent();
+	/**
+	 * It can't reflect phase order.<br/>
+	 * It's just for {@link #getFallbackProviders()}. It should be removed in the future.
+	 */
+	@ApiStatus.Experimental
 	private final List<BlockApiProvider<A, C>> fallbackProviders = new CopyOnWriteArrayList<>();
 
 	@SuppressWarnings("unchecked")
@@ -58,52 +89,6 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 		this.identifier = identifier;
 		this.apiClass = (Class<A>) apiClass;
 		this.contextClass = (Class<C>) contextClass;
-	}
-
-	@Nullable
-	@Override
-	public A find(World world, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context) {
-		Objects.requireNonNull(world, "World may not be null.");
-		Objects.requireNonNull(pos, "BlockPos may not be null.");
-		// Providers have the final say whether a null context is allowed.
-
-		// Get the block state and the block entity
-		if (blockEntity == null) {
-			if (state == null) {
-				state = world.getBlockState(pos);
-			}
-
-			if (state.hasBlockEntity()) {
-				blockEntity = world.getBlockEntity(pos);
-			}
-		} else {
-			if (state == null) {
-				state = blockEntity.getCachedState();
-			}
-		}
-
-		@Nullable
-		BlockApiProvider<A, C> provider = getProvider(state.getBlock());
-		A instance = null;
-
-		if (provider != null) {
-			instance = provider.find(world, pos, state, blockEntity, context);
-		}
-
-		if (instance != null) {
-			return instance;
-		}
-
-		// Query the fallback providers
-		for (BlockApiProvider<A, C> fallbackProvider : fallbackProviders) {
-			instance = fallbackProvider.find(world, pos, state, blockEntity, context);
-
-			if (instance != null) {
-				return instance;
-			}
-		}
-
-		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -125,54 +110,12 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 			}
 		}
 
-		registerForBlockEntities((blockEntity, context) -> (A) blockEntity, blockEntityTypes);
+		BlockApiLookup.registerForBlockEntities(this, (blockEntity, context) -> (A) blockEntity, blockEntityTypes);
 	}
 
 	@Override
-	public void registerForBlocks(BlockApiProvider<A, C> provider, Block... blocks) {
-		Objects.requireNonNull(provider, "BlockApiProvider may not be null.");
-
-		if (blocks.length == 0) {
-			throw new IllegalArgumentException("Must register at least one Block instance with a BlockApiProvider.");
-		}
-
-		for (Block block : blocks) {
-			Objects.requireNonNull(block, "Encountered null block while registering a block API provider mapping.");
-
-			if (providerMap.putIfAbsent(block, provider) != null) {
-				LOGGER.warn("Encountered duplicate API provider registration for block: " + Registries.BLOCK.getId(block));
-			}
-		}
-	}
-
-	@Override
-	public void registerForBlockEntities(BlockEntityApiProvider<A, C> provider, BlockEntityType<?>... blockEntityTypes) {
-		Objects.requireNonNull(provider, "BlockEntityApiProvider may not be null.");
-
-		if (blockEntityTypes.length == 0) {
-			throw new IllegalArgumentException("Must register at least one BlockEntityType instance with a BlockEntityApiProvider.");
-		}
-
-		BlockApiProvider<A, C> nullCheckedProvider = (world, pos, state, blockEntity, context) -> {
-			if (blockEntity == null) {
-				return null;
-			} else {
-				return provider.find(blockEntity, context);
-			}
-		};
-
-		for (BlockEntityType<?> blockEntityType : blockEntityTypes) {
-			Objects.requireNonNull(blockEntityType, "Encountered null block entity type while registering a block entity API provider mapping.");
-
-			Block[] blocks = ((BlockEntityTypeAccessor) blockEntityType).getBlocks().toArray(new Block[0]);
-			registerForBlocks(nullCheckedProvider, blocks);
-		}
-	}
-
-	@Override
-	public void registerFallback(BlockApiProvider<A, C> fallbackProvider) {
-		Objects.requireNonNull(fallbackProvider, "BlockApiProvider may not be null.");
-
+	public void registerFallback(@NotNull BlockApiProvider<A, C> fallbackProvider) {
+		BlockApiLookup.super.registerFallback(fallbackProvider);
 		fallbackProviders.add(fallbackProvider);
 	}
 
@@ -191,13 +134,54 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 		return contextClass;
 	}
 
+	@SuppressWarnings("removal")//though just override while no invoke, idea still warns
 	@Override
-	@Nullable
-	public BlockApiProvider<A, C> getProvider(Block block) {
-		return providerMap.get(block);
+	@Deprecated(forRemoval = true)
+	public @Nullable BlockApiProvider<A, C> getProvider(Block block) {
+		for (BlockApiProvider<A, C> provider : blockSpecificProviders.get(block)) {
+			return provider;
+		}
+
+		return null;
 	}
 
-	public List<BlockApiProvider<A, C>> getFallbackProviders() {
+	@Deprecated(forRemoval = true)
+	public @UnmodifiableView List<BlockApiProvider<A, C>> getFallbackProviders() {
 		return fallbackProviders;
+	}
+
+	@Override
+	public Event<BlockApiProvider<A, C>> preliminary() {
+		return preliminary;
+	}
+
+	@Override
+	public @UnmodifiableView Map<@NotNull Block, @NotNull Event<BlockApiProvider<A, C>>> blockSpecific() {
+		return blockSpecific.asMap();
+	}
+
+	@Override
+	public @NotNull Event<BlockApiProvider<A, C>> getSpecificFor(@NotNull Block block) {
+		Event<BlockApiProvider<A, C>> event = blockSpecific.get(block);
+
+		if (event == null) {
+			blockSpecific.putIfAbsent(block, newEvent());
+			event = Objects.requireNonNull(blockSpecific.get(block));
+		}
+
+		return event;
+	}
+
+	@Override
+	public Event<BlockApiProvider<A, C>> fallback() {
+		return fallback;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <B extends BlockEntity> void registerForBlockEntity(@NotNull BlockEntityType<? extends B> blockEntityType, @NotNull BiFunction<? super B, ? super C, ? extends @Nullable A> provider) {
+		for (Block block : ((BlockEntityTypeAccessor) blockEntityType).getBlocks().toArray(new Block[0])) {
+			getSpecificFor(block).register((world, pos, state, blockEntity, context) -> provider.apply((B) blockEntity, context));
+		}
 	}
 }

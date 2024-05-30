@@ -16,10 +16,13 @@
 
 package net.fabricmc.fabric.api.lookup.v1.block;
 
+import java.util.Map;
 import java.util.function.BiFunction;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -29,6 +32,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
 
 /**
@@ -143,8 +147,8 @@ public interface BlockApiLookup<A, C> {
 	/**
 	 * Retrieve the {@link BlockApiLookup} associated with an identifier, or create it if it didn't exist yet.
 	 *
-	 * @param lookupId The unique identifier of the lookup.
-	 * @param apiClass The class of the API.
+	 * @param lookupId     The unique identifier of the lookup.
+	 * @param apiClass     The class of the API.
 	 * @param contextClass The class of the additional context.
 	 * @return The unique lookup with the passed lookupId.
 	 * @throws IllegalArgumentException If another {@code apiClass} or another {@code contextClass} was already registered with the same identifier.
@@ -153,19 +157,31 @@ public interface BlockApiLookup<A, C> {
 		return BlockApiLookupImpl.get(lookupId, apiClass, contextClass);
 	}
 
+	@SuppressWarnings("unchecked")
+	static <A, C> BlockApiLookup<A, C> getUnchecked(Identifier lookupId, Class<?> apiClass, Class<?> contextClass) {
+		return get(lookupId, (Class<A>) apiClass, (Class<C>) contextClass);
+	}
+
+	@SafeVarargs
+	static <A, C, B extends BlockEntity> void registerForBlockEntities(BlockApiLookup<A, C> lookup, BiFunction<? super B, ? super C, ? extends @Nullable A> provider, BlockEntityType<? extends B>... blockEntityTypes) {
+		for (BlockEntityType<? extends B> blockEntityType : blockEntityTypes) {
+			lookup.registerForBlockEntity(blockEntityType, provider);
+		}
+	}
+
 	/**
 	 * Attempt to retrieve an API from a block in the world.
 	 * Consider using {@link BlockApiCache} if you are doing frequent queries at the same position.
 	 *
 	 * <p>Note: If the block state or the block entity is known, it is more efficient to use {@link BlockApiLookup#find(World, BlockPos, BlockState, BlockEntity, Object)}.
 	 *
-	 * @param world The world.
-	 * @param pos The position of the block.
+	 * @param world   The world.
+	 * @param pos     The position of the block.
 	 * @param context Additional context for the query, defined by type parameter C.
 	 * @return The retrieved API, or {@code null} if no API was found.
 	 */
 	@Nullable
-	default A find(World world, BlockPos pos, C context) {
+	default A find(@NotNull World world, @NotNull BlockPos pos, C context) {
 		return find(world, pos, null, null, context);
 	}
 
@@ -173,15 +189,39 @@ public interface BlockApiLookup<A, C> {
 	 * Attempt to retrieve an API from a block in the world.
 	 * Consider using {@link BlockApiCache} if you are doing frequent queries at the same position.
 	 *
-	 * @param world The world.
-	 * @param pos The position of the block.
-	 * @param context Additional context for the query, defined by type parameter C.
-	 * @param state The block state at the target position, or null if unknown.
+	 * @param world       The world.
+	 * @param pos         The position of the block.
+	 * @param context     Additional context for the query, defined by type parameter C.
+	 * @param state       The block state at the target position, or null if unknown.
 	 * @param blockEntity The block entity at the target position if it is known, or null if it is unknown or does not exist.
 	 * @return The retrieved API, or {@code null} if no API was found.
 	 */
 	@Nullable
-	A find(World world, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context);
+	default A find(@NotNull World world, @NotNull BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context) {
+		if (blockEntity == null) {
+			if (state == null) {
+				state = world.getBlockState(pos);
+			}
+
+			if (state.hasBlockEntity()) {
+				blockEntity = world.getBlockEntity(pos);
+			}
+		} else {
+			if (state == null) {
+				state = blockEntity.getCachedState();
+			}
+		}
+
+		A api = preliminary().invoker().find(world, pos, state, blockEntity, context);
+		if (api != null) return api;
+
+		if (blockSpecific().containsKey(state.getBlock())) {
+			api = getSpecificFor(state.getBlock()).invoker().find(world, pos, state, blockEntity, context);
+			if (api != null) return api;
+		}
+
+		return fallback().invoker().find(world, pos, state, blockEntity, context);
+	}
 
 	/**
 	 * Expose the API for the passed block entities directly implementing it.
@@ -198,9 +238,13 @@ public interface BlockApiLookup<A, C> {
 	 * The mapping from the parameters of the query to the API is handled by the passed {@link BlockApiProvider}.
 	 *
 	 * @param provider The provider.
-	 * @param blocks The blocks.
+	 * @param blocks   The blocks.
 	 */
-	void registerForBlocks(BlockApiProvider<A, C> provider, Block... blocks);
+	default void registerForBlocks(BlockApiProvider<A, C> provider, Block... blocks) {
+		for (Block block : blocks) {
+			getSpecificFor(block).register(provider);
+		}
+	}
 
 	/**
 	 * Expose the API for instances of the passed block entity type.
@@ -211,15 +255,18 @@ public interface BlockApiLookup<A, C> {
 	 * its {@linkplain BlockEntityType#blocks} when this method is called.
 	 * If the {@code blocks} field is empty, {@link IllegalArgumentException} is thrown.
 	 *
-	 * @param <T> The block entity class for which an API is exposed.
-	 * @param provider The provider: returns an API if available in the passed block entity with the passed context,
-	 *                 or {@code null} if no API is available.
+	 * @param <T>             The block entity class for which an API is exposed.
+	 * @param provider        The provider: returns an API if available in the passed block entity with the passed context,
+	 *                        or {@code null} if no API is available.
 	 * @param blockEntityType The block entity type.
+	 * @deprecated see {@link #registerForBlockEntity(BlockEntityType, BiFunction)}
 	 */
-	@SuppressWarnings("unchecked")
+	@Deprecated
 	default <T extends BlockEntity> void registerForBlockEntity(BiFunction<? super T, C, @Nullable A> provider, BlockEntityType<T> blockEntityType) {
-		registerForBlockEntities((blockEntity, context) -> provider.apply((T) blockEntity, context), blockEntityType);
+		registerForBlockEntity(blockEntityType, provider);
 	}
+
+	<B extends BlockEntity> void registerForBlockEntity(@NotNull BlockEntityType<? extends B> blockEntityType, @NotNull BiFunction<? super B, ? super C, ? extends @Nullable A> provider);
 
 	/**
 	 * Expose the API for instances of the passed block entity types.
@@ -231,18 +278,25 @@ public interface BlockApiLookup<A, C> {
 	 * its {@linkplain BlockEntityType#blocks} when this method is called.
 	 * If the {@code blocks} field is empty, {@link IllegalArgumentException} is thrown.
 	 *
-	 * @param provider The provider.
+	 * @param provider         The provider.
 	 * @param blockEntityTypes The block entity types.
+	 * @deprecated see {@link #registerForBlockEntities(BlockApiLookup, BiFunction, BlockEntityType[])}
 	 */
-	void registerForBlockEntities(BlockEntityApiProvider<A, C> provider, BlockEntityType<?>... blockEntityTypes);
+	@Deprecated
+	default void registerForBlockEntities(BlockEntityApiProvider<A, C> provider, BlockEntityType<?>... blockEntityTypes) {
+		registerForBlockEntities(this, provider::find, blockEntityTypes);
+	}
 
 	/**
 	 * Expose the API for all queries: the provider will be invoked if no object was found using the block or block entity providers.
 	 * This may have a big performance impact on all queries, use cautiously.
 	 *
 	 * @param fallbackProvider The fallback provider.
+	 * @see #fallback()
 	 */
-	void registerFallback(BlockApiProvider<A, C> fallbackProvider);
+	default void registerFallback(@NotNull BlockApiProvider<A, C> fallbackProvider) {
+		fallback().register(fallbackProvider);
+	}
 
 	/**
 	 * Return the identifier of this lookup.
@@ -262,33 +316,65 @@ public interface BlockApiLookup<A, C> {
 	/**
 	 * Return the provider for the passed block (registered with one of the {@code register} functions), or null if none was registered (yet).
 	 * Queries should go through {@link #find}, only use this to inspect registered providers!
+	 *
+	 * @deprecated see {@link #getSpecificFor(Block)}
 	 */
-	@Nullable
-	BlockApiProvider<A, C> getProvider(Block block);
+	@Deprecated(forRemoval = true)
+
+	@Nullable BlockApiProvider<A, C> getProvider(Block block);
+
+	/**
+	 * It is queried before {@link #blockSpecific()} and {@link #fallback()}.
+	 */
+	Event<BlockApiProvider<A, C>> preliminary();
+
+	/**
+	 * <p>It's queried after {@link #preliminary()} while before {@link #fallback()}.</p>
+	 * <p>This is for query existing providers. To register new providers, see {@link #getSpecificFor}.</p>
+	 *
+	 * @return The map that stores providers for different blocks. If a block doesn't have any specific provider, there is no entry about it in the map ({@code blockSpecific().get(block) == null}).
+	 */
+	@UnmodifiableView Map<@NotNull Block, @NotNull Event<BlockApiProvider<A, C>>> blockSpecific();
+
+	/**
+	 * This is for registering new providers. To query existing providers, see {@link #blockSpecific()}.
+	 *
+	 * @return The event for registering providers for the block. If there has not been any provider for it yet, a new event will be created and put into {@link #blockSpecific()}.
+	 */
+	@NotNull Event<BlockApiProvider<A, C>> getSpecificFor(@NotNull Block block);
+
+	/**
+	 * It's queried after {@link #preliminary()} and {@link #blockSpecific()}.
+	 */
+	Event<BlockApiProvider<A, C>> fallback();
 
 	@FunctionalInterface
 	interface BlockApiProvider<A, C> {
 		/**
 		 * Return an API of type {@code A} if available in the world at the given pos with the given context, or {@code null} otherwise.
 		 *
-		 * @param world The world.
-		 * @param pos The position in the world.
-		 * @param state The block state.
+		 * @param world       The world.
+		 * @param pos         The position in the world.
+		 * @param state       The block state.
 		 * @param blockEntity The block entity, if it exists in the world.
-		 * @param context Additional context passed to the query.
+		 * @param context     Additional context passed to the query.
 		 * @return An API of type {@code A}, or {@code null} if no API is available.
 		 */
-		@Nullable
-		A find(World world, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, C context);
+
+		@Nullable A find(@NotNull World world, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable BlockEntity blockEntity, C context);
 	}
 
+	/**
+	 * @deprecated use {@link BiFunction}{@code <BlockEntity, C, A>} instead
+	 */
+	@Deprecated
 	@FunctionalInterface
 	interface BlockEntityApiProvider<A, C> {
 		/**
 		 * Return an API of type {@code A} if available in the given block entity with the given context, or {@code null} otherwise.
 		 *
 		 * @param blockEntity The block entity. It is guaranteed that it is never null.
-		 * @param context Additional context passed to the query.
+		 * @param context     Additional context passed to the query.
 		 * @return An API of type {@code A}, or {@code null} if no API is available.
 		 */
 		@Nullable

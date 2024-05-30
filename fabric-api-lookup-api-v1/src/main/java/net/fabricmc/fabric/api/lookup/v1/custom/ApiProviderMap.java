@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.api.lookup.v1.custom;
 
+import java.util.Map;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import net.fabricmc.fabric.impl.lookup.custom.ApiProviderHashMap;
 
@@ -46,8 +49,7 @@ public interface ApiProviderMap<K, V> {
 	 *
 	 * @throws NullPointerException If the key is null.
 	 */
-	@Nullable
-	V get(K key);
+	@Nullable V get(K key);
 
 	/**
 	 * If the specified key is not already associated with a provider,
@@ -55,5 +57,10 @@ public interface ApiProviderMap<K, V> {
 	 *
 	 * @throws NullPointerException If the key or the provider is null.
 	 */
-	V putIfAbsent(K key, V provider);
+	@Nullable V putIfAbsent(K key, V provider);
+
+	/**
+	 * @return A read-only {@link Map} view of this instance. All modification operations will throw {@link UnsupportedOperationException}, except {@link Map#putIfAbsent(Object, Object)}.
+	 */
+	@UnmodifiableView Map<K, V> asMap();
 }

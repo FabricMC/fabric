@@ -16,27 +16,87 @@
 
 package net.fabricmc.fabric.impl.lookup.custom;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 
-public final class ApiProviderHashMap<K, V> implements ApiProviderMap<K, V> {
+public final class ApiProviderHashMap<K, V> implements ApiProviderMap<K, V>, @UnmodifiableView Map<K, V> {
 	private volatile Map<K, V> lookups = new Reference2ReferenceOpenHashMap<>();
+
+	@Override
+	public int size() {
+		return lookups.size();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return lookups.isEmpty();
+	}
+
+	@Override
+	public boolean containsKey(Object key) {
+		return lookups.containsKey(key);
+	}
+
+	@Override
+	public boolean containsValue(Object value) {
+		return lookups.containsValue(value);
+	}
 
 	@Nullable
 	@Override
-	public V get(K key) {
+	public V get(Object key) {
 		Objects.requireNonNull(key, "Key may not be null.");
 
 		return lookups.get(key);
 	}
 
 	@Override
-	public synchronized V putIfAbsent(K key, V provider) {
+	public @Nullable V put(K key, V value) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public V remove(Object key) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void putAll(@NotNull Map<? extends K, ? extends V> m) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void clear() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public @NotNull Set<K> keySet() {
+		return Collections.unmodifiableSet(lookups.keySet());
+	}
+
+	@Override
+	public @NotNull Collection<V> values() {
+		return Collections.unmodifiableCollection(lookups.values());
+	}
+
+	@Override
+	public @NotNull Set<Entry<K, V>> entrySet() {
+		return Collections.unmodifiableSet(lookups.entrySet());
+	}
+
+	@Override
+	public synchronized @Nullable V putIfAbsent(K key, V provider) {
 		Objects.requireNonNull(key, "Key may not be null.");
 		Objects.requireNonNull(provider, "Provider may not be null.");
 
@@ -46,5 +106,10 @@ public final class ApiProviderHashMap<K, V> implements ApiProviderMap<K, V> {
 		lookups = lookupsCopy;
 
 		return result;
+	}
+
+	@Override
+	public @UnmodifiableView Map<K, V> asMap() {
+		return this;
 	}
 }
