@@ -57,7 +57,7 @@ public class AttachmentCopyTests implements FabricGameTest {
 		entity.setAttached(DUMMY, () -> 10);
 		entity.setAttached(COPY_ON_DEATH, () -> 10);
 
-		Entity moved = entity.teleportTo(new TeleportTarget(end, entity, TeleportTarget.field_52245));
+		Entity moved = entity.teleportTo(new TeleportTarget(end, entity, TeleportTarget.NO_OP));
 		if (moved == null) throw new GameTestException("Cross-world teleportation failed");
 
 		IntSupplier attached1 = moved.getAttached(DUMMY);
