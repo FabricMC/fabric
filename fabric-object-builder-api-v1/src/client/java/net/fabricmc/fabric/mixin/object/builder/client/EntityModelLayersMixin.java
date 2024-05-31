@@ -32,7 +32,7 @@ public class EntityModelLayersMixin {
 	private static void createSign(WoodType type, CallbackInfoReturnable<EntityModelLayer> cir) {
 		if (type.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
 			Identifier identifier = Identifier.of(type.name());
-			cir.setReturnValue(new EntityModelLayer(Identifier.of(identifier.getNamespace(), "sign/" + identifier.getPath()), "main"));
+			cir.setReturnValue(new EntityModelLayer(identifier.withPrefixedPath("sign/"), "main"));
 		}
 	}
 
@@ -40,7 +40,7 @@ public class EntityModelLayersMixin {
 	private static void createHangingSign(WoodType type, CallbackInfoReturnable<EntityModelLayer> cir) {
 		if (type.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
 			Identifier identifier = Identifier.of(type.name());
-			cir.setReturnValue(new EntityModelLayer(Identifier.of(identifier.getNamespace(), "hanging_sign/" + identifier.getPath()), "main"));
+			cir.setReturnValue(new EntityModelLayer(identifier.withPrefixedPath("hanging_sign/"), "main"));
 		}
 	}
 }

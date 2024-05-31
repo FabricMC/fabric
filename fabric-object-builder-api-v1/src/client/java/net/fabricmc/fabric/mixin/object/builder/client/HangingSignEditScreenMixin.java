@@ -36,7 +36,7 @@ public abstract class HangingSignEditScreenMixin extends AbstractSignEditScreen 
 	private Identifier init(String id, Operation<Identifier> original) {
 		if (signType.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
 			Identifier identifier = Identifier.of(signType.name());
-			return Identifier.of(identifier.getNamespace(), "textures/gui/hanging_signs/" + identifier.getPath() + ".png");
+			return identifier.withPath(path -> "textures/gui/hanging_signs/" + path + ".png");
 		}
 
 		return original.call(id);

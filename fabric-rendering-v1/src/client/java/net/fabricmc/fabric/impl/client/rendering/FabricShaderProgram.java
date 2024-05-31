@@ -40,6 +40,6 @@ public final class FabricShaderProgram extends ShaderProgram {
 	 */
 	public static Identifier rewriteAsId(String input, String containedId) {
 		Identifier contained = Identifier.of(containedId);
-		return Identifier.of(contained.getNamespace(), input.replace(containedId, contained.getPath()));
+		return contained.withPath(path -> input.replace(containedId, path));
 	}
 }
