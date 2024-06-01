@@ -110,6 +110,16 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.STONES, "Stones");
 		translationBuilder.add(ConventionalItemTags.COBBLESTONES, "Cobblestones");
 		translationBuilder.add(ConventionalItemTags.TOOLS, "Tools");
+		translationBuilder.add(ConventionalItemTags.SHEAR_TOOLS, "Shears");
+		translationBuilder.add(ConventionalItemTags.SPEAR_TOOLS, "Spears");
+		translationBuilder.add(ConventionalItemTags.BOW_TOOLS, "Bows");
+		translationBuilder.add(ConventionalItemTags.CROSSBOW_TOOLS, "Crossbows");
+		translationBuilder.add(ConventionalItemTags.SHIELD_TOOLS, "Shields");
+		translationBuilder.add(ConventionalItemTags.FISHING_ROD_TOOLS, "Fishing Rods");
+		translationBuilder.add(ConventionalItemTags.BRUSH_TOOLS, "Brushes");
+		translationBuilder.add(ConventionalItemTags.MELEE_WEAPON_TOOLS, "Melee Weapons");
+		translationBuilder.add(ConventionalItemTags.RANGED_WEAPON_TOOLS, "Ranged Weapons");
+		translationBuilder.add(ConventionalItemTags.MINING_TOOL_TOOLS, "Mining Tools");
 		translationBuilder.add(ConventionalItemTags.SHEARS_TOOLS, "Shears");
 		translationBuilder.add(ConventionalItemTags.SPEARS_TOOLS, "Spears");
 		translationBuilder.add(ConventionalItemTags.BOWS_TOOLS, "Bows");

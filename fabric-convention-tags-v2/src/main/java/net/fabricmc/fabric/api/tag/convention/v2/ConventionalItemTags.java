@@ -37,22 +37,22 @@ public final class ConventionalItemTags {
 
 	// Tool tags
 	public static final TagKey<Item> TOOLS = register("tools");
-	public static final TagKey<Item> SHEARS_TOOLS = register("tools/shears");
+	public static final TagKey<Item> SHEAR_TOOLS = register("tools/shear");
 	/**
 	 * For spear tools, like Minecraft's tridents.
 	 * Note, other weapons like boomerangs and throwing knives are best put into their own tools tag.
 	 */
-	public static final TagKey<Item> SPEARS_TOOLS = register("tools/spears");
-	public static final TagKey<Item> BOWS_TOOLS = register("tools/bows");
-	public static final TagKey<Item> CROSSBOWS_TOOLS = register("tools/crossbows");
-	public static final TagKey<Item> SHIELDS_TOOLS = register("tools/shields");
-	public static final TagKey<Item> FISHING_RODS_TOOLS = register("tools/fishing_rods");
-	public static final TagKey<Item> BRUSHES_TOOLS = register("tools/brushes");
+	public static final TagKey<Item> SPEAR_TOOLS = register("tools/spear");
+	public static final TagKey<Item> BOW_TOOLS = register("tools/bow");
+	public static final TagKey<Item> CROSSBOW_TOOLS = register("tools/crossbow");
+	public static final TagKey<Item> SHIELD_TOOLS = register("tools/shield");
+	public static final TagKey<Item> FISHING_ROD_TOOLS = register("tools/fishing_rod");
+	public static final TagKey<Item> BRUSH_TOOLS = register("tools/brush");
 
 	// Action-based tool tags
-	public static final TagKey<Item> MELEE_WEAPONS_TOOLS = register("tools/melee_weapons");
-	public static final TagKey<Item> RANGED_WEAPONS_TOOLS = register("tools/ranged_weapons");
-	public static final TagKey<Item> MINING_TOOLS = register("tools/mining_tools");
+	public static final TagKey<Item> MELEE_WEAPON_TOOLS = register("tools/melee_weapon");
+	public static final TagKey<Item> RANGED_WEAPON_TOOLS = register("tools/ranged_weapon");
+	public static final TagKey<Item> MINING_TOOL_TOOLS = register("tools/mining_tool");
 
 	// Armor tags
 	/**
@@ -316,6 +316,56 @@ public final class ConventionalItemTags {
 	 */
 	@Deprecated
 	public static final TagKey<Item> COAL = register("coal");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#SHEAR_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> SHEARS_TOOLS = register("tools/shears");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#SPEAR_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> SPEARS_TOOLS = register("tools/spears");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#BOW_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> BOWS_TOOLS = register("tools/bows");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#CROSSBOW_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> CROSSBOWS_TOOLS = register("tools/crossbows");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#SHIELD_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> SHIELDS_TOOLS = register("tools/shields");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#FISHING_ROD_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> FISHING_RODS_TOOLS = register("tools/fishing_rods");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#BRUSH_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> BRUSHES_TOOLS = register("tools/brushes");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#MELEE_WEAPON_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> MELEE_WEAPONS_TOOLS = register("tools/melee_weapons");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#RANGED_WEAPON_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> RANGED_WEAPONS_TOOLS = register("tools/ranged_weapons");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#MINING_TOOL_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> MINING_TOOLS = register("tools/mining_tools");
 
 	private static TagKey<Item> register(String tagId) {
 		return TagRegistration.ITEM_TAG.registerC(tagId);
