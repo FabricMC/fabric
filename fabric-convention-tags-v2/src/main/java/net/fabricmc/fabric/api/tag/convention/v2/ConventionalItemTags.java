@@ -170,13 +170,13 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
 	/**
-	 * Block tag equivalent is {@link BlockTags#SHULKER_BOXES}
+	 * Block tag equivalent is {@link BlockTags#SHULKER_BOXES}.
 	 */
 	public static final TagKey<Item> SHULKER_BOXES = register("shulker_boxes");
 	public static final TagKey<Item> GLAZED_TERRACOTTA = register("glazed_terracotta");
 	public static final TagKey<Item> CONCRETE = register("concrete");
 	/**
-	 * Block tag equivalent is {@link BlockTags#CONCRETE_POWDER}
+	 * Block tag equivalent is {@link BlockTags#CONCRETE_POWDER}.
 	 */
 	public static final TagKey<Item> CONCRETE_POWDER = register("concrete_powder");
 
