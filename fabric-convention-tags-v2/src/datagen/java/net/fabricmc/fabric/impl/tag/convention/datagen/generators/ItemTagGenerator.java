@@ -60,7 +60,24 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.WOODEN_CHESTS, ConventionalItemTags.WOODEN_CHESTS);
 		copy(ConventionalBlockTags.GLASS_BLOCKS, ConventionalItemTags.GLASS_BLOCKS);
 		copy(ConventionalBlockTags.GLASS_PANES, ConventionalItemTags.GLASS_PANES);
-		copy(ConventionalBlockTags.SHULKER_BOXES, ConventionalItemTags.SHULKER_BOXES);
+		getOrCreateTagBuilder(ConventionalItemTags.SHULKER_BOXES)
+				.add(Items.SHULKER_BOX)
+				.add(Items.WHITE_SHULKER_BOX)
+				.add(Items.ORANGE_SHULKER_BOX)
+				.add(Items.MAGENTA_SHULKER_BOX)
+				.add(Items.LIGHT_BLUE_SHULKER_BOX)
+				.add(Items.YELLOW_SHULKER_BOX)
+				.add(Items.LIME_SHULKER_BOX)
+				.add(Items.PINK_SHULKER_BOX)
+				.add(Items.GRAY_SHULKER_BOX)
+				.add(Items.LIGHT_GRAY_SHULKER_BOX)
+				.add(Items.CYAN_SHULKER_BOX)
+				.add(Items.PURPLE_SHULKER_BOX)
+				.add(Items.BLUE_SHULKER_BOX)
+				.add(Items.BROWN_SHULKER_BOX)
+				.add(Items.GREEN_SHULKER_BOX)
+				.add(Items.RED_SHULKER_BOX)
+				.add(Items.BLACK_SHULKER_BOX);
 
 		copy(ConventionalBlockTags.BUDDING_BLOCKS, ConventionalItemTags.BUDDING_BLOCKS);
 		copy(ConventionalBlockTags.BUDS, ConventionalItemTags.BUDS);
