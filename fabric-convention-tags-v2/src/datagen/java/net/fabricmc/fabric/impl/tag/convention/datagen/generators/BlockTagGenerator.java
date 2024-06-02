@@ -94,6 +94,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		getOrCreateTagBuilder(ConventionalBlockTags.BOOKSHELVES)
 				.add(Blocks.BOOKSHELF);
 		generateGlassTags();
+		generateGlazeTerracottaTags();
 		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_BARRELS)
 				.add(Blocks.BARREL);
 		getOrCreateTagBuilder(ConventionalBlockTags.BARRELS)
@@ -219,6 +220,26 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.GREEN_STAINED_GLASS_PANE)
 				.add(Blocks.BLACK_STAINED_GLASS_PANE)
 				.add(Blocks.RED_STAINED_GLASS_PANE);
+	}
+
+	private void generateGlazeTerracottaTags() {
+		getOrCreateTagBuilder(ConventionalBlockTags.GLAZED_TERRACOTTA)
+				.add(Blocks.WHITE_GLAZED_TERRACOTTA)
+				.add(Blocks.ORANGE_GLAZED_TERRACOTTA)
+				.add(Blocks.MAGENTA_GLAZED_TERRACOTTA)
+				.add(Blocks.LIGHT_BLUE_GLAZED_TERRACOTTA)
+				.add(Blocks.YELLOW_GLAZED_TERRACOTTA)
+				.add(Blocks.LIME_GLAZED_TERRACOTTA)
+				.add(Blocks.PINK_GLAZED_TERRACOTTA)
+				.add(Blocks.GRAY_GLAZED_TERRACOTTA)
+				.add(Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA)
+				.add(Blocks.CYAN_GLAZED_TERRACOTTA)
+				.add(Blocks.PURPLE_GLAZED_TERRACOTTA)
+				.add(Blocks.BLUE_GLAZED_TERRACOTTA)
+				.add(Blocks.BROWN_GLAZED_TERRACOTTA)
+				.add(Blocks.GREEN_GLAZED_TERRACOTTA)
+				.add(Blocks.BLACK_GLAZED_TERRACOTTA)
+				.add(Blocks.RED_GLAZED_TERRACOTTA);
 	}
 
 	private void generateDyedTags() {
