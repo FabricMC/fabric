@@ -16,11 +16,15 @@
 
 package net.fabricmc.fabric.test.model.loading;
 
+import static net.fabricmc.fabric.test.model.loading.ModelTestModClient.id;
+
+import com.mojang.datafixers.util.Either;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -31,10 +35,6 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
  */
 public class NestedModelLoadingTest implements ClientModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
-
-	private static Identifier id(String path) {
-		return Identifier.of("fabric-model-loading-api-v1-testmod", path);
-	}
 
 	private static final Identifier BASE_MODEL = id("nested_base");
 	private static final Identifier NESTED_MODEL_1 = id("nested_1");
@@ -84,21 +84,23 @@ public class NestedModelLoadingTest implements ClientModInitializer {
 
 			pluginContext.modifyModelOnLoad().register((model, context) -> {
 				UnbakedModel ret = model;
+				Either<ModelIdentifier, Identifier> eitherId = context.id();
+				Identifier id = eitherId.right().orElse(null);
 
-				if (context.id().equals(NESTED_MODEL_3)) {
-					Identifier id = context.id();
+				if (id != null) {
+					if (id.equals(NESTED_MODEL_3)) {
+						LOGGER.info("   Nested model 4 started loading");
+						ret = context.getOrLoadModel(NESTED_MODEL_4);
+						LOGGER.info("   Nested model 4 finished loading");
 
-					LOGGER.info("   Nested model 4 started loading");
-					ret = context.getOrLoadModel(NESTED_MODEL_4);
-					LOGGER.info("   Nested model 4 finished loading");
-
-					if (!id.equals(context.id())) {
-						throw new AssertionError("Context object should not have changed.");
+						if (!eitherId.equals(context.id())) {
+							throw new AssertionError("Context object should not have changed.");
+						}
+					} else if (id.equals(NESTED_MODEL_4)) {
+						LOGGER.info("    Nested model 5 started loading");
+						ret = context.getOrLoadModel(NESTED_MODEL_5);
+						LOGGER.info("    Nested model 5 finished loading");
 					}
-				} else if (context.id().equals(NESTED_MODEL_4)) {
-					LOGGER.info("    Nested model 5 started loading");
-					ret = context.getOrLoadModel(NESTED_MODEL_5);
-					LOGGER.info("    Nested model 5 finished loading");
 				}
 
 				return ret;

@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import java.util.function.Function;
 
+import com.mojang.datafixers.util.Either;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -91,16 +92,12 @@ public final class ModelModifier {
 		@ApiStatus.NonExtendable
 		interface Context {
 			/**
-			 * The identifier of this model (may be a {@link ModelIdentifier}).
-			 *
-			 * <p>For item models, only the {@link ModelIdentifier} with the {@code inventory} variant is passed, and
-			 * not the corresponding plain identifier.
+			 * The identifier of this model.
 			 */
-			Identifier id();
+			Either<ModelIdentifier, Identifier> id();
 
 			/**
-			 * Loads a model using an {@link Identifier} or {@link ModelIdentifier}, or gets it if it was already
-			 * loaded.
+			 * Loads a model using an {@link Identifier}, or gets it if it was already loaded.
 			 *
 			 * @param id the model identifier
 			 * @return the unbaked model, or a missing model if it is not present
@@ -109,9 +106,6 @@ public final class ModelModifier {
 
 			/**
 			 * The current model loader instance, which changes between resource reloads.
-			 *
-			 * <p>Do <b>not</b> call {@link ModelLoader#getOrLoadModel} as it does not supported nested model
-			 * resolution; use {@link #getOrLoadModel} from the context instead.
 			 */
 			ModelLoader loader();
 		}
@@ -135,9 +129,9 @@ public final class ModelModifier {
 		@ApiStatus.NonExtendable
 		interface Context {
 			/**
-			 * The identifier of this model (may be a {@link ModelIdentifier}).
+			 * The identifier of this model.
 			 */
-			Identifier id();
+			Either<ModelIdentifier, Identifier> id();
 
 			/**
 			 * The function that can be used to retrieve sprites.
@@ -189,9 +183,9 @@ public final class ModelModifier {
 		@ApiStatus.NonExtendable
 		interface Context {
 			/**
-			 * The identifier of this model (may be a {@link ModelIdentifier}).
+			 * The identifier of this model.
 			 */
-			Identifier id();
+			Either<ModelIdentifier, Identifier> id();
 
 			/**
 			 * The unbaked model that is being baked.

@@ -16,15 +16,11 @@
 
 package net.fabricmc.fabric.impl.client.model.loading;
 
-import org.jetbrains.annotations.Nullable;
+import java.util.function.Function;
 
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.SpriteIdentifier;
 
-/**
- * Legacy v0 bridge - remove if the legacy v0 module is removed.
- */
-public interface LegacyModelVariantProvider {
-	@Nullable
-	UnbakedModel loadModelVariant(ModelIdentifier modelId);
+public interface BakerImplHooks {
+	Function<SpriteIdentifier, Sprite> fabric_getTextureGetter();
 }

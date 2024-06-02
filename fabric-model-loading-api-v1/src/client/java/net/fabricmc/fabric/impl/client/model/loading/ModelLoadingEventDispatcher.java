@@ -22,11 +22,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ReferenceSet;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,12 +52,10 @@ public class ModelLoadingEventDispatcher {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoadingEventDispatcher.class);
 
 	private final ModelLoader loader;
-	private final ModelLoaderPluginContextImpl pluginContext;
+	private final ModelLoadingPluginContextImpl pluginContext;
 
 	private final ObjectArrayList<ModelResolverContext> modelResolverContextStack = new ObjectArrayList<>();
-
-	private final ObjectArrayList<BlockStateResolverContext> blockStateResolverContextStack = new ObjectArrayList<>();
-	private final ReferenceSet<Block> resolvingBlocks = new ReferenceOpenHashSet<>();
+	private final BlockStateResolverContext blockStateResolverContext = new BlockStateResolverContext();
 
 	private final ObjectArrayList<OnLoadModifierContext> onLoadModifierContextStack = new ObjectArrayList<>();
 	private final ObjectArrayList<BeforeBakeModifierContext> beforeBakeModifierContextStack = new ObjectArrayList<>();
@@ -66,7 +63,7 @@ public class ModelLoadingEventDispatcher {
 
 	public ModelLoadingEventDispatcher(ModelLoader loader, List<ModelLoadingPlugin> plugins) {
 		this.loader = loader;
-		this.pluginContext = new ModelLoaderPluginContextImpl(((ModelLoaderHooks) loader)::fabric_getOrLoadModel);
+		this.pluginContext = new ModelLoadingPluginContextImpl();
 
 		for (ModelLoadingPlugin plugin : plugins) {
 			try {
@@ -83,107 +80,19 @@ public class ModelLoadingEventDispatcher {
 		}
 	}
 
-	/**
-	 * @return {@code true} to cancel the vanilla method
-	 */
-	public boolean loadModel(Identifier id) {
-		if (id instanceof ModelIdentifier modelId) {
-			if ("inventory".equals(modelId.getVariant())) {
-				// We ALWAYS override the vanilla inventory model code path entirely, even for vanilla item models.
-				// See loadItemModel for an explanation.
-				loadItemModel(modelId);
-				return true;
-			} else {
-				// Prioritize block state resolver over legacy variant provider
-				BlockStateResolverHolder resolver = pluginContext.getBlockStateResolver(modelId);
+	public boolean loadBlockStateModels(Block block, Identifier blockId) {
+		BlockStateResolver resolver = pluginContext.blockStateResolvers.get(block);
 
-				if (resolver != null) {
-					loadBlockStateModels(resolver.resolver(), resolver.block(), resolver.blockId());
-					return true;
-				}
-
-				UnbakedModel legacyModel = legacyLoadModelVariant(modelId);
-
-				if (legacyModel != null) {
-					((ModelLoaderHooks) loader).fabric_putModel(id, legacyModel);
-					return true;
-				}
-
-				return false;
-			}
+		if (resolver != null) {
+			resolveBlockStates(resolver, block, blockId);
+			return true;
 		} else {
-			UnbakedModel model = resolveModel(id);
-
-			if (model != null) {
-				((ModelLoaderHooks) loader).fabric_putModel(id, model);
-				return true;
-			}
-
 			return false;
 		}
 	}
 
-	@Nullable
-	private UnbakedModel legacyLoadModelVariant(ModelIdentifier modelId) {
-		return pluginContext.legacyVariantProviders().invoker().loadModelVariant(modelId);
-	}
-
-	/**
-	 * This function handles both modded item models and vanilla item models.
-	 * The vanilla code path for item models is never used.
-	 * See the long comment in the function for an explanation.
-	 */
-	private void loadItemModel(ModelIdentifier modelId) {
-		ModelLoaderHooks loaderHooks = (ModelLoaderHooks) loader;
-
-		Identifier id = modelId.withPrefixedPath("item/");
-
-		// Legacy variant provider
-		UnbakedModel model = legacyLoadModelVariant(modelId);
-
-		// Model resolver
-		if (model == null) {
-			model = resolveModel(id);
-		}
-
-		// Load from the vanilla code path otherwise.
-		if (model == null) {
-			model = loaderHooks.fabric_loadModelFromJson(id);
-		}
-
-		// This is a bit tricky:
-		// We have a single UnbakedModel now, but there are two identifiers:
-		// the ModelIdentifier (...#inventory) and the Identifier (...:item/...).
-		// So we call the on load modifier now and then directly add the model to the ModelLoader,
-		// reimplementing the behavior of ModelLoader#put.
-		// Calling ModelLoader#put is not an option as the model for the Identifier would not be replaced by an on load modifier.
-		// This is why we override the vanilla code path entirely.
-		model = modifyModelOnLoad(modelId, model);
-
-		loaderHooks.fabric_putModelDirectly(modelId, model);
-		loaderHooks.fabric_putModelDirectly(id, model);
-		loaderHooks.fabric_queueModelDependencies(model);
-	}
-
-	private void loadBlockStateModels(BlockStateResolver resolver, Block block, Identifier blockId) {
-		if (!resolvingBlocks.add(block)) {
-			throw new IllegalStateException("Circular reference while resolving models for block " + block);
-		}
-
-		try {
-			resolveBlockStates(resolver, block, blockId);
-		} finally {
-			resolvingBlocks.remove(block);
-		}
-	}
-
 	private void resolveBlockStates(BlockStateResolver resolver, Block block, Identifier blockId) {
-		// Get and prepare context
-		if (blockStateResolverContextStack.isEmpty()) {
-			blockStateResolverContextStack.add(new BlockStateResolverContext());
-		}
-
-		BlockStateResolverContext context = blockStateResolverContextStack.pop();
+		BlockStateResolverContext context = blockStateResolverContext;
 		context.prepare(block);
 
 		Reference2ReferenceMap<BlockState, UnbakedModel> resolvedModels = context.models;
@@ -204,14 +113,14 @@ public class ModelLoadingEventDispatcher {
 
 			for (BlockState state : allStates) {
 				ModelIdentifier modelId = BlockModels.getModelId(blockId, state);
-				((ModelLoaderHooks) loader).fabric_putModelDirectly(modelId, missingModel);
+				((ModelLoaderHooks) loader).fabric_add(modelId, missingModel);
 			}
 		} else if (resolvedModels.size() == allStates.size()) {
 			// If there are as many resolved models as total states, all states have
 			// been resolved and models do not need to be null-checked.
 			resolvedModels.forEach((state, model) -> {
 				ModelIdentifier modelId = BlockModels.getModelId(blockId, state);
-				((ModelLoaderHooks) loader).fabric_putModel(modelId, model);
+				((ModelLoaderHooks) loader).fabric_add(modelId, model);
 			});
 		} else {
 			UnbakedModel missingModel = ((ModelLoaderHooks) loader).fabric_getMissingModel();
@@ -223,21 +132,18 @@ public class ModelLoadingEventDispatcher {
 
 				if (model == null) {
 					LOGGER.error("Block state resolver did not provide a model for state {} in block {}. Using missing model.", state, block);
-					((ModelLoaderHooks) loader).fabric_putModelDirectly(modelId, missingModel);
+					((ModelLoaderHooks) loader).fabric_add(modelId, missingModel);
 				} else {
-					((ModelLoaderHooks) loader).fabric_putModel(modelId, model);
+					((ModelLoaderHooks) loader).fabric_add(modelId, model);
 				}
 			}
 		}
 
 		resolvedModels.clear();
-
-		// Store context for reuse
-		blockStateResolverContextStack.add(context);
 	}
 
 	@Nullable
-	private UnbakedModel resolveModel(Identifier id) {
+	public UnbakedModel resolveModel(Identifier id) {
 		if (modelResolverContextStack.isEmpty()) {
 			modelResolverContextStack.add(new ModelResolverContext());
 		}
@@ -251,7 +157,7 @@ public class ModelLoadingEventDispatcher {
 		return model;
 	}
 
-	public UnbakedModel modifyModelOnLoad(Identifier id, UnbakedModel model) {
+	public UnbakedModel modifyModelOnLoad(UnbakedModel model, Either<ModelIdentifier, Identifier> id) {
 		if (onLoadModifierContextStack.isEmpty()) {
 			onLoadModifierContextStack.add(new OnLoadModifierContext());
 		}
@@ -265,7 +171,7 @@ public class ModelLoadingEventDispatcher {
 		return model;
 	}
 
-	public UnbakedModel modifyModelBeforeBake(UnbakedModel model, Identifier id, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+	public UnbakedModel modifyModelBeforeBake(UnbakedModel model, Either<ModelIdentifier, Identifier> id, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
 		if (beforeBakeModifierContextStack.isEmpty()) {
 			beforeBakeModifierContextStack.add(new BeforeBakeModifierContext());
 		}
@@ -280,7 +186,7 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	@Nullable
-	public BakedModel modifyModelAfterBake(@Nullable BakedModel model, Identifier id, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+	public BakedModel modifyModelAfterBake(@Nullable BakedModel model, Either<ModelIdentifier, Identifier> id, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
 		if (afterBakeModifierContextStack.isEmpty()) {
 			afterBakeModifierContextStack.add(new AfterBakeModifierContext());
 		}
@@ -357,14 +263,14 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	private class OnLoadModifierContext implements ModelModifier.OnLoad.Context {
-		private Identifier id;
+		private Either<ModelIdentifier, Identifier> id;
 
-		private void prepare(Identifier id) {
+		private void prepare(Either<ModelIdentifier, Identifier> id) {
 			this.id = id;
 		}
 
 		@Override
-		public Identifier id() {
+		public Either<ModelIdentifier, Identifier> id() {
 			return id;
 		}
 
@@ -380,12 +286,12 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	private class BeforeBakeModifierContext implements ModelModifier.BeforeBake.Context {
-		private Identifier id;
+		private Either<ModelIdentifier, Identifier> id;
 		private Function<SpriteIdentifier, Sprite> textureGetter;
 		private ModelBakeSettings settings;
 		private Baker baker;
 
-		private void prepare(Identifier id, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+		private void prepare(Either<ModelIdentifier, Identifier> id, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
 			this.id = id;
 			this.textureGetter = textureGetter;
 			this.settings = settings;
@@ -393,7 +299,7 @@ public class ModelLoadingEventDispatcher {
 		}
 
 		@Override
-		public Identifier id() {
+		public Either<ModelIdentifier, Identifier> id() {
 			return id;
 		}
 
@@ -419,13 +325,13 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	private class AfterBakeModifierContext implements ModelModifier.AfterBake.Context {
-		private Identifier id;
+		private Either<ModelIdentifier, Identifier> id;
 		private UnbakedModel sourceModel;
 		private Function<SpriteIdentifier, Sprite> textureGetter;
 		private ModelBakeSettings settings;
 		private Baker baker;
 
-		private void prepare(Identifier id, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+		private void prepare(Either<ModelIdentifier, Identifier> id, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
 			this.id = id;
 			this.sourceModel = sourceModel;
 			this.textureGetter = textureGetter;
@@ -434,7 +340,7 @@ public class ModelLoadingEventDispatcher {
 		}
 
 		@Override
-		public Identifier id() {
+		public Either<ModelIdentifier, Identifier> id() {
 			return id;
 		}
 
