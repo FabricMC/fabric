@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.tag.convention.v2;
 
 import net.minecraft.item.Item;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
@@ -168,8 +169,16 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> WOODEN_CHESTS = register("chests/wooden");
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
+	/**
+	 * Block tag equivalent is {@link BlockTags#SHULKER_BOXES}
+	 */
 	public static final TagKey<Item> SHULKER_BOXES = register("shulker_boxes");
 	public static final TagKey<Item> GLAZED_TERRACOTTA = register("glazed_terracotta");
+	public static final TagKey<Item> CONCRETE = register("concrete");
+	/**
+	 * Block tag equivalent is {@link BlockTags#CONCRETE_POWDER}
+	 */
+	public static final TagKey<Item> CONCRETE_POWDER = register("concrete_powder");
 
 	// Related to budding mechanics
 	public static final TagKey<Item> BUDDING_BLOCKS = register("budding_blocks");

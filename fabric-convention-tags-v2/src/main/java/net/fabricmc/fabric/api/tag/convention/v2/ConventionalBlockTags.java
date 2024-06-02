@@ -51,6 +51,7 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Block> GLASS_PANES = register("glass_panes");
 	public static final TagKey<Block> GLAZED_TERRACOTTA = register("glazed_terracotta");
+	public static final TagKey<Block> CONCRETE = register("concrete");
 
 	// Related to budding mechanics
 	/**
