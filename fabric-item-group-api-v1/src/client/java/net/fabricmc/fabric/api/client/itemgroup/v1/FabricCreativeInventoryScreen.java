@@ -27,7 +27,7 @@ import net.minecraft.item.ItemGroup;
  */
 public interface FabricCreativeInventoryScreen {
 	/**
-	 * Switches to the page with the given index.
+	 * Switches to the page with the given index if it exists.
 	 *
 	 * @param page the index of the page to switch to
 	 * @return Returns true when the page was changed
