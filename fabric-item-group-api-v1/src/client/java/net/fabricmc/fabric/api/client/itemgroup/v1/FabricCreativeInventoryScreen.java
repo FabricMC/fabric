@@ -37,7 +37,7 @@ public interface FabricCreativeInventoryScreen {
 	}
 
 	/**
-	 * Switches to the next page.
+	 * Switches to the next page if it exists.
 	 *
 	 * @return Returns true when the page was changed
 	 */
@@ -46,7 +46,7 @@ public interface FabricCreativeInventoryScreen {
 	}
 
 	/**
-	 * Switches to the previous page.
+	 * Switches to the previous page if it exists.
 	 *
 	 * @return Returns true when the page was changed
 	 */
@@ -78,7 +78,7 @@ public interface FabricCreativeInventoryScreen {
 	/**
 	 * Returns the page index of the given item group.
 	 *
-	 * <p>The common item groups always return the current page index.
+	 * <p>Item groups appearing on every page always return the current page index.
 	 *
 	 * @param itemGroup the item group to get the page index for
 	 * @return the page index of the item group
