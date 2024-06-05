@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.networking.client;
 
+import static net.fabricmc.fabric.impl.networking.NetworkingImpl.LOGGER;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -51,6 +53,16 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 	@Override
 	protected void invokeInitEvent() {
 		ClientConfigurationConnectionEvents.INIT.invoker().onConfigurationInit(this.handler, this.client);
+	}
+
+	@Override
+	public void onServerReady() {
+		try {
+			ClientConfigurationConnectionEvents.START.invoker().onConfigurationStart(this.handler, this.client);
+		} catch (RuntimeException e) {
+			LOGGER.error("Exception thrown while invoking ClientConfigurationConnectionEvents.START", e);
+		}
+		super.onServerReady();
 	}
 
 	@Override

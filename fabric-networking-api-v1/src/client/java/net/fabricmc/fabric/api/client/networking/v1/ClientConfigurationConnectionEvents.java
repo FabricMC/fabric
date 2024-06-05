@@ -28,13 +28,23 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public final class ClientConfigurationConnectionEvents {
 	/**
-	 * Event indicating a connection entering the CONFIGURATION state, ready for registering channel handlers.
+	 * Event indicating a connection is about to entering the CONFIGURATION state, ready for registering channel handlers.
+	 * <p>No custom packets should be sent when this event is invoked.
 	 *
 	 * @see ClientConfigurationNetworking#registerReceiver(CustomPayload.Id, ClientConfigurationNetworking.ConfigurationPayloadHandler)
 	 */
 	public static final Event<ClientConfigurationConnectionEvents.Init> INIT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Init.class, callbacks -> (handler, client) -> {
 		for (ClientConfigurationConnectionEvents.Init callback : callbacks) {
 			callback.onConfigurationInit(handler, client);
+		}
+	});
+
+	/**
+	 * Event indicating a connection has entered the CONFIGURATION state, ready for sending packets.
+	 */
+	public static final Event<ClientConfigurationConnectionEvents.Start> START = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Start.class, callbacks -> (handler, client) -> {
+		for (ClientConfigurationConnectionEvents.Start callback : callbacks) {
+			callback.onConfigurationStart(handler, client);
 		}
 	});
 
@@ -66,6 +76,11 @@ public final class ClientConfigurationConnectionEvents {
 	@FunctionalInterface
 	public interface Init {
 		void onConfigurationInit(ClientConfigurationNetworkHandler handler, MinecraftClient client);
+	}
+
+	@FunctionalInterface
+	public interface Start {
+		void onConfigurationStart(ClientConfigurationNetworkHandler handler, MinecraftClient client);
 	}
 
 	@FunctionalInterface
