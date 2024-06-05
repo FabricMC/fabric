@@ -73,6 +73,8 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 		if (register && !this.sentInitialRegisterPacket) {
 			this.sendInitialChannelRegistrationPacket();
 			this.sentInitialRegisterPacket = true;
+
+			this.onServerReady();
 		}
 	}
 
