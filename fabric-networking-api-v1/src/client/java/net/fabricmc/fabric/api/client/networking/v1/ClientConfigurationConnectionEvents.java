@@ -29,6 +29,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public final class ClientConfigurationConnectionEvents {
 	/**
 	 * Event indicating a connection is about to entering the CONFIGURATION state, ready for registering channel handlers.
+	 *
 	 * <p>No custom packets should be sent when this event is invoked.
 	 *
 	 * @see ClientConfigurationNetworking#registerReceiver(CustomPayload.Id, ClientConfigurationNetworking.ConfigurationPayloadHandler)
@@ -42,8 +43,8 @@ public final class ClientConfigurationConnectionEvents {
 	/**
 	 * Event indicating a connection has entered the CONFIGURATION state, ready for sending packets.
 	 */
-	public static final Event<ClientConfigurationConnectionEvents.Start> START = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Start.class, callbacks -> (handler, client) -> {
-		for (ClientConfigurationConnectionEvents.Start callback : callbacks) {
+	public static final Event<Configure> CONFIGURE = EventFactory.createArrayBacked(Configure.class, callbacks -> (handler, client) -> {
+		for (ClientConfigurationConnectionEvents.Configure callback : callbacks) {
 			callback.onConfigurationStart(handler, client);
 		}
 	});
@@ -53,9 +54,9 @@ public final class ClientConfigurationConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<ClientConfigurationConnectionEvents.Ready> READY = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Ready.class, callbacks -> (handler, client) -> {
-		for (ClientConfigurationConnectionEvents.Ready callback : callbacks) {
-			callback.onConfigurationReady(handler, client);
+	public static final Event<Complete> COMPLETE = EventFactory.createArrayBacked(Complete.class, callbacks -> (handler, client) -> {
+		for (ClientConfigurationConnectionEvents.Complete callback : callbacks) {
+			callback.onConfigurationComplete(handler, client);
 		}
 	});
 
@@ -79,13 +80,13 @@ public final class ClientConfigurationConnectionEvents {
 	}
 
 	@FunctionalInterface
-	public interface Start {
+	public interface Configure {
 		void onConfigurationStart(ClientConfigurationNetworkHandler handler, MinecraftClient client);
 	}
 
 	@FunctionalInterface
-	public interface Ready {
-		void onConfigurationReady(ClientConfigurationNetworkHandler handler, MinecraftClient client);
+	public interface Complete {
+		void onConfigurationComplete(ClientConfigurationNetworkHandler handler, MinecraftClient client);
 	}
 
 	@FunctionalInterface

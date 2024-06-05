@@ -58,7 +58,7 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 	@Override
 	public void onServerReady() {
 		try {
-			ClientConfigurationConnectionEvents.START.invoker().onConfigurationStart(this.handler, this.client);
+			ClientConfigurationConnectionEvents.CONFIGURE.invoker().onConfigurationStart(this.handler, this.client);
 		} catch (RuntimeException e) {
 			LOGGER.error("Exception thrown while invoking ClientConfigurationConnectionEvents.START", e);
 		}
@@ -97,7 +97,7 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 	}
 
 	public void handleReady() {
-		ClientConfigurationConnectionEvents.READY.invoker().onConfigurationReady(this.handler, this.client);
+		ClientConfigurationConnectionEvents.COMPLETE.invoker().onConfigurationComplete(this.handler, this.client);
 		ClientNetworkingImpl.setClientConfigurationAddon(null);
 	}
 
