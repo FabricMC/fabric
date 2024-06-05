@@ -54,6 +54,11 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 	}
 
 	@Override
+	public void onServerReady() {
+		ClientConfigurationConnectionEvents.START.invoker().onConfigurationStart(this.handler, this.client);
+	}
+
+	@Override
 	protected void receiveRegistration(boolean register, RegistrationPayload payload) {
 		super.receiveRegistration(register, payload);
 
@@ -84,7 +89,8 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 		C2SConfigurationChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.handler, this, this.client, ids);
 	}
 
-	public void handleReady() {
+	public void handleComplete() {
+		ClientConfigurationConnectionEvents.COMPLETE.invoker().onConfigurationComplete(this.handler, this.client);
 		ClientConfigurationConnectionEvents.READY.invoker().onConfigurationReady(this.handler, this.client);
 		ClientNetworkingImpl.setClientConfigurationAddon(null);
 	}
