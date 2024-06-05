@@ -30,6 +30,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
 /**
@@ -59,11 +60,13 @@ public class NetworkingConfigurationTest implements ModInitializer {
 
 		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationCompletePacket.ID, (packet, context) -> {
 			context.networkHandler().completeTask(TestConfigurationTask.KEY);
+		});
+
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			if (!clientHelloReceived) {
 				throw new IllegalStateException("Client did not send hello packet before completing configuration");
 			}
 		});
-
 	}
 
 	public record TestConfigurationTask(String data) implements ServerPlayerConfigurationTask {
