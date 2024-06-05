@@ -17,12 +17,21 @@
 package net.fabricmc.fabric.test.networking.client.configuration;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.test.networking.configuration.NetworkingConfigurationTest;
 
 public class NetworkingConfigurationClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
+		ClientConfigurationConnectionEvents.CONFIGURE.register((handler, client) -> {
+			if (ClientConfigurationNetworking.canSend(NetworkingConfigurationTest.ConfigurationClientHelloPacket.ID)) {
+				ClientConfigurationNetworking.send(NetworkingConfigurationTest.ConfigurationClientHelloPacket.INSTANCE);
+			} else {
+				throw new RuntimeException("Server does not support ConfigurationClientHelloPacket");
+			}
+		});
+
 		ClientConfigurationNetworking.registerGlobalReceiver(NetworkingConfigurationTest.ConfigurationPacket.ID, (packet, context) -> {
 			// Handle stuff here
 

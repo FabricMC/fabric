@@ -36,10 +36,12 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
  * Also see NetworkingConfigurationClientTest.
  */
 public class NetworkingConfigurationTest implements ModInitializer {
+	private boolean clientHelloReceived = false;
 	@Override
 	public void onInitialize() {
 		PayloadTypeRegistry.configurationS2C().register(ConfigurationPacket.ID, ConfigurationPacket.CODEC);
 		PayloadTypeRegistry.configurationC2S().register(ConfigurationCompletePacket.ID, ConfigurationCompletePacket.CODEC);
+		PayloadTypeRegistry.configurationC2S().register(ConfigurationClientHelloPacket.ID, ConfigurationClientHelloPacket.CODEC);
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
 			// You must check to see if the client can handle your config task
@@ -51,9 +53,17 @@ public class NetworkingConfigurationTest implements ModInitializer {
 			}
 		});
 
+		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationClientHelloPacket.ID, (packet, context) -> {
+			clientHelloReceived = true;
+		});
+
 		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationCompletePacket.ID, (packet, context) -> {
 			context.networkHandler().completeTask(TestConfigurationTask.KEY);
+			if (!clientHelloReceived) {
+				throw new IllegalStateException("Client did not send hello packet before completing configuration");
+			}
 		});
+
 	}
 
 	public record TestConfigurationTask(String data) implements ServerPlayerConfigurationTask {
@@ -95,6 +105,20 @@ public class NetworkingConfigurationTest implements ModInitializer {
 		public static final PacketCodec<PacketByteBuf, ConfigurationCompletePacket> CODEC = PacketCodec.unit(INSTANCE);
 
 		private ConfigurationCompletePacket() {
+		}
+
+		@Override
+		public Id<? extends CustomPayload> getId() {
+			return ID;
+		}
+	}
+
+	public static class ConfigurationClientHelloPacket implements CustomPayload {
+		public static final ConfigurationClientHelloPacket INSTANCE = new ConfigurationClientHelloPacket();
+		public static final CustomPayload.Id<ConfigurationClientHelloPacket> ID = new Id<>(new Identifier(NetworkingTestmods.ID, "configure_client_hello"));
+		public static final PacketCodec<PacketByteBuf, ConfigurationClientHelloPacket> CODEC = PacketCodec.unit(INSTANCE);
+
+		private ConfigurationClientHelloPacket() {
 		}
 
 		@Override

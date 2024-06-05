@@ -60,8 +60,9 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 		try {
 			ClientConfigurationConnectionEvents.CONFIGURE.invoker().onConfigurationStart(this.handler, this.client);
 		} catch (RuntimeException e) {
-			LOGGER.error("Exception thrown while invoking ClientConfigurationConnectionEvents.START", e);
+			LOGGER.error("Exception thrown while invoking ClientConfigurationConnectionEvents.CONFIGURE", e);
 		}
+
 		super.onServerReady();
 	}
 
