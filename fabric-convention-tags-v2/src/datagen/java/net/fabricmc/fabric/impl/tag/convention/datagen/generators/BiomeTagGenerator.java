@@ -242,7 +242,8 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.DARK_FOREST)
 				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST)
 				.add(BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA)
-				.add(BiomeKeys.JUNGLE);
+				.add(BiomeKeys.JUNGLE)
+				.add(BiomeKeys.MANGROVE_SWAMP);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_DENSE)
 				.addOptionalTag(ConventionalBiomeTags.IS_VEGETATION_DENSE_OVERWORLD);
 
