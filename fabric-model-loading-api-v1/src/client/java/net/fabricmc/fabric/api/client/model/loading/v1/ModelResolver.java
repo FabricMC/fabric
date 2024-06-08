@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 
 /**
@@ -64,7 +63,7 @@ public interface ModelResolver {
 		Identifier id();
 
 		/**
-		 * Loads a model using an {@link Identifier} or {@link ModelIdentifier}, or gets it if it was already loaded.
+		 * Loads a model using an {@link Identifier}, or gets it if it was already loaded.
 		 *
 		 * @param id the model identifier
 		 * @return the unbaked model, or a missing model if it is not present
@@ -73,9 +72,6 @@ public interface ModelResolver {
 
 		/**
 		 * The current model loader instance, which changes between resource reloads.
-		 *
-		 * <p>Do <b>not</b> call {@link ModelLoader#getOrLoadModel} as it does not supported nested model resolution;
-		 * use {@link #getOrLoadModel} from the context instead.
 		 */
 		ModelLoader loader();
 	}

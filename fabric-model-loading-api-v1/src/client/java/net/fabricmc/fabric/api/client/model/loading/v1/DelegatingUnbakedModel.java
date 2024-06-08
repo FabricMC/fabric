@@ -27,7 +27,6 @@ import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
@@ -43,7 +42,7 @@ public final class DelegatingUnbakedModel implements UnbakedModel {
 	/**
 	 * Constructs a new delegating model.
 	 *
-	 * @param delegate The identifier (can be a {@link ModelIdentifier}) of the underlying baked model.
+	 * @param delegate The identifier of the underlying baked model.
 	 */
 	public DelegatingUnbakedModel(Identifier delegate) {
 		this.delegate = delegate;
@@ -57,11 +56,12 @@ public final class DelegatingUnbakedModel implements UnbakedModel {
 
 	@Override
 	public void setParents(Function<Identifier, UnbakedModel> modelLoader) {
+		modelLoader.apply(delegate).setParents(modelLoader);
 	}
 
-	@Nullable
 	@Override
-	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+	@Nullable
+	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer) {
 		return baker.bake(delegate, rotationContainer);
 	}
 }

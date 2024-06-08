@@ -16,7 +16,15 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-/* TODO 1.21
+import java.util.Set;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelResolver;
+import net.fabricmc.fabric.test.renderer.RendererTest;
 
 public class ModelResolverImpl implements ModelResolver {
 	private static final Set<Identifier> FRAME_MODEL_LOCATIONS = Set.of(
@@ -65,4 +73,3 @@ public class ModelResolverImpl implements ModelResolver {
 		return null;
 	}
 }
-*/

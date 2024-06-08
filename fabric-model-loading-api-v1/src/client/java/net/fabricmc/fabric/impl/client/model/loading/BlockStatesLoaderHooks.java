@@ -16,16 +16,15 @@
 
 package net.fabricmc.fabric.impl.client.model.loading;
 
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.Identifier;
 
-public interface ModelLoaderHooks {
-	ModelLoadingEventDispatcher fabric_getDispatcher();
+public interface BlockStatesLoaderHooks {
+	void fabric_setLoadingOverride(LoadingOverride override);
 
-	UnbakedModel fabric_getMissingModel();
-
-	UnbakedModel fabric_getOrLoadModel(Identifier id);
-
-	void fabric_add(ModelIdentifier id, UnbakedModel model);
+	interface LoadingOverride {
+		boolean loadBlockStates(Identifier id, StateManager<Block, BlockState> stateManager);
+	}
 }
