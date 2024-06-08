@@ -16,10 +16,13 @@
 
 package net.fabricmc.fabric.mixin.itemgroup.client;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -34,12 +37,12 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 
-import net.fabricmc.fabric.impl.client.itemgroup.CreativeGuiExtensions;
+import net.fabricmc.fabric.api.client.itemgroup.v1.FabricCreativeInventoryScreen;
 import net.fabricmc.fabric.impl.client.itemgroup.FabricCreativeGuiComponents;
-import net.fabricmc.fabric.impl.itemgroup.FabricItemGroup;
+import net.fabricmc.fabric.impl.itemgroup.FabricItemGroupImpl;
 
 @Mixin(CreativeInventoryScreen.class)
-public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> extends AbstractInventoryScreen<T> implements CreativeGuiExtensions {
+public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> extends AbstractInventoryScreen<T> implements FabricCreativeInventoryScreen {
 	public CreativeInventoryScreenMixin(T screenHandler, PlayerInventory playerInventory, Text text) {
 		super(screenHandler, playerInventory, text);
 	}
@@ -51,51 +54,15 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 	private static ItemGroup selectedTab;
 
 	// "static" matches selectedTab
-	private static int fabric_currentPage = 0;
+	@Unique
+	private static int currentPage = 0;
 
-	@Override
-	public void fabric_nextPage() {
-		if (!fabric_hasGroupForPage(fabric_currentPage + 1)) {
-			return;
-		}
-
-		fabric_currentPage++;
-		fabric_updateSelection();
-	}
-
-	@Override
-	public void fabric_previousPage() {
-		if (fabric_currentPage == 0) {
-			return;
-		}
-
-		fabric_currentPage--;
-		fabric_updateSelection();
-	}
-
-	@Override
-	public boolean fabric_isButtonVisible(FabricCreativeGuiComponents.Type type) {
-		return ItemGroups.getGroupsToDisplay().size() > (Objects.requireNonNull(ItemGroups.displayContext).hasPermissions() ? 14 : 13);
-	}
-
-	@Override
-	public boolean fabric_isButtonEnabled(FabricCreativeGuiComponents.Type type) {
-		if (type == FabricCreativeGuiComponents.Type.NEXT) {
-			return fabric_hasGroupForPage(fabric_currentPage + 1);
-		}
-
-		if (type == FabricCreativeGuiComponents.Type.PREVIOUS) {
-			return fabric_currentPage != 0;
-		}
-
-		return false;
-	}
-
-	private void fabric_updateSelection() {
-		if (!fabric_isGroupVisible(selectedTab)) {
+	@Unique
+	private void updateSelection() {
+		if (!isGroupVisible(selectedTab)) {
 			ItemGroups.getGroups()
 					.stream()
-					.filter(this::fabric_isGroupVisible)
+					.filter(this::isGroupVisible)
 					.min((a, b) -> Boolean.compare(a.isSpecial(), b.isSpecial()))
 					.ifPresent(this::setSelectedTab);
 		}
@@ -103,63 +70,131 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 
 	@Inject(method = "init", at = @At("RETURN"))
 	private void init(CallbackInfo info) {
-		fabric_currentPage = fabric_getPage(selectedTab);
+		currentPage = getPage(selectedTab);
 
 		int xpos = x + 170;
 		int ypos = y + 4;
 
-		addDrawableChild(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos + 11, ypos, FabricCreativeGuiComponents.Type.NEXT, this));
-		addDrawableChild(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, this));
+		CreativeInventoryScreen self = (CreativeInventoryScreen) (Object) this;
+		addDrawableChild(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos + 11, ypos, FabricCreativeGuiComponents.Type.NEXT, self));
+		addDrawableChild(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, self));
 	}
 
 	@Inject(method = "setSelectedTab", at = @At("HEAD"), cancellable = true)
 	private void setSelectedTab(ItemGroup itemGroup, CallbackInfo info) {
-		if (!fabric_isGroupVisible(itemGroup)) {
+		if (!isGroupVisible(itemGroup)) {
 			info.cancel();
 		}
 	}
 
 	@Inject(method = "renderTabTooltipIfHovered", at = @At("HEAD"), cancellable = true)
 	private void renderTabTooltipIfHovered(DrawContext drawContext, ItemGroup itemGroup, int mx, int my, CallbackInfoReturnable<Boolean> info) {
-		if (!fabric_isGroupVisible(itemGroup)) {
+		if (!isGroupVisible(itemGroup)) {
 			info.setReturnValue(false);
 		}
 	}
 
 	@Inject(method = "isClickInTab", at = @At("HEAD"), cancellable = true)
 	private void isClickInTab(ItemGroup itemGroup, double mx, double my, CallbackInfoReturnable<Boolean> info) {
-		if (!fabric_isGroupVisible(itemGroup)) {
+		if (!isGroupVisible(itemGroup)) {
 			info.setReturnValue(false);
 		}
 	}
 
 	@Inject(method = "renderTabIcon", at = @At("HEAD"), cancellable = true)
 	private void renderTabIcon(DrawContext drawContext, ItemGroup itemGroup, CallbackInfo info) {
-		if (!fabric_isGroupVisible(itemGroup)) {
+		if (!isGroupVisible(itemGroup)) {
 			info.cancel();
 		}
 	}
 
-	private boolean fabric_isGroupVisible(ItemGroup itemGroup) {
-		return itemGroup.shouldDisplay() && fabric_currentPage == fabric_getPage(itemGroup);
-	}
-
-	private static int fabric_getPage(ItemGroup itemGroup) {
-		if (FabricCreativeGuiComponents.COMMON_GROUPS.contains(itemGroup)) {
-			return fabric_currentPage;
-		}
-
-		final FabricItemGroup fabricItemGroup = (FabricItemGroup) itemGroup;
-		return fabricItemGroup.getPage();
-	}
-
-	private static boolean fabric_hasGroupForPage(int page) {
-		return ItemGroups.getGroupsToDisplay().stream()
-				.anyMatch(itemGroup -> fabric_getPage(itemGroup) == page);
+	@Unique
+	private boolean isGroupVisible(ItemGroup itemGroup) {
+		return itemGroup.shouldDisplay() && currentPage == getPage(itemGroup);
 	}
 
 	@Override
-	public int fabric_currentPage() {
-		return fabric_currentPage;
+	public int getPage(ItemGroup itemGroup) {
+		if (FabricCreativeGuiComponents.COMMON_GROUPS.contains(itemGroup)) {
+			return currentPage;
+		}
+
+		final FabricItemGroupImpl fabricItemGroup = (FabricItemGroupImpl) itemGroup;
+		return fabricItemGroup.fabric_getPage();
+	}
+
+	@Unique
+	private boolean hasGroupForPage(int page) {
+		return ItemGroups.getGroupsToDisplay()
+				.stream()
+				.anyMatch(itemGroup -> getPage(itemGroup) == page);
+	}
+
+	@Override
+	public boolean switchToPage(int page) {
+		if (!hasGroupForPage(page)) {
+			return false;
+		}
+
+		if (currentPage == page) {
+			return false;
+		}
+
+		currentPage = page;
+		updateSelection();
+		return true;
+	}
+
+	@Override
+	public int getCurrentPage() {
+		return currentPage;
+	}
+
+	@Override
+	public int getPageCount() {
+		return FabricCreativeGuiComponents.getPageCount();
+	}
+
+	@Override
+	public List<ItemGroup> getItemGroupsOnPage(int page) {
+		return ItemGroups.getGroupsToDisplay()
+				.stream()
+				.filter(itemGroup -> getPage(itemGroup) == page)
+				// Thanks to isXander for the sorting
+				.sorted(Comparator.comparing(ItemGroup::getRow).thenComparingInt(ItemGroup::getColumn))
+				.sorted((a, b) -> {
+					if (a.isSpecial() && !b.isSpecial()) return 1;
+					if (!a.isSpecial() && b.isSpecial()) return -1;
+					return 0;
+				})
+				.toList();
+	}
+
+	@Override
+	public boolean hasAdditionalPages() {
+		return ItemGroups.getGroupsToDisplay().size() > (Objects.requireNonNull(ItemGroups.displayContext).hasPermissions() ? 14 : 13);
+	}
+
+	@Override
+	public ItemGroup getSelectedItemGroup() {
+		return selectedTab;
+	}
+
+	@Override
+	public boolean setSelectedItemGroup(ItemGroup itemGroup) {
+		Objects.requireNonNull(itemGroup, "itemGroup");
+
+		if (selectedTab == itemGroup) {
+			return false;
+		}
+
+		if (currentPage != getPage(itemGroup)) {
+			if (!switchToPage(getPage(itemGroup))) {
+				return false;
+			}
+		}
+
+		setSelectedTab(itemGroup);
+		return true;
 	}
 }

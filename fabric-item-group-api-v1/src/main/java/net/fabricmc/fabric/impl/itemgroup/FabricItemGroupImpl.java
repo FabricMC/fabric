@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.itemgroup;
 
-public interface FabricItemGroup {
+public interface FabricItemGroupImpl {
 	int TABS_PER_PAGE = 10;
 
-	int getPage();
+	int fabric_getPage();
 
-	void setPage(int page);
+	void fabric_setPage(int page);
 }

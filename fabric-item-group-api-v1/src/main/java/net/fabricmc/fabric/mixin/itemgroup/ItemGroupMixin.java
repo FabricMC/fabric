@@ -37,11 +37,11 @@ import net.minecraft.registry.RegistryKey;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.impl.itemgroup.FabricItemGroup;
+import net.fabricmc.fabric.impl.itemgroup.FabricItemGroupImpl;
 import net.fabricmc.fabric.impl.itemgroup.ItemGroupEventsImpl;
 
 @Mixin(ItemGroup.class)
-abstract class ItemGroupMixin implements FabricItemGroup {
+abstract class ItemGroupMixin implements FabricItemGroupImpl {
 	@Shadow
 	private Collection<ItemStack> displayStacks;
 
@@ -49,7 +49,7 @@ abstract class ItemGroupMixin implements FabricItemGroup {
 	private Set<ItemStack> searchTabStacks;
 
 	@Unique
-	private int fabric_page = -1;
+	private int page = -1;
 
 	@SuppressWarnings("ConstantConditions")
 	@Inject(method = "updateEntries", at = @At("TAIL"))
@@ -91,16 +91,16 @@ abstract class ItemGroupMixin implements FabricItemGroup {
 	}
 
 	@Override
-	public int getPage() {
-		if (fabric_page < 0) {
+	public int fabric_getPage() {
+		if (page < 0) {
 			throw new IllegalStateException("Item group has no page");
 		}
 
-		return fabric_page;
+		return page;
 	}
 
 	@Override
-	public void setPage(int page) {
-		this.fabric_page = page;
+	public void fabric_setPage(int page) {
+		this.page = page;
 	}
 }
