@@ -17,10 +17,11 @@
 package net.fabricmc.fabric.impl.client.model.loading;
 
 import java.util.Collection;
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -28,6 +29,8 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
@@ -41,7 +44,7 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoadingPluginContextImpl.class);
 
 	final Set<Identifier> extraModels = new LinkedHashSet<>();
-	final Map<Block, BlockStateResolver> blockStateResolvers = new IdentityHashMap<>();
+	final Map<Identifier, BlockStateResolver> blockStateResolvers = new HashMap<>();
 
 	private final Event<ModelResolver> modelResolvers = EventFactory.createArrayBacked(ModelResolver.class, resolvers -> context -> {
 		for (ModelResolver resolver : resolvers) {
@@ -115,7 +118,15 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 		Objects.requireNonNull(block, "block cannot be null");
 		Objects.requireNonNull(resolver, "resolver cannot be null");
 
-		if (blockStateResolvers.put(block, resolver) != null) {
+		Optional<RegistryKey<Block>> optionalKey = Registries.BLOCK.getKey(block);
+
+		if (optionalKey.isEmpty()) {
+			throw new IllegalArgumentException("Received unregistered block");
+		}
+
+		Identifier blockId = optionalKey.get().getValue();
+
+		if (blockStateResolvers.put(blockId, resolver) != null) {
 			throw new IllegalArgumentException("Duplicate block state resolver for " + block);
 		}
 	}

@@ -55,7 +55,7 @@ public class PreparablePluginTest implements ClientModInitializer {
 	public void onInitializeClient() {
 		PreparableModelLoadingPlugin.register(PreparablePluginTest::loadModelReplacements, (replacementModels, pluginContext) -> {
 			pluginContext.modifyModelOnLoad().register((model, ctx) -> {
-				Identifier id = ctx.id().right().orElse(null);
+				Identifier id = ctx.resourceId();
 
 				if (id != null) {
 					@Nullable

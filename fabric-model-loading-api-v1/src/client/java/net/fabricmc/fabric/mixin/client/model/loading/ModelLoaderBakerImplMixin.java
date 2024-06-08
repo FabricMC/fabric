@@ -20,7 +20,6 @@ import java.util.function.Function;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mojang.datafixers.util.Either;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,7 +32,6 @@ import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
@@ -53,10 +51,9 @@ abstract class ModelLoaderBakerImplMixin implements BakerImplHooks {
 	@WrapOperation(method = "bake(Lnet/minecraft/util/Identifier;Lnet/minecraft/client/render/model/ModelBakeSettings;)Lnet/minecraft/client/render/model/BakedModel;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/ModelLoader$BakerImpl;bake(Lnet/minecraft/client/render/model/UnbakedModel;Lnet/minecraft/client/render/model/ModelBakeSettings;)Lnet/minecraft/client/render/model/BakedModel;"))
 	private BakedModel wrapInnerBake(@Coerce Baker self, UnbakedModel unbakedModel, ModelBakeSettings settings, Operation<BakedModel> operation, Identifier id) {
 		ModelLoadingEventDispatcher dispatcher = ((ModelLoaderHooks) this.field_40571).fabric_getDispatcher();
-		Either<ModelIdentifier, Identifier> eitherId = Either.right(id);
-		unbakedModel = dispatcher.modifyModelBeforeBake(unbakedModel, eitherId, textureGetter, settings, self);
+		unbakedModel = dispatcher.modifyModelBeforeBake(unbakedModel, id, null, textureGetter, settings, self);
 		BakedModel model = operation.call(self, unbakedModel, settings);
-		return dispatcher.modifyModelAfterBake(model, eitherId, unbakedModel, textureGetter, settings, self);
+		return dispatcher.modifyModelAfterBake(model, id, null, unbakedModel, textureGetter, settings, self);
 	}
 
 	@Override

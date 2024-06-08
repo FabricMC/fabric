@@ -18,9 +18,9 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import java.util.function.Function;
 
-import com.mojang.datafixers.util.Either;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
@@ -40,7 +40,7 @@ import net.fabricmc.fabric.api.event.Event;
  *
  * <p>Example use cases:
  * <ul>
- *     <li>Overriding a model for a particular block state - check if the given identifier is a {@link ModelIdentifier},
+ *     <li>Overriding a model for a particular block state - check if the given top-level identifier is not null,
  *     and then check if it has the appropriate variant for that block state. If so, return your desired model,
  *     otherwise return the given model.</li>
  *     <li>Wrapping a model to override certain behaviors - simply return a new model instance and delegate calls
@@ -92,9 +92,23 @@ public final class ModelModifier {
 		@ApiStatus.NonExtendable
 		interface Context {
 			/**
-			 * The identifier of this model.
+			 * Models with a resource ID are loaded directly from JSON or a {@link ModelModifier}.
+			 *
+			 * @return the identifier of the given model as an {@link Identifier}, or null if {@link #topLevelId()} is
+			 * not null
 			 */
-			Either<ModelIdentifier, Identifier> id();
+			@UnknownNullability("#topLevelId() != null")
+			Identifier resourceId();
+
+			/**
+			 * Models with a top-level ID are loaded from blockstate files, {@link BlockStateResolver}s, or by copying
+			 * a previously loaded model.
+			 *
+			 * @return the identifier of the given model as a {@link ModelIdentifier}, or null if {@link #resourceId()}
+			 * is not null
+			 */
+			@UnknownNullability("#resourceId() != null")
+			ModelIdentifier topLevelId();
 
 			/**
 			 * Loads a model using an {@link Identifier}, or gets it if it was already loaded.
@@ -129,9 +143,23 @@ public final class ModelModifier {
 		@ApiStatus.NonExtendable
 		interface Context {
 			/**
-			 * The identifier of this model.
+			 * Models with a resource ID are loaded directly from JSON or a {@link ModelModifier}.
+			 *
+			 * @return the identifier of the given model as an {@link Identifier}, or null if {@link #topLevelId()} is
+			 * not null
 			 */
-			Either<ModelIdentifier, Identifier> id();
+			@UnknownNullability("#topLevelId() != null")
+			Identifier resourceId();
+
+			/**
+			 * Models with a top-level ID are loaded from blockstate files, {@link BlockStateResolver}s, or by copying
+			 * a previously loaded model.
+			 *
+			 * @return the identifier of the given model as a {@link ModelIdentifier}, or null if {@link #resourceId()}
+			 * is not null
+			 */
+			@UnknownNullability("#resourceId() != null")
+			ModelIdentifier topLevelId();
 
 			/**
 			 * The function that can be used to retrieve sprites.
@@ -183,9 +211,23 @@ public final class ModelModifier {
 		@ApiStatus.NonExtendable
 		interface Context {
 			/**
-			 * The identifier of this model.
+			 * Models with a resource ID are loaded directly from JSON or a {@link ModelModifier}.
+			 *
+			 * @return the identifier of the given model as an {@link Identifier}, or null if {@link #topLevelId()} is
+			 * not null
 			 */
-			Either<ModelIdentifier, Identifier> id();
+			@UnknownNullability("#topLevelId() != null")
+			Identifier resourceId();
+
+			/**
+			 * Models with a top-level ID are loaded from blockstate files, {@link BlockStateResolver}s, or by copying
+			 * a previously loaded model.
+			 *
+			 * @return the identifier of the given model as a {@link ModelIdentifier}, or null if {@link #resourceId()}
+			 * is not null
+			 */
+			@UnknownNullability("#resourceId() != null")
+			ModelIdentifier topLevelId();
 
 			/**
 			 * The unbaked model that is being baked.

@@ -18,13 +18,11 @@ package net.fabricmc.fabric.test.model.loading;
 
 import static net.fabricmc.fabric.test.model.loading.ModelTestModClient.id;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -84,8 +82,7 @@ public class NestedModelLoadingTest implements ClientModInitializer {
 
 			pluginContext.modifyModelOnLoad().register((model, context) -> {
 				UnbakedModel ret = model;
-				Either<ModelIdentifier, Identifier> eitherId = context.id();
-				Identifier id = eitherId.right().orElse(null);
+				Identifier id = context.resourceId();
 
 				if (id != null) {
 					if (id.equals(NESTED_MODEL_3)) {
@@ -93,7 +90,7 @@ public class NestedModelLoadingTest implements ClientModInitializer {
 						ret = context.getOrLoadModel(NESTED_MODEL_4);
 						LOGGER.info("   Nested model 4 finished loading");
 
-						if (!eitherId.equals(context.id())) {
+						if (!id.equals(context.resourceId())) {
 							throw new AssertionError("Context object should not have changed.");
 						}
 					} else if (id.equals(NESTED_MODEL_4)) {

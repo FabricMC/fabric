@@ -22,11 +22,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +41,7 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
@@ -80,11 +81,11 @@ public class ModelLoadingEventDispatcher {
 		}
 	}
 
-	public boolean loadBlockStateModels(Block block, Identifier blockId) {
-		BlockStateResolver resolver = pluginContext.blockStateResolvers.get(block);
+	public boolean loadBlockStateModels(Identifier id, StateManager<Block, BlockState> stateManager) {
+		BlockStateResolver resolver = pluginContext.blockStateResolvers.get(id);
 
 		if (resolver != null) {
-			resolveBlockStates(resolver, block, blockId);
+			resolveBlockStates(resolver, stateManager.getOwner(), id);
 			return true;
 		} else {
 			return false;
@@ -157,13 +158,13 @@ public class ModelLoadingEventDispatcher {
 		return model;
 	}
 
-	public UnbakedModel modifyModelOnLoad(UnbakedModel model, Either<ModelIdentifier, Identifier> id) {
+	public UnbakedModel modifyModelOnLoad(UnbakedModel model, @UnknownNullability Identifier resourceId, @UnknownNullability ModelIdentifier topLevelId) {
 		if (onLoadModifierContextStack.isEmpty()) {
 			onLoadModifierContextStack.add(new OnLoadModifierContext());
 		}
 
 		OnLoadModifierContext context = onLoadModifierContextStack.pop();
-		context.prepare(id);
+		context.prepare(resourceId, topLevelId);
 
 		model = pluginContext.modifyModelOnLoad().invoker().modifyModelOnLoad(model, context);
 
@@ -171,13 +172,13 @@ public class ModelLoadingEventDispatcher {
 		return model;
 	}
 
-	public UnbakedModel modifyModelBeforeBake(UnbakedModel model, Either<ModelIdentifier, Identifier> id, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+	public UnbakedModel modifyModelBeforeBake(UnbakedModel model, @UnknownNullability Identifier resourceId, @UnknownNullability ModelIdentifier topLevelId, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
 		if (beforeBakeModifierContextStack.isEmpty()) {
 			beforeBakeModifierContextStack.add(new BeforeBakeModifierContext());
 		}
 
 		BeforeBakeModifierContext context = beforeBakeModifierContextStack.pop();
-		context.prepare(id, textureGetter, settings, baker);
+		context.prepare(resourceId, topLevelId, textureGetter, settings, baker);
 
 		model = pluginContext.modifyModelBeforeBake().invoker().modifyModelBeforeBake(model, context);
 
@@ -186,13 +187,13 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	@Nullable
-	public BakedModel modifyModelAfterBake(@Nullable BakedModel model, Either<ModelIdentifier, Identifier> id, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+	public BakedModel modifyModelAfterBake(@Nullable BakedModel model, @UnknownNullability Identifier resourceId, @UnknownNullability ModelIdentifier topLevelId, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
 		if (afterBakeModifierContextStack.isEmpty()) {
 			afterBakeModifierContextStack.add(new AfterBakeModifierContext());
 		}
 
 		AfterBakeModifierContext context = afterBakeModifierContextStack.pop();
-		context.prepare(id, sourceModel, textureGetter, settings, baker);
+		context.prepare(resourceId, topLevelId, sourceModel, textureGetter, settings, baker);
 
 		model = pluginContext.modifyModelAfterBake().invoker().modifyModelAfterBake(model, context);
 
@@ -263,15 +264,26 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	private class OnLoadModifierContext implements ModelModifier.OnLoad.Context {
-		private Either<ModelIdentifier, Identifier> id;
+		@UnknownNullability
+		private Identifier resourceId;
+		@UnknownNullability
+		private ModelIdentifier topLevelId;
 
-		private void prepare(Either<ModelIdentifier, Identifier> id) {
-			this.id = id;
+		private void prepare(@UnknownNullability Identifier resourceId, @UnknownNullability ModelIdentifier topLevelId) {
+			this.resourceId = resourceId;
+			this.topLevelId = topLevelId;
 		}
 
 		@Override
-		public Either<ModelIdentifier, Identifier> id() {
-			return id;
+		@UnknownNullability("#topLevelId() != null")
+		public Identifier resourceId() {
+			return resourceId;
+		}
+
+		@Override
+		@UnknownNullability("#resourceId() != null")
+		public ModelIdentifier topLevelId() {
+			return topLevelId;
 		}
 
 		@Override
@@ -286,21 +298,32 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	private class BeforeBakeModifierContext implements ModelModifier.BeforeBake.Context {
-		private Either<ModelIdentifier, Identifier> id;
+		@UnknownNullability
+		private Identifier resourceId;
+		@UnknownNullability
+		private ModelIdentifier topLevelId;
 		private Function<SpriteIdentifier, Sprite> textureGetter;
 		private ModelBakeSettings settings;
 		private Baker baker;
 
-		private void prepare(Either<ModelIdentifier, Identifier> id, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
-			this.id = id;
+		private void prepare(@UnknownNullability Identifier resourceId, @UnknownNullability ModelIdentifier topLevelId, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+			this.resourceId = resourceId;
+			this.topLevelId = topLevelId;
 			this.textureGetter = textureGetter;
 			this.settings = settings;
 			this.baker = baker;
 		}
 
 		@Override
-		public Either<ModelIdentifier, Identifier> id() {
-			return id;
+		@UnknownNullability("#topLevelId() != null")
+		public Identifier resourceId() {
+			return resourceId;
+		}
+
+		@Override
+		@UnknownNullability("#resourceId() != null")
+		public ModelIdentifier topLevelId() {
+			return topLevelId;
 		}
 
 		@Override
@@ -325,14 +348,18 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	private class AfterBakeModifierContext implements ModelModifier.AfterBake.Context {
-		private Either<ModelIdentifier, Identifier> id;
+		@UnknownNullability
+		private Identifier resourceId;
+		@UnknownNullability
+		private ModelIdentifier topLevelId;
 		private UnbakedModel sourceModel;
 		private Function<SpriteIdentifier, Sprite> textureGetter;
 		private ModelBakeSettings settings;
 		private Baker baker;
 
-		private void prepare(Either<ModelIdentifier, Identifier> id, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
-			this.id = id;
+		private void prepare(@UnknownNullability Identifier resourceId, @UnknownNullability ModelIdentifier topLevelId, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+			this.resourceId = resourceId;
+			this.topLevelId = topLevelId;
 			this.sourceModel = sourceModel;
 			this.textureGetter = textureGetter;
 			this.settings = settings;
@@ -340,8 +367,15 @@ public class ModelLoadingEventDispatcher {
 		}
 
 		@Override
-		public Either<ModelIdentifier, Identifier> id() {
-			return id;
+		@UnknownNullability("#topLevelId() != null")
+		public Identifier resourceId() {
+			return resourceId;
+		}
+
+		@Override
+		@UnknownNullability("#resourceId() != null")
+		public ModelIdentifier topLevelId() {
+			return topLevelId;
 		}
 
 		@Override

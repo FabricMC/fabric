@@ -16,12 +16,11 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-
 import net.minecraft.client.render.RenderLayer;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.test.renderer.FrameBlock;
 import net.fabricmc.fabric.test.renderer.Registration;
 

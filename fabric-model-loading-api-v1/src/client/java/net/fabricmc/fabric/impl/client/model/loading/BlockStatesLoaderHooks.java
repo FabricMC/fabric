@@ -17,12 +17,14 @@
 package net.fabricmc.fabric.impl.client.model.loading;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.Identifier;
 
 public interface BlockStatesLoaderHooks {
 	void fabric_setLoadingOverride(LoadingOverride override);
 
 	interface LoadingOverride {
-		boolean loadBlockStates(Block block, Identifier blockId);
+		boolean loadBlockStates(Identifier id, StateManager<Block, BlockState> stateManager);
 	}
 }

@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -119,7 +118,7 @@ abstract class ModelLoaderMixin implements ModelLoaderHooks {
 			if (unbakedModels.containsKey(id)) {
 				cir.setReturnValue(unbakedModels.get(id));
 			} else if (modelLoadingStack.contains(id)) {
-				throw new IllegalStateException("Circular reference while loading model '" + id + "' (" + modelLoadingStack.stream().map(Identifier::toString).collect(Collectors.joining("->")) + ")");
+				throw new IllegalStateException("Circular reference while loading model '" + id + "' (" + modelLoadingStack.stream().map(i -> i + "->").collect(Collectors.joining()) + id + ")");
 			} else {
 				UnbakedModel model = loadModel(id);
 				unbakedModels.put(id, model);
@@ -153,7 +152,7 @@ abstract class ModelLoaderMixin implements ModelLoaderHooks {
 				model = loadModelFromJson(id);
 			}
 
-			return fabric_eventDispatcher.modifyModelOnLoad(model, Either.right(id));
+			return fabric_eventDispatcher.modifyModelOnLoad(model, id, null);
 		} finally {
 			modelLoadingStack.removeLast();
 		}
@@ -165,7 +164,7 @@ abstract class ModelLoaderMixin implements ModelLoaderHooks {
 			return model;
 		}
 
-		return fabric_eventDispatcher.modifyModelOnLoad(model, Either.left(id));
+		return fabric_eventDispatcher.modifyModelOnLoad(model, null, id);
 	}
 
 	@WrapOperation(method = "method_61072(Lnet/minecraft/client/render/model/ModelLoader$SpriteGetter;Lnet/minecraft/client/util/ModelIdentifier;Lnet/minecraft/client/render/model/UnbakedModel;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/ModelLoader$BakerImpl;bake(Lnet/minecraft/client/render/model/UnbakedModel;Lnet/minecraft/client/render/model/ModelBakeSettings;)Lnet/minecraft/client/render/model/BakedModel;"))
@@ -177,11 +176,10 @@ abstract class ModelLoaderMixin implements ModelLoaderHooks {
 			return baker.bake(id.id(), settings);
 		}
 
-		Either<ModelIdentifier, Identifier> eitherId = Either.left(id);
 		Function<SpriteIdentifier, Sprite> textureGetter = ((BakerImplHooks) baker).fabric_getTextureGetter();
-		unbakedModel = fabric_eventDispatcher.modifyModelBeforeBake(unbakedModel, eitherId, textureGetter, settings, baker);
+		unbakedModel = fabric_eventDispatcher.modifyModelBeforeBake(unbakedModel, null, id, textureGetter, settings, baker);
 		BakedModel model = operation.call(baker, unbakedModel, settings);
-		return fabric_eventDispatcher.modifyModelAfterBake(model, eitherId, unbakedModel, textureGetter, settings, baker);
+		return fabric_eventDispatcher.modifyModelAfterBake(model, null, id, unbakedModel, textureGetter, settings, baker);
 	}
 
 	@Override
