@@ -39,7 +39,7 @@ public class NetworkingConfigurationClientTest implements ClientModInitializer {
 		ClientConfigurationConnectionEvents.START.register((handler, client) -> {
 			if (!ClientConfigurationNetworking.canSend(NetworkingConfigurationTest.ConfigurationStartPacket.ID)) {
 				// This isn't fatal as it will happen when connecting to a vanilla server.
-				LOGGER.warn("Can send failed in configuration networking events");
+				LOGGER.warn("Not sending configuration start packet; is this a vanilla server?");
 				return;
 			}
 
