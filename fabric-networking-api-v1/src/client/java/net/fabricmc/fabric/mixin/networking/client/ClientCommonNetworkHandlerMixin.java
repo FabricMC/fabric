@@ -16,10 +16,7 @@
 
 package net.fabricmc.fabric.mixin.networking.client;
 
-import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -34,10 +31,6 @@ import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 
 @Mixin(ClientCommonNetworkHandler.class)
 public abstract class ClientCommonNetworkHandlerMixin implements NetworkHandlerExtensions {
-	@Shadow
-	@Final
-	private static Logger LOGGER;
-
 	@Inject(method = "onCustomPayload(Lnet/minecraft/network/packet/s2c/common/CustomPayloadS2CPacket;)V", at = @At("HEAD"), cancellable = true)
 	public void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
 		final CustomPayload payload = packet.payload();

@@ -27,11 +27,9 @@ import net.minecraft.client.network.ClientCommonNetworkHandler;
 import net.minecraft.client.network.ClientConnectionState;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.packet.s2c.play.EnterReconfigurationS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
-import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 
@@ -56,12 +54,6 @@ abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkHandler 
 	@Inject(method = "onGameJoin", at = @At("RETURN"))
 	private void handleServerPlayReady(GameJoinS2CPacket packet, CallbackInfo ci) {
 		this.addon.onServerReady();
-	}
-
-	@Inject(method = "onEnterReconfiguration", at = @At("RETURN"))
-	public void onEnterReconfiguration(EnterReconfigurationS2CPacket packet, CallbackInfo ci) {
-		NetworkHandlerExtensions networkHandlerExtensions = (NetworkHandlerExtensions) connection.getPacketListener();
-		((ClientConfigurationNetworkAddon) networkHandlerExtensions.getAddon()).onServerReady();
 	}
 
 	@Override
