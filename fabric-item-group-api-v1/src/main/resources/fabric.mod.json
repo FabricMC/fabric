@@ -30,6 +30,9 @@
   ],
   "accessWidener": "fabric-item-group-api-v1.accesswidener",
   "custom": {
-    "fabric-api:module-lifecycle": "stable"
+    "fabric-api:module-lifecycle": "stable",
+    "loom:injected_interfaces": {
+      "net/minecraft/class_481": ["net/fabricmc/fabric/api/client/itemgroup/v1/FabricCreativeInventoryScreen"]
+    }
   }
 }
