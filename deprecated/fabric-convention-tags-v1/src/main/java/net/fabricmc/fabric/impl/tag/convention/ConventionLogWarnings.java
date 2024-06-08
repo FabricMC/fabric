@@ -29,6 +29,7 @@ import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
@@ -115,10 +116,10 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(ConventionalItemTags.LAPIS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.LAPIS_GEMS),
 			createMapEntry(ConventionalItemTags.EMERALDS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.EMERALD_GEMS),
 			createMapEntry(ConventionalItemTags.QUARTZ, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.QUARTZ_GEMS),
-			createMapEntry(ConventionalItemTags.SHEARS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SHEARS_TOOLS),
-			createMapEntry(ConventionalItemTags.SPEARS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SPEARS_TOOLS),
-			createMapEntry(ConventionalItemTags.BOWS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BOWS_TOOLS),
-			createMapEntry(ConventionalItemTags.SHIELDS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SHIELDS_TOOLS),
+			createMapEntry(ConventionalItemTags.SHEARS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SHEAR_TOOLS),
+			createMapEntry(ConventionalItemTags.SPEARS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SPEAR_TOOLS),
+			createMapEntry(ConventionalItemTags.BOWS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BOW_TOOLS),
+			createMapEntry(ConventionalItemTags.SHIELDS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SHIELD_TOOLS),
 
 			createMapEntry(ConventionalEnchantmentTags.INCREASES_BLOCK_DROPS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS),
 			createMapEntry(ConventionalEnchantmentTags.INCREASES_ENTITY_DROPS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags.INCREASE_ENTITY_DROPS),
@@ -209,8 +210,26 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(RegistryKeys.ITEM, "stew", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUPS_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "stews", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUPS_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "candy", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDIES_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "candies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDIES_FOODS)
+			createMapEntry(RegistryKeys.ITEM, "candies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDIES_FOODS),
+			createMapEntry(TagKey.of(RegistryKeys.ITEM, Identifier.of("minecraft", "music_discs")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MUSIC_DISCS),
 
+			// V2 tags that are now discouraged
+			createMapEntry(ConventionalItemTags.COAL, ItemTags.COALS),
+			createMapEntry(RegistryKeys.ITEM, "tools/shears", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SHEAR_TOOLS),
+			createMapEntry(RegistryKeys.ITEM, "tools/spears", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SPEAR_TOOLS),
+			createMapEntry(RegistryKeys.ITEM, "tools/bows", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BOW_TOOLS),
+			createMapEntry(RegistryKeys.ITEM, "tools/crossbows", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CROSSBOW_TOOLS),
+			createMapEntry(RegistryKeys.ITEM, "tools/shields", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SHIELD_TOOLS),
+			createMapEntry(RegistryKeys.ITEM, "tools/fishing_rods", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.FISHING_ROD_TOOLS),
+			createMapEntry(RegistryKeys.ITEM, "tools/brushes", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BRUSH_TOOLS),
+			createMapEntry(RegistryKeys.ITEM, "tools/melee_weapons", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MELEE_WEAPON_TOOLS),
+			createMapEntry(RegistryKeys.ITEM, "tools/ranged_weapons", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RANGED_WEAPON_TOOLS),
+			createMapEntry(RegistryKeys.ITEM, "tools/mining_tools", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MINING_TOOL_TOOLS),
+			createMapEntry(RegistryKeys.ITEM, "raw_blocks", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STORAGE_BLOCKS),
+			createMapEntry(RegistryKeys.ITEM, "raw_blocks/copper", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STORAGE_BLOCKS_RAW_COPPER),
+			createMapEntry(RegistryKeys.ITEM, "raw_blocks/gold", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STORAGE_BLOCKS_RAW_GOLD),
+			createMapEntry(RegistryKeys.ITEM, "raw_blocks/iron", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STORAGE_BLOCKS_RAW_IRON),
+			createMapEntry(net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.SHULKER_BOXES, BlockTags.SHULKER_BOXES)
 	);
 
 	@Override

@@ -60,7 +60,43 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.WOODEN_CHESTS, ConventionalItemTags.WOODEN_CHESTS);
 		copy(ConventionalBlockTags.GLASS_BLOCKS, ConventionalItemTags.GLASS_BLOCKS);
 		copy(ConventionalBlockTags.GLASS_PANES, ConventionalItemTags.GLASS_PANES);
-		copy(ConventionalBlockTags.SHULKER_BOXES, ConventionalItemTags.SHULKER_BOXES);
+		copy(ConventionalBlockTags.GLAZED_TERRACOTTA, ConventionalItemTags.GLAZED_TERRACOTTA);
+		getOrCreateTagBuilder(ConventionalItemTags.SHULKER_BOXES)
+				.add(Items.SHULKER_BOX)
+				.add(Items.WHITE_SHULKER_BOX)
+				.add(Items.ORANGE_SHULKER_BOX)
+				.add(Items.MAGENTA_SHULKER_BOX)
+				.add(Items.LIGHT_BLUE_SHULKER_BOX)
+				.add(Items.YELLOW_SHULKER_BOX)
+				.add(Items.LIME_SHULKER_BOX)
+				.add(Items.PINK_SHULKER_BOX)
+				.add(Items.GRAY_SHULKER_BOX)
+				.add(Items.LIGHT_GRAY_SHULKER_BOX)
+				.add(Items.CYAN_SHULKER_BOX)
+				.add(Items.PURPLE_SHULKER_BOX)
+				.add(Items.BLUE_SHULKER_BOX)
+				.add(Items.BROWN_SHULKER_BOX)
+				.add(Items.GREEN_SHULKER_BOX)
+				.add(Items.RED_SHULKER_BOX)
+				.add(Items.BLACK_SHULKER_BOX);
+		copy(ConventionalBlockTags.CONCRETE, ConventionalItemTags.CONCRETE);
+		getOrCreateTagBuilder(ConventionalItemTags.CONCRETE_POWDER)
+				.add(Items.WHITE_CONCRETE_POWDER)
+				.add(Items.ORANGE_CONCRETE_POWDER)
+				.add(Items.MAGENTA_CONCRETE_POWDER)
+				.add(Items.LIGHT_BLUE_CONCRETE_POWDER)
+				.add(Items.YELLOW_CONCRETE_POWDER)
+				.add(Items.LIME_CONCRETE_POWDER)
+				.add(Items.PINK_CONCRETE_POWDER)
+				.add(Items.GRAY_CONCRETE_POWDER)
+				.add(Items.LIGHT_GRAY_CONCRETE_POWDER)
+				.add(Items.CYAN_CONCRETE_POWDER)
+				.add(Items.PURPLE_CONCRETE_POWDER)
+				.add(Items.BLUE_CONCRETE_POWDER)
+				.add(Items.BROWN_CONCRETE_POWDER)
+				.add(Items.GREEN_CONCRETE_POWDER)
+				.add(Items.RED_CONCRETE_POWDER)
+				.add(Items.BLACK_CONCRETE_POWDER);
 
 		copy(ConventionalBlockTags.BUDDING_BLOCKS, ConventionalItemTags.BUDDING_BLOCKS);
 		copy(ConventionalBlockTags.BUDS, ConventionalItemTags.BUDS);
@@ -301,6 +337,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.COPPER_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.IRON_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.GOLD_RAW_MATERIALS);
+
 		getOrCreateTagBuilder(ConventionalItemTags.RAW_BLOCKS)
 				.addOptionalTag(ConventionalItemTags.COPPER_RAW_BLOCKS)
 				.addOptionalTag(ConventionalItemTags.GOLD_RAW_BLOCKS)
@@ -368,16 +405,89 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ItemTags.PICKAXES)
 				.addOptionalTag(ItemTags.SHOVELS)
 				.addOptionalTag(ItemTags.SWORDS)
-				.addOptionalTag(ConventionalItemTags.BOWS_TOOLS)
-				.addOptionalTag(ConventionalItemTags.BRUSHES_TOOLS)
-				.addOptionalTag(ConventionalItemTags.CROSSBOWS_TOOLS)
-				.addOptionalTag(ConventionalItemTags.FISHING_RODS_TOOLS)
-				.addOptionalTag(ConventionalItemTags.SHEARS_TOOLS)
-				.addOptionalTag(ConventionalItemTags.SHIELDS_TOOLS)
-				.addOptionalTag(ConventionalItemTags.SPEARS_TOOLS)
-				.addOptionalTag(ConventionalItemTags.MINING_TOOLS)
-				.addOptionalTag(ConventionalItemTags.MELEE_WEAPONS_TOOLS)
+				.addOptionalTag(ConventionalItemTags.BOW_TOOLS)
+				.addOptionalTag(ConventionalItemTags.BRUSH_TOOLS)
+				.addOptionalTag(ConventionalItemTags.CROSSBOW_TOOLS)
+				.addOptionalTag(ConventionalItemTags.FISHING_ROD_TOOLS)
+				.addOptionalTag(ConventionalItemTags.SHEAR_TOOLS)
+				.addOptionalTag(ConventionalItemTags.SHIELD_TOOLS)
+				.addOptionalTag(ConventionalItemTags.SPEAR_TOOLS)
+				.addOptionalTag(ConventionalItemTags.MINING_TOOL_TOOLS)
+				.addOptionalTag(ConventionalItemTags.MELEE_WEAPON_TOOLS)
+				.addOptionalTag(ConventionalItemTags.RANGED_WEAPON_TOOLS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.BOW_TOOLS)
+				.add(Items.BOW)
+				.addOptionalTag(ConventionalItemTags.BOWS_TOOLS);
+		getOrCreateTagBuilder(ConventionalItemTags.CROSSBOW_TOOLS)
+				.add(Items.CROSSBOW)
+				.addOptionalTag(ConventionalItemTags.CROSSBOWS_TOOLS);
+		getOrCreateTagBuilder(ConventionalItemTags.SHEAR_TOOLS)
+				.add(Items.SHEARS)
+				.addOptionalTag(ConventionalItemTags.SHEARS_TOOLS);
+		getOrCreateTagBuilder(ConventionalItemTags.SHIELD_TOOLS)
+				.add(Items.SHIELD)
+				.addOptionalTag(ConventionalItemTags.SHIELDS_TOOLS);
+		getOrCreateTagBuilder(ConventionalItemTags.SPEAR_TOOLS)
+				.add(Items.TRIDENT)
+				.addOptionalTag(ConventionalItemTags.SPEARS_TOOLS);
+		getOrCreateTagBuilder(ConventionalItemTags.FISHING_ROD_TOOLS)
+				.add(Items.FISHING_ROD)
+				.addOptionalTag(ConventionalItemTags.FISHING_RODS_TOOLS);
+		getOrCreateTagBuilder(ConventionalItemTags.BRUSH_TOOLS)
+				.add(Items.BRUSH)
+				.addOptionalTag(ConventionalItemTags.BRUSHES_TOOLS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.MINING_TOOL_TOOLS)
+				.add(Items.WOODEN_PICKAXE)
+				.add(Items.STONE_PICKAXE)
+				.add(Items.GOLDEN_PICKAXE)
+				.add(Items.IRON_PICKAXE)
+				.add(Items.DIAMOND_PICKAXE)
+				.add(Items.NETHERITE_PICKAXE)
+				.addOptionalTag(ConventionalItemTags.MINING_TOOLS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.MELEE_WEAPON_TOOLS)
+				.add(Items.WOODEN_SWORD)
+				.add(Items.STONE_SWORD)
+				.add(Items.GOLDEN_SWORD)
+				.add(Items.IRON_SWORD)
+				.add(Items.DIAMOND_SWORD)
+				.add(Items.NETHERITE_SWORD)
+				.add(Items.WOODEN_AXE)
+				.add(Items.STONE_AXE)
+				.add(Items.GOLDEN_AXE)
+				.add(Items.IRON_AXE)
+				.add(Items.DIAMOND_AXE)
+				.add(Items.NETHERITE_AXE)
+				.addOptionalTag(ConventionalItemTags.MELEE_WEAPONS_TOOLS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.RANGED_WEAPON_TOOLS)
+				.add(Items.BOW)
+				.add(Items.CROSSBOW)
+				.add(Items.TRIDENT)
 				.addOptionalTag(ConventionalItemTags.RANGED_WEAPONS_TOOLS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.ARMORS)
+				.addOptionalTag(ItemTags.HEAD_ARMOR)
+				.addOptionalTag(ItemTags.CHEST_ARMOR)
+				.addOptionalTag(ItemTags.LEG_ARMOR)
+				.addOptionalTag(ItemTags.FOOT_ARMOR);
+
+		getOrCreateTagBuilder(ConventionalItemTags.ENCHANTABLES)
+				.addOptionalTag(ItemTags.ARMOR_ENCHANTABLE)
+				.addOptionalTag(ItemTags.EQUIPPABLE_ENCHANTABLE)
+				.addOptionalTag(ItemTags.WEAPON_ENCHANTABLE)
+				.addOptionalTag(ItemTags.SWORD_ENCHANTABLE)
+				.addOptionalTag(ItemTags.MINING_ENCHANTABLE)
+				.addOptionalTag(ItemTags.MINING_LOOT_ENCHANTABLE)
+				.addOptionalTag(ItemTags.FISHING_ENCHANTABLE)
+				.addOptionalTag(ItemTags.TRIDENT_ENCHANTABLE)
+				.addOptionalTag(ItemTags.BOW_ENCHANTABLE)
+				.addOptionalTag(ItemTags.CROSSBOW_ENCHANTABLE)
+				.addOptionalTag(ItemTags.MACE_ENCHANTABLE)
+				.addOptionalTag(ItemTags.FIRE_ASPECT_ENCHANTABLE)
+				.addOptionalTag(ItemTags.DURABILITY_ENCHANTABLE);
 
 		getOrCreateTagBuilder(ConventionalItemTags.BOWS_TOOLS)
 				.add(Items.BOW);
@@ -420,27 +530,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.BOW)
 				.add(Items.CROSSBOW)
 				.add(Items.TRIDENT);
-
-		getOrCreateTagBuilder(ConventionalItemTags.ARMORS)
-				.addOptionalTag(ItemTags.HEAD_ARMOR)
-				.addOptionalTag(ItemTags.CHEST_ARMOR)
-				.addOptionalTag(ItemTags.LEG_ARMOR)
-				.addOptionalTag(ItemTags.FOOT_ARMOR);
-
-		getOrCreateTagBuilder(ConventionalItemTags.ENCHANTABLES)
-				.addOptionalTag(ItemTags.ARMOR_ENCHANTABLE)
-				.addOptionalTag(ItemTags.EQUIPPABLE_ENCHANTABLE)
-				.addOptionalTag(ItemTags.WEAPON_ENCHANTABLE)
-				.addOptionalTag(ItemTags.SWORD_ENCHANTABLE)
-				.addOptionalTag(ItemTags.MINING_ENCHANTABLE)
-				.addOptionalTag(ItemTags.MINING_LOOT_ENCHANTABLE)
-				.addOptionalTag(ItemTags.FISHING_ENCHANTABLE)
-				.addOptionalTag(ItemTags.TRIDENT_ENCHANTABLE)
-				.addOptionalTag(ItemTags.BOW_ENCHANTABLE)
-				.addOptionalTag(ItemTags.CROSSBOW_ENCHANTABLE)
-				.addOptionalTag(ItemTags.MACE_ENCHANTABLE)
-				.addOptionalTag(ItemTags.FIRE_ASPECT_ENCHANTABLE)
-				.addOptionalTag(ItemTags.DURABILITY_ENCHANTABLE);
 	}
 
 	private void generateVillagerJobSites() {
@@ -459,6 +548,15 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 		getOrCreateTagBuilder(ConventionalItemTags.STRINGS)
 				.add(Items.STRING);
+
+		getOrCreateTagBuilder(ConventionalItemTags.LEATHERS)
+				.add(Items.LEATHER);
+
+		getOrCreateTagBuilder(ConventionalItemTags.MUSIC_DISCS)
+				.add(Items.MUSIC_DISC_13, Items.MUSIC_DISC_CAT, Items.MUSIC_DISC_BLOCKS, Items.MUSIC_DISC_CHIRP, Items.MUSIC_DISC_FAR,
+						Items.MUSIC_DISC_MALL, Items.MUSIC_DISC_MELLOHI, Items.MUSIC_DISC_STAL, Items.MUSIC_DISC_STRAD, Items.MUSIC_DISC_WARD,
+						Items.MUSIC_DISC_11, Items.MUSIC_DISC_WAIT, Items.MUSIC_DISC_OTHERSIDE, Items.MUSIC_DISC_5, Items.MUSIC_DISC_PIGSTEP,
+						Items.MUSIC_DISC_RELIC, Items.MUSIC_DISC_CREATOR, Items.MUSIC_DISC_CREATOR_MUSIC_BOX, Items.MUSIC_DISC_PRECIPICE);
 
 		getOrCreateTagBuilder(ConventionalItemTags.WOODEN_RODS)
 				.add(Items.STICK);
@@ -630,10 +728,10 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.LAPIS_GEMS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "lapis"));
 		getOrCreateTagBuilder(ConventionalItemTags.EMERALD_GEMS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "emeralds"));
 		getOrCreateTagBuilder(ConventionalItemTags.QUARTZ_GEMS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "quartz"));
-		getOrCreateTagBuilder(ConventionalItemTags.SHEARS_TOOLS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "shears"));
-		getOrCreateTagBuilder(ConventionalItemTags.SPEARS_TOOLS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "spears"));
-		getOrCreateTagBuilder(ConventionalItemTags.BOWS_TOOLS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "bows"));
-		getOrCreateTagBuilder(ConventionalItemTags.SHIELDS_TOOLS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "shields"));
+		getOrCreateTagBuilder(ConventionalItemTags.SHEAR_TOOLS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "shears"));
+		getOrCreateTagBuilder(ConventionalItemTags.SPEAR_TOOLS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "spears"));
+		getOrCreateTagBuilder(ConventionalItemTags.BOW_TOOLS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "bows"));
+		getOrCreateTagBuilder(ConventionalItemTags.SHIELD_TOOLS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "shields"));
 		getOrCreateTagBuilder(ConventionalItemTags.STRINGS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "string"));
 	}
 }
