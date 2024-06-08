@@ -18,15 +18,20 @@ package net.fabricmc.fabric.test.networking.configuration;
 
 import java.util.function.Consumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.server.command.DebugConfigCommand;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
@@ -36,10 +41,13 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
  * Also see NetworkingConfigurationClientTest.
  */
 public class NetworkingConfigurationTest implements ModInitializer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(NetworkingConfigurationTest.class);
+
 	@Override
 	public void onInitialize() {
 		PayloadTypeRegistry.configurationS2C().register(ConfigurationPacket.ID, ConfigurationPacket.CODEC);
 		PayloadTypeRegistry.configurationC2S().register(ConfigurationCompletePacket.ID, ConfigurationCompletePacket.CODEC);
+		PayloadTypeRegistry.configurationC2S().register(ConfigurationStartPacket.ID, ConfigurationStartPacket.CODEC);
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
 			// You must check to see if the client can handle your config task
@@ -54,6 +62,13 @@ public class NetworkingConfigurationTest implements ModInitializer {
 		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationCompletePacket.ID, (packet, context) -> {
 			context.networkHandler().completeTask(TestConfigurationTask.KEY);
 		});
+
+		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationStartPacket.ID, (packet, context) -> {
+			LOGGER.info("Received configuration start packet from client");
+		});
+
+		// Enable the vanilla debugconfig command
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> DebugConfigCommand.register(dispatcher));
 	}
 
 	public record TestConfigurationTask(String data) implements ServerPlayerConfigurationTask {
@@ -95,6 +110,20 @@ public class NetworkingConfigurationTest implements ModInitializer {
 		public static final PacketCodec<PacketByteBuf, ConfigurationCompletePacket> CODEC = PacketCodec.unit(INSTANCE);
 
 		private ConfigurationCompletePacket() {
+		}
+
+		@Override
+		public Id<? extends CustomPayload> getId() {
+			return ID;
+		}
+	}
+
+	public static class ConfigurationStartPacket implements CustomPayload {
+		public static final ConfigurationStartPacket INSTANCE = new ConfigurationStartPacket();
+		public static final CustomPayload.Id<ConfigurationStartPacket> ID = new Id<>(Identifier.of(NetworkingTestmods.ID, "configure_start"));
+		public static final PacketCodec<PacketByteBuf, ConfigurationStartPacket> CODEC = PacketCodec.unit(INSTANCE);
+
+		private ConfigurationStartPacket() {
 		}
 
 		@Override
