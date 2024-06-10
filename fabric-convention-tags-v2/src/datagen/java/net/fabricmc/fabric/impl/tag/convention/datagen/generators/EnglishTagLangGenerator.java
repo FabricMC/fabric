@@ -265,6 +265,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, "Crafting Tables");
 		translationBuilder.add(ConventionalItemTags.PLAYER_WORKSTATIONS_FURNACES, "Furnaces");
 		translationBuilder.add(ConventionalItemTags.STRINGS, "Strings");
+		translationBuilder.add(ConventionalItemTags.LEATHERS, "Leathers");
 		translationBuilder.add(ConventionalItemTags.MUSIC_DISCS, "Music Discs");
 		translationBuilder.add(ConventionalItemTags.RODS, "Rods");
 		translationBuilder.add(ConventionalItemTags.WOODEN_RODS, "Wooden Rods");
