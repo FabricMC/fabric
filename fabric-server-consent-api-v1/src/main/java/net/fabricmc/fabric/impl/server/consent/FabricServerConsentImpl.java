@@ -52,7 +52,7 @@ public final class FabricServerConsentImpl implements DedicatedServerModInitiali
 
 		if (!configDir.exists()) {
 			if (!configDir.mkdir()) {
-				LOGGER.warn("[FabricServerConsent] Could not create configuration directory: " + configDir.getAbsolutePath());
+				LOGGER.warn("[FabricServerConsent] Could not create configuration directory: {}", configDir.getAbsolutePath());
 			}
 		}
 
@@ -64,7 +64,7 @@ public final class FabricServerConsentImpl implements DedicatedServerModInitiali
 			try (Reader reader = Files.newBufferedReader(configFile.toPath())) {
 				rootObject = JsonParser.parseReader(reader).getAsJsonObject();
 			} catch (IOException e) {
-				LOGGER.warn("[FabricServerConsent] Could not read consents file '" + configFile.getAbsolutePath() + "'", e);
+				LOGGER.warn("[FabricServerConsent] Could not read consents file '{}'", configFile.getAbsolutePath(), e);
 			}
 		}
 
@@ -82,7 +82,7 @@ public final class FabricServerConsentImpl implements DedicatedServerModInitiali
 		try (Writer writer = Files.newBufferedWriter(configFile.toPath())) {
 			writer.write(GSON.toJson(rootObject));
 		} catch (IOException e) {
-			LOGGER.warn("[FabricServerConsent] Could not store consents file '" + configFile.getAbsolutePath() + "'", e);
+			LOGGER.warn("[FabricServerConsent] Could not store consents file '{}'", configFile.getAbsolutePath(), e);
 		}
 	}
 

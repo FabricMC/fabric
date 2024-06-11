@@ -19,12 +19,18 @@ package net.fabricmc.fabric.impl.server.consent;
 import java.util.List;
 
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
 public record IllegalFlagsCustomPayload(List<Identifier> illegalFlags) implements CustomPayload {
 	public static final String SOME_UNIVERSAL_NAMESPACE = "noconsent";
 	public static final CustomPayload.Id<IllegalFlagsCustomPayload> ID = new CustomPayload.Id<>(Identifier.of(SOME_UNIVERSAL_NAMESPACE, "flags"));
+	public static final PacketCodec<PacketByteBuf, IllegalFlagsCustomPayload> CODEC = PacketCodec.of(IllegalFlagsCustomPayload::write, IllegalFlagsCustomPayload::new);
+
+	private IllegalFlagsCustomPayload(PacketByteBuf buf) {
+		this(buf.readList(PacketByteBuf::readIdentifier));
+	}
 
 	public void write(PacketByteBuf buf) {
 		buf.writeCollection(this.illegalFlags, PacketByteBuf::writeIdentifier);
