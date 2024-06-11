@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.tag.convention.v2;
 
 import net.minecraft.item.Item;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
@@ -37,22 +38,22 @@ public final class ConventionalItemTags {
 
 	// Tool tags
 	public static final TagKey<Item> TOOLS = register("tools");
-	public static final TagKey<Item> SHEARS_TOOLS = register("tools/shears");
+	public static final TagKey<Item> SHEAR_TOOLS = register("tools/shear");
 	/**
 	 * For spear tools, like Minecraft's tridents.
 	 * Note, other weapons like boomerangs and throwing knives are best put into their own tools tag.
 	 */
-	public static final TagKey<Item> SPEARS_TOOLS = register("tools/spears");
-	public static final TagKey<Item> BOWS_TOOLS = register("tools/bows");
-	public static final TagKey<Item> CROSSBOWS_TOOLS = register("tools/crossbows");
-	public static final TagKey<Item> SHIELDS_TOOLS = register("tools/shields");
-	public static final TagKey<Item> FISHING_RODS_TOOLS = register("tools/fishing_rods");
-	public static final TagKey<Item> BRUSHES_TOOLS = register("tools/brushes");
+	public static final TagKey<Item> SPEAR_TOOLS = register("tools/spear");
+	public static final TagKey<Item> BOW_TOOLS = register("tools/bow");
+	public static final TagKey<Item> CROSSBOW_TOOLS = register("tools/crossbow");
+	public static final TagKey<Item> SHIELD_TOOLS = register("tools/shield");
+	public static final TagKey<Item> FISHING_ROD_TOOLS = register("tools/fishing_rod");
+	public static final TagKey<Item> BRUSH_TOOLS = register("tools/brush");
 
 	// Action-based tool tags
-	public static final TagKey<Item> MELEE_WEAPONS_TOOLS = register("tools/melee_weapons");
-	public static final TagKey<Item> RANGED_WEAPONS_TOOLS = register("tools/ranged_weapons");
-	public static final TagKey<Item> MINING_TOOLS = register("tools/mining_tools");
+	public static final TagKey<Item> MELEE_WEAPON_TOOLS = register("tools/melee_weapon");
+	public static final TagKey<Item> RANGED_WEAPON_TOOLS = register("tools/ranged_weapon");
+	public static final TagKey<Item> MINING_TOOL_TOOLS = register("tools/mining_tool");
 
 	// Armor tags
 	/**
@@ -74,15 +75,11 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> NUGGETS = register("nuggets");
 	public static final TagKey<Item> ORES = register("ores");
 	public static final TagKey<Item> RAW_MATERIALS = register("raw_materials");
-	public static final TagKey<Item> RAW_BLOCKS = register("raw_blocks");
 
 	// Raw material and blocks - vanilla instances
 	public static final TagKey<Item> IRON_RAW_MATERIALS = register("raw_materials/iron");
 	public static final TagKey<Item> GOLD_RAW_MATERIALS = register("raw_materials/gold");
 	public static final TagKey<Item> COPPER_RAW_MATERIALS = register("raw_materials/copper");
-	public static final TagKey<Item> IRON_RAW_BLOCKS = register("raw_blocks/iron");
-	public static final TagKey<Item> GOLD_RAW_BLOCKS = register("raw_blocks/gold");
-	public static final TagKey<Item> COPPER_RAW_BLOCKS = register("raw_blocks/copper");
 
 	// Bricks - vanilla instances
 	public static final TagKey<Item> NORMAL_BRICKS = register("bricks/normal");
@@ -109,7 +106,6 @@ public final class ConventionalItemTags {
 	// Dusts and Misc - vanilla instances
 	public static final TagKey<Item> REDSTONE_DUSTS = register("dusts/redstone");
 	public static final TagKey<Item> GLOWSTONE_DUSTS = register("dusts/glowstone");
-	public static final TagKey<Item> COAL = register("coal");
 
 	// Consumables
 	public static final TagKey<Item> POTIONS = register("potions");
@@ -173,7 +169,16 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> WOODEN_CHESTS = register("chests/wooden");
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
+	/**
+	 * Block tag equivalent is {@link BlockTags#SHULKER_BOXES}.
+	 */
 	public static final TagKey<Item> SHULKER_BOXES = register("shulker_boxes");
+	public static final TagKey<Item> GLAZED_TERRACOTTA = register("glazed_terracotta");
+	public static final TagKey<Item> CONCRETE = register("concrete");
+	/**
+	 * Block tag equivalent is {@link BlockTags#CONCRETE_POWDER}.
+	 */
+	public static final TagKey<Item> CONCRETE_POWDER = register("concrete_powder");
 
 	// Related to budding mechanics
 	public static final TagKey<Item> BUDDING_BLOCKS = register("budding_blocks");
@@ -216,7 +221,7 @@ public final class ConventionalItemTags {
 	/**
 	 * Tag that holds all blocks and items that can be dyed a specific color.
 	 * (Does not include color blending items like leather armor.
-	 * Use {@link net.minecraft.registry.tag.ItemTags.DYEABLE} tag instead for color blending items)
+	 * Use {@link net.minecraft.registry.tag.ItemTags#DYEABLE} tag instead for color blending items)
 	 * <p></p>
 	 * Note: Use custom ingredients in recipes to do tag intersections and/or tag exclusions
 	 * to make more powerful recipes utilizing multiple tags such as dyed tags for an ingredient.
@@ -271,6 +276,12 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> PLAYER_WORKSTATIONS_CRAFTING_TABLES = register("player_workstations/crafting_tables");
 	public static final TagKey<Item> PLAYER_WORKSTATIONS_FURNACES = register("player_workstations/furnaces");
 	public static final TagKey<Item> STRINGS = register("strings");
+	public static final TagKey<Item> LEATHERS = register("leathers");
+	/**
+	 * For music disc-like materials to be used in recipes.
+	 * A pancake with a JUKEBOX_PLAYABLE component attached to play in Jukeboxes as an Easter Egg is not a music disc and would not go in this tag.
+	 */
+	public static final TagKey<Item> MUSIC_DISCS = register("music_discs");
 	/**
 	 * For rod-like materials to be used in recipes.
 	 */
@@ -289,6 +300,82 @@ public final class ConventionalItemTags {
 	 * Tag that holds all items that recipe viewers should not show to users.
 	 */
 	public static final TagKey<Item> HIDDEN_FROM_RECIPE_VIEWERS = register("hidden_from_recipe_viewers");
+
+	/**
+	 * This tag is redundant. Please use {@link ConventionalItemTags#STORAGE_BLOCKS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> RAW_BLOCKS = register("raw_blocks");
+	/**
+	 * This tag is redundant. Please use {@link ConventionalItemTags#STORAGE_BLOCKS_RAW_IRON} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> IRON_RAW_BLOCKS = register("raw_blocks/iron");
+	/**
+	 * This tag is redundant. Please use {@link ConventionalItemTags#STORAGE_BLOCKS_RAW_GOLD} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> GOLD_RAW_BLOCKS = register("raw_blocks/gold");
+	/**
+	 * This tag is redundant. Please use {@link ConventionalItemTags#STORAGE_BLOCKS_RAW_COPPER} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> COPPER_RAW_BLOCKS = register("raw_blocks/copper");
+	/**
+	 * This tag is redundant. Please use {@link net.minecraft.registry.tag.ItemTags#COALS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> COAL = register("coal");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#SHEAR_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> SHEARS_TOOLS = register("tools/shears");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#SPEAR_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> SPEARS_TOOLS = register("tools/spears");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#BOW_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> BOWS_TOOLS = register("tools/bows");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#CROSSBOW_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> CROSSBOWS_TOOLS = register("tools/crossbows");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#SHIELD_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> SHIELDS_TOOLS = register("tools/shields");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#FISHING_ROD_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> FISHING_RODS_TOOLS = register("tools/fishing_rods");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#BRUSH_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> BRUSHES_TOOLS = register("tools/brushes");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#MELEE_WEAPON_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> MELEE_WEAPONS_TOOLS = register("tools/melee_weapons");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#RANGED_WEAPON_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> RANGED_WEAPONS_TOOLS = register("tools/ranged_weapons");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#MINING_TOOL_TOOLS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> MINING_TOOLS = register("tools/mining_tools");
 
 	private static TagKey<Item> register(String tagId) {
 		return TagRegistration.ITEM_TAG.registerC(tagId);

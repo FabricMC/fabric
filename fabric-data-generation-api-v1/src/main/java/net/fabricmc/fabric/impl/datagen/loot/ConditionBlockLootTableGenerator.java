@@ -25,13 +25,14 @@ import net.minecraft.resource.featuretoggle.FeatureFlags;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
+import net.fabricmc.fabric.mixin.datagen.loot.BlockLootTableGeneratorAccessor;
 
 public class ConditionBlockLootTableGenerator extends BlockLootTableGenerator {
 	private final BlockLootTableGenerator parent;
 	private final ResourceCondition[] conditions;
 
 	public ConditionBlockLootTableGenerator(BlockLootTableGenerator parent, ResourceCondition[] conditions) {
-		super(Collections.emptySet(), FeatureFlags.FEATURE_MANAGER.getFeatureSet());
+		super(Collections.emptySet(), FeatureFlags.FEATURE_MANAGER.getFeatureSet(), ((BlockLootTableGeneratorAccessor) parent).getRegistryLookup());
 
 		this.parent = parent;
 		this.conditions = conditions;

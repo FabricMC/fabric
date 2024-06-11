@@ -65,7 +65,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 public class CommonAttachmentTests {
 	private static final String MOD_ID = "example";
 	private static final AttachmentType<Integer> PERSISTENT = AttachmentRegistry.createPersistent(
-			new Identifier(MOD_ID, "persistent"),
+			Identifier.of(MOD_ID, "persistent"),
 			Codec.INT
 	);
 
@@ -77,7 +77,7 @@ public class CommonAttachmentTests {
 
 	@Test
 	void testTargets() {
-		AttachmentType<String> basic = AttachmentRegistry.create(new Identifier(MOD_ID, "basic_attachment"));
+		AttachmentType<String> basic = AttachmentRegistry.create(Identifier.of(MOD_ID, "basic_attachment"));
 		// Attachment targets
 		/*
 		 * CALLS_REAL_METHODS makes sense here because AttachmentTarget does not refer to anything in the underlying
@@ -117,7 +117,7 @@ public class CommonAttachmentTests {
 	@Test
 	void testDefaulted() {
 		AttachmentType<Integer> defaulted = AttachmentRegistry.createDefaulted(
-				new Identifier(MOD_ID, "defaulted_attachment"),
+				Identifier.of(MOD_ID, "defaulted_attachment"),
 				() -> 0
 		);
 		Entity target = mock(Entity.class, CALLS_REAL_METHODS);
@@ -131,7 +131,7 @@ public class CommonAttachmentTests {
 	@Test
 	void testStaticReadWrite() {
 		AttachmentType<Double> dummy = AttachmentRegistry.createPersistent(
-				new Identifier(MOD_ID, "dummy"),
+				Identifier.of(MOD_ID, "dummy"),
 				Codec.DOUBLE
 		);
 		var map = new IdentityHashMap<AttachmentType<?>, Object>();
@@ -156,7 +156,7 @@ public class CommonAttachmentTests {
 		var nbt = new NbtCompound();
 		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(nbt, mockDRM()));
 
-		nbt.put(new Identifier("test").toString(), new NbtCompound());
+		nbt.put(Identifier.ofVanilla("test").toString(), new NbtCompound());
 		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(nbt, mockDRM()));
 	}
 
@@ -173,11 +173,11 @@ public class CommonAttachmentTests {
 	@Test
 	void testEntityCopy() {
 		AttachmentType<Boolean> notCopiedOnRespawn = AttachmentRegistry.create(
-				new Identifier(MOD_ID, "not_copied_on_respawn")
+				Identifier.of(MOD_ID, "not_copied_on_respawn")
 		);
 		AttachmentType<Boolean> copiedOnRespawn = AttachmentRegistry.<Boolean>builder()
 				.copyOnDeath()
-				.buildAndRegister(new Identifier(MOD_ID, "copied_on_respawn"));
+				.buildAndRegister(Identifier.of(MOD_ID, "copied_on_respawn"));
 
 		Entity original = mock(Entity.class, CALLS_REAL_METHODS);
 		original.setAttached(notCopiedOnRespawn, true);

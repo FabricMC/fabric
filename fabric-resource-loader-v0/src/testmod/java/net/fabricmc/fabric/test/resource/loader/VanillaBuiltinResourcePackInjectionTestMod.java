@@ -34,7 +34,7 @@ public class VanillaBuiltinResourcePackInjectionTestMod implements ModInitialize
 
 	@Override
 	public void onInitialize() {
-		Identifier id = new Identifier(MODID, "testblock");
+		Identifier id = Identifier.of(MODID, "testblock");
 
 		Registry.register(Registries.BLOCK, id, TEST_BLOCK);
 		Registry.register(Registries.ITEM, id, new BlockItem(TEST_BLOCK, new Item.Settings()));

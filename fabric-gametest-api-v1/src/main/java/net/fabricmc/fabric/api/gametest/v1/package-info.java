@@ -35,7 +35,7 @@
  * causes explosion, or that hoppers can insert items into barrels. A test method is always annotated
  * with {@link net.minecraft.test.GameTest}. For most cases you can set the {@link
  * net.minecraft.test.GameTest#templateName()} as {@link net.fabricmc.fabric.api.gametest.v1.FabricGameTest#EMPTY_STRUCTURE}.
- * For complex tests, you can also save a structure as an SNBT file under {@code modid/gametest/structures/}
+ * For complex tests, you can also save a structure as an SNBT file under {@code modid/gametest/structure/}
  * in the test mod's data pack and reference that structure. It will then be loaded before the test.
  *
  * <p>Test methods are instance methods (i.e. not static) and take exactly one argument - {@link

@@ -94,7 +94,8 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		getOrCreateTagBuilder(ConventionalBlockTags.BOOKSHELVES)
 				.add(Blocks.BOOKSHELF);
 		generateGlassTags();
-		generateShulkerTag();
+		generateGlazeTerracottaTags();
+		generateConcreteTags();
 		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_BARRELS)
 				.add(Blocks.BARREL);
 		getOrCreateTagBuilder(ConventionalBlockTags.BARRELS)
@@ -182,27 +183,6 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.AMETHYST_CLUSTER);
 	}
 
-	private void generateShulkerTag() {
-		getOrCreateTagBuilder(ConventionalBlockTags.SHULKER_BOXES)
-				.add(Blocks.SHULKER_BOX)
-				.add(Blocks.WHITE_SHULKER_BOX)
-				.add(Blocks.ORANGE_SHULKER_BOX)
-				.add(Blocks.MAGENTA_SHULKER_BOX)
-				.add(Blocks.LIGHT_BLUE_SHULKER_BOX)
-				.add(Blocks.YELLOW_SHULKER_BOX)
-				.add(Blocks.LIME_SHULKER_BOX)
-				.add(Blocks.PINK_SHULKER_BOX)
-				.add(Blocks.GRAY_SHULKER_BOX)
-				.add(Blocks.LIGHT_GRAY_SHULKER_BOX)
-				.add(Blocks.CYAN_SHULKER_BOX)
-				.add(Blocks.PURPLE_SHULKER_BOX)
-				.add(Blocks.BLUE_SHULKER_BOX)
-				.add(Blocks.BROWN_SHULKER_BOX)
-				.add(Blocks.GREEN_SHULKER_BOX)
-				.add(Blocks.RED_SHULKER_BOX)
-				.add(Blocks.BLACK_SHULKER_BOX);
-	}
-
 	private void generateGlassTags() {
 		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_BLOCKS)
 				.add(Blocks.GLASS)
@@ -241,6 +221,46 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.GREEN_STAINED_GLASS_PANE)
 				.add(Blocks.BLACK_STAINED_GLASS_PANE)
 				.add(Blocks.RED_STAINED_GLASS_PANE);
+	}
+
+	private void generateGlazeTerracottaTags() {
+		getOrCreateTagBuilder(ConventionalBlockTags.GLAZED_TERRACOTTA)
+				.add(Blocks.WHITE_GLAZED_TERRACOTTA)
+				.add(Blocks.ORANGE_GLAZED_TERRACOTTA)
+				.add(Blocks.MAGENTA_GLAZED_TERRACOTTA)
+				.add(Blocks.LIGHT_BLUE_GLAZED_TERRACOTTA)
+				.add(Blocks.YELLOW_GLAZED_TERRACOTTA)
+				.add(Blocks.LIME_GLAZED_TERRACOTTA)
+				.add(Blocks.PINK_GLAZED_TERRACOTTA)
+				.add(Blocks.GRAY_GLAZED_TERRACOTTA)
+				.add(Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA)
+				.add(Blocks.CYAN_GLAZED_TERRACOTTA)
+				.add(Blocks.PURPLE_GLAZED_TERRACOTTA)
+				.add(Blocks.BLUE_GLAZED_TERRACOTTA)
+				.add(Blocks.BROWN_GLAZED_TERRACOTTA)
+				.add(Blocks.GREEN_GLAZED_TERRACOTTA)
+				.add(Blocks.BLACK_GLAZED_TERRACOTTA)
+				.add(Blocks.RED_GLAZED_TERRACOTTA);
+	}
+
+	private void generateConcreteTags() {
+		getOrCreateTagBuilder(ConventionalBlockTags.CONCRETE)
+				.add(Blocks.WHITE_CONCRETE)
+				.add(Blocks.ORANGE_CONCRETE)
+				.add(Blocks.MAGENTA_CONCRETE)
+				.add(Blocks.LIGHT_BLUE_CONCRETE)
+				.add(Blocks.YELLOW_CONCRETE)
+				.add(Blocks.LIME_CONCRETE)
+				.add(Blocks.PINK_CONCRETE)
+				.add(Blocks.GRAY_CONCRETE)
+				.add(Blocks.LIGHT_GRAY_CONCRETE)
+				.add(Blocks.CYAN_CONCRETE)
+				.add(Blocks.PURPLE_CONCRETE)
+				.add(Blocks.BLUE_CONCRETE)
+				.add(Blocks.BROWN_CONCRETE)
+				.add(Blocks.GREEN_CONCRETE)
+				.add(Blocks.BLACK_CONCRETE)
+				.add(Blocks.RED_CONCRETE);
 	}
 
 	private void generateDyedTags() {
@@ -449,18 +469,18 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
 		// TODO: Remove backwards compat tag entries in 1.22
 
-		getOrCreateTagBuilder(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "movement_restricted"));
-		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "quartz_ores"));
-		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_BARRELS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "wooden_barrels"));
-		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_CHESTS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "wooden_chests"));
-		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_BLOCKS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "sandstone_blocks"));
-		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_SLABS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "sandstone_slabs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_STAIRS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "sandstone_stairs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_BLOCKS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "red_sandstone_blocks"));
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_SLABS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "red_sandstone_slabs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_STAIRS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "red_sandstone_stairs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_blocks"));
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_slabs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS).addOptionalTag(new Identifier(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_stairs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "movement_restricted"));
+		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "quartz_ores"));
+		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_BARRELS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "wooden_barrels"));
+		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_CHESTS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "wooden_chests"));
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_BLOCKS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "sandstone_blocks"));
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_SLABS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "sandstone_slabs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_STAIRS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "sandstone_stairs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_BLOCKS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "red_sandstone_blocks"));
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_SLABS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "red_sandstone_slabs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_STAIRS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "red_sandstone_stairs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_blocks"));
+		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_slabs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_stairs"));
 	}
 }

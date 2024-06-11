@@ -48,7 +48,7 @@ public class ConventionLogWarnings implements ModInitializer {
 	private static final LogWarningMode LOG_LEGACY_WARNING_MODE = setupLogWarningModeProperty();
 
 	private static LogWarningMode setupLogWarningModeProperty() {
-		String property = System.getProperty("fabric-tag-conventions-v1.legacyTagWarning", LogWarningMode.DEV_SHORT.name()).toUpperCase(Locale.ROOT);
+		String property = System.getProperty("fabric-tag-conventions-v1.legacyTagWarning", LogWarningMode.SHORT.name()).toUpperCase(Locale.ROOT);
 
 		try {
 			return LogWarningMode.valueOf(property);
@@ -60,8 +60,13 @@ public class ConventionLogWarnings implements ModInitializer {
 
 	private enum LogWarningMode {
 		SILENCED,
-		DEV_SHORT,
-		DEV_VERBOSE
+		SHORT,
+		VERBOSE,
+		FAIL;
+
+		boolean isVerbose() {
+			return this == VERBOSE || this == FAIL;
+		}
 	}
 
 	/**
@@ -115,10 +120,10 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(ConventionalItemTags.LAPIS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.LAPIS_GEMS),
 			createMapEntry(ConventionalItemTags.EMERALDS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.EMERALD_GEMS),
 			createMapEntry(ConventionalItemTags.QUARTZ, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.QUARTZ_GEMS),
-			createMapEntry(ConventionalItemTags.SHEARS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SHEARS_TOOLS),
-			createMapEntry(ConventionalItemTags.SPEARS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SPEARS_TOOLS),
-			createMapEntry(ConventionalItemTags.BOWS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BOWS_TOOLS),
-			createMapEntry(ConventionalItemTags.SHIELDS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SHIELDS_TOOLS),
+			createMapEntry(ConventionalItemTags.SHEARS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SHEAR_TOOLS),
+			createMapEntry(ConventionalItemTags.SPEARS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SPEAR_TOOLS),
+			createMapEntry(ConventionalItemTags.BOWS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BOW_TOOLS),
+			createMapEntry(ConventionalItemTags.SHIELDS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SHIELD_TOOLS),
 
 			createMapEntry(ConventionalEnchantmentTags.INCREASES_BLOCK_DROPS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS),
 			createMapEntry(ConventionalEnchantmentTags.INCREASES_ENTITY_DROPS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags.INCREASE_ENTITY_DROPS),
@@ -209,8 +214,8 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(RegistryKeys.ITEM, "stew", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUPS_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "stews", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUPS_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "candy", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDIES_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "candies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDIES_FOODS)
-
+			createMapEntry(RegistryKeys.ITEM, "candies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDIES_FOODS),
+			createMapEntry(TagKey.of(RegistryKeys.ITEM, Identifier.of("minecraft", "music_discs")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MUSIC_DISCS)
 	);
 
 	@Override
@@ -254,9 +259,7 @@ public class ConventionLogWarnings implements ModInitializer {
 					""");
 
 			// Print out all legacy tags when desired.
-			boolean isConfigSetToVerbose = LOG_LEGACY_WARNING_MODE == LogWarningMode.DEV_VERBOSE;
-
-			if (isConfigSetToVerbose) {
+			if (LOG_LEGACY_WARNING_MODE.isVerbose()) {
 				stringBuilder.append("\nLegacy tags and their replacement:");
 
 				for (TagKey<?> tagKey : legacyTags) {
@@ -265,6 +268,10 @@ public class ConventionLogWarnings implements ModInitializer {
 			}
 
 			LOGGER.warn(stringBuilder.toString());
+
+			if (LOG_LEGACY_WARNING_MODE == LogWarningMode.FAIL) {
+				throw new RuntimeException("Legacy Tag validation failed");
+			}
 		});
 	}
 
@@ -281,10 +288,10 @@ public class ConventionLogWarnings implements ModInitializer {
 	}
 
 	private static <T> TagKey<T> createTagKeyUnderC(RegistryKey<Registry<T>> registryKey, String tagId) {
-		return TagKey.of(registryKey, new Identifier(TagUtil.C_TAG_NAMESPACE, tagId));
+		return TagKey.of(registryKey, Identifier.of(TagUtil.C_TAG_NAMESPACE, tagId));
 	}
 
 	private static <T> TagKey<T> createTagKeyUnderFabric(RegistryKey<Registry<T>> registryKey, String tagId) {
-		return TagKey.of(registryKey, new Identifier(TagUtil.FABRIC_TAG_NAMESPACE, tagId));
+		return TagKey.of(registryKey, Identifier.of(TagUtil.FABRIC_TAG_NAMESPACE, tagId));
 	}
 }

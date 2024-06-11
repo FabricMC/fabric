@@ -16,12 +16,14 @@
 
 package net.fabricmc.fabric.test.item.gametest;
 
-import net.minecraft.inventory.SimpleInventory;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.input.CraftingRecipeInput;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
@@ -35,11 +37,11 @@ import net.fabricmc.fabric.test.item.CustomDamageTest;
 public class RecipeGameTest implements FabricGameTest {
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void vanillaRemainderTest(TestContext context) {
-		Recipe<SimpleInventory> testRecipe = createTestingRecipeInstance();
+		Recipe<CraftingRecipeInput> testRecipe = createTestingRecipeInstance();
 
-		SimpleInventory inventory = new SimpleInventory(
+		CraftingRecipeInput inventory = CraftingRecipeInput.create(1, 2, List.of(
 				new ItemStack(Items.WATER_BUCKET),
-				new ItemStack(Items.DIAMOND));
+				new ItemStack(Items.DIAMOND)));
 
 		DefaultedList<ItemStack> remainderList = testRecipe.getRemainder(inventory);
 
@@ -52,13 +54,13 @@ public class RecipeGameTest implements FabricGameTest {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void fabricRemainderTest(TestContext context) {
-		Recipe<SimpleInventory> testRecipe = createTestingRecipeInstance();
+		Recipe<CraftingRecipeInput> testRecipe = createTestingRecipeInstance();
 
-		SimpleInventory inventory = new SimpleInventory(
+		CraftingRecipeInput inventory = CraftingRecipeInput.create(1, 4, List.of(
 				new ItemStack(CustomDamageTest.WEIRD_PICK),
 				withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 10),
 				withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 31),
-				new ItemStack(Items.DIAMOND));
+				new ItemStack(Items.DIAMOND)));
 
 		DefaultedList<ItemStack> remainderList = testRecipe.getRemainder(inventory);
 
@@ -71,15 +73,15 @@ public class RecipeGameTest implements FabricGameTest {
 		context.complete();
 	}
 
-	private Recipe<SimpleInventory> createTestingRecipeInstance() {
+	private Recipe<CraftingRecipeInput> createTestingRecipeInstance() {
 		return new Recipe<>() {
 			@Override
-			public boolean matches(SimpleInventory inventory, World world) {
+			public boolean matches(CraftingRecipeInput recipeInput, World world) {
 				return true;
 			}
 
 			@Override
-			public ItemStack craft(SimpleInventory inventory, RegistryWrapper.WrapperLookup wrapperLookup) {
+			public ItemStack craft(CraftingRecipeInput recipeInput, RegistryWrapper.WrapperLookup wrapperLookup) {
 				return null;
 			}
 

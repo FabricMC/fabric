@@ -28,11 +28,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 
-import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
@@ -58,7 +58,7 @@ public final class FabricLootTableProviderImpl {
 		HashMap<Identifier, ResourceCondition[]> conditionMap = new HashMap<>();
 
 		return registryLookup.thenCompose(lookup -> {
-			provider.accept(lookup, (registryKey, builder) -> {
+			provider.accept((registryKey, builder) -> {
 				ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(builder);
 				conditionMap.put(registryKey.getValue(), conditions);
 
@@ -81,7 +81,7 @@ public final class FabricLootTableProviderImpl {
 	}
 
 	private static Path getOutputPath(FabricDataOutput dataOutput, Identifier lootTableId) {
-		return dataOutput.getResolver(DataOutput.OutputType.DATA_PACK, "loot_tables").resolveJson(lootTableId);
+		return dataOutput.getResolver(RegistryKeys.LOOT_TABLE).resolveJson(lootTableId);
 	}
 
 	private FabricLootTableProviderImpl() {

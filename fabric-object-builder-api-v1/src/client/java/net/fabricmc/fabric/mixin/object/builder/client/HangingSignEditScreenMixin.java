@@ -16,9 +16,10 @@
 
 package net.fabricmc.fabric.mixin.object.builder.client;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.gui.screen.ingame.AbstractSignEditScreen;
@@ -31,13 +32,13 @@ public abstract class HangingSignEditScreenMixin extends AbstractSignEditScreen 
 		super(blockEntity, filtered, bl);
 	}
 
-	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;<init>(Ljava/lang/String;)V"))
-	private String init(String id) {
+	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;ofVanilla(Ljava/lang/String;)Lnet/minecraft/util/Identifier;"))
+	private Identifier init(String id, Operation<Identifier> original) {
 		if (signType.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
-			Identifier identifier = new Identifier(signType.name());
-			return identifier.getNamespace() + ":textures/gui/hanging_signs/" + identifier.getPath() + ".png";
+			Identifier identifier = Identifier.of(signType.name());
+			return identifier.withPath(path -> "textures/gui/hanging_signs/" + path + ".png");
 		}
 
-		return id;
+		return original.call(id);
 	}
 }

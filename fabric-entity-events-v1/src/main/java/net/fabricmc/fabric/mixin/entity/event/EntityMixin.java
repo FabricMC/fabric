@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
@@ -35,10 +36,10 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 @Mixin(Entity.class)
 abstract class EntityMixin {
 	@Shadow
-	public World world;
+	private World world;
 
-	@Inject(method = "moveToWorld", at = @At("RETURN"))
-	private void afterWorldChanged(ServerWorld destination, CallbackInfoReturnable<Entity> cir) {
+	@Inject(method = "teleportTo", at = @At("RETURN"))
+	private void afterWorldChanged(TeleportTarget target, CallbackInfoReturnable<Entity> cir) {
 		// Ret will only have an entity if the teleport worked (entity not removed, teleportTarget was valid, entity was successfully created)
 		Entity ret = cir.getReturnValue();
 

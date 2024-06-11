@@ -19,35 +19,48 @@ package net.fabricmc.fabric.mixin.client.model.loading;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.Baker;
+import net.minecraft.client.render.model.BlockStatesLoader;
+import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
 
+import net.fabricmc.fabric.impl.client.model.loading.BakerImplHooks;
+import net.fabricmc.fabric.impl.client.model.loading.BlockStatesLoaderHooks;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoaderHooks;
+import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingConstants;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
 
 @Mixin(ModelLoader.class)
-public abstract class ModelLoaderMixin implements ModelLoaderHooks {
-	// The missing model is always loaded and added first.
-	@Final
-	@Shadow
-	public static ModelIdentifier MISSING_ID;
+abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	@Final
 	@Shadow
 	private Set<Identifier> modelsToLoad;
@@ -56,92 +69,117 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	private Map<Identifier, UnbakedModel> unbakedModels;
 	@Shadow
 	@Final
-	private Map<Identifier, UnbakedModel> modelsToBake;
+	private Map<ModelIdentifier, UnbakedModel> modelsToBake;
+	@Shadow
+	@Final
+	private UnbakedModel missingModel;
 
 	@Unique
 	private ModelLoadingEventDispatcher fabric_eventDispatcher;
-	// Explicitly not @Unique to allow mods that heavily rework model loading to reimplement the guard.
-	// Note that this is an implementation detail; it can change at any time.
-	private int fabric_guardGetOrLoadModel = 0;
-	private boolean fabric_enableGetOrLoadModelGuard = true;
+	@Unique
+	private final ObjectLinkedOpenHashSet<Identifier> modelLoadingStack = new ObjectLinkedOpenHashSet<>();
 
 	@Shadow
-	private void addModel(ModelIdentifier id) {
-	}
+	abstract UnbakedModel getOrLoadModel(Identifier id);
 
 	@Shadow
-	public abstract UnbakedModel getOrLoadModel(Identifier id);
+	abstract void add(ModelIdentifier id, UnbakedModel unbakedModel);
 
 	@Shadow
-	private void loadModel(Identifier id) {
-	}
+	abstract JsonUnbakedModel loadModelFromJson(Identifier id);
 
-	@Shadow
-	private void putModel(Identifier id, UnbakedModel unbakedModel) {
-	}
-
-	@Shadow
-	public abstract JsonUnbakedModel loadModelFromJson(Identifier id);
-
-	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "net/minecraft/util/profiler/Profiler.swap(Ljava/lang/String;)V", ordinal = 0))
-	private void afterMissingModelInit(BlockColors blockColors, Profiler profiler, Map<Identifier, JsonUnbakedModel> jsonUnbakedModels, Map<Identifier, List<ModelLoader.SourceTrackedData>> blockStates, CallbackInfo info) {
+	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/BlockStatesLoader;load()V"))
+	private void afterMissingModelInit(BlockColors blockColors, Profiler profiler, Map<Identifier, JsonUnbakedModel> jsonUnbakedModels, Map<Identifier, List<BlockStatesLoader.SourceTrackedData>> blockStates, CallbackInfo info, @Local BlockStatesLoader blockStatesLoader) {
 		// Sanity check
-		if (!unbakedModels.containsKey(MISSING_ID)) {
+		if (missingModel == null || !modelsToBake.containsKey(ModelLoader.MISSING_MODEL_ID)) {
 			throw new AssertionError("Missing model not initialized. This is likely a Fabric API porting bug.");
 		}
 
+		// Add the missing model to the cache since vanilla doesn't. Mods may load/bake the missing model directly.
+		unbakedModels.put(ModelLoader.MISSING_ID, missingModel);
 		profiler.swap("fabric_plugins_init");
 
 		fabric_eventDispatcher = new ModelLoadingEventDispatcher((ModelLoader) (Object) this, ModelLoadingPluginManager.CURRENT_PLUGINS.get());
-		ModelLoadingPluginManager.CURRENT_PLUGINS.remove();
-		fabric_eventDispatcher.addExtraModels(this::addModel);
+		fabric_eventDispatcher.addExtraModels(this::addExtraModel);
+		((BlockStatesLoaderHooks) blockStatesLoader).fabric_setLoadingOverride(fabric_eventDispatcher::loadBlockStateModels);
 	}
 
 	@Unique
-	private void addModel(Identifier id) {
-		if (id instanceof ModelIdentifier) {
-			addModel((ModelIdentifier) id);
-		} else {
-			// The vanilla addModel method is arbitrarily limited to ModelIdentifiers,
-			// but it's useful to tell the game to just load and bake a direct model path as well.
-			// Replicate the vanilla logic of addModel here.
-			UnbakedModel unbakedModel = getOrLoadModel(id);
-			this.unbakedModels.put(id, unbakedModel);
-			this.modelsToBake.put(id, unbakedModel);
-		}
+	private void addExtraModel(Identifier id) {
+		ModelIdentifier modelId = ModelLoadingConstants.toResourceModelId(id);
+		UnbakedModel unbakedModel = getOrLoadModel(id);
+		add(modelId, unbakedModel);
 	}
 
-	@Inject(method = "getOrLoadModel", at = @At("HEAD"))
-	private void fabric_preventNestedGetOrLoadModel(Identifier id, CallbackInfoReturnable<UnbakedModel> cir) {
-		if (fabric_enableGetOrLoadModelGuard && fabric_guardGetOrLoadModel > 0) {
-			throw new IllegalStateException("ModelLoader#getOrLoadModel called from a ModelResolver or ModelModifier.OnBake instance. This is not allowed to prevent errors during model loading. Use getOrLoadModel from the context instead.");
-		}
-	}
-
-	@Inject(method = "loadModel", at = @At("HEAD"), cancellable = true)
-	private void onLoadModel(Identifier id, CallbackInfo ci) {
-		// Prevent calls to getOrLoadModel from loadModel as it will cause problems.
-		// Mods should call getOrLoadModel on the ModelResolver.Context instead.
-		fabric_guardGetOrLoadModel++;
-
-		try {
-			if (fabric_eventDispatcher.loadModel(id)) {
-				ci.cancel();
+	@Inject(method = "getOrLoadModel", at = @At("HEAD"), cancellable = true)
+	private void allowRecursiveLoading(Identifier id, CallbackInfoReturnable<UnbakedModel> cir) {
+		// If the stack is empty, this is the top-level call, so proceed as normal.
+		if (!modelLoadingStack.isEmpty()) {
+			if (unbakedModels.containsKey(id)) {
+				cir.setReturnValue(unbakedModels.get(id));
+			} else if (modelLoadingStack.contains(id)) {
+				throw new IllegalStateException("Circular reference while loading model '" + id + "' (" + modelLoadingStack.stream().map(i -> i + "->").collect(Collectors.joining()) + id + ")");
+			} else {
+				UnbakedModel model = loadModel(id);
+				unbakedModels.put(id, model);
+				// These will be loaded at the top-level call.
+				modelsToLoad.addAll(model.getModelDependencies());
+				cir.setReturnValue(model);
 			}
-		} finally {
-			fabric_guardGetOrLoadModel--;
 		}
 	}
 
-	@ModifyVariable(method = "putModel", at = @At("HEAD"), argsOnly = true)
-	private UnbakedModel onPutModel(UnbakedModel model, Identifier id) {
-		fabric_guardGetOrLoadModel++;
+	// This is the call that needs to be redirected to support ModelResolvers, but it returns a JsonUnbakedModel.
+	// Redirect it to always return null and handle the logic in a ModifyVariable right after the call.
+	@Redirect(method = "getOrLoadModel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/ModelLoader;loadModelFromJson(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/model/json/JsonUnbakedModel;"))
+	private JsonUnbakedModel cancelLoadModelFromJson(ModelLoader self, Identifier id) {
+		return null;
+	}
+
+	@ModifyVariable(method = "getOrLoadModel", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/model/ModelLoader;loadModelFromJson(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/model/json/JsonUnbakedModel;"))
+	private UnbakedModel doLoadModel(UnbakedModel model, @Local(ordinal = 1) Identifier id) {
+		return loadModel(id);
+	}
+
+	@Unique
+	private UnbakedModel loadModel(Identifier id) {
+		modelLoadingStack.add(id);
 
 		try {
-			return fabric_eventDispatcher.modifyModelOnLoad(id, model);
+			UnbakedModel model = fabric_eventDispatcher.resolveModel(id);
+
+			if (model == null) {
+				model = loadModelFromJson(id);
+			}
+
+			return fabric_eventDispatcher.modifyModelOnLoad(model, id, null);
 		} finally {
-			fabric_guardGetOrLoadModel--;
+			modelLoadingStack.removeLast();
 		}
+	}
+
+	@ModifyVariable(method = "add", at = @At("HEAD"), argsOnly = true)
+	private UnbakedModel onAdd(UnbakedModel model, ModelIdentifier id) {
+		if (ModelLoadingConstants.isResourceModelId(id)) {
+			return model;
+		}
+
+		return fabric_eventDispatcher.modifyModelOnLoad(model, null, id);
+	}
+
+	@WrapOperation(method = "method_61072(Lnet/minecraft/client/render/model/ModelLoader$SpriteGetter;Lnet/minecraft/client/util/ModelIdentifier;Lnet/minecraft/client/render/model/UnbakedModel;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/ModelLoader$BakerImpl;bake(Lnet/minecraft/client/render/model/UnbakedModel;Lnet/minecraft/client/render/model/ModelBakeSettings;)Lnet/minecraft/client/render/model/BakedModel;"))
+	private BakedModel wrapSingleOuterBake(@Coerce Baker baker, UnbakedModel unbakedModel, ModelBakeSettings settings, Operation<BakedModel> operation, ModelLoader.SpriteGetter spriteGetter, ModelIdentifier id) {
+		if (ModelLoadingConstants.isResourceModelId(id) || id.equals(ModelLoader.MISSING_MODEL_ID)) {
+			// Call the baker instead of the operation to ensure the baked model is cached and doesn't end up going
+			// through events twice.
+			// This ignores the UnbakedModel in modelsToBake but it should be the same as the one in unbakedModels.
+			return baker.bake(id.id(), settings);
+		}
+
+		Function<SpriteIdentifier, Sprite> textureGetter = ((BakerImplHooks) baker).fabric_getTextureGetter();
+		unbakedModel = fabric_eventDispatcher.modifyModelBeforeBake(unbakedModel, null, id, textureGetter, settings, baker);
+		BakedModel model = operation.call(baker, unbakedModel, settings);
+		return fabric_eventDispatcher.modifyModelAfterBake(model, null, id, unbakedModel, textureGetter, settings, baker);
 	}
 
 	@Override
@@ -151,51 +189,16 @@ public abstract class ModelLoaderMixin implements ModelLoaderHooks {
 
 	@Override
 	public UnbakedModel fabric_getMissingModel() {
-		return unbakedModels.get(MISSING_ID);
+		return missingModel;
 	}
 
-	/**
-	 * Unlike getOrLoadModel, this method supports nested model loading.
-	 *
-	 * <p>Vanilla does not due to the iteration over modelsToLoad which causes models to be resolved multiple times,
-	 * possibly leading to crashes.
-	 */
 	@Override
 	public UnbakedModel fabric_getOrLoadModel(Identifier id) {
-		if (this.unbakedModels.containsKey(id)) {
-			return this.unbakedModels.get(id);
-		}
-
-		if (!modelsToLoad.add(id)) {
-			throw new IllegalStateException("Circular reference while loading " + id);
-		}
-
-		try {
-			loadModel(id);
-		} finally {
-			modelsToLoad.remove(id);
-		}
-
-		return unbakedModels.get(id);
+		return getOrLoadModel(id);
 	}
 
 	@Override
-	public void fabric_putModel(Identifier id, UnbakedModel model) {
-		putModel(id, model);
-	}
-
-	@Override
-	public void fabric_putModelDirectly(Identifier id, UnbakedModel model) {
-		unbakedModels.put(id, model);
-	}
-
-	@Override
-	public void fabric_queueModelDependencies(UnbakedModel model) {
-		modelsToLoad.addAll(model.getModelDependencies());
-	}
-
-	@Override
-	public JsonUnbakedModel fabric_loadModelFromJson(Identifier id) {
-		return loadModelFromJson(id);
+	public void fabric_add(ModelIdentifier id, UnbakedModel model) {
+		add(id, model);
 	}
 }

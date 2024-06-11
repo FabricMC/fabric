@@ -19,18 +19,18 @@ package net.fabricmc.fabric.mixin.client.rendering;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.render.RenderTickCounter;
 
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-	@Inject(method = "render", at = @At(value = "TAIL"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;render(Lnet/minecraft/client/gui/DrawContext;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V")))
-	public void render(DrawContext drawContext, float tickDelta, CallbackInfo callbackInfo) {
-		HudRenderCallback.EVENT.invoker().onHudRender(drawContext, tickDelta);
+	@Inject(method = "render", at = @At(value = "TAIL"))
+	public void render(DrawContext drawContext, RenderTickCounter tickCounter, CallbackInfo callbackInfo) {
+		HudRenderCallback.EVENT.invoker().onHudRender(drawContext, tickCounter);
 	}
 }

@@ -50,7 +50,9 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.WOODEN_CHESTS, "Wooden Chests");
 		translationBuilder.add(ConventionalBlockTags.GLASS_BLOCKS, "Glass Blocks");
 		translationBuilder.add(ConventionalBlockTags.GLASS_PANES, "Glass Panes");
+		translationBuilder.add(ConventionalBlockTags.GLAZED_TERRACOTTA, "Glaze Terracotta");
 		translationBuilder.add(ConventionalBlockTags.SHULKER_BOXES, "Shulker Boxes");
+		translationBuilder.add(ConventionalBlockTags.CONCRETE, "Concrete");
 		translationBuilder.add(ConventionalBlockTags.BUDDING_BLOCKS, "Budding Blocks");
 		translationBuilder.add(ConventionalBlockTags.BUDS, "Buds");
 		translationBuilder.add(ConventionalBlockTags.CLUSTERS, "Clusters");
@@ -110,6 +112,16 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.STONES, "Stones");
 		translationBuilder.add(ConventionalItemTags.COBBLESTONES, "Cobblestones");
 		translationBuilder.add(ConventionalItemTags.TOOLS, "Tools");
+		translationBuilder.add(ConventionalItemTags.SHEAR_TOOLS, "Shears");
+		translationBuilder.add(ConventionalItemTags.SPEAR_TOOLS, "Spears");
+		translationBuilder.add(ConventionalItemTags.BOW_TOOLS, "Bows");
+		translationBuilder.add(ConventionalItemTags.CROSSBOW_TOOLS, "Crossbows");
+		translationBuilder.add(ConventionalItemTags.SHIELD_TOOLS, "Shields");
+		translationBuilder.add(ConventionalItemTags.FISHING_ROD_TOOLS, "Fishing Rods");
+		translationBuilder.add(ConventionalItemTags.BRUSH_TOOLS, "Brushes");
+		translationBuilder.add(ConventionalItemTags.MELEE_WEAPON_TOOLS, "Melee Weapons");
+		translationBuilder.add(ConventionalItemTags.RANGED_WEAPON_TOOLS, "Ranged Weapons");
+		translationBuilder.add(ConventionalItemTags.MINING_TOOL_TOOLS, "Mining Tools");
 		translationBuilder.add(ConventionalItemTags.SHEARS_TOOLS, "Shears");
 		translationBuilder.add(ConventionalItemTags.SPEARS_TOOLS, "Spears");
 		translationBuilder.add(ConventionalItemTags.BOWS_TOOLS, "Bows");
@@ -182,7 +194,10 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.WOODEN_CHESTS, "Wooden Chests");
 		translationBuilder.add(ConventionalItemTags.GLASS_BLOCKS, "Glass Blocks");
 		translationBuilder.add(ConventionalItemTags.GLASS_PANES, "Glass Panes");
+		translationBuilder.add(ConventionalItemTags.GLAZED_TERRACOTTA, "Glaze Terracotta");
 		translationBuilder.add(ConventionalItemTags.SHULKER_BOXES, "Shulker Boxes");
+		translationBuilder.add(ConventionalItemTags.CONCRETE, "Concrete");
+		translationBuilder.add(ConventionalItemTags.CONCRETE_POWDER, "Concrete Powder");
 		translationBuilder.add(ConventionalItemTags.BUDDING_BLOCKS, "Budding Blocks");
 		translationBuilder.add(ConventionalItemTags.BUDS, "Buds");
 		translationBuilder.add(ConventionalItemTags.CLUSTERS, "Clusters");
@@ -250,6 +265,8 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, "Crafting Tables");
 		translationBuilder.add(ConventionalItemTags.PLAYER_WORKSTATIONS_FURNACES, "Furnaces");
 		translationBuilder.add(ConventionalItemTags.STRINGS, "Strings");
+		translationBuilder.add(ConventionalItemTags.LEATHERS, "Leathers");
+		translationBuilder.add(ConventionalItemTags.MUSIC_DISCS, "Music Discs");
 		translationBuilder.add(ConventionalItemTags.RODS, "Rods");
 		translationBuilder.add(ConventionalItemTags.WOODEN_RODS, "Wooden Rods");
 		translationBuilder.add(ConventionalItemTags.BLAZE_RODS, "Blaze Rods");

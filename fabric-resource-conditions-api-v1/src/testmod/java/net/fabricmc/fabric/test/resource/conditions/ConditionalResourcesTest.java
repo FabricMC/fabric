@@ -33,7 +33,7 @@ public class ConditionalResourcesTest {
 	private static final String MOD_ID = "fabric-resource-conditions-api-v1-testmod";
 
 	private static Identifier id(String path) {
-		return new Identifier(MOD_ID, path);
+		return Identifier.of(MOD_ID, path);
 	}
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)

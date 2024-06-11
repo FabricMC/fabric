@@ -197,3 +197,4 @@ def hasAncestor(ClassNode classNode, Map<String, ClassNode> classes, String ance
 }
 
 generateResources.dependsOn generateAccessWidener
+generateResources.dependsOn runDatagen

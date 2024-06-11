@@ -212,12 +212,6 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		public EnchantmentTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
 			super(output, RegistryKeys.ENCHANTMENT, completableFuture);
 		}
-
-		@Override
-		protected RegistryKey<Enchantment> reverseLookup(Enchantment element) {
-			return Registries.ENCHANTMENT.getKey(element)
-					.orElseThrow(() -> new IllegalArgumentException("Enchantment " + element + " is not registered"));
-		}
 	}
 
 	/**

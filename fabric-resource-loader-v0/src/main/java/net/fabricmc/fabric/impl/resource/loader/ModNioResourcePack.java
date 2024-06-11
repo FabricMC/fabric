@@ -256,7 +256,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 					@Override
 					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
 						String filename = nsPath.relativize(file).toString().replace(separator, "/");
-						Identifier identifier = Identifier.of(namespace, filename);
+						Identifier identifier = Identifier.tryParse(namespace, filename);
 
 						if (identifier == null) {
 							LOGGER.error("Invalid path in mod resource-pack {}: {}:{}, ignoring", id, namespace, filename);

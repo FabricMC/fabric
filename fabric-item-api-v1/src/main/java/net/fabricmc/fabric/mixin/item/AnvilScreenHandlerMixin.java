@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.screen.AnvilScreenHandler;
 import net.minecraft.screen.ForgingScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
@@ -44,7 +46,7 @@ abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
 					target = "Lnet/minecraft/enchantment/Enchantment;isAcceptableItem(Lnet/minecraft/item/ItemStack;)Z"
 			)
 	)
-	private boolean callAllowEnchantingEvent(Enchantment instance, ItemStack stack) {
-		return stack.canBeEnchantedWith(instance, EnchantingContext.ANVIL);
+	private boolean callAllowEnchantingEvent(Enchantment instance, ItemStack stack, @Local RegistryEntry<Enchantment> registryEntry) {
+		return stack.canBeEnchantedWith(registryEntry, EnchantingContext.ACCEPTABLE);
 	}
 }

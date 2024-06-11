@@ -50,7 +50,8 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> WOODEN_CHESTS = register("chests/wooden");
 	public static final TagKey<Block> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Block> GLASS_PANES = register("glass_panes");
-	public static final TagKey<Block> SHULKER_BOXES = register("shulker_boxes");
+	public static final TagKey<Block> GLAZED_TERRACOTTA = register("glazed_terracotta");
+	public static final TagKey<Block> CONCRETE = register("concrete");
 
 	// Related to budding mechanics
 	/**
@@ -150,6 +151,12 @@ public final class ConventionalBlockTags {
 	 * Recipe viewers may use this to automatically find the corresponding BlockItem to hide.
 	 */
 	public static final TagKey<Block> HIDDEN_FROM_RECIPE_VIEWERS = register("hidden_from_recipe_viewers");
+
+	/**
+	 * This tag is redundant. Please use {@link net.minecraft.registry.tag.BlockTags#SHULKER_BOXES} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Block> SHULKER_BOXES = register("shulker_boxes");
 
 	private static TagKey<Block> register(String tagId) {
 		return TagRegistration.BLOCK_TAG.registerC(tagId);

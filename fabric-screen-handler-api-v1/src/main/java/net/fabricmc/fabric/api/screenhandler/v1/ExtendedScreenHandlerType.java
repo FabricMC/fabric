@@ -50,7 +50,7 @@ import net.minecraft.screen.ScreenHandlerType;
  * // Creating and registering the type
  * public static final ExtendedScreenHandlerType<OvenScreenHandler> OVEN =
  * 	new ExtendedScreenHandlerType((syncId, inventory, data) -> ..., OvenData.PACKET_CODEC);
- * Registry.register(Registry.SCREEN_HANDLER, new Identifier(...), OVEN);
+ * Registry.register(Registry.SCREEN_HANDLER, Identifier.of(...), OVEN);
  *
  * // Note: remember to also register the screen using vanilla's HandledScreens!
  *

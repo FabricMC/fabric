@@ -24,6 +24,7 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
@@ -51,9 +52,7 @@ public interface WorldRenderContext {
 	@Nullable
 	MatrixStack matrixStack();
 
-	float tickDelta();
-
-	long limitTime();
+	RenderTickCounter tickCounter();
 
 	boolean blockOutlines();
 

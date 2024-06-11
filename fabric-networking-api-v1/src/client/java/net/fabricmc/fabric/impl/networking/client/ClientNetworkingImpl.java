@@ -127,7 +127,6 @@ public final class ClientNetworkingImpl {
 	}
 
 	public static void setClientConfigurationAddon(ClientConfigurationNetworkAddon addon) {
-		assert addon == null || currentPlayAddon == null;
 		currentConfigurationAddon = addon;
 	}
 

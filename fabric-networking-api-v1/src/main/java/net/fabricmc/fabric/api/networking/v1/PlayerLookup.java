@@ -26,9 +26,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.PlayerAssociatedNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerChunkLoadingManager;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.server.world.ThreadedAnvilChunkStorage;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
@@ -36,7 +36,7 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.chunk.ChunkManager;
 
 import net.fabricmc.fabric.mixin.networking.accessor.EntityTrackerAccessor;
-import net.fabricmc.fabric.mixin.networking.accessor.ThreadedAnvilChunkStorageAccessor;
+import net.fabricmc.fabric.mixin.networking.accessor.ServerChunkLoadingManagerAccessor;
 
 /**
  * Helper methods to lookup players in a server.
@@ -91,7 +91,7 @@ public final class PlayerLookup {
 		Objects.requireNonNull(world, "The world cannot be null");
 		Objects.requireNonNull(pos, "The chunk pos cannot be null");
 
-		return world.getChunkManager().threadedAnvilChunkStorage.getPlayersWatchingChunk(pos, false);
+		return world.getChunkManager().chunkLoadingManager.getPlayersWatchingChunk(pos, false);
 	}
 
 	/**
@@ -112,8 +112,8 @@ public final class PlayerLookup {
 		ChunkManager manager = entity.getWorld().getChunkManager();
 
 		if (manager instanceof ServerChunkManager) {
-			ThreadedAnvilChunkStorage storage = ((ServerChunkManager) manager).threadedAnvilChunkStorage;
-			EntityTrackerAccessor tracker = ((ThreadedAnvilChunkStorageAccessor) storage).getEntityTrackers().get(entity.getId());
+			ServerChunkLoadingManager chunkLoadingManager = ((ServerChunkManager) manager).chunkLoadingManager;
+			EntityTrackerAccessor tracker = ((ServerChunkLoadingManagerAccessor) chunkLoadingManager).getEntityTrackers().get(entity.getId());
 
 			// return an immutable collection to guard against accidental removals.
 			if (tracker != null) {

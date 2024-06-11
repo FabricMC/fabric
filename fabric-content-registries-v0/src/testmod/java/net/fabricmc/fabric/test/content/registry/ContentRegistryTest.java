@@ -65,7 +65,7 @@ import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
 public final class ContentRegistryTest implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
 
-	public static final Identifier TEST_EVENT_ID = new Identifier("fabric-content-registries-v0-testmod", "test_event");
+	public static final Identifier TEST_EVENT_ID = Identifier.of("fabric-content-registries-v0-testmod", "test_event");
 	public static final RegistryEntry.Reference<GameEvent> TEST_EVENT = Registry.registerReference(Registries.GAME_EVENT, TEST_EVENT_ID, new GameEvent(GameEvent.DEFAULT_RANGE));
 
 	@Override
@@ -140,7 +140,7 @@ public final class ContentRegistryTest implements ModInitializer {
 
 		VillagerInteractionRegistries.registerCollectable(Items.OAK_SAPLING);
 
-		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, RegistryKey.of(RegistryKeys.LOOT_TABLE, new Identifier("fake_loot_table")));
+		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.ofVanilla("fake_loot_table")));
 
 		Registry.register(Registries.BLOCK, TEST_EVENT_ID, new TestEventBlock(AbstractBlock.Settings.copy(Blocks.STONE)));
 		SculkSensorFrequencyRegistry.register(TEST_EVENT.registryKey(), 2);
@@ -156,7 +156,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		}
 
 		var dirtyPotion = new DirtyPotionItem(new Item.Settings().maxCount(1));
-		Registry.register(Registries.ITEM, new Identifier("fabric-content-registries-v0-testmod", "dirty_potion"),
+		Registry.register(Registries.ITEM, Identifier.of("fabric-content-registries-v0-testmod", "dirty_potion"),
 				dirtyPotion);
 		/* Mods should use BrewingRecipeRegistry.registerPotionType(Item), which is access widened by fabric-transitive-access-wideners-v1
 		 * This testmod uses an accessor due to Loom limitations that prevent TAWs from applying across Gradle subproject boundaries */

@@ -8,7 +8,7 @@
     "DebugChunkGeneratorAccessor",
     "ExperimentalRegistriesValidatorMixin",
     "IdListMixin",
-    "MinecraftServerMixin",
+    "MainMixin",
     "RegistriesAccessor",
     "RegistriesMixin",
     "RegistryLoaderMixin",

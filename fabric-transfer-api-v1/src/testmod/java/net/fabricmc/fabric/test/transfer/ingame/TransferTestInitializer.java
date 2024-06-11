@@ -45,10 +45,10 @@ public class TransferTestInitializer implements ModInitializer {
 		registerBlock(INFINITE_WATER_SOURCE, "infinite_water_source");
 		registerBlock(INFINITE_LAVA_SOURCE, "infinite_lava_source");
 		registerBlock(FLUID_CHUTE, "fluid_chute");
-		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "extract_stick"), EXTRACT_STICK);
+		Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "extract_stick"), EXTRACT_STICK);
 
 		FLUID_CHUTE_TYPE = FabricBlockEntityTypeBuilder.create(FluidChuteBlockEntity::new, FLUID_CHUTE).build();
-		Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "fluid_chute"), FLUID_CHUTE_TYPE);
+		Registry.register(Registries.BLOCK_ENTITY_TYPE, Identifier.of(MOD_ID, "fluid_chute"), FLUID_CHUTE_TYPE);
 
 		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeStorage.WATER, INFINITE_WATER_SOURCE);
 		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeStorage.LAVA, INFINITE_LAVA_SOURCE);
@@ -60,7 +60,7 @@ public class TransferTestInitializer implements ModInitializer {
 	}
 
 	private static void registerBlock(Block block, String name) {
-		Identifier id = new Identifier(MOD_ID, name);
+		Identifier id = Identifier.of(MOD_ID, name);
 		Registry.register(Registries.BLOCK, id, block);
 		Registry.register(Registries.ITEM, id, new BlockItem(block, new Item.Settings()));
 	}

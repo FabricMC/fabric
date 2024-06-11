@@ -44,11 +44,11 @@ public class TagRegistration<T> {
 
 	@Deprecated
 	public TagKey<T> registerFabric(String tagId) {
-		return TagKey.of(registryKey, new Identifier("fabric", tagId));
+		return TagKey.of(registryKey, Identifier.of("fabric", tagId));
 	}
 
 	@Deprecated
 	public TagKey<T> registerC(String tagId) {
-		return TagKey.of(registryKey, new Identifier("c", tagId));
+		return TagKey.of(registryKey, Identifier.of("c", tagId));
 	}
 }

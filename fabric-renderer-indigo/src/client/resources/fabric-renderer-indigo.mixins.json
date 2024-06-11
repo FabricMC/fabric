@@ -8,7 +8,7 @@
   "client": [
     "BakedModelMixin",
     "BlockModelRendererMixin",
-    "ChunkBuilderBuiltChunkRebuildTaskMixin",
+    "SectionBuilderMixin",
     "ChunkRendererRegionMixin",
     "ItemRendererMixin"
   ],

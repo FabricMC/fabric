@@ -20,6 +20,7 @@ import java.util.function.Function;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
@@ -39,7 +40,7 @@ import net.fabricmc.fabric.api.event.Event;
  *
  * <p>Example use cases:
  * <ul>
- *     <li>Overriding a model for a particular block state - check if the given identifier is a {@link ModelIdentifier},
+ *     <li>Overriding a model for a particular block state - check if the given top-level identifier is not null,
  *     and then check if it has the appropriate variant for that block state. If so, return your desired model,
  *     otherwise return the given model.</li>
  *     <li>Wrapping a model to override certain behaviors - simply return a new model instance and delegate calls
@@ -57,7 +58,7 @@ public final class ModelModifier {
 	/**
 	 * Recommended phase to use when overriding models, e.g. replacing a model with another model.
 	 */
-	public static final Identifier OVERRIDE_PHASE = new Identifier("fabric", "override");
+	public static final Identifier OVERRIDE_PHASE = Identifier.of("fabric", "override");
 	/**
 	 * Recommended phase to use for transformations that need to happen before wrapping, but after model overrides.
 	 */
@@ -65,12 +66,12 @@ public final class ModelModifier {
 	/**
 	 * Recommended phase to use when wrapping models.
 	 */
-	public static final Identifier WRAP_PHASE = new Identifier("fabric", "wrap");
+	public static final Identifier WRAP_PHASE = Identifier.of("fabric", "wrap");
 	/**
 	 * Recommended phase to use when wrapping models with transformations that want to happen last,
 	 * e.g. for connected textures or other similar visual effects that should be the final processing step.
 	 */
-	public static final Identifier WRAP_LAST_PHASE = new Identifier("fabric", "wrap_last");
+	public static final Identifier WRAP_LAST_PHASE = Identifier.of("fabric", "wrap_last");
 
 	@FunctionalInterface
 	public interface OnLoad {
@@ -91,16 +92,26 @@ public final class ModelModifier {
 		@ApiStatus.NonExtendable
 		interface Context {
 			/**
-			 * The identifier of this model (may be a {@link ModelIdentifier}).
+			 * Models with a resource ID are loaded directly from JSON or a {@link ModelModifier}.
 			 *
-			 * <p>For item models, only the {@link ModelIdentifier} with the {@code inventory} variant is passed, and
-			 * not the corresponding plain identifier.
+			 * @return the identifier of the given model as an {@link Identifier}, or null if {@link #topLevelId()} is
+			 * not null
 			 */
-			Identifier id();
+			@UnknownNullability("#topLevelId() != null")
+			Identifier resourceId();
 
 			/**
-			 * Loads a model using an {@link Identifier} or {@link ModelIdentifier}, or gets it if it was already
-			 * loaded.
+			 * Models with a top-level ID are loaded from blockstate files, {@link BlockStateResolver}s, or by copying
+			 * a previously loaded model.
+			 *
+			 * @return the identifier of the given model as a {@link ModelIdentifier}, or null if {@link #resourceId()}
+			 * is not null
+			 */
+			@UnknownNullability("#resourceId() != null")
+			ModelIdentifier topLevelId();
+
+			/**
+			 * Loads a model using an {@link Identifier}, or gets it if it was already loaded.
 			 *
 			 * @param id the model identifier
 			 * @return the unbaked model, or a missing model if it is not present
@@ -109,9 +120,6 @@ public final class ModelModifier {
 
 			/**
 			 * The current model loader instance, which changes between resource reloads.
-			 *
-			 * <p>Do <b>not</b> call {@link ModelLoader#getOrLoadModel} as it does not supported nested model
-			 * resolution; use {@link #getOrLoadModel} from the context instead.
 			 */
 			ModelLoader loader();
 		}
@@ -135,9 +143,23 @@ public final class ModelModifier {
 		@ApiStatus.NonExtendable
 		interface Context {
 			/**
-			 * The identifier of this model (may be a {@link ModelIdentifier}).
+			 * Models with a resource ID are loaded directly from JSON or a {@link ModelModifier}.
+			 *
+			 * @return the identifier of the given model as an {@link Identifier}, or null if {@link #topLevelId()} is
+			 * not null
 			 */
-			Identifier id();
+			@UnknownNullability("#topLevelId() != null")
+			Identifier resourceId();
+
+			/**
+			 * Models with a top-level ID are loaded from blockstate files, {@link BlockStateResolver}s, or by copying
+			 * a previously loaded model.
+			 *
+			 * @return the identifier of the given model as a {@link ModelIdentifier}, or null if {@link #resourceId()}
+			 * is not null
+			 */
+			@UnknownNullability("#resourceId() != null")
+			ModelIdentifier topLevelId();
 
 			/**
 			 * The function that can be used to retrieve sprites.
@@ -189,9 +211,23 @@ public final class ModelModifier {
 		@ApiStatus.NonExtendable
 		interface Context {
 			/**
-			 * The identifier of this model (may be a {@link ModelIdentifier}).
+			 * Models with a resource ID are loaded directly from JSON or a {@link ModelModifier}.
+			 *
+			 * @return the identifier of the given model as an {@link Identifier}, or null if {@link #topLevelId()} is
+			 * not null
 			 */
-			Identifier id();
+			@UnknownNullability("#topLevelId() != null")
+			Identifier resourceId();
+
+			/**
+			 * Models with a top-level ID are loaded from blockstate files, {@link BlockStateResolver}s, or by copying
+			 * a previously loaded model.
+			 *
+			 * @return the identifier of the given model as a {@link ModelIdentifier}, or null if {@link #resourceId()}
+			 * is not null
+			 */
+			@UnknownNullability("#resourceId() != null")
+			ModelIdentifier topLevelId();
 
 			/**
 			 * The unbaked model that is being baked.

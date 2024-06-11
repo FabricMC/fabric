@@ -44,7 +44,7 @@ public class HudAndShaderTest implements ClientModInitializer {
 	public void onInitializeClient() {
 		CoreShaderRegistrationCallback.EVENT.register(context -> {
 			// Register a custom shader taking POSITION vertices.
-			Identifier id = new Identifier("fabric-rendering-v1-testmod", "test");
+			Identifier id = Identifier.of("fabric-rendering-v1-testmod", "test");
 			context.register(id, VertexFormats.POSITION, program -> testShader = program);
 		});
 
@@ -56,12 +56,11 @@ public class HudAndShaderTest implements ClientModInitializer {
 			RenderSystem.setShader(() -> testShader);
 			RenderSystem.setShaderColor(0f, 1f, 0f, 1f);
 			Matrix4f positionMatrix = drawContext.getMatrices().peek().getPositionMatrix();
-			BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-			buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-			buffer.vertex(positionMatrix, x, y, 50).next();
-			buffer.vertex(positionMatrix, x, y + 10, 50).next();
-			buffer.vertex(positionMatrix, x + 10, y + 10, 50).next();
-			buffer.vertex(positionMatrix, x + 10, y, 50).next();
+			BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+			buffer.vertex(positionMatrix, x, y, 50);
+			buffer.vertex(positionMatrix, x, y + 10, 50);
+			buffer.vertex(positionMatrix, x + 10, y + 10, 50);
+			buffer.vertex(positionMatrix, x + 10, y, 50);
 			BufferRenderer.drawWithGlobalProgram(buffer.end());
 			// Reset shader color
 			RenderSystem.setShaderColor(1f, 1f, 1f, 1f);

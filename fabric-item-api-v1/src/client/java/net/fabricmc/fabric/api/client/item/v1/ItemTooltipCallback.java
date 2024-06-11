@@ -18,9 +18,9 @@ package net.fabricmc.fabric.api.client.item.v1;
 
 import java.util.List;
 
-import net.minecraft.client.item.TooltipType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.event.Event;

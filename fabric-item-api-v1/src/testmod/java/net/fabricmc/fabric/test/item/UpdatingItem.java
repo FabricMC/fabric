@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.item;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.entity.Entity;
@@ -26,16 +27,23 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 public class UpdatingItem extends Item {
+	private static final Identifier PLUS_FIVE_ID = Identifier.of("fabric-item-api-v1-testmod", "plus_five");
 	private static final EntityAttributeModifier PLUS_FIVE = new EntityAttributeModifier(
-			ATTACK_DAMAGE_MODIFIER_ID, "updating item", 5, EntityAttributeModifier.Operation.ADD_VALUE);
+			PLUS_FIVE_ID, 5, EntityAttributeModifier.Operation.ADD_VALUE);
 
 	private final boolean allowUpdateAnimation;
 
 	public UpdatingItem(boolean allowUpdateAnimation) {
-		super(new Settings());
+		super(new Settings()
+					.component(DataComponentTypes.ATTRIBUTE_MODIFIERS, AttributeModifiersComponent.builder()
+						.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, PLUS_FIVE, AttributeModifierSlot.MAINHAND)
+						.build()
+					)
+		);
 		this.allowUpdateAnimation = allowUpdateAnimation;
 	}
 
@@ -59,14 +67,6 @@ public class UpdatingItem extends Item {
 	// True for 15 seconds every 30 seconds
 	private boolean isEnabled(ItemStack stack) {
 		return !stack.contains(ItemUpdateAnimationTest.TICKS) || stack.getOrDefault(ItemUpdateAnimationTest.TICKS, 0) % 600 < 300;
-	}
-
-	@Override
-	public AttributeModifiersComponent getAttributeModifiers(ItemStack stack) {
-		// Give + 5 attack damage for 15 seconds every 30 seconds.
-		return AttributeModifiersComponent.builder()
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, PLUS_FIVE, AttributeModifierSlot.MAINHAND)
-				.build();
 	}
 
 	@Override

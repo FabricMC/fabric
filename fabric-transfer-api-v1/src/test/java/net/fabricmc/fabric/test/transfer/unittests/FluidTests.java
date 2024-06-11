@@ -24,7 +24,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.DataComponentType;
+import net.minecraft.component.ComponentType;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
@@ -44,7 +44,7 @@ import net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer;
 class FluidTests extends AbstractTransferApiTest {
 	private static FluidVariant TAGGED_WATER, TAGGED_WATER_2, WATER, LAVA;
 	private static int finalCommitCount = 0;
-	public static DataComponentType<Integer> TEST;
+	public static ComponentType<Integer> TEST;
 	private static SingleSlotStorage<FluidVariant> createWaterStorage() {
 		return new SingleVariantStorage<>() {
 			@Override
@@ -80,8 +80,8 @@ class FluidTests extends AbstractTransferApiTest {
 		TAGGED_WATER_2 = FluidVariant.of(Fluids.WATER, components);
 		WATER = FluidVariant.of(Fluids.WATER);
 		LAVA = FluidVariant.of(Fluids.LAVA);
-		TEST = Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier(TransferTestInitializer.MOD_ID, "test"),
-									DataComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
+		TEST = Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(TransferTestInitializer.MOD_ID, "test"),
+								ComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
 	}
 
 	@Test

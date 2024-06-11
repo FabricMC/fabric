@@ -1,9 +1,0 @@
-{
-  "values": [
-    "minecraft:trident",
-    {
-      "id": "#c:spears",
-      "required": false
-    }
-  ]
-}

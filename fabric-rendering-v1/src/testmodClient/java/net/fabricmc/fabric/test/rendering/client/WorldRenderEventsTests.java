@@ -21,6 +21,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.Tessellator;
@@ -65,7 +66,7 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 		MatrixStack matrices = context.matrixStack();
 		Vec3d camera = context.camera().getPos();
 		Tessellator tessellator = RenderSystem.renderThreadTesselator();
-		BufferBuilder buffer = tessellator.getBuffer();
+		BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
 		matrices.push();
 		matrices.translate(-camera.x, -camera.y, -camera.z);
@@ -75,9 +76,8 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 
-		buffer.begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 		WorldRenderer.renderFilledBox(matrices, buffer, 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
-		tessellator.draw();
+		BufferRenderer.drawWithGlobalProgram(buffer.end());
 
 		matrices.pop();
 		RenderSystem.disableBlend();

@@ -59,7 +59,12 @@ public class TranslationConventionLogWarnings implements ModInitializer {
 	private enum LogWarningMode {
 		SILENCED,
 		SHORT,
-		VERBOSE
+		VERBOSE,
+		FAIL;
+
+		boolean verbose() {
+			return this == VERBOSE || this == FAIL;
+		}
 	}
 
 	public void onInitialize() {
@@ -99,9 +104,7 @@ public class TranslationConventionLogWarnings implements ModInitializer {
 					""");
 
 			// Print out all untranslated tags when desired.
-			boolean isConfigSetToVerbose = LOG_UNTRANSLATED_WARNING_MODE == LogWarningMode.VERBOSE;
-
-			if (isConfigSetToVerbose) {
+			if (LOG_UNTRANSLATED_WARNING_MODE.verbose()) {
 				stringBuilder.append("\nUntranslated item tags:");
 
 				for (TagKey<Item> tagKey : untranslatedItemTags) {
@@ -110,6 +113,10 @@ public class TranslationConventionLogWarnings implements ModInitializer {
 			}
 
 			LOGGER.warn(stringBuilder.toString());
+
+			if (LOG_UNTRANSLATED_WARNING_MODE == LogWarningMode.FAIL) {
+				throw new RuntimeException("Tag translation validation failed");
+			}
 		});
 	}
 }

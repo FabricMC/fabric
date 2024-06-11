@@ -16,12 +16,11 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Hand;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
@@ -62,14 +61,6 @@ public interface FabricItem {
 	 */
 	default boolean allowContinuingBlockBreaking(PlayerEntity player, ItemStack oldStack, ItemStack newStack) {
 		return false;
-	}
-
-	/**
-	 * @deprecated Replaced with {@link DataComponentTypes#ATTRIBUTE_MODIFIERS}
-	 */
-	@Deprecated(forRemoval = true)
-	default AttributeModifiersComponent getAttributeModifiers(ItemStack stack) {
-		return ((Item) this).getAttributeModifiers();
 	}
 
 	/**
@@ -120,8 +111,10 @@ public interface FabricItem {
 	 * @param context the context in which the enchantment is being checked
 	 * @return whether the enchantment is allowed to apply to the stack
 	 */
-	default boolean canBeEnchantedWith(ItemStack stack, Enchantment enchantment, EnchantingContext context) {
-		return enchantment.isAcceptableItem(stack);
+	default boolean canBeEnchantedWith(ItemStack stack, RegistryEntry<Enchantment> enchantment, EnchantingContext context) {
+		return context == EnchantingContext.PRIMARY
+				? enchantment.value().isPrimaryItem(stack)
+				: enchantment.value().isAcceptableItem(stack);
 	}
 
 	/**
