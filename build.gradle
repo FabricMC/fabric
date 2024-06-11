@@ -432,6 +432,8 @@ loom {
 			inherit testmodClient
 			name "Auto Test Client"
 			vmArg "-Dfabric.autoTest"
+			vmArg "-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail"
+			vmArg "-Dfabric-tag-conventions-v1.legacyTagWarning=fail"
 		}
 
 		// Create duplicate tasks for this, as jacoco slows things down a bit
@@ -525,6 +527,8 @@ tasks.register('runProductionAutoTestClient', JavaExec) {
 		jvmArgs(
 				"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
 				"-Dfabric.autoTest",
+				"-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail",
+				"-Dfabric-tag-conventions-v1.legacyTagWarning=fail"
 				)
 		jvmArgs(debugArgs)
 	}

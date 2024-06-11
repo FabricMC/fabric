@@ -29,7 +29,6 @@ import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
@@ -49,7 +48,7 @@ public class ConventionLogWarnings implements ModInitializer {
 	private static final LogWarningMode LOG_LEGACY_WARNING_MODE = setupLogWarningModeProperty();
 
 	private static LogWarningMode setupLogWarningModeProperty() {
-		String property = System.getProperty("fabric-tag-conventions-v1.legacyTagWarning", LogWarningMode.DEV_SHORT.name()).toUpperCase(Locale.ROOT);
+		String property = System.getProperty("fabric-tag-conventions-v1.legacyTagWarning", LogWarningMode.SHORT.name()).toUpperCase(Locale.ROOT);
 
 		try {
 			return LogWarningMode.valueOf(property);
@@ -61,8 +60,13 @@ public class ConventionLogWarnings implements ModInitializer {
 
 	private enum LogWarningMode {
 		SILENCED,
-		DEV_SHORT,
-		DEV_VERBOSE
+		SHORT,
+		VERBOSE,
+		FAIL;
+
+		boolean isVerbose() {
+			return this == VERBOSE || this == FAIL;
+		}
 	}
 
 	/**
@@ -211,25 +215,7 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(RegistryKeys.ITEM, "stews", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUPS_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "candy", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDIES_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "candies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDIES_FOODS),
-			createMapEntry(TagKey.of(RegistryKeys.ITEM, Identifier.of("minecraft", "music_discs")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MUSIC_DISCS),
-
-			// V2 tags that are now discouraged
-			createMapEntry(ConventionalItemTags.COAL, ItemTags.COALS),
-			createMapEntry(RegistryKeys.ITEM, "tools/shears", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SHEAR_TOOLS),
-			createMapEntry(RegistryKeys.ITEM, "tools/spears", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SPEAR_TOOLS),
-			createMapEntry(RegistryKeys.ITEM, "tools/bows", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BOW_TOOLS),
-			createMapEntry(RegistryKeys.ITEM, "tools/crossbows", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CROSSBOW_TOOLS),
-			createMapEntry(RegistryKeys.ITEM, "tools/shields", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SHIELD_TOOLS),
-			createMapEntry(RegistryKeys.ITEM, "tools/fishing_rods", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.FISHING_ROD_TOOLS),
-			createMapEntry(RegistryKeys.ITEM, "tools/brushes", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BRUSH_TOOLS),
-			createMapEntry(RegistryKeys.ITEM, "tools/melee_weapons", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MELEE_WEAPON_TOOLS),
-			createMapEntry(RegistryKeys.ITEM, "tools/ranged_weapons", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RANGED_WEAPON_TOOLS),
-			createMapEntry(RegistryKeys.ITEM, "tools/mining_tools", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MINING_TOOL_TOOLS),
-			createMapEntry(RegistryKeys.ITEM, "raw_blocks", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STORAGE_BLOCKS),
-			createMapEntry(RegistryKeys.ITEM, "raw_blocks/copper", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STORAGE_BLOCKS_RAW_COPPER),
-			createMapEntry(RegistryKeys.ITEM, "raw_blocks/gold", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STORAGE_BLOCKS_RAW_GOLD),
-			createMapEntry(RegistryKeys.ITEM, "raw_blocks/iron", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STORAGE_BLOCKS_RAW_IRON),
-			createMapEntry(net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.SHULKER_BOXES, BlockTags.SHULKER_BOXES)
+			createMapEntry(TagKey.of(RegistryKeys.ITEM, Identifier.of("minecraft", "music_discs")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MUSIC_DISCS)
 	);
 
 	@Override
@@ -273,9 +259,7 @@ public class ConventionLogWarnings implements ModInitializer {
 					""");
 
 			// Print out all legacy tags when desired.
-			boolean isConfigSetToVerbose = LOG_LEGACY_WARNING_MODE == LogWarningMode.DEV_VERBOSE;
-
-			if (isConfigSetToVerbose) {
+			if (LOG_LEGACY_WARNING_MODE.isVerbose()) {
 				stringBuilder.append("\nLegacy tags and their replacement:");
 
 				for (TagKey<?> tagKey : legacyTags) {
@@ -284,6 +268,10 @@ public class ConventionLogWarnings implements ModInitializer {
 			}
 
 			LOGGER.warn(stringBuilder.toString());
+
+			if (LOG_LEGACY_WARNING_MODE == LogWarningMode.FAIL) {
+				throw new RuntimeException("Legacy Tag validation failed");
+			}
 		});
 	}
 
