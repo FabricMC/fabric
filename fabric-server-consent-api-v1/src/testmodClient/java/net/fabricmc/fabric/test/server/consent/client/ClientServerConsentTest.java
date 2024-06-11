@@ -36,8 +36,8 @@ public class ClientServerConsentTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientFabricServerConsentFlagsCallback.FLAGS_SENT.register((client, handler, flags) -> {
-			flags.forEach(flag -> ClientFabricServerConsentImpl.LOGGER.info("Illegal flag: " + flag));
+		ClientFabricServerConsentFlagsCallback.FLAGS_SENT.register((context, flags) -> {
+			flags.forEach(flag -> ClientFabricServerConsentImpl.LOGGER.info("Illegal flag: {}", flag));
 		});
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {

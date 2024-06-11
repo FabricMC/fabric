@@ -23,7 +23,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -39,11 +39,11 @@ public final class ClientFabricServerConsentImpl implements ClientModInitializer
 
 	@Override
 	public void onInitializeClient() {
-		ClientConfigurationNetworking.registerGlobalReceiver(IllegalFlagsCustomPayload.ID, (client, handler, buf, responseSender) -> {
-			illegalFlags = buf.readCollection(ArrayList::new, PacketByteBuf::readIdentifier);
-			client.execute(() -> {
+		ClientConfigurationNetworking.registerGlobalReceiver(IllegalFlagsCustomPayload.ID, (payload, context) -> {
+			illegalFlags = payload.illegalFlags();
+			MinecraftClient.getInstance().execute(() -> {
 				try {
-					ClientFabricServerConsentFlagsCallback.FLAGS_SENT.invoker().onFlagsSent(client, handler, Collections.unmodifiableList(illegalFlags));
+					ClientFabricServerConsentFlagsCallback.FLAGS_SENT.invoker().onFlagsSent(context, Collections.unmodifiableList(illegalFlags));
 				} catch (RuntimeException e) {
 					LOGGER.error("Exception thrown while invoking ClientFabricServerConsentFlagsCallback.FLAGS_SENT", e);
 				}

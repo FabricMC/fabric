@@ -24,11 +24,10 @@ import net.minecraft.util.Identifier;
 
 public record IllegalFlagsCustomPayload(List<Identifier> illegalFlags) implements CustomPayload {
 	public static final String SOME_UNIVERSAL_NAMESPACE = "noconsent";
-	public static final Identifier ID = new Identifier(SOME_UNIVERSAL_NAMESPACE, "flags");
+	public static final CustomPayload.Id<IllegalFlagsCustomPayload> ID = new CustomPayload.Id<>(new Identifier(SOME_UNIVERSAL_NAMESPACE, "flags"));
 
-	@Override
 	public void write(PacketByteBuf buf) {
-		buf.writeCollection(illegalFlags, PacketByteBuf::writeIdentifier);
+		buf.writeCollection(this.illegalFlags, PacketByteBuf::writeIdentifier);
 	}
 
 	public IllegalFlagsCustomPayload(List<Identifier> illegalFlags) {
@@ -36,7 +35,7 @@ public record IllegalFlagsCustomPayload(List<Identifier> illegalFlags) implement
 	}
 
 	@Override
-	public Identifier id() {
+	public Id<? extends CustomPayload> getId() {
 		return ID;
 	}
 }

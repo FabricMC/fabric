@@ -20,10 +20,9 @@ import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -35,11 +34,11 @@ public interface ClientFabricServerConsentFlagsCallback {
 	/**
 	 * An event to notify the client that the server has sent their list of illegal flags.
 	 */
-	Event<ClientFabricServerConsentFlagsCallback> FLAGS_SENT = EventFactory.createArrayBacked(ClientFabricServerConsentFlagsCallback.class, callbacks -> (client, handler, flags) -> {
+	Event<ClientFabricServerConsentFlagsCallback> FLAGS_SENT = EventFactory.createArrayBacked(ClientFabricServerConsentFlagsCallback.class, callbacks -> (context, flags) -> {
 		for (ClientFabricServerConsentFlagsCallback callback : callbacks) {
-			callback.onFlagsSent(client, handler, flags);
+			callback.onFlagsSent(context, flags);
 		}
 	});
 
-	void onFlagsSent(MinecraftClient client, ClientConfigurationNetworkHandler handler, List<Identifier> flags);
+	void onFlagsSent(ClientConfigurationNetworking.Context context, List<Identifier> flags);
 }
