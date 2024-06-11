@@ -31,8 +31,8 @@ import net.fabricmc.fabric.impl.server.consent.client.ClientFabricServerConsentI
 public class ClientServerConsentTest implements ClientModInitializer {
 	public static final String MOD_ID = "fabric-server-consent-api-v1-testmod";
 
-	private static final Identifier EXAMPLE_FLAG = new Identifier(MOD_ID, "example_feature");
-	private static final Identifier EXAMPLE_FLAG_2 = new Identifier(MOD_ID, "example_feature_2");
+	private static final Identifier EXAMPLE_FLAG = Identifier.of(MOD_ID, "example_feature");
+	private static final Identifier EXAMPLE_FLAG_2 = Identifier.of(MOD_ID, "example_feature_2");
 
 	@Override
 	public void onInitializeClient() {

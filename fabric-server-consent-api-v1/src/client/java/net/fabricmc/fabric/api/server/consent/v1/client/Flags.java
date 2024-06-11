@@ -30,6 +30,6 @@ public final class Flags {
 
 	// A list of common flags
 	// ...
-	public static final Identifier ARBITRARY_ZOOM = new Identifier("c", "arbitrary_zoom");
+	public static final Identifier ARBITRARY_ZOOM = Identifier.of("c", "arbitrary_zoom");
 	// ...
 }

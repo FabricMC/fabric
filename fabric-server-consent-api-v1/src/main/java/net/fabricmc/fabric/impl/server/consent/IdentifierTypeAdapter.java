@@ -35,9 +35,9 @@ final class IdentifierTypeAdapter extends TypeAdapter<Identifier> {
 		String identifier = reader.nextString();
 
 		if (identifier.indexOf(Identifier.NAMESPACE_SEPARATOR) == -1) {
-			return new Identifier("c", identifier);
+			return Identifier.of("c", identifier);
 		}
 
-		return new Identifier(identifier);
+		return Identifier.of(identifier);
 	}
 }
