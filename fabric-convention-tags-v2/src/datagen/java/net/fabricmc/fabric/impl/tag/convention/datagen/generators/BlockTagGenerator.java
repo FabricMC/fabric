@@ -482,5 +482,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_blocks"));
 		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_slabs"));
 		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_stairs"));
+		getOrCreateTagBuilder(ConventionalBlockTags.GLAZED_TERRACOTTAS).addOptionalTag(ConventionalBlockTags.GLAZED_TERRACOTTA);
+		getOrCreateTagBuilder(ConventionalBlockTags.CONCRETES).addOptionalTag(ConventionalBlockTags.CONCRETE);
 	}
 }
