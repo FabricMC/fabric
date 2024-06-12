@@ -224,6 +224,23 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateGlazeTerracottaTags() {
+		getOrCreateTagBuilder(ConventionalBlockTags.GLAZED_TERRACOTTAS)
+				.add(Blocks.WHITE_GLAZED_TERRACOTTA)
+				.add(Blocks.ORANGE_GLAZED_TERRACOTTA)
+				.add(Blocks.MAGENTA_GLAZED_TERRACOTTA)
+				.add(Blocks.LIGHT_BLUE_GLAZED_TERRACOTTA)
+				.add(Blocks.YELLOW_GLAZED_TERRACOTTA)
+				.add(Blocks.LIME_GLAZED_TERRACOTTA)
+				.add(Blocks.PINK_GLAZED_TERRACOTTA)
+				.add(Blocks.GRAY_GLAZED_TERRACOTTA)
+				.add(Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA)
+				.add(Blocks.CYAN_GLAZED_TERRACOTTA)
+				.add(Blocks.PURPLE_GLAZED_TERRACOTTA)
+				.add(Blocks.BLUE_GLAZED_TERRACOTTA)
+				.add(Blocks.BROWN_GLAZED_TERRACOTTA)
+				.add(Blocks.GREEN_GLAZED_TERRACOTTA)
+				.add(Blocks.BLACK_GLAZED_TERRACOTTA)
+				.add(Blocks.RED_GLAZED_TERRACOTTA);
 		getOrCreateTagBuilder(ConventionalBlockTags.GLAZED_TERRACOTTA)
 				.add(Blocks.WHITE_GLAZED_TERRACOTTA)
 				.add(Blocks.ORANGE_GLAZED_TERRACOTTA)
@@ -244,6 +261,23 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateConcreteTags() {
+		getOrCreateTagBuilder(ConventionalBlockTags.CONCRETES)
+				.add(Blocks.WHITE_CONCRETE)
+				.add(Blocks.ORANGE_CONCRETE)
+				.add(Blocks.MAGENTA_CONCRETE)
+				.add(Blocks.LIGHT_BLUE_CONCRETE)
+				.add(Blocks.YELLOW_CONCRETE)
+				.add(Blocks.LIME_CONCRETE)
+				.add(Blocks.PINK_CONCRETE)
+				.add(Blocks.GRAY_CONCRETE)
+				.add(Blocks.LIGHT_GRAY_CONCRETE)
+				.add(Blocks.CYAN_CONCRETE)
+				.add(Blocks.PURPLE_CONCRETE)
+				.add(Blocks.BLUE_CONCRETE)
+				.add(Blocks.BROWN_CONCRETE)
+				.add(Blocks.GREEN_CONCRETE)
+				.add(Blocks.BLACK_CONCRETE)
+				.add(Blocks.RED_CONCRETE);
 		getOrCreateTagBuilder(ConventionalBlockTags.CONCRETE)
 				.add(Blocks.WHITE_CONCRETE)
 				.add(Blocks.ORANGE_CONCRETE)
