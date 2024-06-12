@@ -51,7 +51,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.GLASS_BLOCKS, "Glass Blocks");
 		translationBuilder.add(ConventionalBlockTags.GLASS_PANES, "Glass Panes");
 		translationBuilder.add(ConventionalBlockTags.SHULKER_BOXES, "Shulker Boxes");
-		translationBuilder.add(ConventionalBlockTags.GLAZED_TERRACOTTAS, "Glaze Terracottas");
+		translationBuilder.add(ConventionalBlockTags.GLAZED_TERRACOTTAS, "Glazed Terracottas");
 		translationBuilder.add(ConventionalBlockTags.CONCRETES, "Concretes");
 		translationBuilder.add(ConventionalBlockTags.GLAZED_TERRACOTTA, "Glaze Terracotta");
 		translationBuilder.add(ConventionalBlockTags.CONCRETE, "Concrete");
