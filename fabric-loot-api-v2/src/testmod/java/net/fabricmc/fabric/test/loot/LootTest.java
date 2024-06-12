@@ -16,13 +16,22 @@
 
 package net.fabricmc.fabric.test.loot;
 
+import java.util.Optional;
+
 import net.minecraft.block.Blocks;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.SurvivesExplosionLootCondition;
 import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.function.SetEnchantmentsLootFunction;
 import net.minecraft.loot.function.SetNameLootFunction;
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 
 import net.fabricmc.api.ModInitializer;
@@ -90,6 +99,18 @@ public class LootTest implements ModInitializer {
 			// emeralds to the same loot pool.
 			if (Blocks.YELLOW_WOOL.getLootTableKey() == key) {
 				tableBuilder.modifyPools(poolBuilder -> poolBuilder.with(ItemEntry.builder(Items.EMERALD)));
+			}
+		});
+
+		LootTableEvents.REGISTRY_AWARE_MODIFY.register((key, tableBuilder, source, registries) -> {
+			if (EntityType.SALMON.getLootTableId() == key) {
+				Optional<RegistryEntry<Enchantment>> lure = registries.getOptionalWrapper(RegistryKeys.ENCHANTMENT).flatMap(registry -> registry.getOptional(Enchantments.LURE));
+
+				lure.ifPresent((lureEnchantment) -> tableBuilder.pool(LootPool.builder().with(
+						ItemEntry.builder(Items.FISHING_ROD)
+				).apply(
+						new SetEnchantmentsLootFunction.Builder().enchantment(lureEnchantment, ConstantLootNumberProvider.create(1))
+				)));
 			}
 		});
 

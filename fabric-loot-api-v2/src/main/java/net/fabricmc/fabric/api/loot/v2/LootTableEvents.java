@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.loot.LootTable;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.ResourceManager;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -28,6 +29,16 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * Events for manipulating loot tables.
+ *
+ * <p>Modify and replace events are triggered before the loading is completed.
+ * For this reason, loot tables from data packs (other than the one currently modified)
+ * are unavailable, along with data pack-provided loot conditions or functions.
+ * In most cases, however, this can be replaced with "reference" loot types,
+ * which are evaluated later.
+ *
+ * @see net.minecraft.loot.entry.LootTableEntry
+ * @see net.minecraft.loot.condition.ReferenceLootCondition
+ * @see net.minecraft.loot.function.ReferenceLootFunction
  */
 public final class LootTableEvents {
 	private LootTableEvents() {
@@ -36,6 +47,8 @@ public final class LootTableEvents {
 	/**
 	 * This event can be used to replace loot tables.
 	 * If a loot table is replaced, the iteration will stop for that loot table.
+	 * This is invoked after {@link #REGISTRY_AWARE_REPLACE}. If the former event replaces a loot table,
+	 * this event will not be invoked.
 	 */
 	public static final Event<Replace> REPLACE = EventFactory.createArrayBacked(Replace.class, listeners -> (key, original, source) -> {
 		for (Replace listener : listeners) {
@@ -50,8 +63,26 @@ public final class LootTableEvents {
 	});
 
 	/**
+	 * This event can be used to replace loot tables.
+	 * If a loot table is replaced, the iteration will stop for that loot table.
+	 * This event allows access to the registries, such as enchantments.
+	 */
+	public static final Event<RegistryAwareReplace> REGISTRY_AWARE_REPLACE = EventFactory.createArrayBacked(RegistryAwareReplace.class, listeners -> (key, original, source, registries) -> {
+		for (RegistryAwareReplace listener : listeners) {
+			@Nullable LootTable replaced = listener.replaceLootTable(key, original, source, registries);
+
+			if (replaced != null) {
+				return replaced;
+			}
+		}
+
+		return null;
+	});
+
+	/**
 	 * This event can be used to modify loot tables.
 	 * The main use case is to add items to vanilla or mod loot tables (e.g. modded seeds to grass).
+	 * This is invoked after {@link #REGISTRY_AWARE_MODIFY}.
 	 *
 	 * <p>You can also modify loot tables that are created by {@link #REPLACE}.
 	 * They have the loot table source {@link LootTableSource#REPLACED}.
@@ -90,6 +121,47 @@ public final class LootTableEvents {
 	});
 
 	/**
+	 * This event can be used to modify loot tables.
+	 * The main use case is to add items to vanilla or mod loot tables (e.g. modded seeds to grass).
+	 * This event allows access to the registries, such as enchantments.
+	 *
+	 * <p>You can also modify loot tables that are created by {@link #REGISTRY_AWARE_REPLACE}.
+	 * They have the loot table source {@link LootTableSource#REPLACED}.
+	 *
+	 * <h2>Example: adding diamonds to the cobblestone loot table</h2>
+	 * We'll add a new diamond {@linkplain net.minecraft.loot.LootPool loot pool} to the cobblestone loot table
+	 * that will be dropped alongside the original cobblestone loot pool.
+	 *
+	 * <p>If you want only one of the items to drop, you can use
+	 * {@link FabricLootTableBuilder#modifyPools(java.util.function.Consumer)} to add the new item to
+	 * the original loot pool instead.
+	 *
+	 * <pre>
+	 * {@code
+	 * LootTableEvents.REGISTRY_AWARE_MODIFY.register((key, tableBuilder, source, registries) -> {
+	 *     // If the loot table is for the cobblestone block and it is not overridden by a user:
+	 *     if (Blocks.COBBLESTONE.getLootTableKey() == key && source.isBuiltin()) {
+	 *         // Create a new loot pool that will hold the diamonds.
+	 *         LootPool.Builder pool = LootPool.builder()
+	 *             // Add diamonds...
+	 *             .with(ItemEntry.builder(Items.DIAMOND))
+	 *             // ...only if the block would survive a potential explosion.
+	 *             .conditionally(SurvivesExplosionLootCondition.builder());
+	 *
+	 *         // Add the loot pool to the loot table
+	 *         tableBuilder.pool(pool);
+	 *     }
+	 * });
+	 * }
+	 * </pre>
+	 */
+	public static final Event<RegistryAwareModify> REGISTRY_AWARE_MODIFY = EventFactory.createArrayBacked(RegistryAwareModify.class, listeners -> (key, tableBuilder, source, registries) -> {
+		for (RegistryAwareModify listener : listeners) {
+			listener.modifyLootTable(key, tableBuilder, source, registries);
+		}
+	});
+
+	/**
 	 * This event can be used for post-processing after all loot tables have been loaded and modified by Fabric.
 	 */
 	public static final Event<Loaded> ALL_LOADED = EventFactory.createArrayBacked(Loaded.class, listeners -> (resourceManager, lootManager) -> {
@@ -111,6 +183,20 @@ public final class LootTableEvents {
 		LootTable replaceLootTable(RegistryKey<LootTable> key, LootTable original, LootTableSource source);
 	}
 
+	public interface RegistryAwareReplace {
+		/**
+		 * Replaces loot tables.
+		 *
+		 * @param key              the loot table key
+		 * @param original        the original loot table
+		 * @param source          the source of the original loot table
+		 * @param registries      the registries
+		 * @return the new loot table, or null if it wasn't replaced
+		 */
+		@Nullable
+		LootTable replaceLootTable(RegistryKey<LootTable> key, LootTable original, LootTableSource source, RegistryWrapper.WrapperLookup registries);
+	}
+
 	public interface Modify {
 		/**
 		 * Called when a loot table is loading to modify loot tables.
@@ -120,6 +206,18 @@ public final class LootTableEvents {
 		 * @param source          the source of the loot table
 		 */
 		void modifyLootTable(RegistryKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source);
+	}
+
+	public interface RegistryAwareModify {
+		/**
+		 * Called when a loot table is loading to modify loot tables.
+		 *
+		 * @param key              the loot table key
+		 * @param tableBuilder    a builder of the loot table being loaded
+		 * @param source          the source of the loot table
+		 * @param registries      the registries
+		 */
+		void modifyLootTable(RegistryKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source, RegistryWrapper.WrapperLookup registries);
 	}
 
 	public interface Loaded {

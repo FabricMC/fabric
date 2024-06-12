@@ -16,21 +16,37 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.WeakHashMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import com.google.gson.JsonElement;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.serialization.DynamicOps;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.loot.LootDataType;
 import net.minecraft.loot.LootTable;
+import net.minecraft.registry.CombinedDynamicRegistries;
 import net.minecraft.registry.MutableRegistry;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.ReloadableRegistries;
+import net.minecraft.registry.ServerDynamicRegistryType;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
@@ -44,8 +60,34 @@ import net.fabricmc.fabric.impl.loot.LootUtil;
  */
 @Mixin(ReloadableRegistries.class)
 abstract class ReloadableRegistriesMixin {
-	@ModifyArg(method = "method_58286", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/MutableRegistry;add(Lnet/minecraft/registry/RegistryKey;Ljava/lang/Object;Lnet/minecraft/registry/entry/RegistryEntryInfo;)Lnet/minecraft/registry/entry/RegistryEntry$Reference;"), index = 1)
-	private static Object modifyLootTable(Object value, @Local(argsOnly = true) Identifier id) {
+	/**
+	 * Due to possible cross-thread handling, this uses WeakHashMap instead of ThreadLocal.
+	 */
+	@Unique
+	private static final WeakHashMap<RegistryOps<JsonElement>, RegistryWrapper.WrapperLookup> WRAPPERS = new WeakHashMap<>();
+
+	@WrapOperation(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/ReloadableRegistries$ReloadableWrapperLookup;getOps(Lcom/mojang/serialization/DynamicOps;)Lnet/minecraft/registry/RegistryOps;"))
+	private static RegistryOps<JsonElement> storeOps(@Coerce RegistryWrapper.WrapperLookup registries, DynamicOps<JsonElement> ops, Operation<RegistryOps<JsonElement>> original) {
+		RegistryOps<JsonElement> created = original.call(registries, ops);
+		WRAPPERS.put(created, registries);
+		return created;
+	}
+
+	@WrapOperation(method = "reload", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;thenApplyAsync(Ljava/util/function/Function;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
+	private static CompletableFuture<CombinedDynamicRegistries<ServerDynamicRegistryType>> removeOps(CompletableFuture<List<MutableRegistry<?>>> future, Function<? super List<MutableRegistry<?>>, ? extends CombinedDynamicRegistries<ServerDynamicRegistryType>> fn, Executor executor, Operation<CompletableFuture<CombinedDynamicRegistries<ServerDynamicRegistryType>>> original, @Local RegistryOps<JsonElement> ops) {
+		return original.call(future.thenApply(v -> {
+			WRAPPERS.remove(ops);
+			return v;
+		}), fn, executor);
+	}
+
+	@WrapOperation(method = "method_58278", at = @At(value = "INVOKE", target = "Ljava/util/Optional;ifPresent(Ljava/util/function/Consumer;)V"))
+	private static <T> void modifyLootTable(Optional<T> optionalTable, Consumer<? super T> action, Operation<Void> original, @Local(argsOnly = true) Identifier id, @Local(argsOnly = true) RegistryOps<JsonElement> ops) {
+		original.call(optionalTable.map(table -> modifyLootTable(table, id, ops)), action);
+	}
+
+	@Unique
+	private static <T> T modifyLootTable(T value, Identifier id, RegistryOps<JsonElement> ops) {
 		if (!(value instanceof LootTable table)) return value;
 
 		if (table == LootTable.EMPTY) {
@@ -54,10 +96,16 @@ abstract class ReloadableRegistriesMixin {
 		}
 
 		RegistryKey<LootTable> key = RegistryKey.of(RegistryKeys.LOOT_TABLE, id);
+		// Populated above.
+		RegistryWrapper.WrapperLookup registries = WRAPPERS.get(ops);
 		// Populated inside JsonDataLoaderMixin
 		LootTableSource source = LootUtil.SOURCES.get().getOrDefault(id, LootTableSource.DATA_PACK);
 		// Invoke the REPLACE event for the current loot table.
-		LootTable replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(key, table, source);
+		LootTable replacement = LootTableEvents.REGISTRY_AWARE_REPLACE.invoker().replaceLootTable(key, table, source, registries);
+
+		if (replacement == null) {
+			replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(key, table, source);
+		}
 
 		if (replacement != null) {
 			// Set the loot table to MODIFY to be the replacement loot table.
@@ -68,9 +116,10 @@ abstract class ReloadableRegistriesMixin {
 
 		// Turn the current table into a modifiable builder and invoke the MODIFY event.
 		LootTable.Builder builder = FabricLootTableBuilder.copyOf(table);
+		LootTableEvents.REGISTRY_AWARE_MODIFY.invoker().modifyLootTable(key, builder, source, registries);
 		LootTableEvents.MODIFY.invoker().modifyLootTable(key, builder, source);
 
-		return builder.build();
+		return (T) builder.build();
 	}
 
 	@SuppressWarnings("unchecked")
