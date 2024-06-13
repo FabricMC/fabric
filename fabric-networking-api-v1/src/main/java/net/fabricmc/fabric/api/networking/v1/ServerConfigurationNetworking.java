@@ -269,6 +269,11 @@ public final class ServerConfigurationNetworking {
 	@ApiStatus.NonExtendable
 	public interface Context {
 		/**
+		 * @return The MinecraftServer instance
+		 */
+		MinecraftServer server();
+
+		/**
 		 * @return The ServerConfigurationNetworkHandler instance
 		 */
 		ServerConfigurationNetworkHandler networkHandler();

@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.listener.ClientCommonPacketListener;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
@@ -325,6 +326,11 @@ public final class ServerPlayNetworking {
 
 	@ApiStatus.NonExtendable
 	public interface Context {
+		/**
+		 * @return The MinecraftServer instance
+		 */
+		MinecraftServer server();
+
 		/**
 		 * @return The player that received the packet
 		 */

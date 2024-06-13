@@ -35,6 +35,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.minecraft.client.MinecraftClient;
+
+import net.minecraft.server.MinecraftServer;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -130,8 +134,23 @@ public class CommonPacketTests {
 
 		ClientNetworkingImpl.setClientConfigurationAddon(clientAddon);
 
-		clientContext = () -> packetSender;
+		clientContext = new ClientConfigurationNetworking.Context() {
+			@Override
+			public MinecraftClient client() {
+				return null;
+			}
+
+			@Override
+			public PacketSender responseSender() {
+				return packetSender;
+			}
+		};
 		serverContext = new ServerConfigurationNetworking.Context() {
+			@Override
+			public MinecraftServer server() {
+				return null;
+			}
+
 			@Override
 			public ServerConfigurationNetworkHandler networkHandler() {
 				return serverNetworkHandler;

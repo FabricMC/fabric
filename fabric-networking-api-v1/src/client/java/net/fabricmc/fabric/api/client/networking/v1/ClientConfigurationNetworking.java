@@ -22,6 +22,7 @@ import java.util.Set;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ThreadExecutor;
@@ -273,6 +274,11 @@ public final class ClientConfigurationNetworking {
 
 	@ApiStatus.NonExtendable
 	public interface Context {
+		/**
+		 * @return The MinecraftClient instance
+		 */
+		MinecraftClient client();
+
 		/**
 		 * @return The packet sender
 		 */
