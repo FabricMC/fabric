@@ -157,7 +157,9 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 			if (renderLayer != RenderLayer.getTranslucent()) {
 				isDefaultTranslucent = false;
-			} else if (transformMode != ModelTransformationMode.GUI && !transformMode.isFirstPerson()) {
+			}
+
+			if (transformMode != ModelTransformationMode.GUI && !transformMode.isFirstPerson()) {
 				isTranslucentDirect = false;
 			}
 		}
