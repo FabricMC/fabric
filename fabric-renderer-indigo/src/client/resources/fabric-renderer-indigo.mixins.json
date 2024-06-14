@@ -8,9 +8,10 @@
   "client": [
     "BakedModelMixin",
     "BlockModelRendererMixin",
-    "SectionBuilderMixin",
     "ChunkRendererRegionMixin",
-    "ItemRendererMixin"
+    "ItemRendererAccessor",
+    "ItemRendererMixin",
+    "SectionBuilderMixin"
   ],
   "injectors": {
     "defaultRequire": 1
