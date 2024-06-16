@@ -578,6 +578,9 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.CHAIN);
 
 		getOrCreateTagBuilder(ConventionalItemTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
+
+		getOrCreateTagBuilder(ConventionalItemTags.EGGS)
+				.add(Items.EGG);
 	}
 
 	private void generateDyedTags() {
