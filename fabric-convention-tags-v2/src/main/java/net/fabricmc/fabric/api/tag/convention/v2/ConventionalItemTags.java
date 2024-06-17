@@ -173,12 +173,12 @@ public final class ConventionalItemTags {
 	 * Block tag equivalent is {@link BlockTags#SHULKER_BOXES}.
 	 */
 	public static final TagKey<Item> SHULKER_BOXES = register("shulker_boxes");
-	public static final TagKey<Item> GLAZED_TERRACOTTA = register("glazed_terracotta");
-	public static final TagKey<Item> CONCRETE = register("concrete");
+	public static final TagKey<Item> GLAZED_TERRACOTTAS = register("glazed_terracottas");
+	public static final TagKey<Item> CONCRETES = register("concretes");
 	/**
-	 * Block tag equivalent is {@link BlockTags#CONCRETE_POWDER}.
+	 * Block tag equivalent is {@link BlockTags#CONCRETE_POWDERS}.
 	 */
-	public static final TagKey<Item> CONCRETE_POWDER = register("concrete_powder");
+	public static final TagKey<Item> CONCRETE_POWDERS = register("concrete_powders");
 
 	// Related to budding mechanics
 	public static final TagKey<Item> BUDDING_BLOCKS = register("budding_blocks");
@@ -376,6 +376,21 @@ public final class ConventionalItemTags {
 	 */
 	@Deprecated
 	public static final TagKey<Item> MINING_TOOLS = register("tools/mining_tools");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#GLAZED_TERRACOTTAS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> GLAZED_TERRACOTTA = register("glazed_terracotta");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#CONCRETES} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> CONCRETE = register("concrete");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#CONCRETE_POWDERS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> CONCRETE_POWDER = register("concrete_powder");
 
 	private static TagKey<Item> register(String tagId) {
 		return TagRegistration.ITEM_TAG.registerC(tagId);

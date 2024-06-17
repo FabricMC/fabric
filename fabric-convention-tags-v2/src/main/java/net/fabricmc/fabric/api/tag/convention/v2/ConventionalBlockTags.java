@@ -50,8 +50,8 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> WOODEN_CHESTS = register("chests/wooden");
 	public static final TagKey<Block> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Block> GLASS_PANES = register("glass_panes");
-	public static final TagKey<Block> GLAZED_TERRACOTTA = register("glazed_terracotta");
-	public static final TagKey<Block> CONCRETE = register("concrete");
+	public static final TagKey<Block> GLAZED_TERRACOTTAS = register("glazed_terracottas");
+	public static final TagKey<Block> CONCRETES = register("concretes");
 
 	// Related to budding mechanics
 	/**
@@ -157,6 +157,16 @@ public final class ConventionalBlockTags {
 	 */
 	@Deprecated
 	public static final TagKey<Block> SHULKER_BOXES = register("shulker_boxes");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalBlockTags#GLAZED_TERRACOTTAS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Block> GLAZED_TERRACOTTA = register("glazed_terracotta");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalBlockTags#CONCRETES} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Block> CONCRETE = register("concrete");
 
 	private static TagKey<Block> register(String tagId) {
 		return TagRegistration.BLOCK_TAG.registerC(tagId);
