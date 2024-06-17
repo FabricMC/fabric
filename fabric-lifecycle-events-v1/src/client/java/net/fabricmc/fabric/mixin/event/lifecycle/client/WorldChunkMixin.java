@@ -44,21 +44,26 @@ abstract class WorldChunkMixin {
 	@Shadow
 	public abstract World getWorld();
 
-	@Inject(method = "setBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;markRemoved()V"))
-	private void onLoadBlockEntity(BlockEntity blockEntity, CallbackInfo ci) {
-		if (this.getWorld() instanceof ServerWorld) {
-			ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerWorld) this.getWorld());
-		} else if (this.getWorld() instanceof ClientWorld) {
-			ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ClientWorld) this.getWorld());
+	@Inject(method = "setBlockEntity", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", shift = At.Shift.BY, by = 3))
+	private void onLoadBlockEntity(BlockEntity blockEntity, CallbackInfo ci, @Local(ordinal = 1) BlockEntity removedBlockEntity) {
+		// Only fire the load event if the block entity has actually changed
+		if (blockEntity != null && blockEntity != removedBlockEntity) {
+			if (this.getWorld() instanceof ServerWorld) {
+				ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerWorld) this.getWorld());
+			} else if (this.getWorld() instanceof ClientWorld) {
+				ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ClientWorld) this.getWorld());
+			}
 		}
 	}
 
 	@Inject(method = "setBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;markRemoved()V", shift = At.Shift.AFTER))
 	private void onRemoveBlockEntity(BlockEntity blockEntity, CallbackInfo info, @Local(ordinal = 1) BlockEntity removedBlockEntity) {
-		if (this.getWorld() instanceof ServerWorld) {
-			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ServerWorld) this.getWorld());
-		} else if (this.getWorld() instanceof ClientWorld) {
-			ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ClientWorld) this.getWorld());
+		if (removedBlockEntity != null) {
+			if (this.getWorld() instanceof ServerWorld) {
+				ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ServerWorld) this.getWorld());
+			} else if (this.getWorld() instanceof ClientWorld) {
+				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ClientWorld) this.getWorld());
+			}
 		}
 	}
 
