@@ -1,7 +1,7 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "Получена запись реестра, неизвестная этому клиенту.\n",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "Получено %d записей реестра, неизвестных этому клиенту.\n",
-  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Обычно это вызвано несовпадением модов, установленных между клиентом и сервером.",
-  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Посмотри логи клиента для дополнительных данных.\nСледующие названия записей реестра могут быть связаны:\n\n",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Получена запись реестра, неизвестная этому клиенту.",
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Получено %d записей реестра, неизвестных этому клиенту.",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Обычно это вызвано несовпадением сборок модов клиентской и серверной сторон.",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Смотрите подробнее в журналах клиента.\nВозможные причастные записи реестра:",
   "fabric-registry-sync-v0.unknown-remote.footer": "И ещё %d..."
 }
