@@ -10,6 +10,7 @@
     "BlockModelRendererMixin",
     "ChunkBuilderBuiltChunkRebuildTaskMixin",
     "ChunkRendererRegionMixin",
+    "ItemRendererAccessor",
     "ItemRendererMixin"
   ],
   "injectors": {
