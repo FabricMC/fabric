@@ -1,9 +1,9 @@
 {
   "pack.description.modResources": "Risorse mod.",
-  "pack.source.fabricmod": "Fabric mod",
+  "pack.source.fabricmod": "Mod Fabric",
   "pack.source.builtinMod": "predefinito: %s",
-  "pack.name.fabricMod": "Fabric Mod \"%s\"",
-  "pack.name.fabricMods": "Fabric Mods",
-  "pack.name.fabricMod.subPack": "Fabric Mod \"%s\" (%s)",
-  "commands.datapack.fabric.internal": "Impossibile abilitare o disabilitare il pacchetto interno Fabric \"%s\"."
+  "pack.name.fabricMod": "Mod Fabric \"%s\"",
+  "pack.name.fabricMods": "Mod Fabric",
+  "pack.name.fabricMod.subPack": "Mod Fabric \"%s\" (%s)",
+  "commands.datapack.fabric.internal": "Impossibile abilitare o disabilitare il pacchetto Fabric interno \"%s\"."
 }
