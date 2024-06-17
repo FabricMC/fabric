@@ -45,7 +45,7 @@ abstract class WorldChunkMixin {
 	public abstract World getWorld();
 
 	@Inject(method = "setBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;markRemoved()V"))
-	private void onLoadBlockEntity(BlockEntity blockEntity, CallbackInfo ci, @Local(ordinal = 1) BlockEntity removedBlockEntity) {
+	private void onLoadBlockEntity(BlockEntity blockEntity, CallbackInfo ci) {
 		if (this.getWorld() instanceof ServerWorld) {
 			ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerWorld) this.getWorld());
 		} else if (this.getWorld() instanceof ClientWorld) {
