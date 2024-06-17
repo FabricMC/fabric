@@ -40,12 +40,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.util.Identifier;
 
@@ -130,8 +132,23 @@ public class CommonPacketTests {
 
 		ClientNetworkingImpl.setClientConfigurationAddon(clientAddon);
 
-		clientContext = () -> packetSender;
+		clientContext = new ClientConfigurationNetworking.Context() {
+			@Override
+			public MinecraftClient client() {
+				return null;
+			}
+
+			@Override
+			public PacketSender responseSender() {
+				return packetSender;
+			}
+		};
 		serverContext = new ServerConfigurationNetworking.Context() {
+			@Override
+			public MinecraftServer server() {
+				return null;
+			}
+
 			@Override
 			public ServerConfigurationNetworkHandler networkHandler() {
 				return serverNetworkHandler;
