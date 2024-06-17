@@ -252,8 +252,8 @@ public final class ServerConfigurationNetworking {
 		 *
 		 * <p>An example usage of this:
 		 * <pre>{@code
-		 * // See FabricPacket for creating the packet
-		 * ServerConfigurationNetworking.registerReceiver(BOOM_PACKET_TYPE, (packet, responseSender) -> {
+		 * // use PayloadTypeRegistry for registering the payload
+		 * ServerConfigurationNetworking.registerReceiver(BOOM_PACKET_TYPE, (payload, context) -> {
 		 *
 		 * });
 		 * }</pre>
@@ -268,6 +268,11 @@ public final class ServerConfigurationNetworking {
 
 	@ApiStatus.NonExtendable
 	public interface Context {
+		/**
+		 * @return The MinecraftServer instance
+		 */
+		MinecraftServer server();
+
 		/**
 		 * @return The ServerConfigurationNetworkHandler instance
 		 */

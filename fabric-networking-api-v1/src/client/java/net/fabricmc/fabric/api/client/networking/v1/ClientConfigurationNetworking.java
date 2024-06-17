@@ -22,6 +22,7 @@ import java.util.Set;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ThreadExecutor;
@@ -257,10 +258,11 @@ public final class ClientConfigurationNetworking {
 		 * <p>Unlike {@link ClientPlayNetworking.PlayPayloadHandler} this method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
 		 * Modification to the game should be {@linkplain ThreadExecutor#submit(Runnable) scheduled}.
 		 *
-		 * <p>An example usage of this is to display an overlay message:
+		 * <p>An example usage of this:
 		 * <pre>{@code
-		 * // See FabricPacket for creating the packet
-		 * ClientConfigurationNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (packet, responseSender) -> {
+		 * // use PayloadTypeRegistry for registering the payload
+		 * ClientConfigurationNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (payload, context) -> {
+		 *
 		 * });
 		 * }</pre>
 		 *
@@ -273,6 +275,11 @@ public final class ClientConfigurationNetworking {
 
 	@ApiStatus.NonExtendable
 	public interface Context {
+		/**
+		 * @return The MinecraftClient instance
+		 */
+		MinecraftClient client();
+
 		/**
 		 * @return The packet sender
 		 */
