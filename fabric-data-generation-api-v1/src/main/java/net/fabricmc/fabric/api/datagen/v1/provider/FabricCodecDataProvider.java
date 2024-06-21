@@ -32,6 +32,8 @@ import com.mojang.serialization.JsonOps;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
@@ -49,10 +51,18 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	private final CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture;
 	private final Codec<T> codec;
 
-	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture, DataOutput.OutputType outputType, String directoryName, Codec<T> codec) {
-		this.pathResolver = dataOutput.getResolver(outputType, directoryName);
+	private FabricCodecDataProvider(DataOutput.PathResolver pathResolver, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture, Codec<T> codec) {
+		this.pathResolver = pathResolver;
 		this.registriesFuture = Objects.requireNonNull(registriesFuture);
 		this.codec = codec;
+	}
+
+	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture, DataOutput.OutputType outputType, String directoryName, Codec<T> codec) {
+		this(dataOutput.getResolver(outputType, directoryName), registriesFuture, codec);
+	}
+
+	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture, RegistryKey<? extends Registry<?>> key, Codec<T> codec) {
+		this(dataOutput.getResolver(key), registriesFuture, codec);
 	}
 
 	@Override

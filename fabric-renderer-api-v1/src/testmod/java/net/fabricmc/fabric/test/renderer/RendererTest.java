@@ -49,6 +49,6 @@ public final class RendererTest implements ModInitializer {
 	}
 
 	public static Identifier id(String path) {
-		return new Identifier("fabric-renderer-api-v1-testmod", path);
+		return Identifier.of("fabric-renderer-api-v1-testmod", path);
 	}
 }

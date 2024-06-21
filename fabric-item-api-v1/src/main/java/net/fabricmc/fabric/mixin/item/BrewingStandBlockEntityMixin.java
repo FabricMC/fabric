@@ -16,17 +16,19 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -50,8 +52,8 @@ public class BrewingStandBlockEntityMixin {
 	/**
 	 * Injected after the {@link Item#getRecipeRemainder} to replace the old remainder with are new one.
 	 */
-	@ModifyVariable(method = "craft", at = @At(value = "STORE"), index = 4)
-	private static ItemStack createStackRecipeRemainder(ItemStack old) {
+	@WrapOperation(method = "craft", at = @At(value = "NEW", target = "(Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/item/ItemStack;"))
+	private static ItemStack createStackRecipeRemainder(ItemConvertible item, Operation<ItemStack> original) {
 		ItemStack remainder = REMAINDER_STACK.get();
 		REMAINDER_STACK.remove();
 		return remainder;

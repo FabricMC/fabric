@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.listener.ClientCommonPacketListener;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
@@ -308,13 +309,12 @@ public final class ServerPlayNetworking {
 		 * <p>An example usage of this is to create an explosion where the player is looking:
 		 * <pre>{@code
 		 * // use PayloadTypeRegistry for registering the payload
-		 * ServerPlayNetworking.registerReceiver(BoomPayload.ID, (payload, player, responseSender) -> {
-		 * 	ModPacketHandler.createExplosion(player, payload.fire());
+		 * ServerPlayNetworking.registerReceiver(BoomPayload.ID, (payload, context) -> {
+		 * 	ModPacketHandler.createExplosion(context.player(), payload.fire());
 		 * });
 		 * }</pre>
 		 *
-		 * <p>The server and the network handler can be accessed via {@link ServerPlayerEntity#server}
-		 * and {@link ServerPlayerEntity#networkHandler}, respectively.
+		 * <p>The network handler can be accessed via {@link ServerPlayerEntity#networkHandler}.
 		 *
 		 * @param payload the packet payload
 		 * @param context the play networking context
@@ -325,6 +325,11 @@ public final class ServerPlayNetworking {
 
 	@ApiStatus.NonExtendable
 	public interface Context {
+		/**
+		 * @return The MinecraftServer instance
+		 */
+		MinecraftServer server();
+
 		/**
 		 * @return The player that received the packet
 		 */

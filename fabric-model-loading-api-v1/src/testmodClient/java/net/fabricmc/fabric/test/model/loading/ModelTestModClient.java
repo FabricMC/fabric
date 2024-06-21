@@ -47,7 +47,9 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 public class ModelTestModClient implements ClientModInitializer {
 	public static final String ID = "fabric-model-loading-api-v1-testmod";
 
-	public static final Identifier MODEL_ID = new Identifier(ID, "half_red_sand");
+	public static final Identifier HALF_RED_SAND_MODEL_ID = id("half_red_sand");
+	public static final Identifier GOLD_BLOCK_MODEL_ID = Identifier.ofVanilla("block/gold_block");
+	public static final Identifier BROWN_GLAZED_TERRACOTTA_MODEL_ID = Identifier.ofVanilla("block/brown_glazed_terracotta");
 
 	static class DownQuadRemovingModel extends ForwardingBakedModel {
 		DownQuadRemovingModel(BakedModel model) {
@@ -65,19 +67,23 @@ public class ModelTestModClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ModelLoadingPlugin.register(pluginContext -> {
-			pluginContext.addModels(MODEL_ID);
+			pluginContext.addModels(HALF_RED_SAND_MODEL_ID);
 			// remove bottom face of gold blocks
 			pluginContext.modifyModelAfterBake().register(ModelModifier.WRAP_PHASE, (model, context) -> {
-				if (context.id().getPath().equals("block/gold_block")) {
+				Identifier id = context.resourceId();
+
+				if (id != null && id.equals(GOLD_BLOCK_MODEL_ID)) {
 					return new DownQuadRemovingModel(model);
-				} else {
-					return model;
 				}
+
+				return model;
 			});
 			// make fences with west: true and everything else false appear to be a missing model visually
 			ModelIdentifier fenceId = BlockModels.getModelId(Blocks.OAK_FENCE.getDefaultState().with(HorizontalConnectingBlock.WEST, true));
 			pluginContext.modifyModelOnLoad().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
-				if (fenceId.equals(context.id())) {
+				ModelIdentifier id = context.topLevelId();
+
+				if (id != null && id.equals(fenceId)) {
 					return context.getOrLoadModel(ModelLoader.MISSING_ID);
 				}
 
@@ -86,8 +92,10 @@ public class ModelTestModClient implements ClientModInitializer {
 			// make brown glazed terracotta appear to be a missing model visually, but without affecting the item, by using pre-bake
 			// using load here would make the item also appear missing
 			pluginContext.modifyModelBeforeBake().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
-				if (context.id().getPath().equals("block/brown_glazed_terracotta")) {
-					return context.loader().getOrLoadModel(ModelLoader.MISSING_ID);
+				Identifier id = context.resourceId();
+
+				if (id != null && id.equals(BROWN_GLAZED_TERRACOTTA_MODEL_ID)) {
+					return context.baker().getOrLoadModel(ModelLoader.MISSING_ID);
 				}
 
 				return model;
@@ -99,7 +107,7 @@ public class ModelTestModClient implements ClientModInitializer {
 
 				// All the block state models are top-level...
 				// Use a delegating unbaked model to make sure the identical models only get baked a single time.
-				Identifier wheatStage0Id = new Identifier("block/wheat_stage0");
+				Identifier wheatStage0Id = Identifier.ofVanilla("block/wheat_stage0");
 
 				UnbakedModel stage0Model = new DelegatingUnbakedModel(wheatStage0Id);
 
@@ -107,7 +115,7 @@ public class ModelTestModClient implements ClientModInitializer {
 					context.setModel(state.with(CropBlock.AGE, age), stage0Model);
 				}
 
-				context.setModel(state.with(CropBlock.AGE, 7), context.getOrLoadModel(new Identifier("block/wheat_stage7")));
+				context.setModel(state.with(CropBlock.AGE, 7), context.getOrLoadModel(Identifier.ofVanilla("block/wheat_stage7")));
 			});
 		});
 
@@ -118,5 +126,9 @@ public class ModelTestModClient implements ClientModInitializer {
 				registrationHelper.register(new BakedModelFeatureRenderer<>(playerRenderer, SpecificModelReloadListener.INSTANCE::getSpecificModel));
 			}
 		});
+	}
+
+	public static Identifier id(String path) {
+		return Identifier.of(ID, path);
 	}
 }

@@ -30,8 +30,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedModelManager;
+import net.minecraft.client.render.model.BlockStatesLoader;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
+import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
@@ -40,16 +42,17 @@ import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.FabricBakedModelManager;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingConstants;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
 
 @Mixin(BakedModelManager.class)
-public class BakedModelManagerMixin implements FabricBakedModelManager {
+abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 	@Shadow
-	private Map<Identifier, BakedModel> models;
+	private Map<ModelIdentifier, BakedModel> models;
 
 	@Override
 	public BakedModel getModel(Identifier id) {
-		return models.get(id);
+		return models.get(ModelLoadingConstants.toResourceModelId(id));
 	}
 
 	@Redirect(
@@ -62,8 +65,8 @@ public class BakedModelManagerMixin implements FabricBakedModelManager {
 			allow = 1)
 	private CompletableFuture<ModelLoader> loadModelPluginData(
 			CompletableFuture<Map<Identifier, JsonUnbakedModel>> self,
-			CompletionStage<Map<Identifier, List<ModelLoader.SourceTrackedData>>> otherFuture,
-			BiFunction<Map<Identifier, JsonUnbakedModel>, Map<Identifier, List<ModelLoader.SourceTrackedData>>, ModelLoader> modelLoaderConstructor,
+			CompletionStage<Map<Identifier, List<BlockStatesLoader.SourceTrackedData>>> otherFuture,
+			BiFunction<Map<Identifier, JsonUnbakedModel>, Map<Identifier, List<BlockStatesLoader.SourceTrackedData>>, ModelLoader> modelLoaderConstructor,
 			Executor executor,
 			// reload args
 			ResourceReloader.Synchronizer synchronizer,
@@ -73,10 +76,12 @@ public class BakedModelManagerMixin implements FabricBakedModelManager {
 			Executor prepareExecutor,
 			Executor applyExecutor) {
 		CompletableFuture<List<ModelLoadingPlugin>> pluginsFuture = ModelLoadingPluginManager.preparePlugins(manager, prepareExecutor);
-		CompletableFuture<Pair<Map<Identifier, JsonUnbakedModel>, Map<Identifier, List<ModelLoader.SourceTrackedData>>>> pairFuture = self.thenCombine(otherFuture, Pair::new);
+		CompletableFuture<Pair<Map<Identifier, JsonUnbakedModel>, Map<Identifier, List<BlockStatesLoader.SourceTrackedData>>>> pairFuture = self.thenCombine(otherFuture, Pair::new);
 		return pairFuture.thenCombineAsync(pluginsFuture, (pair, plugins) -> {
 			ModelLoadingPluginManager.CURRENT_PLUGINS.set(plugins);
-			return modelLoaderConstructor.apply(pair.getLeft(), pair.getRight());
+			ModelLoader modelLoader = modelLoaderConstructor.apply(pair.getLeft(), pair.getRight());
+			ModelLoadingPluginManager.CURRENT_PLUGINS.remove();
+			return modelLoader;
 		}, executor);
 	}
 }

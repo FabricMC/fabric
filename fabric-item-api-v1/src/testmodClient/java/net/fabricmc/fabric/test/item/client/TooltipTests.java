@@ -26,7 +26,7 @@ public class TooltipTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// Adds a tooltip to all items so testing can be verified easily.
-		ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
+		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
 			lines.add(Text.literal("Fancy Tooltips").formatted(Formatting.LIGHT_PURPLE));
 		});
 	}

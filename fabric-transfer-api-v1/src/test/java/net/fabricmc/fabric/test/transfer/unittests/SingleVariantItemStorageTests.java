@@ -27,7 +27,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.DataComponentType;
+import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
@@ -57,7 +57,7 @@ import net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer;
 
 public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 	private static FluidVariant LAVA;
-	public static DataComponentType<FluidData> FLUID;
+	public static ComponentType<FluidData> FLUID;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -65,8 +65,8 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 
 		LAVA = FluidVariant.of(Fluids.LAVA);
 		FLUID = Registry.register(
-				Registries.DATA_COMPONENT_TYPE, new Identifier(TransferTestInitializer.MOD_ID, "fluid"),
-				DataComponentType.<FluidData>builder().codec(FluidData.CODEC).packetCodec(FluidData.PACKET_CODEC).build());
+				Registries.DATA_COMPONENT_TYPE, Identifier.of(TransferTestInitializer.MOD_ID, "fluid"),
+				ComponentType.<FluidData>builder().codec(FluidData.CODEC).packetCodec(FluidData.PACKET_CODEC).build());
 	}
 
 	@Test

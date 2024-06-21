@@ -137,21 +137,21 @@ public final class TradeOfferHelper {
 		 * <p>In vanilla, this pool contains offers to buy water buckets, baked potatoes, etc.
 		 * for emeralds.
 		 */
-		Identifier BUY_ITEMS_POOL = new Identifier("minecraft", "buy_items");
+		Identifier BUY_ITEMS_POOL = Identifier.ofVanilla("buy_items");
 		/**
 		 * The pool ID for the "sell special items" pool.
 		 * Two trade offers are picked from this pool.
 		 *
 		 * <p>In vanilla, this pool contains offers to sell logs, enchanted iron pickaxes, etc.
 		 */
-		Identifier SELL_SPECIAL_ITEMS_POOL = new Identifier("minecraft", "sell_special_items");
+		Identifier SELL_SPECIAL_ITEMS_POOL = Identifier.ofVanilla("sell_special_items");
 		/**
 		 * The pool ID for the "sell common items" pool.
 		 * Five trade offers are picked from this pool.
 		 *
 		 * <p>In vanilla, this pool contains offers to sell flowers, saplings, etc.
 		 */
-		Identifier SELL_COMMON_ITEMS_POOL = new Identifier("minecraft", "sell_common_items");
+		Identifier SELL_COMMON_ITEMS_POOL = Identifier.ofVanilla("sell_common_items");
 
 		/**
 		 * Adds a new pool to the offer list. Exactly {@code count} offers are picked from

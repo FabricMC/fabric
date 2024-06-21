@@ -7,7 +7,7 @@ loom {
 		testmodClient {
 			client()
 			name = "Testmod Client"
-			vmArg "-Dfabric-api.gametest.structures.output-dir=${file("src/testmod/resources/data/fabric-gametest-api-v1-testmod/gametest/structures")}"
+			vmArg "-Dfabric-api.gametest.structures.output-dir=${file("src/testmod/resources/data/fabric-gametest-api-v1-testmod/gametest/structure")}"
 
 			ideConfigGenerated = false
 			source sourceSets.testmodClient

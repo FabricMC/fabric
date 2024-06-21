@@ -16,11 +16,8 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.15.6",
+    "fabricloader": ">=0.15.11",
     "fabric-api-base": "*"
-  },
-  "breaks": {
-    "fabric-models-v0": "<0.4.0"
   },
   "description": "Provides hooks for model loading.",
   "mixins": [

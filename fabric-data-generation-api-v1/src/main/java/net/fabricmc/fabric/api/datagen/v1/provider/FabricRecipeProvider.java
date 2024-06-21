@@ -44,7 +44,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 /**
@@ -69,7 +69,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	/**
 	 * Return a new exporter that applies the specified conditions to any recipe json provider it receives.
 	 */
-	protected RecipeExporter withConditions(RecipeExporter exporter, ConditionJsonProvider... conditions) {
+	protected RecipeExporter withConditions(RecipeExporter exporter, ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 		return new RecipeExporter() {
 			@Override
@@ -100,20 +100,21 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 
 				RegistryOps<JsonElement> registryOps = wrapperLookup.getOps(JsonOps.INSTANCE);
 				JsonObject recipeJson = Recipe.CODEC.encodeStart(registryOps, recipe).getOrThrow(IllegalStateException::new).getAsJsonObject();
-				ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(recipe);
-				ConditionJsonProvider.write(recipeJson, conditions);
+				ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(recipe);
+				FabricDataGenHelper.addConditions(recipeJson, conditions);
 
 				list.add(DataProvider.writeToPath(writer, recipeJson, recipesPathResolver.resolveJson(identifier)));
 
 				if (advancement != null) {
 					JsonObject advancementJson = Advancement.CODEC.encodeStart(registryOps, advancement.value()).getOrThrow(IllegalStateException::new).getAsJsonObject();
-					ConditionJsonProvider.write(advancementJson, conditions);
+					FabricDataGenHelper.addConditions(advancementJson, conditions);
 					list.add(DataProvider.writeToPath(writer, advancementJson, advancementsPathResolver.resolveJson(getRecipeIdentifier(advancement.id()))));
 				}
 			}
 
 			@Override
 			public Advancement.Builder getAdvancementBuilder() {
+				//noinspection removal
 				return Advancement.Builder.createUntelemetered().parent(CraftingRecipeJsonBuilder.ROOT);
 			}
 		});
@@ -124,6 +125,6 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	 * Override this method to change the recipe identifier. The default implementation normalizes the namespace to the mod ID.
 	 */
 	protected Identifier getRecipeIdentifier(Identifier identifier) {
-		return new Identifier(output.getModId(), identifier.getPath());
+		return Identifier.of(output.getModId(), identifier.getPath());
 	}
 }

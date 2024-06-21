@@ -54,13 +54,7 @@ transitive-accessible class net/minecraft/data/client/BlockStateModelGenerator$B
 transitive-accessible class net/minecraft/data/client/BlockStateModelGenerator$LogTexturePool
 transitive-accessible class net/minecraft/data/client/BlockStateModelGenerator$BuiltinModelPool
 
-transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGenerator WITH_SILK_TOUCH Lnet/minecraft/loot/condition/LootCondition$Builder;
-transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGenerator WITHOUT_SILK_TOUCH Lnet/minecraft/loot/condition/LootCondition$Builder;
 transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGenerator WITH_SHEARS Lnet/minecraft/loot/condition/LootCondition$Builder;
-transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGenerator WITH_SILK_TOUCH_OR_SHEARS Lnet/minecraft/loot/condition/LootCondition$Builder;
-transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGenerator WITHOUT_SILK_TOUCH_NOR_SHEARS Lnet/minecraft/loot/condition/LootCondition$Builder;
-transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGenerator SAPLING_DROP_CHANCE [F
-transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGenerator LEAVES_STICK_DROP_CHANCE [F
 
 ### Generated access wideners below
 
@@ -123,6 +117,7 @@ transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	off
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	offerReversibleCompactingRecipes	(Lnet/minecraft/data/server/recipe/RecipeExporter;Lnet/minecraft/recipe/book/RecipeCategory;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/recipe/book/RecipeCategory;Lnet/minecraft/item/ItemConvertible;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	offerSmithingTemplateCopyingRecipe	(Lnet/minecraft/data/server/recipe/RecipeExporter;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/registry/tag/TagKey;)V
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	offerSmithingTemplateCopyingRecipe	(Lnet/minecraft/data/server/recipe/RecipeExporter;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/item/ItemConvertible;)V
+transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	offerSmithingTemplateCopyingRecipe	(Lnet/minecraft/data/server/recipe/RecipeExporter;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/recipe/Ingredient;)V
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	generateCookingRecipes	(Lnet/minecraft/data/server/recipe/RecipeExporter;Ljava/lang/String;Lnet/minecraft/recipe/RecipeSerializer;Lnet/minecraft/recipe/AbstractCookingRecipe$RecipeFactory;I)V
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	offerFoodCookingRecipe	(Lnet/minecraft/data/server/recipe/RecipeExporter;Ljava/lang/String;Lnet/minecraft/recipe/RecipeSerializer;Lnet/minecraft/recipe/AbstractCookingRecipe$RecipeFactory;ILnet/minecraft/item/ItemConvertible;Lnet/minecraft/item/ItemConvertible;F)V
 transitive-accessible	method	net/minecraft/data/server/recipe/RecipeProvider	offerWaxingRecipes	(Lnet/minecraft/data/server/recipe/RecipeExporter;Lnet/minecraft/resource/featuretoggle/FeatureSet;)V
@@ -259,6 +254,10 @@ transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerRoots	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	addJigsawOrientationToVariant	(Lnet/minecraft/block/enums/Orientation;Lnet/minecraft/data/client/BlockStateVariant;)Lnet/minecraft/data/client/BlockStateVariant;
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerCandle	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	createSilkTouchCondition	()Lnet/minecraft/loot/condition/LootCondition$Builder;
+transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	createWithoutSilkTouchCondition	()Lnet/minecraft/loot/condition/LootCondition$Builder;
+transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	createWithShearsOrSilkTouchCondition	()Lnet/minecraft/loot/condition/LootCondition$Builder;
+transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	createWithoutShearsOrSilkTouchCondition	()Lnet/minecraft/loot/condition/LootCondition$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	applyExplosionDecay	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/loot/function/LootFunctionConsumingBuilder;)Lnet/minecraft/loot/function/LootFunctionConsumingBuilder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	addSurvivesExplosionCondition	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/loot/condition/LootConditionConsumingBuilder;)Lnet/minecraft/loot/condition/LootConditionConsumingBuilder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	drops	(Lnet/minecraft/block/Block;Lnet/minecraft/loot/condition/LootCondition$Builder;Lnet/minecraft/loot/entry/LootPoolEntry$Builder;)Lnet/minecraft/loot/LootTable$Builder;

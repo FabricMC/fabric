@@ -1,0 +1,61 @@
+{
+  "values": [
+    "minecraft:baked_potato",
+    "minecraft:pumpkin_pie",
+    "minecraft:honey_bottle",
+    "minecraft:ominous_bottle",
+    "minecraft:dried_kelp",
+    {
+      "id": "#c:foods/fruits",
+      "required": false
+    },
+    {
+      "id": "#c:foods/vegetables",
+      "required": false
+    },
+    {
+      "id": "#c:foods/berries",
+      "required": false
+    },
+    {
+      "id": "#c:foods/breads",
+      "required": false
+    },
+    {
+      "id": "#c:foods/cookies",
+      "required": false
+    },
+    {
+      "id": "#c:foods/raw_meats",
+      "required": false
+    },
+    {
+      "id": "#c:foods/raw_fishes",
+      "required": false
+    },
+    {
+      "id": "#c:foods/cooked_meats",
+      "required": false
+    },
+    {
+      "id": "#c:foods/cooked_fishes",
+      "required": false
+    },
+    {
+      "id": "#c:foods/soups",
+      "required": false
+    },
+    {
+      "id": "#c:foods/candies",
+      "required": false
+    },
+    {
+      "id": "#c:foods/edible_when_placed",
+      "required": false
+    },
+    {
+      "id": "#c:foods/food_poisoning",
+      "required": false
+    }
+  ]
+}

@@ -55,7 +55,7 @@ public abstract class KeyedResourceReloadListenerMixin implements IdentifiableRe
 			} else if (self instanceof TagManagerLoader) {
 				this.fabric$id = ResourceReloadListenerKeys.TAGS;
 			} else {
-				this.fabric$id = new Identifier("minecraft", "private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
+				this.fabric$id = Identifier.ofVanilla("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 			}
 		}
 

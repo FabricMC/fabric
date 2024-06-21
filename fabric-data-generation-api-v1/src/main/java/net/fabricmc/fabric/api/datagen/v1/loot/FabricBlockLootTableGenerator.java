@@ -20,7 +20,7 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.data.server.loottable.BlockLootTableGenerator;
 
-import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.loot.ConditionBlockLootTableGenerator;
 
 /**
@@ -33,7 +33,7 @@ public interface FabricBlockLootTableGenerator {
 	 * Return a new generator that applies the specified conditions to any loot table it receives,
 	 * and then forwards the loot tables to this generator.
 	 */
-	default BlockLootTableGenerator withConditions(ConditionJsonProvider... conditions) {
+	default BlockLootTableGenerator withConditions(ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 
 		return new ConditionBlockLootTableGenerator((BlockLootTableGenerator) this, conditions);

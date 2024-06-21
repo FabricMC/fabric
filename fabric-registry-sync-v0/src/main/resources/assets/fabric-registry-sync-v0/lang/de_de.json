@@ -1,7 +1,7 @@
 {
   "fabric-registry-sync-v0.unknown-remote.title.singular": "Es wurde ein Registrierungseintrag empfangen, der für diesen Client unbekannt ist.\n",
   "fabric-registry-sync-v0.unknown-remote.title.plural": "Es wurden %d Registrierungseinträge empfangen, die für diesen Client unbekannt sind.\n",
-  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Dies wird in der Regel durch eine nicht übereinstimmende Menge von Mods zwischen Client und Server verursacht.",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Dies wird in der Regel durch ein nicht übereinstimmendes Mod-Set zwischen Client und Server verursacht.",
   "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Weitere Einzelheiten siehst du in den Client-Logs.\nDie folgenden Namensräume für Registrierungseinträge könnten miteinander in Verbindung stehen:\n\n",
   "fabric-registry-sync-v0.unknown-remote.footer": "Und %d mehr..."
 }

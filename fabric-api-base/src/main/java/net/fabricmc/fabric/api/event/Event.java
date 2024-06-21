@@ -60,7 +60,7 @@ public abstract class Event<T> {
 	 * The identifier of the default phase.
 	 * Have a look at {@link EventFactory#createWithPhases} for an explanation of event phases.
 	 */
-	public static final Identifier DEFAULT_PHASE = new Identifier("fabric", "default");
+	public static final Identifier DEFAULT_PHASE = Identifier.of("fabric", "default");
 
 	/**
 	 * Register a listener to the event for the specified phase.

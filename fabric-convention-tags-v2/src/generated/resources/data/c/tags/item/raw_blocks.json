@@ -1,0 +1,16 @@
+{
+  "values": [
+    {
+      "id": "#c:raw_blocks/copper",
+      "required": false
+    },
+    {
+      "id": "#c:raw_blocks/gold",
+      "required": false
+    },
+    {
+      "id": "#c:raw_blocks/iron",
+      "required": false
+    }
+  ]
+}

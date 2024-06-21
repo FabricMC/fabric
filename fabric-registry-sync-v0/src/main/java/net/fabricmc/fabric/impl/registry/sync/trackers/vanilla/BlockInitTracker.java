@@ -42,10 +42,10 @@ public final class BlockInitTracker implements RegistryEntryAddedCallback<Block>
 
 	@Override
 	public void onEntryAdded(int rawId, Identifier id, Block object) {
-		// if false, getDropTableId() will generate an invalid drop table ID
+		// if false, getLootTableKey() will generate an invalid loot table key
 		assert id.equals(registry.getId(object));
 
-		object.getLootTableId();
+		object.getLootTableKey();
 	}
 
 	public static void postFreeze() {

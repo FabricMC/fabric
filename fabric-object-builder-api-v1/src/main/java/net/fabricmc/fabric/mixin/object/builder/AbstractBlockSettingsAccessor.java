@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.object.builder;
 
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
@@ -26,7 +25,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MapColor;
-import net.minecraft.block.enums.Instrument;
+import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.EntityType;
 import net.minecraft.loot.LootTable;
@@ -98,10 +97,10 @@ public interface AbstractBlockSettingsAccessor {
 	AbstractBlock.ContextPredicate getEmissiveLightingPredicate();
 
 	@Accessor
-	Optional<AbstractBlock.Offsetter> getOffsetter();
+	AbstractBlock.Offsetter getOffsetter();
 
 	@Accessor
-	RegistryKey<LootTable> getLootTableId();
+	RegistryKey<LootTable> getLootTableKey();
 
 	@Accessor
 	boolean getBlockBreakParticles();
@@ -125,7 +124,7 @@ public interface AbstractBlockSettingsAccessor {
 	PistonBehavior getPistonBehavior();
 
 	@Accessor
-	Instrument getInstrument();
+	NoteBlockInstrument getInstrument();
 
 	@Accessor
 	boolean getReplaceable();
@@ -150,7 +149,7 @@ public interface AbstractBlockSettingsAccessor {
 	void setIsAir(boolean isAir);
 
 	@Accessor
-	void setLootTableId(RegistryKey<LootTable> lootTableId);
+	void setLootTableKey(RegistryKey<LootTable> lootTableKey);
 
 	@Accessor
 	void setToolRequired(boolean toolRequired);
@@ -162,7 +161,7 @@ public interface AbstractBlockSettingsAccessor {
 	void setRequiredFeatures(FeatureSet requiredFeatures);
 
 	@Accessor
-	void setOffsetter(Optional<AbstractBlock.Offsetter> offsetter);
+	void setOffsetter(AbstractBlock.Offsetter offsetter);
 
 	@Accessor
 	void setBurnable(boolean burnable);

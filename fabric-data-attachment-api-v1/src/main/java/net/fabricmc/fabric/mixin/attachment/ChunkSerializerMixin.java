@@ -30,6 +30,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.poi.PointOfInterestStorage;
+import net.minecraft.world.storage.StorageKey;
 
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
@@ -42,7 +43,7 @@ abstract class ChunkSerializerMixin {
 			),
 			method = "deserialize"
 	)
-	private static WorldChunk readWorldChunkAttachments(WorldChunk chunk, ServerWorld world, PointOfInterestStorage poiStorage, ChunkPos chunkPos, NbtCompound nbt) {
+	private static WorldChunk readWorldChunkAttachments(WorldChunk chunk, ServerWorld world, PointOfInterestStorage poiStorage, StorageKey storageKey, ChunkPos chunkPos, NbtCompound nbt) {
 		((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(nbt, world.getRegistryManager());
 		return chunk;
 	}
@@ -54,7 +55,7 @@ abstract class ChunkSerializerMixin {
 			),
 			method = "deserialize"
 	)
-	private static ProtoChunk readProtoChunkAttachments(ProtoChunk chunk, ServerWorld world, PointOfInterestStorage poiStorage, ChunkPos chunkPos, NbtCompound nbt) {
+	private static ProtoChunk readProtoChunkAttachments(ProtoChunk chunk, ServerWorld world, PointOfInterestStorage poiStorage, StorageKey storageKey, ChunkPos chunkPos, NbtCompound nbt) {
 		((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(nbt, world.getRegistryManager());
 		return chunk;
 	}

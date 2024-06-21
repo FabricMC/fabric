@@ -33,12 +33,12 @@ import net.fabricmc.fabric.test.lookup.api.Inspectable;
 
 public class FabricItemApiLookupTest {
 	public static final ItemApiLookup<Inspectable, Void> INSPECTABLE =
-			ItemApiLookup.get(new Identifier("testmod:inspectable"), Inspectable.class, Void.class);
+			ItemApiLookup.get(Identifier.of("testmod", "inspectable"), Inspectable.class, Void.class);
 
 	public static final InspectableItem HELLO_ITEM = new InspectableItem("Hello Fabric API tester!");
 
 	public static void onInitialize() {
-		Registry.register(Registries.ITEM, new Identifier(FabricApiLookupTest.MOD_ID, "hello"), HELLO_ITEM);
+		Registry.register(Registries.ITEM, Identifier.of(FabricApiLookupTest.MOD_ID, "hello"), HELLO_ITEM);
 
 		// Diamonds and diamond blocks can be inspected and will also print their name.
 		INSPECTABLE.registerForItems((stack, ignored) -> () -> {

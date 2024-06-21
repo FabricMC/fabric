@@ -2,11 +2,12 @@ version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
 	'fabric-api-base',
+	'fabric-convention-tags-v2',
 	'fabric-registry-sync-v0',
 	'fabric-networking-api-v1',
 	'fabric-resource-conditions-api-v1',
 	'fabric-item-group-api-v1',
-	'fabric-recipe-api-v1',
+	'fabric-recipe-api-v1'
 ])
 
 dependencies {
@@ -196,3 +197,4 @@ def hasAncestor(ClassNode classNode, Map<String, ClassNode> classes, String ance
 }
 
 generateResources.dependsOn generateAccessWidener
+generateResources.dependsOn runDatagen

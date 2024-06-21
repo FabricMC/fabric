@@ -21,7 +21,11 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.crash.CrashException;
+import net.minecraft.util.crash.CrashReport;
+import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
@@ -55,23 +59,33 @@ public class BlockRenderContext extends AbstractBlockRenderContext {
 	}
 
 	public void render(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, boolean cull, Random random, long seed, int overlay) {
-		this.vertexConsumer = buffer;
-		this.matrix = matrixStack.peek().getPositionMatrix();
-		this.normalMatrix = matrixStack.peek().getNormalMatrix();
-		this.overlay = overlay;
+		try {
+			Vec3d offset = state.getModelOffset(blockView, pos);
+			matrixStack.translate(offset.x, offset.y, offset.z);
 
-		blockInfo.random = random;
-		blockInfo.seed = seed;
-		blockInfo.recomputeSeed = false;
+			this.vertexConsumer = buffer;
+			this.matrix = matrixStack.peek().getPositionMatrix();
+			this.normalMatrix = matrixStack.peek().getNormalMatrix();
+			this.overlay = overlay;
 
-		aoCalc.clear();
-		blockInfo.prepareForWorld(blockView, cull);
-		blockInfo.prepareForBlock(state, pos, model.useAmbientOcclusion());
+			blockInfo.random = random;
+			blockInfo.seed = seed;
+			blockInfo.recomputeSeed = false;
 
-		model.emitBlockQuads(blockView, state, pos, blockInfo.randomSupplier, this);
+			aoCalc.clear();
+			blockInfo.prepareForWorld(blockView, cull);
+			blockInfo.prepareForBlock(state, pos, model.useAmbientOcclusion());
 
-		blockInfo.release();
-		blockInfo.random = null;
-		this.vertexConsumer = null;
+			model.emitBlockQuads(blockView, state, pos, blockInfo.randomSupplier, this);
+		} catch (Throwable throwable) {
+			CrashReport crashReport = CrashReport.create(throwable, "Tessellating block model - Indigo Renderer");
+			CrashReportSection crashReportSection = crashReport.addElement("Block model being tessellated");
+			CrashReportSection.addBlockInfo(crashReportSection, blockView, pos, state);
+			throw new CrashException(crashReport);
+		} finally {
+			blockInfo.release();
+			blockInfo.random = null;
+			this.vertexConsumer = null;
+		}
 	}
 }

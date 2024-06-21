@@ -23,9 +23,9 @@ import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -75,27 +75,27 @@ public final class FluidVariantRendering {
 	 * Return a mutable list: the tooltip for the passed fluid variant, including the name and additional lines if available
 	 * and the id of the fluid if advanced tooltips are enabled.
 	 *
-	 * <p>Compared to {@linkplain #getTooltip(FluidVariant, TooltipContext) the other overload}, the current tooltip context is automatically used.
+	 * <p>Compared to {@linkplain #getTooltip(FluidVariant, TooltipType) the other overload}, the current tooltip context is automatically used.
 	 */
 	public static List<Text> getTooltip(FluidVariant fluidVariant) {
-		return getTooltip(fluidVariant, MinecraftClient.getInstance().options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.BASIC);
+		return getTooltip(fluidVariant, MinecraftClient.getInstance().options.advancedItemTooltips ? TooltipType.Default.ADVANCED : TooltipType.Default.BASIC);
 	}
 
 	/**
 	 * Return a mutable list: the tooltip for the passed fluid variant, including the name and additional lines if available
 	 * and the id of the fluid if advanced tooltips are enabled.
 	 */
-	public static List<Text> getTooltip(FluidVariant fluidVariant, TooltipContext context) {
+	public static List<Text> getTooltip(FluidVariant fluidVariant, TooltipType type) {
 		List<Text> tooltip = new ArrayList<>();
 
 		// Name first
 		tooltip.add(FluidVariantAttributes.getName(fluidVariant));
 
 		// Additional tooltip information
-		getHandlerOrDefault(fluidVariant.getFluid()).appendTooltip(fluidVariant, tooltip, context);
+		getHandlerOrDefault(fluidVariant.getFluid()).appendTooltip(fluidVariant, tooltip, type);
 
 		// If advanced tooltips are enabled, render the fluid id
-		if (context.isAdvanced()) {
+		if (type.isAdvanced()) {
 			tooltip.add(Text.literal(Registries.FLUID.getId(fluidVariant.getFluid()).toString()).formatted(Formatting.DARK_GRAY));
 		}
 

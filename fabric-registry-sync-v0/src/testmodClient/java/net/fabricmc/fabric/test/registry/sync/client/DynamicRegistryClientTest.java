@@ -35,7 +35,7 @@ import net.fabricmc.fabric.test.registry.sync.TestNestedDynamicObject;
 
 public final class DynamicRegistryClientTest implements ClientModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final Identifier SYNCED_ID = new Identifier("fabric-registry-sync-v0-testmod", "synced");
+	private static final Identifier SYNCED_ID = Identifier.of("fabric-registry-sync-v0-testmod", "synced");
 
 	@Override
 	public void onInitializeClient() {

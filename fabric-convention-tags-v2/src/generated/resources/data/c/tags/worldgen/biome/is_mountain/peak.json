@@ -1,0 +1,11 @@
+{
+  "values": [
+    "minecraft:frozen_peaks",
+    "minecraft:jagged_peaks",
+    "minecraft:stony_peaks",
+    {
+      "id": "#c:mountain_peak",
+      "required": false
+    }
+  ]
+}

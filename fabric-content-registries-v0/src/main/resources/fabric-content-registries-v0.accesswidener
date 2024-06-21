@@ -4,5 +4,3 @@ accessible method net/minecraft/block/entity/AbstractFurnaceBlockEntity addFuel 
 accessible method net/minecraft/block/entity/AbstractFurnaceBlockEntity addFuel (Ljava/util/Map;Lnet/minecraft/item/ItemConvertible;I)V
 
 accessible method net/minecraft/recipe/BrewingRecipeRegistry$Recipe <init> (Lnet/minecraft/registry/entry/RegistryEntry;Lnet/minecraft/recipe/Ingredient;Lnet/minecraft/registry/entry/RegistryEntry;)V
-accessible field net/minecraft/recipe/BrewingRecipeRegistry POTION_RECIPES Ljava/util/List;
-accessible field net/minecraft/recipe/BrewingRecipeRegistry ITEM_RECIPES Ljava/util/List;

@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.base.Suppliers;
 import org.jetbrains.annotations.TestOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.feature.util.PlacedFeatureIndexer;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
@@ -152,6 +154,18 @@ public class BiomeModificationImpl {
 			// Re-freeze and apply certain cleanup actions
 			if (modificationContext != null) {
 				modificationContext.freeze();
+
+				if (modificationContext.shouldRebuildFeatures()) {
+					impl.get(RegistryKeys.DIMENSION).stream().forEach(dimensionOptions -> {
+						dimensionOptions.chunkGenerator().indexedFeaturesListSupplier = Suppliers.memoize(
+							() -> PlacedFeatureIndexer.collectIndexedFeatures(
+									List.copyOf(dimensionOptions.chunkGenerator().getBiomeSource().getBiomes()),
+									biomeEntry -> dimensionOptions.chunkGenerator().getGenerationSettings(biomeEntry).getFeatures(),
+									true
+							)
+						);
+					});
+				}
 			}
 		}
 

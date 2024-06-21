@@ -31,8 +31,8 @@ import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
 public class RiverstoneUnbakedModel implements UnbakedModel {
-	private static final Identifier STONE_MODEL_ID = new Identifier("block/stone");
-	private static final Identifier GOLD_BLOCK_MODEL_ID = new Identifier("block/gold_block");
+	private static final Identifier STONE_MODEL_ID = Identifier.ofVanilla("block/stone");
+	private static final Identifier GOLD_BLOCK_MODEL_ID = Identifier.ofVanilla("block/gold_block");
 
 	@Override
 	public Collection<Identifier> getModelDependencies() {
@@ -45,7 +45,7 @@ public class RiverstoneUnbakedModel implements UnbakedModel {
 
 	@Nullable
 	@Override
-	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer) {
 		BakedModel stoneModel = baker.bake(STONE_MODEL_ID, rotationContainer);
 		BakedModel goldBlockModel = baker.bake(GOLD_BLOCK_MODEL_ID, rotationContainer);
 		return new RiverstoneBakedModel(stoneModel, goldBlockModel);

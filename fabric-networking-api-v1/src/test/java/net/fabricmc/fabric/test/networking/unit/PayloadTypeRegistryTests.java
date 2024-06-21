@@ -31,6 +31,7 @@ import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -113,7 +114,7 @@ public class PayloadTypeRegistryTests {
 	}
 
 	private record C2SPlayPayload(String value) implements CustomPayload {
-		public static final CustomPayload.Id<C2SPlayPayload> ID = CustomPayload.id("fabric:c2s_play");
+		public static final CustomPayload.Id<C2SPlayPayload> ID = new Id<>(Identifier.of("fabric:c2s_play"));
 		public static final PacketCodec<RegistryByteBuf, C2SPlayPayload> CODEC = PacketCodecs.STRING.xmap(C2SPlayPayload::new, C2SPlayPayload::value).cast();
 
 		@Override
@@ -123,7 +124,7 @@ public class PayloadTypeRegistryTests {
 	}
 
 	private record S2CPlayPayload(String value) implements CustomPayload {
-		public static final CustomPayload.Id<S2CPlayPayload> ID = CustomPayload.id("fabric:s2c_play");
+		public static final CustomPayload.Id<S2CPlayPayload> ID = new Id<>(Identifier.of("fabric:s2c_play"));
 		public static final PacketCodec<RegistryByteBuf, S2CPlayPayload> CODEC = PacketCodecs.STRING.xmap(S2CPlayPayload::new, S2CPlayPayload::value).cast();
 
 		@Override
@@ -133,7 +134,7 @@ public class PayloadTypeRegistryTests {
 	}
 
 	private record C2SConfigPayload(String value) implements CustomPayload {
-		public static final CustomPayload.Id<C2SConfigPayload> ID = CustomPayload.id("fabric:c2s_config");
+		public static final CustomPayload.Id<C2SConfigPayload> ID = new Id<>(Identifier.of("fabric:c2s_config"));
 		public static final PacketCodec<PacketByteBuf, C2SConfigPayload> CODEC = PacketCodecs.STRING.xmap(C2SConfigPayload::new, C2SConfigPayload::value).cast();
 
 		@Override
@@ -143,7 +144,7 @@ public class PayloadTypeRegistryTests {
 	}
 
 	private record S2CConfigPayload(String value) implements CustomPayload {
-		public static final CustomPayload.Id<S2CConfigPayload> ID = CustomPayload.id("fabric:s2c_config");
+		public static final CustomPayload.Id<S2CConfigPayload> ID = new Id<>(Identifier.of("fabric:s2c_config"));
 		public static final PacketCodec<PacketByteBuf, S2CConfigPayload> CODEC = PacketCodecs.STRING.xmap(S2CConfigPayload::new, S2CConfigPayload::value).cast();
 
 		@Override

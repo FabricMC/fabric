@@ -56,12 +56,12 @@ public class FabricApiLookupTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Identifier chute = new Identifier(MOD_ID, "chute");
+		Identifier chute = Identifier.of(MOD_ID, "chute");
 		Registry.register(Registries.BLOCK, chute, CHUTE_BLOCK);
 		Registry.register(Registries.ITEM, chute, CHUTE_ITEM);
 		CHUTE_BLOCK_ENTITY_TYPE = Registry.register(Registries.BLOCK_ENTITY_TYPE, chute, FabricBlockEntityTypeBuilder.create(ChuteBlockEntity::new, CHUTE_BLOCK).build());
 
-		Identifier cobbleGen = new Identifier(MOD_ID, "cobble_gen");
+		Identifier cobbleGen = Identifier.of(MOD_ID, "cobble_gen");
 		Registry.register(Registries.BLOCK, cobbleGen, COBBLE_GEN_BLOCK);
 		Registry.register(Registries.ITEM, cobbleGen, COBBLE_GEN_ITEM);
 		COBBLE_GEN_BLOCK_ENTITY_TYPE = Registry.register(Registries.BLOCK_ENTITY_TYPE, cobbleGen, FabricBlockEntityTypeBuilder.create(CobbleGenBlockEntity::new, COBBLE_GEN_BLOCK).build());
@@ -76,7 +76,7 @@ public class FabricApiLookupTest implements ModInitializer {
 		testLookupRegistry();
 		testSelfRegistration();
 
-		Identifier inspector = new Identifier(FabricApiLookupTest.MOD_ID, "inspector");
+		Identifier inspector = Identifier.of(FabricApiLookupTest.MOD_ID, "inspector");
 		Registry.register(Registries.BLOCK, inspector, INSPECTOR_BLOCK);
 		Registry.register(Registries.ITEM, inspector, INSPECTOR_ITEM);
 
@@ -85,18 +85,18 @@ public class FabricApiLookupTest implements ModInitializer {
 	}
 
 	private static void testLookupRegistry() {
-		BlockApiLookup<ItemInsertable, @NotNull Direction> insertable2 = BlockApiLookup.get(new Identifier("testmod:item_insertable"), ItemInsertable.class, Direction.class);
+		BlockApiLookup<ItemInsertable, @NotNull Direction> insertable2 = BlockApiLookup.get(Identifier.of("testmod", "item_insertable"), ItemInsertable.class, Direction.class);
 
 		if (insertable2 != ItemApis.INSERTABLE) {
 			throw new AssertionError("The registry should have returned the same instance.");
 		}
 
 		ensureException(() -> {
-			BlockApiLookup<Void, Void> wrongInsertable = BlockApiLookup.get(new Identifier("testmod:item_insertable"), Void.class, Void.class);
+			BlockApiLookup<Void, Void> wrongInsertable = BlockApiLookup.get(Identifier.of("testmod", "item_insertable"), Void.class, Void.class);
 			wrongInsertable.registerFallback((world, pos, state, be, nocontext) -> null);
 		}, "The registry should have prevented creation of another instance with different classes, but same id.");
 
-		if (!insertable2.getId().equals(new Identifier("testmod:item_insertable"))) {
+		if (!insertable2.getId().equals(Identifier.of("testmod", "item_insertable"))) {
 			throw new AssertionError("Incorrect identifier was returned.");
 		}
 

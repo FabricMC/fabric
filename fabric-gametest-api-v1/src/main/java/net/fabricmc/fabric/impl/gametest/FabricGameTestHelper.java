@@ -58,7 +58,7 @@ public final class FabricGameTestHelper {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricGameTestHelper.class);
 
-	private static final String GAMETEST_STRUCTURE_PATH = "gametest/structures";
+	private static final String GAMETEST_STRUCTURE_PATH = "gametest/structure";
 
 	public static final ResourceFinder GAMETEST_STRUCTURE_FINDER = new ResourceFinder(GAMETEST_STRUCTURE_PATH, ".snbt");
 

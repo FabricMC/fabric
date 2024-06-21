@@ -44,7 +44,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.AtlasSourceTypeRegistry;
 public class CustomAtlasSourcesTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		AtlasSourceTypeRegistry.register(new Identifier("fabric-rendering-v1-testmod", "double"), DoubleAtlasSource.TYPE);
+		AtlasSourceTypeRegistry.register(Identifier.of("fabric-rendering-v1-testmod", "double"), DoubleAtlasSource.TYPE);
 	}
 
 	private static class DoubleAtlasSource implements AtlasSource {

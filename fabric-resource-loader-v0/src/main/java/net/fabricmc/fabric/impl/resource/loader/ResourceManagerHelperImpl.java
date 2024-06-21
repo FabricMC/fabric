@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -119,7 +118,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 						entry.getRight().getId(),
 						entry.getLeft(),
 						new BuiltinModResourcePackSource(pack.getFabricModMetadata().getName()),
-						Optional.empty()
+						entry.getRight().getKnownPackInfo()
 				);
 				ResourcePackPosition info2 = new ResourcePackPosition(
 						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,

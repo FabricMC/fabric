@@ -27,7 +27,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.DataComponentType;
+import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
@@ -57,13 +57,13 @@ import net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer;
  * Tests for the item transfer APIs.
  */
 class ItemTests extends AbstractTransferApiTest {
-	public static DataComponentType<Integer> ENERGY;
+	public static ComponentType<Integer> ENERGY;
 
 	@BeforeAll
 	static void beforeAll() {
 		bootstrap();
-		ENERGY = Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier(TransferTestInitializer.MOD_ID, "energy"),
-									DataComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
+		ENERGY = Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(TransferTestInitializer.MOD_ID, "energy"),
+								ComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
 	}
 
 	@Test

@@ -34,13 +34,14 @@ import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 /**
@@ -55,7 +56,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 
 	protected FabricAdvancementProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
 		this.output = output;
-		this.pathResolver = output.getResolver(DataOutput.OutputType.DATA_PACK, "advancements");
+		this.pathResolver = output.getResolver(RegistryKeys.ADVANCEMENT);
 		this.registryLookup = registryLookup;
 	}
 
@@ -69,7 +70,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	/**
 	 * Return a new exporter that applies the specified conditions to any advancement it receives.
 	 */
-	protected Consumer<AdvancementEntry> withConditions(Consumer<AdvancementEntry> exporter, ConditionJsonProvider... conditions) {
+	protected Consumer<AdvancementEntry> withConditions(Consumer<AdvancementEntry> exporter, ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 		return advancement -> {
 			FabricDataGenHelper.addConditions(advancement, conditions);
@@ -94,7 +95,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 				}
 
 				JsonObject advancementJson = Advancement.CODEC.encodeStart(ops, advancement.value()).getOrThrow(IllegalStateException::new).getAsJsonObject();
-				ConditionJsonProvider.write(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
+				FabricDataGenHelper.addConditions(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
 				futures.add(DataProvider.writeToPath(writer, advancementJson, getOutputPath(advancement)));
 			}
 

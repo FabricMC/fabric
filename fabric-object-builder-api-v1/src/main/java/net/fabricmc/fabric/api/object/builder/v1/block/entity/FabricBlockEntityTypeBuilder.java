@@ -21,16 +21,11 @@ import java.util.Collections;
 import java.util.List;
 
 import com.mojang.datafixers.types.Type;
-import com.mojang.logging.LogUtils;
-import org.slf4j.Logger;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.datafixer.TypeReferences;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 
 /**
@@ -38,10 +33,11 @@ import net.minecraft.util.math.BlockPos;
  *
  * <p>Alternatively, use the access widener for {@link BlockEntityType.BlockEntityFactory}
  * in Fabric Transitive Access Wideners (v1).
+ *
+ * @deprecated Use {@link BlockEntityType.Builder} directly.
  */
+@Deprecated
 public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
-	private static final Logger LOGGER = LogUtils.getLogger();
-
 	private final Factory<? extends T> factory;
 	private final List<Block> blocks;
 
@@ -50,6 +46,10 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 		this.blocks = blocks;
 	}
 
+	/**
+	 * @deprecated Use {@link BlockEntityType.Builder#create(BlockEntityType.BlockEntityFactory, Block...)}.
+	 */
+	@Deprecated
 	public static <T extends BlockEntity> FabricBlockEntityTypeBuilder<T> create(Factory<? extends T> factory, Block... blocks) {
 		List<Block> blocksList = new ArrayList<>(blocks.length);
 		Collections.addAll(blocksList, blocks);
@@ -62,7 +62,9 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 	 *
 	 * @param block the supported block
 	 * @return this builder
+	 * @deprecated Use {@link BlockEntityType.Builder#create(BlockEntityType.BlockEntityFactory, Block...)}.
 	 */
+	@Deprecated
 	public FabricBlockEntityTypeBuilder<T> addBlock(Block block) {
 		this.blocks.add(block);
 		return this;
@@ -73,37 +75,36 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 	 *
 	 * @param blocks the supported blocks
 	 * @return this builder
+	 * @deprecated Use {@link BlockEntityType.Builder#create(BlockEntityType.BlockEntityFactory, Block...)}.
 	 */
+	@Deprecated
 	public FabricBlockEntityTypeBuilder<T> addBlocks(Block... blocks) {
 		Collections.addAll(this.blocks, blocks);
 		return this;
 	}
 
+	/**
+	 * @deprecated Use {@link BlockEntityType.Builder#build()}.
+	 */
+	@Deprecated
 	public BlockEntityType<T> build() {
-		return build((Type<?>) null);
+		return build(null);
 	}
 
-	public BlockEntityType<T> build(Identifier id) {
-		Type<?> type = null;
-
-		// Log a warning if a mod inputs a non-null id that is not found in the vanilla or modded schemas
-		if (id != null) {
-			try {
-				type = Util.getChoiceType(TypeReferences.BLOCK_ENTITY, id.toString());
-			} catch (Exception e) {
-				LOGGER.warn("Block entity not registered in schema: " + id, e);
-			}
-		}
-
-		return build(type);
-	}
-
-	private BlockEntityType<T> build(Type<?> type) {
+	/**
+	 * @deprecated Use {@link BlockEntityType.Builder#build(Type)}.
+	 */
+	@Deprecated
+	public BlockEntityType<T> build(Type<?> type) {
 		return BlockEntityType.Builder.<T>create(factory::create, blocks.toArray(new Block[0]))
 				.build(type);
 	}
 
+	/**
+	 * @deprecated Use {@link BlockEntityType.BlockEntityFactory}.
+	 */
 	@FunctionalInterface
+	@Deprecated
 	public interface Factory<T extends BlockEntity> {
 		T create(BlockPos blockPos, BlockState blockState);
 	}

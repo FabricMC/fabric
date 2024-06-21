@@ -38,8 +38,8 @@ public final class FabricShaderProgram extends ShaderProgram {
 	 * @param containedId the ID contained within the input string
 	 * @return the corrected full ID string
 	 */
-	public static String rewriteAsId(String input, String containedId) {
-		Identifier contained = new Identifier(containedId);
-		return contained.getNamespace() + Identifier.NAMESPACE_SEPARATOR + input.replace(containedId, contained.getPath());
+	public static Identifier rewriteAsId(String input, String containedId) {
+		Identifier contained = Identifier.of(containedId);
+		return contained.withPath(path -> input.replace(containedId, path));
 	}
 }

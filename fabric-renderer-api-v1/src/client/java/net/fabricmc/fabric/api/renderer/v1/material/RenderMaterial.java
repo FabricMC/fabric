@@ -73,7 +73,7 @@ public interface RenderMaterial extends MaterialView {
 	 *
 	 * <p>All standard, non-fluid baked models are rendered using this material.
 	 */
-	Identifier MATERIAL_STANDARD = new Identifier("fabric", "standard");
+	Identifier MATERIAL_STANDARD = Identifier.of("fabric", "standard");
 
 	/**
 	 * Do not use. Always returns 1.

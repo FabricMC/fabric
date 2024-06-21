@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import java.util.function.Consumer;
+
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -25,10 +27,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.server.world.ServerWorld;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.FabricItemStack;
@@ -36,24 +39,37 @@ import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin implements FabricItemStack {
-	@Shadow public abstract Item getItem();
+	@Shadow
+	public abstract Item getItem();
 
-	@WrapOperation(method = "damage(ILnet/minecraft/entity/LivingEntity;Lnet/minecraft/entity/EquipmentSlot;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;damage(ILnet/minecraft/util/math/random/Random;Lnet/minecraft/server/network/ServerPlayerEntity;Ljava/lang/Runnable;)V"))
-	private void hookDamage(ItemStack instance, int amount, Random random, ServerPlayerEntity serverPlayerEntity, Runnable runnable, Operation<Void> original, @Local(argsOnly = true) EquipmentSlot slot) {
+	@Shadow
+	public abstract void decrement(int amount);
+
+	@WrapOperation(method = "damage(ILnet/minecraft/entity/LivingEntity;Lnet/minecraft/entity/EquipmentSlot;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;damage(ILnet/minecraft/server/world/ServerWorld;Lnet/minecraft/server/network/ServerPlayerEntity;Ljava/util/function/Consumer;)V"))
+	private void hookDamage(ItemStack instance, int amount, ServerWorld serverWorld, ServerPlayerEntity serverPlayerEntity, Consumer<Item> consumer, Operation<Void> original, @Local(argsOnly = true) LivingEntity entity, @Local(argsOnly = true) EquipmentSlot slot) {
 		CustomDamageHandler handler = ((ItemExtensions) getItem()).fabric_getCustomDamageHandler();
 
-		if (handler != null) {
+		/*
+			This is called by creative mode players, post-24w21a.
+			The other damage method (which original.call discards) handles the creative mode check.
+			Since it doesn't make sense to call an event to calculate a to-be-discarded value
+			(and to prevent mods from breaking item stacks in Creative mode),
+			we preserve the pre-24w21a behavior of not calling in creative mode.
+		*/
+
+		if (handler != null && !entity.isInCreativeMode()) {
 			// Track whether an item has been broken by custom handler
 			MutableBoolean mut = new MutableBoolean(false);
-			amount = handler.damage((ItemStack) (Object) this, amount, serverPlayerEntity, slot, () -> {
+			amount = handler.damage((ItemStack) (Object) this, amount, entity, slot, () -> {
 				mut.setTrue();
-				runnable.run();
+				this.decrement(1);
+				consumer.accept(this.getItem());
 			});
 
 			// If item is broken, there's no reason to call the original.
 			if (mut.booleanValue()) return;
 		}
 
-		original.call(instance, amount, random, serverPlayerEntity, runnable);
+		original.call(instance, amount, serverWorld, serverPlayerEntity, consumer);
 	}
 }

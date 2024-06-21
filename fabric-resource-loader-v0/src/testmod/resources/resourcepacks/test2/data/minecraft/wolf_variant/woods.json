@@ -1,0 +1,6 @@
+{
+  "wild_texture": "fabric-resource-loader-v0-testmod:entity/wolf/pink",
+  "angry_texture": "fabric-resource-loader-v0-testmod:entity/wolf/pink",
+  "tame_texture": "fabric-resource-loader-v0-testmod:entity/wolf/pink",
+  "biomes": "minecraft:forest"
+}

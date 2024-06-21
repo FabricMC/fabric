@@ -23,6 +23,7 @@ import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -42,7 +43,7 @@ public class UseItemTests implements ModInitializer {
 			if (!player.isSpectator()) {
 				if (player.getStackInHand(hand).isOf(Items.BLAZE_ROD)) {
 					if (!world.isClient()) {
-						player.getWorld().spawnEntity(new FireballEntity(player.getWorld(), player, 0, 0, 0, 0));
+						player.getWorld().spawnEntity(new FireballEntity(player.getWorld(), player, new Vec3d(0, 0, 0), 0));
 					}
 
 					return TypedActionResult.success(player.getStackInHand(hand), world.isClient());

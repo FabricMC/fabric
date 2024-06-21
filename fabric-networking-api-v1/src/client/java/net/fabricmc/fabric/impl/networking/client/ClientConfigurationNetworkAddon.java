@@ -22,6 +22,7 @@ import java.util.Objects;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.network.NetworkPhase;
+import net.minecraft.network.packet.BrandCustomPayload;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
@@ -39,10 +40,11 @@ import net.fabricmc.fabric.mixin.networking.client.accessor.ClientConfigurationN
 public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAddon<ClientConfigurationNetworking.ConfigurationPayloadHandler<?>, ClientConfigurationNetworkHandler> {
 	private final ContextImpl context;
 	private boolean sentInitialRegisterPacket;
+	private boolean hasStarted;
 
 	public ClientConfigurationNetworkAddon(ClientConfigurationNetworkHandler handler, MinecraftClient client) {
 		super(ClientNetworkingImpl.CONFIGURATION, ((ClientCommonNetworkHandlerAccessor) handler).getConnection(), "ClientPlayNetworkAddon for " + ((ClientConfigurationNetworkHandlerAccessor) handler).getProfile().getName(), handler, client);
-		this.context = new ContextImpl(this);
+		this.context = new ContextImpl(client, this);
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkPhase.CONFIGURATION);
@@ -54,12 +56,39 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 	}
 
 	@Override
+	public void onServerReady() {
+		super.onServerReady();
+		invokeStartEvent();
+	}
+
+	@Override
 	protected void receiveRegistration(boolean register, RegistrationPayload payload) {
 		super.receiveRegistration(register, payload);
 
 		if (register && !this.sentInitialRegisterPacket) {
 			this.sendInitialChannelRegistrationPacket();
 			this.sentInitialRegisterPacket = true;
+
+			this.onServerReady();
+		}
+	}
+
+	@Override
+	public boolean handle(CustomPayload payload) {
+		boolean result = super.handle(payload);
+
+		if (payload instanceof BrandCustomPayload) {
+			// If we have received this without first receiving the registration packet, its likely a vanilla server.
+			invokeStartEvent();
+		}
+
+		return result;
+	}
+
+	private void invokeStartEvent() {
+		if (!hasStarted) {
+			hasStarted = true;
+			ClientConfigurationConnectionEvents.START.invoker().onConfigurationStart(this.handler, this.client);
 		}
 	}
 
@@ -84,7 +113,8 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 		C2SConfigurationChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.handler, this, this.client, ids);
 	}
 
-	public void handleReady() {
+	public void handleComplete() {
+		ClientConfigurationConnectionEvents.COMPLETE.invoker().onConfigurationComplete(this.handler, this.client);
 		ClientConfigurationConnectionEvents.READY.invoker().onConfigurationReady(this.handler, this.client);
 		ClientNetworkingImpl.setClientConfigurationAddon(null);
 	}
@@ -98,8 +128,9 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 		return (ChannelInfoHolder) ((ClientCommonNetworkHandlerAccessor) handler).getConnection();
 	}
 
-	private record ContextImpl(PacketSender responseSender) implements ClientConfigurationNetworking.Context {
+	private record ContextImpl(MinecraftClient client, PacketSender responseSender) implements ClientConfigurationNetworking.Context {
 		private ContextImpl {
+			Objects.requireNonNull(client, "client");
 			Objects.requireNonNull(responseSender, "responseSender");
 		}
 	}

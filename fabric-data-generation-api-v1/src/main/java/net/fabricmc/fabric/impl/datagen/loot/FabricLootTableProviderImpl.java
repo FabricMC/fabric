@@ -28,11 +28,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 
-import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
-import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 public final class FabricLootTableProviderImpl {
@@ -55,11 +55,11 @@ public final class FabricLootTableProviderImpl {
 			FabricDataOutput fabricDataOutput,
 			CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
 		HashMap<Identifier, LootTable> builders = Maps.newHashMap();
-		HashMap<Identifier, ConditionJsonProvider[]> conditionMap = new HashMap<>();
+		HashMap<Identifier, ResourceCondition[]> conditionMap = new HashMap<>();
 
 		return registryLookup.thenCompose(lookup -> {
-			provider.accept(lookup, (registryKey, builder) -> {
-				ConditionJsonProvider[] conditions = FabricDataGenHelper.consumeConditions(builder);
+			provider.accept((registryKey, builder) -> {
+				ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(builder);
 				conditionMap.put(registryKey.getValue(), conditions);
 
 				if (builders.put(registryKey.getValue(), builder.type(lootContextType).build()) != null) {
@@ -72,7 +72,7 @@ public final class FabricLootTableProviderImpl {
 
 			for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
 				JsonObject tableJson = (JsonObject) LootTable.CODEC.encodeStart(ops, entry.getValue()).getOrThrow(IllegalStateException::new);
-				ConditionJsonProvider.write(tableJson, conditionMap.remove(entry.getKey()));
+				FabricDataGenHelper.addConditions(tableJson, conditionMap.remove(entry.getKey()));
 				futures.add(DataProvider.writeToPath(writer, tableJson, getOutputPath(fabricDataOutput, entry.getKey())));
 			}
 
@@ -81,7 +81,7 @@ public final class FabricLootTableProviderImpl {
 	}
 
 	private static Path getOutputPath(FabricDataOutput dataOutput, Identifier lootTableId) {
-		return dataOutput.getResolver(DataOutput.OutputType.DATA_PACK, "loot_tables").resolveJson(lootTableId);
+		return dataOutput.getResolver(RegistryKeys.LOOT_TABLE).resolveJson(lootTableId);
 	}
 
 	private FabricLootTableProviderImpl() {

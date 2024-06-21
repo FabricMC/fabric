@@ -23,7 +23,7 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MapColor;
-import net.minecraft.block.enums.Instrument;
+import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.EntityType;
 import net.minecraft.loot.LootTable;
@@ -84,7 +84,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		// more proper way, this copies all the fields, not just the shallow ones.
 		// Fields are added by field definition order.
 		this.jumpVelocityMultiplier(otherAccessor.getJumpVelocityMultiplier());
-		this.drops(otherAccessor.getLootTableId());
+		this.drops(otherAccessor.getLootTableKey());
 		this.allowsSpawning(otherAccessor.getAllowsSpawningPredicate());
 		this.solidBlock(otherAccessor.getSolidBlockPredicate());
 		this.suffocates(otherAccessor.getSuffocationPredicate());
@@ -375,7 +375,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 
 	@Deprecated
 	@Override
-	public FabricBlockSettings instrument(Instrument instrument) {
+	public FabricBlockSettings instrument(NoteBlockInstrument instrument) {
 		super.instrument(instrument);
 		return this;
 	}
@@ -409,7 +409,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 
 	@Deprecated
 	public FabricBlockSettings drops(RegistryKey<LootTable> dropTableId) {
-		((AbstractBlockSettingsAccessor) this).setLootTableId(dropTableId);
+		((AbstractBlockSettingsAccessor) this).setLootTableKey(dropTableId);
 		return this;
 	}
 

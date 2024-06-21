@@ -44,7 +44,7 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
-		final FabricDataGenerator.Pack pack = dataGenerator.createBuiltinResourcePack(new Identifier(MOD_ID, "example_builtin"));
+		final FabricDataGenerator.Pack pack = dataGenerator.createBuiltinResourcePack(Identifier.of(MOD_ID, "example_builtin"));
 		pack.addProvider(TestAtlasSourceProvider::new);
 	}
 
@@ -55,7 +55,7 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 
 		@Override
 		protected void configure(BiConsumer<Identifier, List<AtlasSource>> provider, RegistryWrapper.WrapperLookup lookup) {
-			provider.accept(new Identifier(MOD_ID, "atlas_source_test"), List.of(new DirectoryAtlasSource("example", "example/")));
+			provider.accept(Identifier.of(MOD_ID, "atlas_source_test"), List.of(new DirectoryAtlasSource("example", "example/")));
 		}
 
 		@Override

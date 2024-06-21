@@ -1,0 +1,10 @@
+{
+  "condition": "minecraft:entity_properties",
+  "entity": "this",
+  "predicate": {
+    "type": "minecraft:pig"
+  },
+  "fabric:load_conditions": {
+    "condition": "fabric:true"
+  }
+}

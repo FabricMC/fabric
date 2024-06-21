@@ -49,12 +49,6 @@ transitive-accessible class net/minecraft/data/client/BlockStateModelGenerator$B
 transitive-accessible class net/minecraft/data/client/BlockStateModelGenerator$LogTexturePool
 transitive-accessible class net/minecraft/data/client/BlockStateModelGenerator$BuiltinModelPool
 
-transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGenerator WITH_SILK_TOUCH Lnet/minecraft/loot/condition/LootCondition$Builder;
-transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGenerator WITHOUT_SILK_TOUCH Lnet/minecraft/loot/condition/LootCondition$Builder;
 transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGenerator WITH_SHEARS Lnet/minecraft/loot/condition/LootCondition$Builder;
-transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGenerator WITH_SILK_TOUCH_OR_SHEARS Lnet/minecraft/loot/condition/LootCondition$Builder;
-transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGenerator WITHOUT_SILK_TOUCH_NOR_SHEARS Lnet/minecraft/loot/condition/LootCondition$Builder;
-transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGenerator SAPLING_DROP_CHANCE [F
-transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGenerator LEAVES_STICK_DROP_CHANCE [F
 
 ### Generated access wideners below

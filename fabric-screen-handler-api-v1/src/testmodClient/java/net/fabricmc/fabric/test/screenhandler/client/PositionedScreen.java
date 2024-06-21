@@ -31,7 +31,7 @@ import net.minecraft.util.math.BlockPos;
 import net.fabricmc.fabric.test.screenhandler.screen.PositionedScreenHandler;
 
 public class PositionedScreen extends HandledScreen<ScreenHandler> {
-	private static final Identifier TEXTURE = new Identifier("minecraft", "textures/gui/container/dispenser.png");
+	private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/dispenser.png");
 
 	public PositionedScreen(ScreenHandler handler, PlayerInventory inventory, Text title) {
 		super(handler, inventory, getPositionText(handler).orElse(title));

@@ -1,0 +1,9 @@
+{
+  "values": [
+    "minecraft:brush",
+    {
+      "id": "#c:tools/brushes",
+      "required": false
+    }
+  ]
+}

@@ -46,7 +46,7 @@ import net.fabricmc.fabric.mixin.recipe.ingredient.EncoderHandlerMixin;
  * </ul>
  */
 public class CustomIngredientSync implements ModInitializer {
-	public static final Identifier PACKET_ID = new Identifier("fabric", "custom_ingredient_sync");
+	public static final Identifier PACKET_ID = Identifier.of("fabric", "custom_ingredient_sync");
 	public static final int PROTOCOL_VERSION_1 = 1;
 	public static final ThreadLocal<Set<Identifier>> CURRENT_SUPPORTED_INGREDIENTS = new ThreadLocal<>();
 

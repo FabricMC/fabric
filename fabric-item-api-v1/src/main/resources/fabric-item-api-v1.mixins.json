@@ -4,12 +4,18 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AbstractFurnaceBlockEntityMixin",
+    "AnvilScreenHandlerMixin",
     "BrewingStandBlockEntityMixin",
+    "EnchantCommandMixin",
+    "EnchantmentHelperMixin",
+    "EnchantRandomlyLootFunctionMixin",
+    "ItemAccessor",
     "ItemMixin",
     "ItemSettingsMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "RecipeMixin"
+    "RecipeMixin",
+    "RegistriesMixin"
   ],
   "injectors": {
     "defaultRequire": 1

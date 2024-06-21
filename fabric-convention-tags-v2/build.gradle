@@ -1,0 +1,48 @@
+version = getSubprojectVersion(project)
+
+moduleDependencies(project, [
+	'fabric-api-base',
+	'fabric-lifecycle-events-v1'
+])
+
+testDependencies(project, [
+	':fabric-lifecycle-events-v1',
+])
+
+sourceSets {
+	main {
+		resources {
+			srcDirs += [
+				'src/generated/resources'
+			]
+		}
+	}
+	datagen {
+		compileClasspath += main.compileClasspath
+		runtimeClasspath += main.runtimeClasspath
+		compileClasspath += main.output
+		runtimeClasspath += main.output
+	}
+}
+
+dependencies {
+	datagenImplementation project(path: ":fabric-data-generation-api-v1", configuration: 'namedElements')
+}
+
+loom {
+	runs {
+		datagen {
+			inherit server
+			name "Data Generation"
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated/resources")}"
+			vmArg "-Dfabric-api.datagen.strict-validation"
+
+			ideConfigGenerated = true
+			runDir "build/datagen"
+			source sourceSets.datagen
+		}
+	}
+}
+
+generateResources.dependsOn runDatagen

@@ -13,6 +13,7 @@
       "net.fabricmc.fabric.test.content.registry.ContentRegistryTest"
     ],
     "fabric-gametest": [
+      "net.fabricmc.fabric.test.content.registry.ContentRegistryGameTest",
       "net.fabricmc.fabric.test.content.registry.FlammableTest"
     ]
   },

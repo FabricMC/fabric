@@ -43,11 +43,14 @@ import net.minecraft.SharedConstants;
 import net.minecraft.resource.DataConfiguration;
 import net.minecraft.resource.DataPackSettings;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.VanillaDataPackProvider;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.metadata.PackResourceMetadata;
 import net.minecraft.text.Text;
+import net.minecraft.util.path.SymlinkFinder;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
@@ -232,5 +235,13 @@ public final class ModResourcePackUtil {
 		enabled.addAll(moveToTheEnd);
 
 		return new DataPackSettings(enabled, disabled);
+	}
+
+	/**
+	 * Creates the ResourcePackManager used by the ClientDataPackManager and replaces
+	 * {@code VanillaDataPackProvider.createClientManager} used by vanilla.
+	 */
+	public static ResourcePackManager createClientManager() {
+		return new ResourcePackManager(new VanillaDataPackProvider(new SymlinkFinder((path) -> true)), new ModResourcePackCreator(ResourceType.SERVER_DATA, true));
 	}
 }

@@ -65,7 +65,7 @@ public final class FluidStorage {
 	 * On the client thread (i.e. with a client world), contents of queried Storages are unreliable and should not be modified.
 	 */
 	public static final BlockApiLookup<Storage<FluidVariant>, @Nullable Direction> SIDED =
-			BlockApiLookup.get(new Identifier("fabric:sided_fluid_storage"), Storage.asClass(), Direction.class);
+			BlockApiLookup.get(Identifier.of("fabric", "sided_fluid_storage"), Storage.asClass(), Direction.class);
 
 	/**
 	 * Item access to fluid variant storages.
@@ -83,7 +83,7 @@ public final class FluidStorage {
 	 * Returned APIs should behave the same regardless of the logical side.
 	 */
 	public static final ItemApiLookup<Storage<FluidVariant>, ContainerItemContext> ITEM =
-			ItemApiLookup.get(new Identifier("fabric:fluid_storage"), Storage.asClass(), ContainerItemContext.class);
+			ItemApiLookup.get(Identifier.of("fabric", "fluid_storage"), Storage.asClass(), ContainerItemContext.class);
 
 	/**
 	 * Get or create and register a {@link CombinedItemApiProvider} event for the passed item.

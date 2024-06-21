@@ -5,9 +5,12 @@
   "mixins": [
     "AbstractBlockAccessor",
     "AbstractBlockSettingsAccessor",
+    "BlockEntityTypeBuilderMixin",
     "DefaultAttributeRegistryAccessor",
     "DefaultAttributeRegistryMixin",
     "DetectorRailBlockMixin",
+    "EntityTypeBuilderMixin",
+    "EntityTypeMixin",
     "PersistentStateManagerMixin",
     "TradeOffersTypeAwareBuyForOneEmeraldFactoryMixin"
   ],

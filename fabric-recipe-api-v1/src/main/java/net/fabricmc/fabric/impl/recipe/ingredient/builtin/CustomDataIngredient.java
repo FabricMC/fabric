@@ -19,10 +19,7 @@ package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -92,18 +89,7 @@ public class CustomDataIngredient implements CustomIngredient {
 	}
 
 	private static class Serializer implements CustomIngredientSerializer<CustomDataIngredient> {
-		private static final Identifier ID = new Identifier("fabric", "custom_data");
-
-		// Supports decoding the NBT as a string as well as the object.
-		private static final Codec<NbtCompound> NBT_CODEC = Codec.xor(
-				Codec.STRING, NbtCompound.CODEC
-		).flatXmap(either -> either.map(s -> {
-			try {
-				return DataResult.success(StringNbtReader.parse(s));
-			} catch (CommandSyntaxException e) {
-				return DataResult.error(e::getMessage);
-			}
-		}, DataResult::success), nbtCompound -> DataResult.success(Either.left(nbtCompound.asString())));
+		private static final Identifier ID = Identifier.of("fabric", "custom_data");
 
 		private static final MapCodec<CustomDataIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
 		private static final MapCodec<CustomDataIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
@@ -118,7 +104,7 @@ public class CustomDataIngredient implements CustomIngredient {
 			return RecordCodecBuilder.mapCodec(instance ->
 					instance.group(
 							ingredientCodec.fieldOf("base").forGetter(CustomDataIngredient::getBase),
-							NBT_CODEC.fieldOf("nbt").forGetter(CustomDataIngredient::getNbt)
+							StringNbtReader.NBT_COMPOUND_CODEC.fieldOf("nbt").forGetter(CustomDataIngredient::getNbt)
 					).apply(instance, CustomDataIngredient::new)
 			);
 		}

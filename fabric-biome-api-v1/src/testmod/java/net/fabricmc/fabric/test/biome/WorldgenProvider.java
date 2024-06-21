@@ -32,8 +32,8 @@ public class WorldgenProvider extends FabricDynamicRegistryProvider {
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries, Entries entries) {
 		entries.addAll(registries.getWrapperOrThrow(RegistryKeys.BIOME));
-		entries.add(registries.getWrapperOrThrow(RegistryKeys.CONFIGURED_FEATURE), DataGeneratorEntrypoint.COMMON_DESERT_WELL);
-		entries.add(registries.getWrapperOrThrow(RegistryKeys.PLACED_FEATURE), DataGeneratorEntrypoint.PLACED_COMMON_DESERT_WELL);
+		entries.addAll(registries.getWrapperOrThrow(RegistryKeys.PLACED_FEATURE));
+		entries.addAll(registries.getWrapperOrThrow(RegistryKeys.CONFIGURED_FEATURE));
 	}
 
 	@Override

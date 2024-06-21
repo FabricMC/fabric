@@ -1,9 +1,0 @@
-{
-  "values": [
-    "minecraft:grove",
-    {
-      "id": "#c:taiga",
-      "required": false
-    }
-  ]
-}

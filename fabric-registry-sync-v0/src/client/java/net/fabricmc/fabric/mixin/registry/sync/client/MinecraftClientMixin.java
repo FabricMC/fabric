@@ -17,9 +17,9 @@
 package net.fabricmc.fabric.mixin.registry.sync.client;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -35,8 +35,9 @@ import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockInitTracker;
 
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
-	@Unique
-	private static Logger FABRIC_LOGGER = LoggerFactory.getLogger(MinecraftClientMixin.class);
+	@Shadow
+	@Final
+	private static Logger LOGGER;
 
 	// Unmap the registry before loading a new SP/MP setup.
 	@Inject(at = @At("RETURN"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V")
@@ -44,14 +45,14 @@ public class MinecraftClientMixin {
 		try {
 			RegistrySyncManager.unmap();
 		} catch (RemapException e) {
-			FABRIC_LOGGER.warn("Failed to unmap Fabric registries!", e);
+			LOGGER.warn("Failed to unmap Fabric registries!", e);
 		}
 	}
 
-	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;thread:Ljava/lang/Thread;", shift = At.Shift.AFTER, ordinal = 0), method = "run")
-	private void onStart(CallbackInfo ci) {
+	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/lang/Thread;currentThread()Ljava/lang/Thread;"))
+	private void afterModInit(CallbackInfo ci) {
 		// Freeze the registries on the client
-		FABRIC_LOGGER.debug("Freezing registries");
+		LOGGER.debug("Freezing registries");
 		Registries.bootstrap();
 		BlockInitTracker.postFreeze();
 		ItemGroups.collect();

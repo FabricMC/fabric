@@ -25,17 +25,17 @@ import net.minecraft.util.Identifier;
  */
 public final class ResourceReloadListenerKeys {
 	// client
-	public static final Identifier SOUNDS = new Identifier("minecraft:sounds");
-	public static final Identifier FONTS = new Identifier("minecraft:fonts");
-	public static final Identifier MODELS = new Identifier("minecraft:models");
-	public static final Identifier LANGUAGES = new Identifier("minecraft:languages");
-	public static final Identifier TEXTURES = new Identifier("minecraft:textures");
+	public static final Identifier SOUNDS = Identifier.ofVanilla("sounds");
+	public static final Identifier FONTS = Identifier.ofVanilla("fonts");
+	public static final Identifier MODELS = Identifier.ofVanilla("models");
+	public static final Identifier LANGUAGES = Identifier.ofVanilla("languages");
+	public static final Identifier TEXTURES = Identifier.ofVanilla("textures");
 
 	// server
-	public static final Identifier TAGS = new Identifier("minecraft:tags");
-	public static final Identifier RECIPES = new Identifier("minecraft:recipes");
-	public static final Identifier ADVANCEMENTS = new Identifier("minecraft:advancements");
-	public static final Identifier FUNCTIONS = new Identifier("minecraft:functions");
+	public static final Identifier TAGS = Identifier.ofVanilla("tags");
+	public static final Identifier RECIPES = Identifier.ofVanilla("recipes");
+	public static final Identifier ADVANCEMENTS = Identifier.ofVanilla("advancements");
+	public static final Identifier FUNCTIONS = Identifier.ofVanilla("functions");
 
 	private ResourceReloadListenerKeys() { }
 }

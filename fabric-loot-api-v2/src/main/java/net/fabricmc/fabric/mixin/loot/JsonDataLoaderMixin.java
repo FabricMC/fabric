@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.loot.LootUtil;
 public class JsonDataLoaderMixin {
 	@Inject(method = "load", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/resource/ResourceFinder;toResourceId(Lnet/minecraft/util/Identifier;)Lnet/minecraft/util/Identifier;", shift = At.Shift.AFTER))
 	private static void fillSourceMap(ResourceManager manager, String dataType, Gson gson, Map<Identifier, JsonElement> results, CallbackInfo ci, @Local Map.Entry<Identifier, Resource> entry, @Local(ordinal = 1) Identifier id) {
-		if (!LootDataType.LOOT_TABLES.directory().equals(dataType)) return;
+		if (!LootDataType.LOOT_TABLES.registryKey().getValue().getPath().equals(dataType)) return;
 
 		LootUtil.SOURCES.get().put(id, LootUtil.determineSource(entry.getValue()));
 	}

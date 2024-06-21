@@ -31,6 +31,7 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Encoder;
 import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +53,8 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
+import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 
 /**
@@ -129,10 +132,45 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		/**
 		 * Adds a new object to be data generated.
 		 *
+		 * @param key    The key of the resource to register.
+		 * @param object The object to register.
 		 * @return a reference to it for use in other objects.
 		 */
-		public <T> RegistryEntry<T> add(RegistryKey<T> registry, T object) {
-			return getQueuedEntries(registry).add(registry.getValue(), object);
+		public <T> RegistryEntry<T> add(RegistryKey<T> key, T object) {
+			return getQueuedEntries(key).add(key, object, null);
+		}
+
+		/**
+		 * Adds a new object to be data generated with several resource conditions.
+		 *
+		 * @param key        The key of the resource to register.
+		 * @param object     The object to register.
+		 * @param conditions Conditions that must be satisfied to load this object.
+		 * @return a reference to it for use in other objects.
+		 */
+		public <T> RegistryEntry<T> add(RegistryKey<T> key, T object, ResourceCondition... conditions) {
+			return getQueuedEntries(key).add(key, object, conditions);
+		}
+
+		/**
+		 * Adds a new object to be data generated.
+		 *
+		 * @param object The object to generate. This registry entry must have both a
+		 *               {@linkplain RegistryEntry#hasKeyAndValue() key and value}.
+		 */
+		public <T> void add(RegistryEntry.Reference<T> object) {
+			add(object.registryKey(), object.value());
+		}
+
+		/**
+		 * Adds a new object to be data generated with several resource conditions.
+		 *
+		 * @param object     The object to generate. This registry entry must have both a
+		 *                   {@linkplain RegistryEntry#hasKeyAndValue() key and value}.
+		 * @param conditions Conditions that must be satisfied to load this object.
+		 */
+		public <T> void add(RegistryEntry.Reference<T> object, ResourceCondition... conditions) {
+			add(object.registryKey(), object.value(), conditions);
 		}
 
 		/**
@@ -142,6 +180,16 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		 */
 		public <T> RegistryEntry<T> add(RegistryWrapper.Impl<T> registry, RegistryKey<T> valueKey) {
 			return add(valueKey, registry.getOrThrow(valueKey).value());
+		}
+
+		/**
+		 * Adds a new {@link RegistryKey} from a given {@link RegistryWrapper.Impl} to be data generated.
+		 *
+		 * @param conditions Conditions that must be satisfied to load this object.
+		 * @return a reference to it for use in other objects.
+		 */
+		public <T> RegistryEntry<T> add(RegistryWrapper.Impl<T> registry, RegistryKey<T> valueKey, ResourceCondition... conditions) {
+			return add(valueKey, registry.getOrThrow(valueKey).value(), conditions);
 		}
 
 		/**
@@ -166,11 +214,14 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		}
 	}
 
+	private record ConditionalEntry<T>(T value, @Nullable ResourceCondition... conditions) {
+	}
+
 	private static class RegistryEntries<T> {
 		final RegistryEntryOwner<T> lookup;
 		final RegistryKey<? extends Registry<T>> registry;
 		final Codec<T> elementCodec;
-		Map<RegistryKey<T>, T> entries = new IdentityHashMap<>();
+		Map<RegistryKey<T>, ConditionalEntry<T>> entries = new IdentityHashMap<>();
 
 		RegistryEntries(RegistryEntryOwner<T> lookup,
 						RegistryKey<? extends Registry<T>> registry,
@@ -185,16 +236,12 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 			return new RegistryEntries<>(lookup, loaderEntry.key(), loaderEntry.elementCodec());
 		}
 
-		public RegistryEntry<T> add(RegistryKey<T> key, T value) {
-			if (entries.put(key, value) != null) {
+		RegistryEntry<T> add(RegistryKey<T> key, T value, @Nullable ResourceCondition[] conditions) {
+			if (entries.put(key, new ConditionalEntry<>(value, conditions)) != null) {
 				throw new IllegalArgumentException("Trying to add registry key " + key + " more than once.");
 			}
 
 			return RegistryEntry.Reference.standAlone(lookup, key);
-		}
-
-		public RegistryEntry<T> add(Identifier id, T value) {
-			return add(RegistryKey.of(registry, id), value);
 		}
 	}
 
@@ -227,21 +274,31 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		final DataOutput.PathResolver pathResolver = output.getResolver(DataOutput.OutputType.DATA_PACK, directoryName);
 		final List<CompletableFuture<?>> futures = new ArrayList<>();
 
-		for (Map.Entry<RegistryKey<T>, T> entry : entries.entries.entrySet()) {
+		for (Map.Entry<RegistryKey<T>, ConditionalEntry<T>> entry : entries.entries.entrySet()) {
 			Path path = pathResolver.resolveJson(entry.getKey().getValue());
-			futures.add(writeToPath(path, writer, ops, entries.elementCodec, entry.getValue()));
+			futures.add(writeToPath(path, writer, ops, entries.elementCodec, entry.getValue().value(), entry.getValue().conditions()));
 		}
 
 		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
 	}
 
-	private static <E> CompletableFuture<?> writeToPath(Path path, DataWriter cache, DynamicOps<JsonElement> json, Encoder<E> encoder, E value) {
+	private static <E> CompletableFuture<?> writeToPath(Path path, DataWriter cache, DynamicOps<JsonElement> json, Encoder<E> encoder, E value, @Nullable ResourceCondition[] conditions) {
 		Optional<JsonElement> optional = encoder.encodeStart(json, value).resultOrPartial((error) -> {
 			LOGGER.error("Couldn't serialize element {}: {}", path, error);
 		});
 
 		if (optional.isPresent()) {
-			return DataProvider.writeToPath(cache, optional.get(), path);
+			JsonElement jsonElement = optional.get();
+
+			if (conditions != null && conditions.length > 0) {
+				if (!jsonElement.isJsonObject()) {
+					throw new IllegalStateException("Cannot add conditions to " + path + ": JSON is a non-object value");
+				} else {
+					FabricDataGenHelper.addConditions(jsonElement.getAsJsonObject(), conditions);
+				}
+			}
+
+			return DataProvider.writeToPath(cache, jsonElement, path);
 		}
 
 		return CompletableFuture.completedFuture(null);

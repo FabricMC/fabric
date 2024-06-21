@@ -20,7 +20,7 @@
     "accessor.EntityTrackerAccessor",
     "accessor.ServerCommonNetworkHandlerAccessor",
     "accessor.ServerLoginNetworkHandlerAccessor",
-    "accessor.ThreadedAnvilChunkStorageAccessor"
+    "accessor.ServerChunkLoadingManagerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

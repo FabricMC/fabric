@@ -16,23 +16,20 @@
 
 package net.fabricmc.fabric.test.model.loading;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SinglePreparationResourceReloader;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Unit;
-import net.minecraft.util.profiler.Profiler;
 
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 
-public class SpecificModelReloadListener extends SinglePreparationResourceReloader<Unit> implements IdentifiableResourceReloadListener {
+public class SpecificModelReloadListener implements SimpleSynchronousResourceReloadListener {
 	public static final SpecificModelReloadListener INSTANCE = new SpecificModelReloadListener();
-	public static final Identifier ID = new Identifier(ModelTestModClient.ID, "specific_model");
+	public static final Identifier ID = Identifier.of(ModelTestModClient.ID, "specific_model");
 
 	private BakedModel specificModel;
 
@@ -41,13 +38,8 @@ public class SpecificModelReloadListener extends SinglePreparationResourceReload
 	}
 
 	@Override
-	protected Unit prepare(ResourceManager manager, Profiler profiler) {
-		return Unit.INSTANCE;
-	}
-
-	@Override
-	protected void apply(Unit loader, ResourceManager manager, Profiler profiler) {
-		specificModel = MinecraftClient.getInstance().getBakedModelManager().getModel(ModelTestModClient.MODEL_ID);
+	public void reload(ResourceManager manager) {
+		specificModel = MinecraftClient.getInstance().getBakedModelManager().getModel(ModelTestModClient.HALF_RED_SAND_MODEL_ID);
 	}
 
 	@Override
@@ -57,6 +49,6 @@ public class SpecificModelReloadListener extends SinglePreparationResourceReload
 
 	@Override
 	public Collection<Identifier> getFabricDependencies() {
-		return Arrays.asList(ResourceReloadListenerKeys.MODELS);
+		return List.of(ResourceReloadListenerKeys.MODELS);
 	}
 }

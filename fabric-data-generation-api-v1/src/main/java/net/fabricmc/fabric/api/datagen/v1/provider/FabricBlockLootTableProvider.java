@@ -49,12 +49,12 @@ import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
 public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerator implements FabricLootTableProvider {
 	private final FabricDataOutput output;
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
-	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup;
+	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture;
 
 	protected FabricBlockLootTableProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
-		super(Collections.emptySet(), FeatureFlags.FEATURE_MANAGER.getFeatureSet());
+		super(Collections.emptySet(), FeatureFlags.FEATURE_MANAGER.getFeatureSet(), registryLookup.join());
 		this.output = dataOutput;
-		this.registryLookup = registryLookup;
+		this.registryLookupFuture = registryLookup;
 	}
 
 	/**
@@ -73,7 +73,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 	}
 
 	@Override
-	public void accept(RegistryWrapper.WrapperLookup registryLookup, BiConsumer<RegistryKey<LootTable>, LootTable.Builder> biConsumer) {
+	public void accept(BiConsumer<RegistryKey<LootTable>, LootTable.Builder> biConsumer) {
 		generate();
 
 		for (Map.Entry<RegistryKey<LootTable>, LootTable.Builder> entry : lootTables.entrySet()) {
@@ -91,7 +91,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 
 			for (Identifier blockId : Registries.BLOCK.getIds()) {
 				if (blockId.getNamespace().equals(output.getModId())) {
-					RegistryKey<LootTable> blockLootTableId = Registries.BLOCK.get(blockId).getLootTableId();
+					RegistryKey<LootTable> blockLootTableId = Registries.BLOCK.get(blockId).getLootTableKey();
 
 					if (blockLootTableId.getValue().getNamespace().equals(output.getModId())) {
 						if (!lootTables.containsKey(blockLootTableId)) {
@@ -111,7 +111,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 
 	@Override
 	public CompletableFuture<?> run(DataWriter writer) {
-		return FabricLootTableProviderImpl.run(writer, this, LootContextTypes.BLOCK, output, registryLookup);
+		return FabricLootTableProviderImpl.run(writer, this, LootContextTypes.BLOCK, output, registryLookupFuture);
 	}
 
 	@Override

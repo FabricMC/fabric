@@ -59,7 +59,7 @@ public class VanillaStorageTests {
 	public void testFurnaceCookTime(TestContext context) {
 		BlockPos pos = new BlockPos(0, 1, 0);
 		context.setBlockState(pos, Blocks.FURNACE.getDefaultState());
-		FurnaceBlockEntity furnace = (FurnaceBlockEntity) context.getBlockEntity(pos);
+		FurnaceBlockEntity furnace = context.getBlockEntity(pos);
 		AbstractFurnaceBlockEntityAccessor accessor = (AbstractFurnaceBlockEntityAccessor) furnace;
 
 		ItemVariant rawIron = ItemVariant.of(Items.RAW_IRON);
@@ -109,7 +109,7 @@ public class VanillaStorageTests {
 
 		BlockPos pos = new BlockPos(0, 2, 0);
 		context.setBlockState(pos, block.getDefaultState());
-		Inventory inventory = (Inventory) context.getBlockEntity(pos);
+		Inventory inventory = context.getBlockEntity(pos);
 		InventoryStorage storage = InventoryStorage.of(inventory, null);
 
 		BlockPos comparatorPos = new BlockPos(1, 2, 0);
@@ -166,7 +166,7 @@ public class VanillaStorageTests {
 
 		BlockPos pos = new BlockPos(0, 1, 0);
 		context.setBlockState(pos, Blocks.CHISELED_BOOKSHELF.getDefaultState());
-		ChiseledBookshelfBlockEntity bookshelf = (ChiseledBookshelfBlockEntity) context.getBlockEntity(pos);
+		ChiseledBookshelfBlockEntity bookshelf = context.getBlockEntity(pos);
 		InventoryStorage storage = InventoryStorage.of(bookshelf, null);
 
 		// First, check that we can correctly undo insert operations, because vanilla's setStack doesn't permit it without our patches.
@@ -227,7 +227,7 @@ public class VanillaStorageTests {
 	public void testShulkerNoInsert(TestContext context) {
 		BlockPos pos = new BlockPos(0, 2, 0);
 		context.setBlockState(pos, Blocks.SHULKER_BOX);
-		ShulkerBoxBlockEntity shulker = (ShulkerBoxBlockEntity) context.getBlockEntity(pos);
+		ShulkerBoxBlockEntity shulker = context.getBlockEntity(pos);
 		InventoryStorage storage = InventoryStorage.of(shulker, null);
 
 		if (StorageUtil.simulateInsert(storage, ItemVariant.of(Items.SHULKER_BOX), 1, null) > 0) {
@@ -246,7 +246,7 @@ public class VanillaStorageTests {
 	public void testBadFurnaceIsValid(TestContext context) {
 		BlockPos pos = new BlockPos(0, 1, 0);
 		context.setBlockState(pos, Blocks.FURNACE.getDefaultState());
-		FurnaceBlockEntity furnace = (FurnaceBlockEntity) context.getBlockEntity(pos);
+		FurnaceBlockEntity furnace = context.getBlockEntity(pos);
 		InventoryStorage furnaceWrapper = InventoryStorage.of(furnace, null);
 
 		try (Transaction tx = Transaction.openOuter()) {
@@ -265,7 +265,7 @@ public class VanillaStorageTests {
 	public void testBadBrewingStandIsValid(TestContext context) {
 		BlockPos pos = new BlockPos(0, 1, 0);
 		context.setBlockState(pos, Blocks.BREWING_STAND.getDefaultState());
-		BrewingStandBlockEntity brewingStand = (BrewingStandBlockEntity) context.getBlockEntity(pos);
+		BrewingStandBlockEntity brewingStand = context.getBlockEntity(pos);
 		InventoryStorage brewingStandWrapper = InventoryStorage.of(brewingStand, null);
 
 		try (Transaction tx = Transaction.openOuter()) {

@@ -22,7 +22,6 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
@@ -53,13 +52,14 @@ public interface ModelLoadingPlugin {
 	@ApiStatus.NonExtendable
 	interface Context {
 		/**
-		 * Adds one or more models (can be {@link ModelIdentifier}s) to the list of models that will be loaded and
-		 * baked.
+		 * Adds one or more models that will be loaded, baked, and made available through
+		 * {@link FabricBakedModelManager#getModel(Identifier)}.
 		 */
 		void addModels(Identifier... ids);
 
 		/**
-		 * Adds multiple models (can be {@link ModelIdentifier}s) to the list of models that will be loaded and baked.
+		 * Adds multiple models that will be loaded, baked, and made available through
+		 * {@link FabricBakedModelManager#getModel(Identifier)}.
 		 */
 		void addModels(Collection<? extends Identifier> ids);
 

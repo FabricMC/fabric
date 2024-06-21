@@ -36,7 +36,6 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
@@ -277,14 +276,10 @@ public final class RegistrySyncManager {
 				continue;
 			}
 
-			if (registry instanceof RemappableRegistry) {
-				Object2IntMap<Identifier> idMap = new Object2IntOpenHashMap<>();
-
-				for (Identifier key : registryMap.keySet()) {
-					idMap.put(key, registryMap.getInt(key));
-				}
-
-				((RemappableRegistry) registry).remap(registryId.toString(), idMap, mode);
+			if (registry instanceof RemappableRegistry remappableRegistry) {
+				remappableRegistry.remap(registryId.toString(), registryMap, mode);
+			} else {
+				throw new RemapException("Registry " + registryId + " is not remappable");
 			}
 		}
 

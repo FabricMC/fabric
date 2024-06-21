@@ -16,7 +16,13 @@
 
 package net.fabricmc.fabric.test.resource.conditions;
 
+import net.minecraft.block.entity.BannerPattern;
+import net.minecraft.loot.LootTable;
 import net.minecraft.recipe.RecipeManager;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.ReloadableRegistries;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.Identifier;
@@ -27,7 +33,7 @@ public class ConditionalResourcesTest {
 	private static final String MOD_ID = "fabric-resource-conditions-api-v1-testmod";
 
 	private static Identifier id(String path) {
-		return new Identifier(MOD_ID, path);
+		return Identifier.of(MOD_ID, path);
 	}
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
@@ -68,19 +74,18 @@ public class ConditionalResourcesTest {
 		context.complete();
 	}
 
-	/* TODO 1.20.5
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void conditionalPredicates(TestContext context) {
 		// Predicates are internally handled as a kind of loot data,
 		// hence the yarn name "loot condition".
 
-		LootManager manager = context.getWorld().getServer().getLootManager();
+		ReloadableRegistries.Lookup registries = context.getWorld().getServer().getReloadableRegistries();
 
-		if (manager.getElementOptional(LootDataType.PREDICATES, id("loaded")).isEmpty()) {
+		if (!registries.getRegistryManager().get(RegistryKeys.PREDICATE).containsId(id("loaded"))) {
 			throw new AssertionError("loaded predicate should have been loaded.");
 		}
 
-		if (manager.getElementOptional(LootDataType.PREDICATES, id("not_loaded")).isPresent()) {
+		if (registries.getRegistryManager().get(RegistryKeys.PREDICATE).containsId(id("not_loaded"))) {
 			throw new AssertionError("not_loaded predicate should not have been loaded.");
 		}
 
@@ -89,16 +94,31 @@ public class ConditionalResourcesTest {
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void conditionalLootTables(TestContext context) {
-		LootManager manager = context.getWorld().getServer().getLootManager();
+		ReloadableRegistries.Lookup registries = context.getWorld().getServer().getReloadableRegistries();
 
-		if (manager.getElementOptional(LootDataType.LOOT_TABLES, id("blocks/loaded")).isEmpty()) {
+		if (registries.getLootTable(RegistryKey.of(RegistryKeys.LOOT_TABLE, id("blocks/loaded"))) == LootTable.EMPTY) {
 			throw new AssertionError("loaded loot table should have been loaded.");
 		}
 
-		if (manager.getElementOptional(LootDataType.LOOT_TABLES, id("blocks/not_loaded")).isPresent()) {
+		if (registries.getLootTable(RegistryKey.of(RegistryKeys.LOOT_TABLE, id("blocks/not_loaded"))) != LootTable.EMPTY) {
 			throw new AssertionError("not_loaded loot table should not have been loaded.");
 		}
 
 		context.complete();
-	}*/
+	}
+
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void conditionalDynamicRegistry(TestContext context) {
+		Registry<BannerPattern> registry = context.getWorld().getRegistryManager().get(RegistryKeys.BANNER_PATTERN);
+
+		if (registry.get(id("loaded")) == null) {
+			throw new AssertionError("loaded banner pattern should have been loaded.");
+		}
+
+		if (registry.get(id("not_loaded")) != null) {
+			throw new AssertionError("not_loaded banner pattern should not have been loaded.");
+		}
+
+		context.complete();
+	}
 }

@@ -16,11 +16,7 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import com.google.common.collect.Multimap;
-
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -68,20 +64,6 @@ public interface FabricItem {
 	}
 
 	/**
-	 * Return the attribute modifiers to apply when this stack is worn in a living entity equipment slot.
-	 * Stack-aware version of {@link Item#getAttributeModifiers(EquipmentSlot)}.
-	 *
-	 * <p>Note that attribute modifiers are only updated when the stack changes, i.e. when {@code ItemStack.areEqual(old, new)} is false.
-	 *
-	 * @param stack the current stack
-	 * @param slot  the equipment slot this stack is in
-	 * @return the attribute modifiers
-	 */
-	default Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
-		return ((Item) this).getAttributeModifiers(slot);
-	}
-
-	/**
 	 * Returns a leftover item stack after {@code stack} is consumed in a recipe.
 	 * (This is also known as "recipe remainder".)
 	 * For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
@@ -111,6 +93,28 @@ public interface FabricItem {
 	 */
 	default ItemStack getRecipeRemainder(ItemStack stack) {
 		return ((Item) this).hasRecipeRemainder() ? ((Item) this).getRecipeRemainder().getDefaultStack() : ItemStack.EMPTY;
+	}
+
+	/**
+	 * Determines if the item is allowed to receive an {@link Enchantment}. This can be used to manually override what
+	 * enchantments a modded item is able to receive.
+	 *
+	 * <p>For example, one might want a modded item to be able to receive Unbreaking, but not Mending, which cannot be
+	 * achieved with the vanilla tag system alone. Alternatively, one might want to do the same thing with enchantments
+	 * from other mods, which don't have a similar tag system in general.</p>
+	 *
+	 * <p>Note that this method is only called <em>after</em> the {@link EnchantmentEvents#ALLOW_ENCHANTING} event, and
+	 * only if none of the listeners to that event override the result.</p>
+	 *
+	 * @param stack the current stack
+	 * @param enchantment the enchantment to check
+	 * @param context the context in which the enchantment is being checked
+	 * @return whether the enchantment is allowed to apply to the stack
+	 */
+	default boolean canBeEnchantedWith(ItemStack stack, RegistryEntry<Enchantment> enchantment, EnchantingContext context) {
+		return context == EnchantingContext.PRIMARY
+				? enchantment.value().isPrimaryItem(stack)
+				: enchantment.value().isAcceptableItem(stack);
 	}
 
 	/**

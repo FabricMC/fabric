@@ -56,7 +56,7 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
 			@Override
 			public Identifier getFabricId() {
-				return new Identifier(MODID, "client_second");
+				return Identifier.of(MODID, "client_second");
 			}
 
 			@Override
@@ -68,14 +68,14 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 
 			@Override
 			public Collection<Identifier> getFabricDependencies() {
-				return Collections.singletonList(new Identifier(MODID, "client_first"));
+				return Collections.singletonList(Identifier.of(MODID, "client_first"));
 			}
 		});
 
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
 			@Override
 			public Identifier getFabricId() {
-				return new Identifier(MODID, "client_first");
+				return Identifier.of(MODID, "client_first");
 			}
 
 			@Override
@@ -89,7 +89,7 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
 			@Override
 			public Identifier getFabricId() {
-				return new Identifier(MODID, "server_second");
+				return Identifier.of(MODID, "server_second");
 			}
 
 			@Override
@@ -101,14 +101,14 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 
 			@Override
 			public Collection<Identifier> getFabricDependencies() {
-				return Collections.singletonList(new Identifier(MODID, "server_first"));
+				return Collections.singletonList(Identifier.of(MODID, "server_first"));
 			}
 		});
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
 			@Override
 			public Identifier getFabricId() {
-				return new Identifier(MODID, "server_first");
+				return Identifier.of(MODID, "server_first");
 			}
 
 			@Override

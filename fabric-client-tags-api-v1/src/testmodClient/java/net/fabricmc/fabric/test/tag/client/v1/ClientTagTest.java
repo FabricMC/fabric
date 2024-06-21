@@ -31,9 +31,9 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalEnchantmentTags;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
@@ -45,13 +45,13 @@ public class ClientTagTest implements ClientModInitializer {
 	public void onInitializeClient() {
 		final ModContainer container = FabricLoader.getInstance().getModContainer(MODID).get();
 
-		if (!ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "test2"),
+		if (!ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of(MODID, "test2"),
 				container, ResourcePackActivationType.ALWAYS_ENABLED)) {
 			throw new IllegalStateException("Could not register built-in resource pack.");
 		}
 
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-			if (ClientTags.getOrCreateLocalTag(ConventionalEnchantmentTags.INCREASES_BLOCK_DROPS) == null) {
+			if (ClientTags.getOrCreateLocalTag(ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS) == null) {
 				throw new AssertionError("Expected to load c:fortune, but it was not found!");
 			}
 
@@ -63,12 +63,12 @@ public class ClientTagTest implements ClientModInitializer {
 				throw new AssertionError("Did not expect to find diamond block in c:ores, but it was found!");
 			}
 
-			if (!ClientTags.isInLocal(ConventionalBiomeTags.FOREST, BiomeKeys.FOREST)) {
+			if (!ClientTags.isInLocal(ConventionalBiomeTags.IS_FOREST, BiomeKeys.FOREST)) {
 				throw new AssertionError("Expected to find forest in c:forest, but it was not found!");
 			}
 
 			if (ClientTags.isInWithLocalFallback(TagKey.of(Registries.BLOCK.getKey(),
-					new Identifier("fabric", "sword_efficient")), Blocks.DIRT)) {
+					Identifier.of("fabric", "sword_efficient")), Blocks.DIRT)) {
 				throw new AssertionError("Expected not to find dirt in fabric:sword_efficient, but it was found!");
 			}
 
@@ -83,7 +83,7 @@ public class ClientTagTest implements ClientModInitializer {
 		// but the this test should pass as minecraft:sword_efficient will contain dirt on the server
 		ClientTickEvents.END_WORLD_TICK.register(client -> {
 			if (!ClientTags.isInWithLocalFallback(TagKey.of(Registries.BLOCK.getKey(),
-					new Identifier("fabric", "sword_efficient")), Blocks.DIRT)) {
+					Identifier.of("fabric", "sword_efficient")), Blocks.DIRT)) {
 				throw new AssertionError("Expected to find dirt in fabric:sword_efficient, but it was not found!");
 			}
 		});

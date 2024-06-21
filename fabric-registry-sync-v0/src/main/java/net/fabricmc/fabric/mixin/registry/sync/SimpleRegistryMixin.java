@@ -299,8 +299,10 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 		for (int i = 0; i < rawIdToEntry.size(); i++) {
 			RegistryEntry.Reference<T> reference = rawIdToEntry.get(i);
 
-			// Unused id, skip
-			if (reference == null) continue;
+			// Unused id, can happen if there are holes in the registry.
+			if (reference == null) {
+				throw new RemapException("Unused id " + i + " in registry " + getKey().getValue());
+			}
 
 			Identifier id = reference.registryKey().getValue();
 

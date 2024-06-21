@@ -68,7 +68,7 @@ public final class LootTableEvents {
 	 * {@code
 	 * LootTableEvents.MODIFY.register((key, tableBuilder, source) -> {
 	 *     // If the loot table is for the cobblestone block and it is not overridden by a user:
-	 *     if (Blocks.COBBLESTONE.getLootTableId() == key && source.isBuiltin()) {
+	 *     if (Blocks.COBBLESTONE.getLootTableKey() == key && source.isBuiltin()) {
 	 *         // Create a new loot pool that will hold the diamonds.
 	 *         LootPool.Builder pool = LootPool.builder()
 	 *             // Add diamonds...

@@ -25,6 +25,9 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.SharedConstants;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.ExperimentalRegistriesValidator;
+import net.minecraft.registry.RegistryBuilder;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 
@@ -93,6 +96,20 @@ public final class FabricDataGenerator extends DataGenerator {
 	 */
 	public boolean isStrictValidationEnabled() {
 		return strictValidation;
+	}
+
+	/**
+	 * Get a future returning the default registries produced by {@link BuiltinRegistries} and
+	 * {@link DataGeneratorEntrypoint#buildRegistry(RegistryBuilder)}.
+	 *
+	 * <p>Generally one does not need direct access to the registries, and instead can pass them directly to a
+	 * {@link DataProvider} by using {@link Pack#addProvider(Pack.RegistryDependentFactory)}. However, this method may
+	 * be useful when extending the vanilla registries (such as with {@link ExperimentalRegistriesValidator}).
+	 *
+	 * @return A future containing the builtin registries.
+	 */
+	public CompletableFuture<RegistryWrapper.WrapperLookup> getRegistries() {
+		return registriesFuture;
 	}
 
 	/**

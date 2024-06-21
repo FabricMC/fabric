@@ -34,7 +34,7 @@ import net.fabricmc.fabric.test.lookup.api.Inspectable;
 
 public class FabricEntityApiLookupTest {
 	public static final EntityApiLookup<Inspectable, Void> INSPECTABLE =
-			EntityApiLookup.get(new Identifier(FabricApiLookupTest.MOD_ID, "inspectable"), Inspectable.class, Void.class);
+			EntityApiLookup.get(Identifier.of(FabricApiLookupTest.MOD_ID, "inspectable"), Inspectable.class, Void.class);
 
 	public static final EntityType<InspectablePigEntity> INSPECTABLE_PIG = FabricEntityTypeBuilder.create()
 			.spawnGroup(SpawnGroup.CREATURE)
@@ -44,7 +44,7 @@ public class FabricEntityApiLookupTest {
 			.build();
 
 	public static void onInitialize() {
-		Registry.register(Registries.ENTITY_TYPE, new Identifier(FabricApiLookupTest.MOD_ID, "inspectable_pig"), INSPECTABLE_PIG);
+		Registry.register(Registries.ENTITY_TYPE, Identifier.of(FabricApiLookupTest.MOD_ID, "inspectable_pig"), INSPECTABLE_PIG);
 		FabricDefaultAttributeRegistry.register(INSPECTABLE_PIG, PigEntity.createPigAttributes());
 
 		INSPECTABLE.registerSelf(INSPECTABLE_PIG);

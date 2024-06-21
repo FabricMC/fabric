@@ -266,9 +266,9 @@ public final class ClientPlayNetworking {
 		 *
 		 * <p>An example usage of this is to display an overlay message:
 		 * <pre>{@code
-		 * // See FabricPacket for creating the payload
-		 * ClientPlayNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (player, payload, responseSender) -> {
-		 * 	MinecraftClient.getInstance().inGameHud.setOverlayMessage(payload.message(), true);
+		 * // use PayloadTypeRegistry for registering the payload
+		 * ClientPlayNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (payload, context) -> {
+		 * 	context.client().inGameHud.setOverlayMessage(payload.message(), true);
 		 * });
 		 * }</pre>
 		 *

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.registry.sync;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -58,6 +60,11 @@ public class RegistrySyncTest implements ModInitializer {
 	public static final boolean REGISTER_BLOCKS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.blocks", "true"));
 	public static final boolean REGISTER_ITEMS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.items", "true"));
 
+	// Store a list of Registries used with PacketCodecs.registry, and then check that they are marked as synced when the server starts.
+	// We check them later as they may be used before the registry attributes are assigned.
+	private static boolean hasCheckedEarlyRegistries = false;
+	private static final List<RegistryKey<? extends Registry<?>>> sycnedRegistriesToCheck = new ArrayList<>();
+
 	@Override
 	public void onInitialize() {
 		if (REGISTER_BLOCKS) {
@@ -73,14 +80,14 @@ public class RegistrySyncTest implements ModInitializer {
 			}
 		}
 
-		RegistryKey<Registry<String>> fabricRegistryKey = RegistryKey.ofRegistry(new Identifier("registry_sync", "fabric_registry"));
+		RegistryKey<Registry<String>> fabricRegistryKey = RegistryKey.ofRegistry(Identifier.of("registry_sync", "fabric_registry"));
 		SimpleRegistry<String> fabricRegistry = FabricRegistryBuilder.createSimple(fabricRegistryKey)
 				.attribute(RegistryAttribute.SYNCED)
 				.buildAndRegister();
 
-		Registry.register(fabricRegistry, new Identifier("registry_sync", "test"), "test");
+		Registry.register(fabricRegistry, Identifier.of("registry_sync", "test"), "test");
 
-		Validate.isTrue(Registries.REGISTRIES.getIds().contains(new Identifier("registry_sync", "fabric_registry")));
+		Validate.isTrue(Registries.REGISTRIES.getIds().contains(Identifier.of("registry_sync", "fabric_registry")));
 
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.MODDED));
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.SYNCED));
@@ -95,6 +102,9 @@ public class RegistrySyncTest implements ModInitializer {
 		});
 
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+			hasCheckedEarlyRegistries = true;
+			sycnedRegistriesToCheck.forEach(RegistrySyncTest::checkSyncedRegistry);
+
 			if (!setupCalled.get()) {
 				throw new IllegalStateException("DRM setup was not called before startup!");
 			}
@@ -126,14 +136,30 @@ public class RegistrySyncTest implements ModInitializer {
 				})));
 	}
 
+	public static void checkSyncedRegistry(RegistryKey<? extends Registry<?>> registry) {
+		if (!Registries.REGISTRIES.containsId(registry.getValue())) {
+			// Skip dynamic registries, as there are always synced.
+			return;
+		}
+
+		if (!hasCheckedEarlyRegistries) {
+			sycnedRegistriesToCheck.add(registry);
+			return;
+		}
+
+		if (!RegistryAttributeHolder.get(registry).hasAttribute(RegistryAttribute.SYNCED)) {
+			throw new IllegalStateException("Registry " + registry.getValue() + " is not marked as SYNCED!");
+		}
+	}
+
 	private static void registerBlocks(String namespace, int amount, int startingId) {
 		for (int i = 0; i < amount; i++) {
 			Block block = new Block(AbstractBlock.Settings.create());
-			Registry.register(Registries.BLOCK, new Identifier(namespace, "block_" + (i + startingId)), block);
+			Registry.register(Registries.BLOCK, Identifier.of(namespace, "block_" + (i + startingId)), block);
 
 			if (REGISTER_ITEMS) {
 				BlockItem blockItem = new BlockItem(block, new Item.Settings());
-				Registry.register(Registries.ITEM, new Identifier(namespace, "block_" + (i + startingId)), blockItem);
+				Registry.register(Registries.ITEM, Identifier.of(namespace, "block_" + (i + startingId)), blockItem);
 			}
 		}
 	}
@@ -142,7 +168,7 @@ public class RegistrySyncTest implements ModInitializer {
 		Object2IntMap<Identifier> map = new Object2IntOpenHashMap<>();
 
 		for (int i = 0; i < 12; i++) {
-			map.put(new Identifier("mod_" + i, "entry"), 0);
+			map.put(Identifier.of("mod_" + i, "entry"), 0);
 		}
 
 		return map;

@@ -54,10 +54,10 @@ public final class SignBlockEntityTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "test_sign"), TEST_SIGN);
-		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "test_wall_sign"), TEST_WALL_SIGN);
-		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "test_sign"), TEST_SIGN_ITEM);
-		Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "test_sign"), TEST_SIGN_BLOCK_ENTITY);
+		Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "test_sign"), TEST_SIGN);
+		Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "test_wall_sign"), TEST_WALL_SIGN);
+		Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "test_sign"), TEST_SIGN_ITEM);
+		Registry.register(Registries.BLOCK_ENTITY_TYPE, Identifier.of(MOD_ID, "test_sign"), TEST_SIGN_BLOCK_ENTITY);
 	}
 
 	public static class TestSign extends SignBlockEntity {

@@ -17,9 +17,12 @@
 package net.fabricmc.fabric.impl.transfer;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.ComponentMapImpl;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -32,11 +35,13 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 
 public class VariantCodecs {
-	public static final Codec<ItemVariant> ITEM_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+	// AIR is valid (for some reason), don't use ItemStack#ITEM_CODEC
+	private static final Codec<ItemVariant> UNVALIDATED_ITEM_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Registries.ITEM.getEntryCodec().fieldOf("item").forGetter(ItemVariant::getRegistryEntry),
 			ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(ItemVariant::getComponents)
 		).apply(instance, ItemVariantImpl::of)
 	);
+	public static final Codec<ItemVariant> ITEM_CODEC = UNVALIDATED_ITEM_CODEC.validate(VariantCodecs::validateComponents);
 	public static final PacketCodec<RegistryByteBuf, ItemVariant> ITEM_PACKET_CODEC = PacketCodec.tuple(
 			PacketCodecs.registryEntry(RegistryKeys.ITEM), ItemVariant::getRegistryEntry,
 			ComponentChanges.PACKET_CODEC, ItemVariant::getComponents,
@@ -53,4 +58,8 @@ public class VariantCodecs {
 			ComponentChanges.PACKET_CODEC, FluidVariant::getComponents,
 			FluidVariantImpl::of
 	);
+
+	private static DataResult<ItemVariant> validateComponents(ItemVariant variant) {
+		return ItemStack.validateComponents(ComponentMapImpl.create(variant.getItem().getComponents(), variant.getComponents())).map(v -> variant);
+	}
 }

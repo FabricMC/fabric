@@ -8,6 +8,9 @@
   "depends": {
     "fabric-registry-sync-v0": "*"
   },
+  "mixins": [
+    "fabric-registry-sync-v0-testmod.mixins.json"
+  ],
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.registry.sync.CustomDynamicRegistryTest",

@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "#c:is_savanna",
+      "required": false
+    },
+    {
+      "id": "#c:tree_savanna",
+      "required": false
+    }
+  ]
+}

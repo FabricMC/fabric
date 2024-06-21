@@ -1,0 +1,21 @@
+{
+  "asset_id": "minecraft:not_loaded",
+  "translation_key": "block.minecraft.banner.not_loaded",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:not",
+      "value": {
+        "condition": "fabric:all_mods_loaded",
+        "values": [
+          "fabric-resource-conditions-api-v1"
+        ]
+      }
+    },
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "fabric-resource-conditions-api-v1"
+      ]
+    }
+  ]
+}
