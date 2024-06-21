@@ -29,6 +29,9 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.google.common.collect.Lists;
+
+import net.minecraft.resource.OverlayResourcePack;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,8 +137,16 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 
 					@Override
 					public ResourcePack openWithOverlays(ResourcePackInfo var1, ResourcePackProfile.Metadata metadata) {
-						// Don't support overlays in builtin res packs.
-						return entry.getRight();
+						ModNioResourcePack pack = entry.getRight();
+						if (metadata.overlays().isEmpty()) {
+							return pack;
+						}
+						List<ResourcePack> overlays = new ArrayList<>(metadata.overlays().size());
+						for (String overlay : metadata.overlays()) {
+							overlays.add(pack.createOverlay(overlay));
+						}
+
+						return new OverlayResourcePack(pack, overlays);
 					}
 				}, resourceType, info2);
 				consumer.accept(profile);

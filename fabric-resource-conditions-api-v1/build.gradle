@@ -4,4 +4,8 @@ loom {
 	accessWidenerPath = file("src/main/resources/fabric-resource-conditions-api-v1.accesswidener")
 }
 
-testDependencies(project, [':fabric-gametest-api-v1'])
+testDependencies(project, [
+	':fabric-gametest-api-v1',
+	':fabric-lifecycle-events-v1',
+	':fabric-resource-loader-v0'
+])
