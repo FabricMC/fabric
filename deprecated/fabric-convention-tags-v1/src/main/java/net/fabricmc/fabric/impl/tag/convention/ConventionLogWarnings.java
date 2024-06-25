@@ -255,7 +255,7 @@ public class ConventionLogWarnings implements ModInitializer {
 						NOTE: Many tags have been moved around or renamed. Some new ones were added so please review the new tags.
 						And make sure you follow tag conventions for new tags! The convention is `c` with nouns generally being plural and adjectives being singular.
 						You can disable this message by this system property to your runs: `-Dfabric-tag-conventions-v1.legacyTagWarning=SILENCED`.
-						To see individual legacy tags found, set the system property to `-Dfabric-tag-conventions-v1.legacyTagWarning=DEV_VERBOSE` instead. Default is `DEV_SHORT`.
+						To see individual legacy tags found, set the system property to `-Dfabric-tag-conventions-v1.legacyTagWarning=VERBOSE` instead. Default is `SHORT`.
 					""");
 
 			// Print out all legacy tags when desired.
