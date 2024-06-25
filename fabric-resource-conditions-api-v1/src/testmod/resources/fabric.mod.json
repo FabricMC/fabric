@@ -9,9 +9,6 @@
     "fabric-resource-conditions-api-v1": "*"
   },
   "entrypoints": {
-    "main": [
-      "net.fabricmc.fabric.test.resource.conditions.OverlayConditionsTest"
-    ],
     "fabric-gametest": [
       "net.fabricmc.fabric.test.resource.conditions.ConditionalResourcesTest",
       "net.fabricmc.fabric.test.resource.conditions.DefaultResourceConditionsTest"
