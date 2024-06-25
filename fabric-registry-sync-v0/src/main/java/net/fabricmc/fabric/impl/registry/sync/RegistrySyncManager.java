@@ -325,7 +325,7 @@ public final class RegistrySyncManager {
 		}
 
 		// Create a nice user friendly error message.
-		MutableText text = Text.literal("");
+		MutableText text = Text.empty();
 
 		final int count = missingEntries.values().stream().mapToInt(List::size).sum();
 
