@@ -88,4 +88,15 @@ public abstract class Event<T> {
 	public void addPhaseOrdering(Identifier firstPhase, Identifier secondPhase) {
 		// This is not abstract to avoid breaking existing Event subclasses, but they should really not be subclassing Event.
 	}
+
+	/**
+	 * Returns whether the event has any listeners. Useful for skipping steps related to
+	 * event invocation, such as making context objects, when the event has no listeners.
+	 * This method is unnecessary when the only code guarded by this check is the event invocation.
+	 *
+	 * @return whether the event has any listeners
+	 */
+	public boolean hasListener() {
+		return true;
+	}
 }
