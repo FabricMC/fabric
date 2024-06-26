@@ -50,7 +50,7 @@ class ArrayBackedEvent<T> extends Event<T> {
 		update();
 	}
 
-	void update() {
+	private void update() {
 		this.invoker = invokerFactory.apply(handlers);
 	}
 

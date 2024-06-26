@@ -126,14 +126,11 @@ public final class EventFactory {
 	}
 
 	/**
-	 * Invalidate and re-create all existing "invoker" instances across
-	 * events created by this EventFactory. Use this if, for instance,
-	 * the profilingEnabled field changes.
+	 * Does nothing.
 	 *
 	 * @deprecated Do not use, will be removed in a future release.
 	 */
 	@Deprecated(forRemoval = true)
 	public static void invalidate() {
-		EventFactoryImpl.invalidate();
 	}
 }
