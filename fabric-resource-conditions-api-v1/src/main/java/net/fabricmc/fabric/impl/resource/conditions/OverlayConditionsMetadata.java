@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.resource.conditions.v1;
+package net.fabricmc.fabric.impl.resource.conditions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +24,16 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
+
 import net.minecraft.resource.metadata.ResourceMetadataSerializer;
 
 public record OverlayConditionsMetadata(List<Entry> overlays) {
 	public static final Codec<OverlayConditionsMetadata> CODEC = Entry.CODEC.listOf().fieldOf("entries").xmap(OverlayConditionsMetadata::new, OverlayConditionsMetadata::overlays).codec();
 	public static final ResourceMetadataSerializer<OverlayConditionsMetadata> SERIALIZER = ResourceMetadataSerializer.fromCodec(ResourceConditions.OVERLAYS_KEY, CODEC);
 
-	public List<String> getAppliedOverlays() {
+	public List<String> appliedOverlays() {
 		List<String> appliedOverlays = new ArrayList<>();
 
 		for (Entry entry : this.overlays()) {

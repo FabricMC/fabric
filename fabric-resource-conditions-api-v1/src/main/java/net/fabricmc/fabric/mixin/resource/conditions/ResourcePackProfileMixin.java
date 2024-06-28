@@ -28,19 +28,19 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 
-import net.fabricmc.fabric.api.resource.conditions.v1.OverlayConditionsMetadata;
+import net.fabricmc.fabric.impl.resource.conditions.OverlayConditionsMetadata;
 
 @Mixin(ResourcePackProfile.class)
 public class ResourcePackProfileMixin {
 	@ModifyVariable(method = "loadMetadata", at = @At("STORE"))
-	private static List<String> fabric_applyOverlayConditions(List<String> overlays, @Local ResourcePack resourcePack) throws IOException {
+	private static List<String> applyOverlayConditions(List<String> overlays, @Local ResourcePack resourcePack) throws IOException {
 		List<String> appliedOverlays = new ArrayList<>(overlays);
 		OverlayConditionsMetadata overlayMetadata = resourcePack.parseMetadata(OverlayConditionsMetadata.SERIALIZER);
 
 		if (overlayMetadata != null) {
-			appliedOverlays.addAll(overlayMetadata.getAppliedOverlays());
+			appliedOverlays.addAll(overlayMetadata.appliedOverlays());
 		}
 
-		return appliedOverlays;
+		return List.copyOf(appliedOverlays);
 	}
 }
