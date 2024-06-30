@@ -210,17 +210,29 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateFoodTags() {
-		getOrCreateTagBuilder(ConventionalItemTags.FRUITS_FOODS)
-				.add(Items.APPLE)
+    getOrCreateTagBuilder(ConventionalItemTags.GOLDEN_FRUITS_FOODS)
 				.add(Items.GOLDEN_APPLE)
 				.add(Items.ENCHANTED_GOLDEN_APPLE);
+    
+    getOrCreateTagBuilder(ConventionalItemTags.NORMAL_FRUITS_FOODS)
+				.add(Items.APPLE);
 
-		getOrCreateTagBuilder(ConventionalItemTags.VEGETABLES_FOODS)
+		getOrCreateTagBuilder(ConventionalItemTags.FRUITS_FOODS)
+				.addOptionalTag(ConventionalItemTags.GOLDEN_FRUITS_FOODS)
+				.addOptionalTag(ConventionalItemTags.NORMAL_FRUITS_FOODS);
+
+    getOrCreateTagBuilder(ConventionalItemTags.GOLDEN_VEGETABLES_FOODS)
+				.add(Items.GOLDEN_CARROT);
+    
+    getOrCreateTagBuilder(ConventionalItemTags.NORMAL_VEGETABLES_FOODS)
 				.add(Items.CARROT)
-				.add(Items.GOLDEN_CARROT)
 				.add(Items.POTATO)
 				.add(Items.MELON_SLICE)
 				.add(Items.BEETROOT);
+
+		getOrCreateTagBuilder(ConventionalItemTags.VEGETABLES_FOODS)
+				.addOptionalTag(ConventionalItemTags.GOLDEN_VEGETABLES_FOODS)
+				.addOptionalTag(ConventionalItemTags.NORMAL_VEGETABLES_FOODS);
 
 		getOrCreateTagBuilder(ConventionalItemTags.BERRIES_FOODS)
 				.add(Items.SWEET_BERRIES)
