@@ -64,10 +64,8 @@ public final class LootTableEvents {
 	 * <p>If you want only one of the items to drop, you can use
 	 * {@link FabricLootTableBuilder#modifyPools(java.util.function.Consumer)} to add the new item to
 	 * the original loot pool instead.
-	 *
-	 * <pre>
-	 * {@code
-	 * LootTableEvents.MODIFY.register((key, tableBuilder, source) -> {
+	 * {@snippet :
+	 * LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
 	 *     // If the loot table is for the cobblestone block and it is not overridden by a user:
 	 *     if (Blocks.COBBLESTONE.getLootTableKey() == key && source.isBuiltin()) {
 	 *         // Create a new loot pool that will hold the diamonds.
@@ -82,7 +80,6 @@ public final class LootTableEvents {
 	 *     }
 	 * });
 	 * }
-	 * </pre>
 	 */
 	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (key, tableBuilder, source, registries) -> {
 		for (Modify listener : listeners) {
@@ -99,6 +96,7 @@ public final class LootTableEvents {
 		}
 	});
 
+	@FunctionalInterface
 	public interface Replace {
 		/**
 		 * Replaces loot tables.
@@ -113,6 +111,7 @@ public final class LootTableEvents {
 		LootTable replaceLootTable(RegistryKey<LootTable> key, LootTable original, LootTableSource source, RegistryWrapper.WrapperLookup registries);
 	}
 
+	@FunctionalInterface
 	public interface Modify {
 		/**
 		 * Called when a loot table is loading to modify loot tables.
@@ -125,6 +124,7 @@ public final class LootTableEvents {
 		void modifyLootTable(RegistryKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source, RegistryWrapper.WrapperLookup registries);
 	}
 
+	@FunctionalInterface
 	public interface Loaded {
 		/**
 		 * Called when all loot tables have been loaded and {@link LootTableEvents#REPLACE} and {@link LootTableEvents#MODIFY} have been invoked.
