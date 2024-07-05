@@ -185,8 +185,13 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 	private void generateGlassTags() {
 		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_BLOCKS)
+				.addOptionalTag(ConventionalBlockTags.GLASS_BLOCKS_COLORLESS)
+				.addOptionalTag(ConventionalBlockTags.GLASS_BLOCKS_CHEAP)
+				.addOptionalTag(ConventionalBlockTags.GLASS_BLOCKS_TINTED);
+		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_BLOCKS_COLORLESS)
+				.add(Blocks.GLASS);
+		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_BLOCKS_CHEAP)
 				.add(Blocks.GLASS)
-				.add(Blocks.TINTED_GLASS)
 				.add(Blocks.WHITE_STAINED_GLASS)
 				.add(Blocks.ORANGE_STAINED_GLASS)
 				.add(Blocks.MAGENTA_STAINED_GLASS)
@@ -203,8 +208,9 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.GREEN_STAINED_GLASS)
 				.add(Blocks.BLACK_STAINED_GLASS)
 				.add(Blocks.RED_STAINED_GLASS);
+		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_BLOCKS_TINTED)
+				.add(Blocks.TINTED_GLASS);
 		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_PANES)
-				.add(Blocks.GLASS_PANE)
 				.add(Blocks.WHITE_STAINED_GLASS_PANE)
 				.add(Blocks.ORANGE_STAINED_GLASS_PANE)
 				.add(Blocks.MAGENTA_STAINED_GLASS_PANE)
@@ -220,7 +226,10 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.BROWN_STAINED_GLASS_PANE)
 				.add(Blocks.GREEN_STAINED_GLASS_PANE)
 				.add(Blocks.BLACK_STAINED_GLASS_PANE)
-				.add(Blocks.RED_STAINED_GLASS_PANE);
+				.add(Blocks.RED_STAINED_GLASS_PANE)
+				.addOptionalTag(ConventionalBlockTags.GLASS_PANES_COLORLESS);
+		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_PANES_COLORLESS)
+				.add(Blocks.GLASS_PANE);
 	}
 
 	private void generateGlazeTerracottaTags() {

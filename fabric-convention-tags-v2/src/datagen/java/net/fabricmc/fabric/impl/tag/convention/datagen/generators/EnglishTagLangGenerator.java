@@ -49,7 +49,11 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.CHESTS, "Chests");
 		translationBuilder.add(ConventionalBlockTags.WOODEN_CHESTS, "Wooden Chests");
 		translationBuilder.add(ConventionalBlockTags.GLASS_BLOCKS, "Glass Blocks");
+		translationBuilder.add(ConventionalBlockTags.GLASS_BLOCKS_TINTED, "Tinted Glass Blocks");
+		translationBuilder.add(ConventionalBlockTags.GLASS_BLOCKS_CHEAP, "Cheap Glass Blocks");
+		translationBuilder.add(ConventionalBlockTags.GLASS_BLOCKS_COLORLESS, "Colorless Glass Blocks");
 		translationBuilder.add(ConventionalBlockTags.GLASS_PANES, "Glass Panes");
+		translationBuilder.add(ConventionalBlockTags.GLASS_PANES_COLORLESS, "Colorless Glass Panes");
 		translationBuilder.add(ConventionalBlockTags.SHULKER_BOXES, "Shulker Boxes");
 		translationBuilder.add(ConventionalBlockTags.GLAZED_TERRACOTTAS, "Glazed Terracottas");
 		translationBuilder.add(ConventionalBlockTags.CONCRETES, "Concretes");
@@ -207,7 +211,11 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.CHESTS, "Chests");
 		translationBuilder.add(ConventionalItemTags.WOODEN_CHESTS, "Wooden Chests");
 		translationBuilder.add(ConventionalItemTags.GLASS_BLOCKS, "Glass Blocks");
+		translationBuilder.add(ConventionalItemTags.GLASS_BLOCKS_TINTED, "Tinted Glass Blocks");
+		translationBuilder.add(ConventionalItemTags.GLASS_BLOCKS_CHEAP, "Cheap Glass Blocks");
+		translationBuilder.add(ConventionalItemTags.GLASS_BLOCKS_COLORLESS, "Colorless Glass Blocks");
 		translationBuilder.add(ConventionalItemTags.GLASS_PANES, "Glass Panes");
+		translationBuilder.add(ConventionalItemTags.GLASS_PANES_COLORLESS, "Colorless Glass Panes");
 		translationBuilder.add(ConventionalItemTags.SHULKER_BOXES, "Shulker Boxes");
 		translationBuilder.add(ConventionalItemTags.GLAZED_TERRACOTTAS, "Glazed Terracottas");
 		translationBuilder.add(ConventionalItemTags.CONCRETES, "Concretes");
@@ -290,6 +298,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.BREEZE_RODS, "Breeze Rods");
 		translationBuilder.add(ConventionalItemTags.ROPES, "Ropes");
 		translationBuilder.add(ConventionalItemTags.CHAINS, "Chains");
+		translationBuilder.add(ConventionalItemTags.ENDER_PEARLS, "Ender Pearls");
 		translationBuilder.add(ConventionalItemTags.HIDDEN_FROM_RECIPE_VIEWERS, "Hidden From Recipe Viewers");
 
 		// Enchantments

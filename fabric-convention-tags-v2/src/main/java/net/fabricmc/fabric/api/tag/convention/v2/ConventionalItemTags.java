@@ -173,7 +173,14 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> CHESTS = register("chests");
 	public static final TagKey<Item> WOODEN_CHESTS = register("chests/wooden");
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
+	public static final TagKey<Item> GLASS_BLOCKS_COLORLESS = register("glass_blocks/colorless");
+	/**
+	 * Glass which is made from cheap resources like sand and only minor additional ingredients like dyes
+	 */
+	public static final TagKey<Item> GLASS_BLOCKS_CHEAP = register("glass_blocks/cheap");
+	public static final TagKey<Item> GLASS_BLOCKS_TINTED = register("glass_blocks/tinted");
 	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
+	public static final TagKey<Item> GLASS_PANES_COLORLESS = register("glass_panes/colorless");
 	/**
 	 * Block tag equivalent is {@link BlockTags#SHULKER_BOXES}.
 	 */
@@ -300,6 +307,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> BREEZE_RODS = register("rods/breeze");
 	public static final TagKey<Item> ROPES = register("ropes");
 	public static final TagKey<Item> CHAINS = register("chains");
+	public static final TagKey<Item> ENDER_PEARLS = register("ender_pearls");
 
 	/**
 	 * Tag that holds all items that recipe viewers should not show to users.
