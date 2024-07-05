@@ -279,6 +279,12 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.CANDY_FOODS)
 				.addOptionalTag(ConventionalItemTags.CANDIES_FOODS);
 
+		getOrCreateTagBuilder(ConventionalItemTags.GOLDEN_FOODS)
+				.add(Items.GOLDEN_APPLE)
+				.add(Items.ENCHANTED_GOLDEN_APPLE)
+				.add(Items.GOLDEN_CARROT)
+				.add(Items.GLISTERING_MELON_SLICE);
+
 		getOrCreateTagBuilder(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
 				.add(Items.CAKE);
 
@@ -306,6 +312,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.COOKED_FISH_FOODS)
 				.addOptionalTag(ConventionalItemTags.SOUP_FOODS)
 				.addOptionalTag(ConventionalItemTags.CANDY_FOODS)
+				.addOptionalTag(ConventionalItemTags.GOLDEN_FOODS)
 				.addOptionalTag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
 				.addOptionalTag(ConventionalItemTags.FOOD_POISONING_FOODS);
 

@@ -50,6 +50,10 @@
       "required": false
     },
     {
+      "id": "#c:foods/golden",
+      "required": false
+    },
+    {
       "id": "#c:foods/edible_when_placed",
       "required": false
     },

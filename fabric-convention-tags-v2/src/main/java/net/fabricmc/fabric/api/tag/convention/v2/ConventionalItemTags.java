@@ -146,6 +146,10 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> CANDY_FOODS = register("foods/candy");
 	/**
+	 * Any gold-based foods would go in this tag. Such as Golden Apples or Glistering Melon Slice.
+	 */
+	public static final TagKey<Item> GOLDEN_FOODS = register("foods/golden");
+	/**
 	 * Foods like cake that can be eaten when placed in the world belong in this tag.
 	 */
 	public static final TagKey<Item> EDIBLE_WHEN_PLACED_FOODS = register("foods/edible_when_placed");

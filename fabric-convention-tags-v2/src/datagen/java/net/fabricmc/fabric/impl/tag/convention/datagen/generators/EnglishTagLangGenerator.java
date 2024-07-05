@@ -185,6 +185,9 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.COOKED_FISH_FOODS, "Cooked Fishes");
 		translationBuilder.add(ConventionalItemTags.SOUP_FOODS, "Soups");
 		translationBuilder.add(ConventionalItemTags.CANDY_FOODS, "Candies");
+		translationBuilder.add(ConventionalItemTags.GOLDEN_FOODS, "Golden Foods");
+		translationBuilder.add(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS, "Edible When Placed");
+		translationBuilder.add(ConventionalItemTags.FOOD_POISONING_FOODS, "Food Poisoning");
 		translationBuilder.add(ConventionalItemTags.FRUITS_FOODS, "Fruits");
 		translationBuilder.add(ConventionalItemTags.VEGETABLES_FOODS, "Vegetables");
 		translationBuilder.add(ConventionalItemTags.BERRIES_FOODS, "Berries");
@@ -196,8 +199,6 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.COOKED_FISHES_FOODS, "Cooked Fishes");
 		translationBuilder.add(ConventionalItemTags.SOUPS_FOODS, "Soups");
 		translationBuilder.add(ConventionalItemTags.CANDIES_FOODS, "Candies");
-		translationBuilder.add(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS, "Edible When Placed");
-		translationBuilder.add(ConventionalItemTags.FOOD_POISONING_FOODS, "Food Poisoning");
 		translationBuilder.add(ConventionalItemTags.BUCKETS, "Buckets");
 		translationBuilder.add(ConventionalItemTags.WATER_BUCKETS, "Water Buckets");
 		translationBuilder.add(ConventionalItemTags.ENTITY_WATER_BUCKETS, "Entity Water Buckets");
