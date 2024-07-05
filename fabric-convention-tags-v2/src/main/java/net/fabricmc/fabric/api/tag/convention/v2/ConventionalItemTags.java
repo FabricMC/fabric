@@ -179,7 +179,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Item> GLASS_BLOCKS_COLORLESS = register("glass_blocks/colorless");
 	/**
-	 * Glass which is made from cheap resources like sand and only minor additional ingredients like dyes
+	 * Glass which is made from cheap resources like sand and only minor additional ingredients like dyes.
 	 */
 	public static final TagKey<Item> GLASS_BLOCKS_CHEAP = register("glass_blocks/cheap");
 	public static final TagKey<Item> GLASS_BLOCKS_TINTED = register("glass_blocks/tinted");
