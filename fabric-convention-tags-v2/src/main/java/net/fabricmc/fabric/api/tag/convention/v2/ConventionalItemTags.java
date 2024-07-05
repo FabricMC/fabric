@@ -116,30 +116,30 @@ public final class ConventionalItemTags {
 	 * Apples and other foods that are considered fruits in the culinary field belong in this tag.
 	 * Cherries would go here as they are considered a "stone fruit" within culinary fields.
 	 */
-	public static final TagKey<Item> FRUITS_FOODS = register("foods/fruits");
+	public static final TagKey<Item> FRUIT_FOODS = register("foods/fruit");
 	/**
 	 * Tomatoes and other foods that are considered vegetables in the culinary field belong in this tag.
 	 */
-	public static final TagKey<Item> VEGETABLES_FOODS = register("foods/vegetables");
+	public static final TagKey<Item> VEGETABLE_FOODS = register("foods/vegetable");
 	/**
 	 * Strawberries, raspberries, and other berry foods belong in this tag.
 	 * Cherries would NOT go here as they are considered a "stone fruit" within culinary fields.
 	 */
-	public static final TagKey<Item> BERRIES_FOODS = register("foods/berries");
-	public static final TagKey<Item> BREADS_FOODS = register("foods/breads");
-	public static final TagKey<Item> COOKIES_FOODS = register("foods/cookies");
-	public static final TagKey<Item> RAW_MEATS_FOODS = register("foods/raw_meats");
-	public static final TagKey<Item> COOKED_MEATS_FOODS = register("foods/cooked_meats");
-	public static final TagKey<Item> RAW_FISHES_FOODS = register("foods/raw_fishes");
-	public static final TagKey<Item> COOKED_FISHES_FOODS = register("foods/cooked_fishes");
+	public static final TagKey<Item> BERRY_FOODS = register("foods/berry");
+	public static final TagKey<Item> BREAD_FOODS = register("foods/bread");
+	public static final TagKey<Item> COOKIE_FOODS = register("foods/cookie");
+	public static final TagKey<Item> RAW_MEAT_FOODS = register("foods/raw_meat");
+	public static final TagKey<Item> COOKED_MEAT_FOODS = register("foods/cooked_meat");
+	public static final TagKey<Item> RAW_FISH_FOODS = register("foods/raw_fishe");
+	public static final TagKey<Item> COOKED_FISH_FOODS = register("foods/cooked_fish");
 	/**
 	 * Soups, stews, and other liquid food in bowls belongs in this tag.
 	 */
-	public static final TagKey<Item> SOUPS_FOODS = register("foods/soups");
+	public static final TagKey<Item> SOUP_FOODS = register("foods/soup");
 	/**
 	 * Sweets and candies like lollipops or chocolate belong in this tag.
 	 */
-	public static final TagKey<Item> CANDIES_FOODS = register("foods/candies");
+	public static final TagKey<Item> CANDY_FOODS = register("foods/candy");
 	/**
 	 * Foods like cake that can be eaten when placed in the world belong in this tag.
 	 */
@@ -391,6 +391,61 @@ public final class ConventionalItemTags {
 	 */
 	@Deprecated
 	public static final TagKey<Item> CONCRETE_POWDER = register("concrete_powder");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#FRUIT_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> FRUITS_FOODS = register("foods/fruits");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#VEGETABLE_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> VEGETABLES_FOODS = register("foods/vegetables");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#BERRY_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> BERRIES_FOODS = register("foods/berries");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#BREAD_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> BREADS_FOODS = register("foods/breads");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#COOKIE_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> COOKIES_FOODS = register("foods/cookies");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#RAW_MEAT_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> RAW_MEATS_FOODS = register("foods/raw_meats");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#COOKED_MEAT_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> COOKED_MEATS_FOODS = register("foods/cooked_meats");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#RAW_FISH_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> RAW_FISHES_FOODS = register("foods/raw_fishes");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#COOKED_FISH_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> COOKED_FISHES_FOODS = register("foods/cooked_fishes");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#SOUP_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> SOUPS_FOODS = register("foods/soups");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#CANDY_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> CANDIES_FOODS = register("foods/candies");
 
 	private static TagKey<Item> register(String tagId) {
 		return TagRegistration.ITEM_TAG.registerC(tagId);

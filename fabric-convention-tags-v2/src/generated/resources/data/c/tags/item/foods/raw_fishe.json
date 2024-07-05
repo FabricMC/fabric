@@ -1,0 +1,12 @@
+{
+  "values": [
+    "minecraft:cod",
+    "minecraft:salmon",
+    "minecraft:tropical_fish",
+    "minecraft:pufferfish",
+    {
+      "id": "#c:foods/raw_fishes",
+      "required": false
+    }
+  ]
+}

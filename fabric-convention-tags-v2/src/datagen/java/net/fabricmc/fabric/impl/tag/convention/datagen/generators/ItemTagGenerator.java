@@ -210,6 +210,102 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateFoodTags() {
+		getOrCreateTagBuilder(ConventionalItemTags.FRUIT_FOODS)
+				.add(Items.APPLE)
+				.add(Items.GOLDEN_APPLE)
+				.add(Items.ENCHANTED_GOLDEN_APPLE)
+				.addOptionalTag(ConventionalItemTags.FRUITS_FOODS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.VEGETABLE_FOODS)
+				.add(Items.CARROT)
+				.add(Items.GOLDEN_CARROT)
+				.add(Items.POTATO)
+				.add(Items.MELON_SLICE)
+				.add(Items.BEETROOT)
+				.addOptionalTag(ConventionalItemTags.VEGETABLES_FOODS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.BERRY_FOODS)
+				.add(Items.SWEET_BERRIES)
+				.add(Items.GLOW_BERRIES)
+				.addOptionalTag(ConventionalItemTags.BERRIES_FOODS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.BREAD_FOODS)
+				.add(Items.BREAD)
+				.addOptionalTag(ConventionalItemTags.BREADS_FOODS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.COOKIE_FOODS)
+				.add(Items.COOKIE)
+				.addOptionalTag(ConventionalItemTags.COOKIES_FOODS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.RAW_MEAT_FOODS)
+				.add(Items.BEEF)
+				.add(Items.PORKCHOP)
+				.add(Items.CHICKEN)
+				.add(Items.RABBIT)
+				.add(Items.MUTTON)
+				.addOptionalTag(ConventionalItemTags.RAW_MEATS_FOODS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.RAW_FISH_FOODS)
+				.add(Items.COD)
+				.add(Items.SALMON)
+				.add(Items.TROPICAL_FISH)
+				.add(Items.PUFFERFISH)
+				.addOptionalTag(ConventionalItemTags.RAW_FISHES_FOODS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.COOKED_MEAT_FOODS)
+				.add(Items.COOKED_BEEF)
+				.add(Items.COOKED_PORKCHOP)
+				.add(Items.COOKED_CHICKEN)
+				.add(Items.COOKED_RABBIT)
+				.add(Items.COOKED_MUTTON)
+				.addOptionalTag(ConventionalItemTags.COOKED_MEATS_FOODS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.COOKED_FISH_FOODS)
+				.add(Items.COOKED_COD)
+				.add(Items.COOKED_SALMON)
+				.addOptionalTag(ConventionalItemTags.COOKED_FISHES_FOODS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.SOUP_FOODS)
+				.add(Items.BEETROOT_SOUP)
+				.add(Items.MUSHROOM_STEW)
+				.add(Items.RABBIT_STEW)
+				.add(Items.SUSPICIOUS_STEW)
+				.addOptionalTag(ConventionalItemTags.SOUPS_FOODS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.CANDY_FOODS)
+				.addOptionalTag(ConventionalItemTags.CANDIES_FOODS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
+				.add(Items.CAKE);
+
+		getOrCreateTagBuilder(ConventionalItemTags.FOOD_POISONING_FOODS)
+				.add(Items.POISONOUS_POTATO)
+				.add(Items.PUFFERFISH)
+				.add(Items.SPIDER_EYE)
+				.add(Items.CHICKEN)
+				.add(Items.ROTTEN_FLESH);
+
+		getOrCreateTagBuilder(ConventionalItemTags.FOODS)
+				.add(Items.BAKED_POTATO)
+				.add(Items.PUMPKIN_PIE)
+				.add(Items.HONEY_BOTTLE)
+				.add(Items.OMINOUS_BOTTLE)
+				.add(Items.DRIED_KELP)
+				.addOptionalTag(ConventionalItemTags.FRUIT_FOODS)
+				.addOptionalTag(ConventionalItemTags.VEGETABLE_FOODS)
+				.addOptionalTag(ConventionalItemTags.BERRY_FOODS)
+				.addOptionalTag(ConventionalItemTags.BREAD_FOODS)
+				.addOptionalTag(ConventionalItemTags.COOKIE_FOODS)
+				.addOptionalTag(ConventionalItemTags.RAW_MEAT_FOODS)
+				.addOptionalTag(ConventionalItemTags.RAW_FISH_FOODS)
+				.addOptionalTag(ConventionalItemTags.COOKED_MEAT_FOODS)
+				.addOptionalTag(ConventionalItemTags.COOKED_FISH_FOODS)
+				.addOptionalTag(ConventionalItemTags.SOUP_FOODS)
+				.addOptionalTag(ConventionalItemTags.CANDY_FOODS)
+				.addOptionalTag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
+				.addOptionalTag(ConventionalItemTags.FOOD_POISONING_FOODS);
+
+		// Deprecated tags below
 		getOrCreateTagBuilder(ConventionalItemTags.FRUITS_FOODS)
 				.add(Items.APPLE)
 				.add(Items.GOLDEN_APPLE)
@@ -263,36 +359,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.SUSPICIOUS_STEW);
 
 		getOrCreateTagBuilder(ConventionalItemTags.CANDIES_FOODS);
-
-		getOrCreateTagBuilder(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
-				.add(Items.CAKE);
-
-		getOrCreateTagBuilder(ConventionalItemTags.FOOD_POISONING_FOODS)
-				.add(Items.POISONOUS_POTATO)
-				.add(Items.PUFFERFISH)
-				.add(Items.SPIDER_EYE)
-				.add(Items.CHICKEN)
-				.add(Items.ROTTEN_FLESH);
-
-		getOrCreateTagBuilder(ConventionalItemTags.FOODS)
-				.add(Items.BAKED_POTATO)
-				.add(Items.PUMPKIN_PIE)
-				.add(Items.HONEY_BOTTLE)
-				.add(Items.OMINOUS_BOTTLE)
-				.add(Items.DRIED_KELP)
-				.addOptionalTag(ConventionalItemTags.FRUITS_FOODS)
-				.addOptionalTag(ConventionalItemTags.VEGETABLES_FOODS)
-				.addOptionalTag(ConventionalItemTags.BERRIES_FOODS)
-				.addOptionalTag(ConventionalItemTags.BREADS_FOODS)
-				.addOptionalTag(ConventionalItemTags.COOKIES_FOODS)
-				.addOptionalTag(ConventionalItemTags.RAW_MEATS_FOODS)
-				.addOptionalTag(ConventionalItemTags.RAW_FISHES_FOODS)
-				.addOptionalTag(ConventionalItemTags.COOKED_MEATS_FOODS)
-				.addOptionalTag(ConventionalItemTags.COOKED_FISHES_FOODS)
-				.addOptionalTag(ConventionalItemTags.SOUPS_FOODS)
-				.addOptionalTag(ConventionalItemTags.CANDIES_FOODS)
-				.addOptionalTag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
-				.addOptionalTag(ConventionalItemTags.FOOD_POISONING_FOODS);
 	}
 
 	private void generateBucketTags() {
@@ -507,6 +573,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ItemTags.MACE_ENCHANTABLE)
 				.addOptionalTag(ItemTags.FIRE_ASPECT_ENCHANTABLE)
 				.addOptionalTag(ItemTags.DURABILITY_ENCHANTABLE);
+
+		// Deprecated tags below
 
 		getOrCreateTagBuilder(ConventionalItemTags.BOWS_TOOLS)
 				.add(Items.BOW);
