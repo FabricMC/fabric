@@ -49,6 +49,11 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> SHIELD_TOOLS = register("tools/shield");
 	public static final TagKey<Item> FISHING_ROD_TOOLS = register("tools/fishing_rod");
 	public static final TagKey<Item> BRUSH_TOOLS = register("tools/brush");
+	/**
+	 * A tag containing all existing fire starting tools such as Flint and Steel.
+	 * Fire Charge is not a tool (no durability) and thus, does not go in this tag.
+	 */
+	public static final TagKey<Item> IGNITER_TOOLS = register("tools/igniter");
 
 	// Action-based tool tags
 	public static final TagKey<Item> MELEE_WEAPON_TOOLS = register("tools/melee_weapon");
