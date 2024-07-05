@@ -215,17 +215,6 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(RegistryKeys.ITEM, "stews", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUP_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "candy", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDY_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "candies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDY_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "foods/fruits", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.FRUIT_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "foods/vegetables", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.VEGETABLE_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "foods/berries", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BERRY_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "foods/breads", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BREAD_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "foods/cookies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKIE_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "foods/raw_meats", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_MEAT_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "foods/raw_fishes", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_FISH_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "foods/cooked_meats", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_MEAT_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "foods/cooked_fishes", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_FISH_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "foods/soups", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUP_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "foods/candies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDY_FOODS),
 			createMapEntry(TagKey.of(RegistryKeys.ITEM, Identifier.of("minecraft", "music_discs")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MUSIC_DISCS)
 	);
 
