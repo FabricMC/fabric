@@ -90,6 +90,10 @@ public final class ModResourcePackUtil {
 
 			ModResourcePack pack = ModNioResourcePack.create(metadata.getId(), container, subPath, type, ResourcePackActivationType.ALWAYS_ENABLED, true);
 
+			if (pack == null) {
+				continue;
+			}
+
 			CustomValue object = metadata.getCustomValue(LOAD_PHASE_KEY);
 
 			if (object != null && object.getType() == CustomValue.CvType.OBJECT) {
