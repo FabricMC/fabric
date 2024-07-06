@@ -16,15 +16,20 @@
 
 package net.fabricmc.fabric.test.base;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
+import net.minecraft.Bootstrap;
+import net.minecraft.SharedConstants;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -32,47 +37,38 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
 
 public class EventTests {
-	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-base");
-
-	public static void run() {
-		long time1 = System.currentTimeMillis();
-
-		testDefaultPhaseOnly();
-		testMultipleDefaultPhases();
-		testAddedPhases();
-		testCycle();
-		NodeSorting.ENABLE_CYCLE_WARNING = false;
-		testDeterministicOrdering();
-		testTwoCycles();
-		NodeSorting.ENABLE_CYCLE_WARNING = true;
-
-		long time2 = System.currentTimeMillis();
-		LOGGER.info("Event unit tests succeeded in {} milliseconds.", time2 - time1);
+	@BeforeAll
+	static void beforeAll() {
+		SharedConstants.createGameVersion();
+		Bootstrap.initialize();
 	}
 
-	private static final Function<Test[], Test> INVOKER_FACTORY = listeners -> () -> {
-		for (Test test : listeners) {
+	private static final Function<TestCallback[], TestCallback> INVOKER_FACTORY = listeners -> () -> {
+		for (TestCallback test : listeners) {
 			test.onTest();
 		}
 	};
 
 	private static int currentListener = 0;
 
-	private static Event<Test> createEvent() {
-		return EventFactory.createArrayBacked(Test.class, INVOKER_FACTORY);
+	private static Event<TestCallback> createEvent() {
+		return EventFactory.createArrayBacked(TestCallback.class, INVOKER_FACTORY);
 	}
 
-	private static Test ensureOrder(int order) {
+	private static TestCallback ensureOrder(int order) {
 		return () -> {
 			assertEquals(order, currentListener);
 			++currentListener;
 		};
 	}
 
-	private static void testDefaultPhaseOnly() {
-		Event<Test> event = createEvent();
+	@Test
+	public void testDefaultPhaseOnly() {
+		Event<TestCallback> event = createEvent();
+		assertFalse(event.hasListener(), "Newly created event does not have listeners");
 
 		event.register(ensureOrder(0));
+		assertTrue(event.hasListener(), "hasListener returns true when event has a listener");
 		event.register(Event.DEFAULT_PHASE, ensureOrder(1));
 		event.register(ensureOrder(2));
 
@@ -81,12 +77,14 @@ public class EventTests {
 		currentListener = 0;
 	}
 
-	private static void testMultipleDefaultPhases() {
+	@Test
+	public void testMultipleDefaultPhases() {
 		Identifier first = Identifier.of("fabric", "first");
 		Identifier second = Identifier.of("fabric", "second");
-		Event<Test> event = EventFactory.createWithPhases(Test.class, INVOKER_FACTORY, first, second, Event.DEFAULT_PHASE);
+		Event<TestCallback> event = EventFactory.createWithPhases(TestCallback.class, INVOKER_FACTORY, first, second, Event.DEFAULT_PHASE);
 
 		event.register(second, ensureOrder(1));
+		assertTrue(event.hasListener(), "hasListener returns true when event has a listener in non-default phases");
 		event.register(ensureOrder(2));
 		event.register(first, ensureOrder(0));
 
@@ -97,8 +95,9 @@ public class EventTests {
 		}
 	}
 
-	private static void testAddedPhases() {
-		Event<Test> event = createEvent();
+	@Test
+	public void testAddedPhases() {
+		Event<TestCallback> event = createEvent();
 
 		Identifier veryEarly = Identifier.of("fabric", "very_early");
 		Identifier early = Identifier.of("fabric", "early");
@@ -128,8 +127,9 @@ public class EventTests {
 		}
 	}
 
-	private static void testCycle() {
-		Event<Test> event = createEvent();
+	@Test
+	public void testCycle() {
+		Event<TestCallback> event = createEvent();
 
 		Identifier a = Identifier.of("fabric", "a");
 		Identifier b1 = Identifier.of("fabric", "b1");
@@ -183,7 +183,9 @@ public class EventTests {
 	 * Notice the cycle z -> b -> y -> z. The elements of the cycle are ordered [b, y, z], and the cycle itself is ordered with its lowest id "b".
 	 * We get for the final order: [a, d, e, cycle [b, y, z], f].
 	 */
-	private static void testDeterministicOrdering() {
+	@Test
+	public void testDeterministicOrdering() {
+		NodeSorting.ENABLE_CYCLE_WARNING = false;
 		Identifier a = Identifier.of("fabric", "a");
 		Identifier b = Identifier.of("fabric", "b");
 		Identifier d = Identifier.of("fabric", "d");
@@ -192,7 +194,7 @@ public class EventTests {
 		Identifier y = Identifier.of("fabric", "y");
 		Identifier z = Identifier.of("fabric", "z");
 
-		List<Consumer<Event<Test>>> dependencies = List.of(
+		List<Consumer<Event<TestCallback>>> dependencies = List.of(
 				ev -> ev.addPhaseOrdering(a, z),
 				ev -> ev.addPhaseOrdering(d, e),
 				ev -> ev.addPhaseOrdering(e, z),
@@ -202,9 +204,9 @@ public class EventTests {
 		);
 
 		testAllPermutations(new ArrayList<>(), dependencies, selectedDependencies -> {
-			Event<Test> event = createEvent();
+			Event<TestCallback> event = createEvent();
 
-			for (Consumer<Event<Test>> dependency : selectedDependencies) {
+			for (Consumer<Event<TestCallback>> dependency : selectedDependencies) {
 				dependency.accept(event);
 			}
 
@@ -220,22 +222,25 @@ public class EventTests {
 			assertEquals(7, currentListener);
 			currentListener = 0;
 		});
+		NodeSorting.ENABLE_CYCLE_WARNING = true;
 	}
 
 	/**
-	 * Test deterministic phase sorting with two cycles.
+	 * TestCallback deterministic phase sorting with two cycles.
 	 * <pre>
 	 * e --> a <--> b <-- d <--> c
 	 * </pre>
 	 */
-	private static void testTwoCycles() {
+	@Test
+	public void testTwoCycles() {
+		NodeSorting.ENABLE_CYCLE_WARNING = false;
 		Identifier a = Identifier.of("fabric", "a");
 		Identifier b = Identifier.of("fabric", "b");
 		Identifier c = Identifier.of("fabric", "c");
 		Identifier d = Identifier.of("fabric", "d");
 		Identifier e = Identifier.of("fabric", "e");
 
-		List<Consumer<Event<Test>>> dependencies = List.of(
+		List<Consumer<Event<TestCallback>>> dependencies = List.of(
 				ev -> ev.addPhaseOrdering(e, a),
 				ev -> ev.addPhaseOrdering(a, b),
 				ev -> ev.addPhaseOrdering(b, a),
@@ -245,9 +250,9 @@ public class EventTests {
 		);
 
 		testAllPermutations(new ArrayList<>(), dependencies, selectedDependencies -> {
-			Event<Test> event = createEvent();
+			Event<TestCallback> event = createEvent();
 
-			for (Consumer<Event<Test>> dependency : selectedDependencies) {
+			for (Consumer<Event<TestCallback>> dependency : selectedDependencies) {
 				dependency.accept(event);
 			}
 
@@ -261,11 +266,12 @@ public class EventTests {
 			assertEquals(5, currentListener);
 			currentListener = 0;
 		});
+		NodeSorting.ENABLE_CYCLE_WARNING = true;
 	}
 
 	@SuppressWarnings("SuspiciousListRemoveInLoop")
 	private static <T> void testAllPermutations(List<T> selected, List<T> toSelect, Consumer<List<T>> action) {
-		if (toSelect.size() == 0) {
+		if (toSelect.isEmpty()) {
 			action.accept(selected);
 		} else {
 			for (int i = 0; i < toSelect.size(); ++i) {
@@ -273,19 +279,13 @@ public class EventTests {
 				List<T> remaining = new ArrayList<>(toSelect);
 				remaining.remove(i);
 				testAllPermutations(selected, remaining, action);
-				selected.remove(selected.size()-1);
+				selected.removeLast();
 			}
 		}
 	}
 
 	@FunctionalInterface
-	interface Test {
+	interface TestCallback {
 		void onTest();
-	}
-
-	private static void assertEquals(Object expected, Object actual) {
-		if (!Objects.equals(expected, actual)) {
-			throw new AssertionError(String.format("assertEquals failed%nexpected: %s%n but was: %s", expected, actual));
-		}
 	}
 }
