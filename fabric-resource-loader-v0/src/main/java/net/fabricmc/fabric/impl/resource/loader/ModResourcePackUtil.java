@@ -50,12 +50,14 @@ import net.minecraft.resource.VanillaDataPackProvider;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.metadata.PackResourceMetadata;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.path.SymlinkFinder;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.CustomValue;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
 /**
@@ -64,6 +66,7 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 public final class ModResourcePackUtil {
 	public static final Gson GSON = new Gson();
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModResourcePackUtil.class);
+	private static final String LOAD_PHASE_KEY = "fabric:resource_load_phase";
 
 	private ModResourcePackUtil() {
 	}
@@ -76,17 +79,34 @@ public final class ModResourcePackUtil {
 	 * @param subPath the resource pack sub path directory in mods, may be {@code null}
 	 */
 	public static void appendModResourcePacks(List<ModResourcePack> packs, ResourceType type, @Nullable String subPath) {
+		ModResourcePackSorter sorter = new ModResourcePackSorter();
+
 		for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
-			if (container.getMetadata().getType().equals("builtin")) {
+			ModMetadata metadata = container.getMetadata();
+
+			if (metadata.getType().equals("builtin")) {
 				continue;
 			}
 
-			ModResourcePack pack = ModNioResourcePack.create(container.getMetadata().getId(), container, subPath, type, ResourcePackActivationType.ALWAYS_ENABLED, true);
+			ModResourcePack pack = ModNioResourcePack.create(metadata.getId(), container, subPath, type, ResourcePackActivationType.ALWAYS_ENABLED, true);
 
-			if (pack != null) {
-				packs.add(pack);
+			CustomValue object = metadata.getCustomValue(LOAD_PHASE_KEY);
+
+			if (object != null && object.getType() == CustomValue.CvType.OBJECT) {
+				CustomValue phase = object.getAsObject().get(type.getDirectory());
+
+				if (phase != null && phase.getType() == CustomValue.CvType.STRING) {
+					Identifier id = Identifier.tryParse(phase.getAsString());
+					sorter.addPack(id, pack);
+				} else {
+					sorter.addPack(pack);
+				}
+			} else {
+				sorter.addPack(pack);
 			}
 		}
+
+		sorter.appendPacks(packs);
 	}
 
 	public static void refreshAutoEnabledPacks(List<ResourcePackProfile> enabledProfiles, Map<String, ResourcePackProfile> allProfiles) {
