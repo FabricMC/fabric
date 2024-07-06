@@ -23,17 +23,13 @@
   "description": "Hooks for manipulating loot tables.",
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.impl.loot.LootInitializer"
+      "net.fabricmc.fabric.impl.loot.v2.LootInitializer"
     ]
   },
   "mixins": [
     "fabric-loot-api-v2.mixins.json"
   ],
   "custom": {
-    "fabric-api:module-lifecycle": "deprecated",
-    "loom:injected_interfaces": {
-      "net/minecraft/class_52\u0024class_53": ["net/fabricmc/fabric/api/loot/v2/FabricLootTableBuilder"],
-      "net/minecraft/class_55\u0024class_56": ["net/fabricmc/fabric/api/loot/v2/FabricLootPoolBuilder"]
-    }
+    "fabric-api:module-lifecycle": "deprecated"
   }
 }

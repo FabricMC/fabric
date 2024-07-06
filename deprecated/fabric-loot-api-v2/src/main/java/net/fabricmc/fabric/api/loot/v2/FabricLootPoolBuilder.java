@@ -25,14 +25,12 @@ import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
 
-import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
-
 /**
  * Convenience extensions to {@link LootPool.Builder}
  * for adding pre-built objects or collections.
  *
  * <p>This interface is automatically injected to {@link LootPool.Builder}.
- * @deprecated Please use {@link FabricLootTableBuilder} instead.
+ * @deprecated Please use {@link net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder} instead.
  */
 @ApiStatus.NonExtendable
 @Deprecated
@@ -42,7 +40,7 @@ public interface FabricLootPoolBuilder {
 	 *
 	 * @param entry the added loot entry
 	 * @return this builder
-	 * @deprecated Please use {@link FabricLootTableBuilder#pool(LootPool)} instead.
+	 * @deprecated Please use {@link net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder#with(LootPoolEntry)} instead.
 	 */
 	@Deprecated
 	default LootPool.Builder with(LootPoolEntry entry) {
@@ -54,7 +52,7 @@ public interface FabricLootPoolBuilder {
 	 *
 	 * @param entries the added loot entries
 	 * @return this builder
-	 * @deprecated Please use {@link FabricLootTableBuilder#pool(LootPool)} instead.
+	 * @deprecated Please use {@link net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder#with(LootPoolEntry)} instead.
 	 */
 	@Deprecated
 	default LootPool.Builder with(Collection<? extends LootPoolEntry> entries) {
@@ -66,7 +64,7 @@ public interface FabricLootPoolBuilder {
 	 *
 	 * @param condition the added condition
 	 * @return this builder
-	 * @deprecated Please use {@link FabricLootTableBuilder#pool(LootPool)} instead.
+	 * @deprecated Please use {@link net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder#conditionally(LootCondition)} instead.
 	 */
 	@Deprecated
 	default LootPool.Builder conditionally(LootCondition condition) {
@@ -78,7 +76,7 @@ public interface FabricLootPoolBuilder {
 	 *
 	 * @param conditions the added conditions
 	 * @return this builder
-	 * @deprecated Please use {@link FabricLootTableBuilder#pool(LootPool)} instead.
+	 * @deprecated Please use {@link net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder#conditionally(LootCondition)} instead.
 	 */
 	@Deprecated
 	default LootPool.Builder conditionally(Collection<? extends LootCondition> conditions) {
@@ -90,7 +88,7 @@ public interface FabricLootPoolBuilder {
 	 *
 	 * @param function the applied loot function
 	 * @return this builder
-	 * @deprecated Please use {@link FabricLootTableBuilder#pool(LootPool)} instead.
+	 * @deprecated Please use {@link net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder#apply(LootFunction)} instead.
 	 */
 	@Deprecated
 	default LootPool.Builder apply(LootFunction function) {
@@ -102,7 +100,7 @@ public interface FabricLootPoolBuilder {
 	 *
 	 * @param functions the applied loot functions
 	 * @return this builder
-	 * @deprecated Please use {@link FabricLootTableBuilder#pool(LootPool)} instead.
+	 * @deprecated Please use {@link net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder#apply(LootFunction)} instead.
 	 */
 	@Deprecated
 	default LootPool.Builder apply(Collection<? extends LootFunction> functions) {
@@ -114,7 +112,7 @@ public interface FabricLootPoolBuilder {
 	 *
 	 * @param pool the loot pool
 	 * @return the copied builder
-	 * @deprecated Please use {@link FabricLootTableBuilder#pool(LootPool)} instead.
+	 * @deprecated Please use {@link net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder#copyOf(LootPool)} instead.
 	 */
 	@Deprecated
 	static LootPool.Builder copyOf(LootPool pool) {
