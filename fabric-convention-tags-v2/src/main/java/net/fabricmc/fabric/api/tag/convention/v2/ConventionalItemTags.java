@@ -136,7 +136,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> COOKIE_FOODS = register("foods/cookie");
 	public static final TagKey<Item> RAW_MEAT_FOODS = register("foods/raw_meat");
 	public static final TagKey<Item> COOKED_MEAT_FOODS = register("foods/cooked_meat");
-	public static final TagKey<Item> RAW_FISH_FOODS = register("foods/raw_fishe");
+	public static final TagKey<Item> RAW_FISH_FOODS = register("foods/raw_fish");
 	public static final TagKey<Item> COOKED_FISH_FOODS = register("foods/cooked_fish");
 	/**
 	 * Soups, stews, and other liquid food in bowls belongs in this tag.
