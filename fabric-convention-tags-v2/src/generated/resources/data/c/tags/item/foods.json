@@ -6,47 +6,51 @@
     "minecraft:ominous_bottle",
     "minecraft:dried_kelp",
     {
-      "id": "#c:foods/fruits",
+      "id": "#c:foods/fruit",
       "required": false
     },
     {
-      "id": "#c:foods/vegetables",
+      "id": "#c:foods/vegetable",
       "required": false
     },
     {
-      "id": "#c:foods/berries",
+      "id": "#c:foods/berry",
       "required": false
     },
     {
-      "id": "#c:foods/breads",
+      "id": "#c:foods/bread",
       "required": false
     },
     {
-      "id": "#c:foods/cookies",
+      "id": "#c:foods/cookie",
       "required": false
     },
     {
-      "id": "#c:foods/raw_meats",
+      "id": "#c:foods/raw_meat",
       "required": false
     },
     {
-      "id": "#c:foods/raw_fishes",
+      "id": "#c:foods/raw_fishe",
       "required": false
     },
     {
-      "id": "#c:foods/cooked_meats",
+      "id": "#c:foods/cooked_meat",
       "required": false
     },
     {
-      "id": "#c:foods/cooked_fishes",
+      "id": "#c:foods/cooked_fish",
       "required": false
     },
     {
-      "id": "#c:foods/soups",
+      "id": "#c:foods/soup",
       "required": false
     },
     {
-      "id": "#c:foods/candies",
+      "id": "#c:foods/candy",
+      "required": false
+    },
+    {
+      "id": "#c:foods/golden",
       "required": false
     },
     {

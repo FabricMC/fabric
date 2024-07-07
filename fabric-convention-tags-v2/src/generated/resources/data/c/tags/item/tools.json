@@ -37,6 +37,10 @@
       "required": false
     },
     {
+      "id": "#c:tools/igniter",
+      "required": false
+    },
+    {
       "id": "#c:tools/shear",
       "required": false
     },
