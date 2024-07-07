@@ -23,7 +23,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
@@ -51,12 +50,7 @@ public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen
 
 	public Text getValueText(E value) {
 		final String key = this.rootTranslationKey + "." + value.name().toLowerCase(Locale.ROOT);
-
-		if (I18n.hasTranslation(key)) {
-			return Text.translatable(key);
-		}
-
-		return Text.literal(value.toString());
+		return Text.translatableWithFallback(key, value.toString());
 	}
 
 	@Override
