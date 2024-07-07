@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.loot.v2",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "LootPoolBuilderMixin",
+    "LootTableBuilderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

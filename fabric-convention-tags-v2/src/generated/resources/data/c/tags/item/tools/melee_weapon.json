@@ -12,6 +12,7 @@
     "minecraft:iron_axe",
     "minecraft:diamond_axe",
     "minecraft:netherite_axe",
+    "minecraft:mace",
     {
       "id": "#c:tools/melee_weapons",
       "required": false

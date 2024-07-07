@@ -54,6 +54,7 @@ public final class ConventionalItemTags {
 	 * Fire Charge is not a tool (no durability) and thus, does not go in this tag.
 	 */
 	public static final TagKey<Item> IGNITER_TOOLS = register("tools/igniter");
+	public static final TagKey<Item> MACE_TOOLS = register("tools/mace");
 
 	// Action-based tool tags
 	public static final TagKey<Item> MELEE_WEAPON_TOOLS = register("tools/melee_weapon");

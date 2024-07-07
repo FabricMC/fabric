@@ -536,6 +536,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.BRUSHES_TOOLS);
 		getOrCreateTagBuilder(ConventionalItemTags.IGNITER_TOOLS)
 				.add(Items.FLINT_AND_STEEL);
+		getOrCreateTagBuilder(ConventionalItemTags.MACE_TOOLS)
+				.add(Items.MACE);
 
 		getOrCreateTagBuilder(ConventionalItemTags.MINING_TOOL_TOOLS)
 				.add(Items.WOODEN_PICKAXE)
@@ -559,6 +561,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.IRON_AXE)
 				.add(Items.DIAMOND_AXE)
 				.add(Items.NETHERITE_AXE)
+				.add(Items.MACE)
 				.addOptionalTag(ConventionalItemTags.MELEE_WEAPONS_TOOLS);
 
 		getOrCreateTagBuilder(ConventionalItemTags.RANGED_WEAPON_TOOLS)
