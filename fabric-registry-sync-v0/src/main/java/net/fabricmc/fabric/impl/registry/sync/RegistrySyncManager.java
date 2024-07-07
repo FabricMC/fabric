@@ -36,6 +36,9 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+
+import net.minecraft.screen.ScreenTexts;
+
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
@@ -349,7 +352,7 @@ public final class RegistrySyncManager {
 
 		for (int i = 0; i < Math.min(namespaces.size(), toDisplay); i++) {
 			text = text.append(Text.literal(namespaces.get(i)).formatted(Formatting.YELLOW));
-			text = text.append("\n");
+			text = text.append(ScreenTexts.LINE_BREAK);
 		}
 
 		if (namespaces.size() > toDisplay) {
