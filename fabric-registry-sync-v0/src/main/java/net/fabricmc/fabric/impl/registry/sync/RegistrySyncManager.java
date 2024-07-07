@@ -46,6 +46,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
@@ -325,7 +326,7 @@ public final class RegistrySyncManager {
 		}
 
 		// Create a nice user friendly error message.
-		MutableText text = Text.literal("");
+		MutableText text = Text.empty();
 
 		final int count = missingEntries.values().stream().mapToInt(List::size).sum();
 
@@ -349,7 +350,7 @@ public final class RegistrySyncManager {
 
 		for (int i = 0; i < Math.min(namespaces.size(), toDisplay); i++) {
 			text = text.append(Text.literal(namespaces.get(i)).formatted(Formatting.YELLOW));
-			text = text.append("\n");
+			text = text.append(ScreenTexts.LINE_BREAK);
 		}
 
 		if (namespaces.size() > toDisplay) {
