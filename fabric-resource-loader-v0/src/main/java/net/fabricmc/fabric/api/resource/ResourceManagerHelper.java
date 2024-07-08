@@ -55,6 +55,8 @@ public interface ResourceManagerHelper {
 	/**
 	 * Register a resource reload listener for a given resource manager type.
 	 *
+	 * <p>Note: This is only supported for server data reload listeners.
+	 *
 	 * @param identifier The identifier of the listener.
 	 * @param listenerFactory   A function that creates a new instance of the listener with a given registry lookup.
 	 */
