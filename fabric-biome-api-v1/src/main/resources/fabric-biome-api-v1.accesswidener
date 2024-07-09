@@ -59,3 +59,6 @@ mutable field net/minecraft/world/biome/GenerationSettings allowedFeatures Ljava
 # ChunkGenerator
 accessible field net/minecraft/world/gen/chunk/ChunkGenerator indexedFeaturesListSupplier Ljava/util/function/Supplier;
 mutable field net/minecraft/world/gen/chunk/ChunkGenerator indexedFeaturesListSupplier Ljava/util/function/Supplier;
+
+# Registry mutation sync
+accessible field net/minecraft/registry/SimpleRegistry keyToEntryInfo Ljava/util/Map;
