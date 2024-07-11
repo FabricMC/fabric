@@ -34,14 +34,11 @@ import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.DataFixerUpper;
 import com.mojang.datafixers.schemas.Schema;
-
-import net.minecraft.datafixer.DataFixTypes;
-
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import net.minecraft.SharedConstants;
+import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
 
 import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;

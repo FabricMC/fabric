@@ -27,11 +27,10 @@ import java.util.function.Supplier;
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.DataFixerUpper;
-
-import net.minecraft.util.Util;
-
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Range;
+
+import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.impl.datafixer.v1.FabricDataFixesInternals;
 import net.fabricmc.loader.api.ModContainer;

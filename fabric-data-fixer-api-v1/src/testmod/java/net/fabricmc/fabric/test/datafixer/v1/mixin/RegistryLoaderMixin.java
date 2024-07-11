@@ -18,22 +18,19 @@ package net.fabricmc.fabric.test.datafixer.v1.mixin;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import com.llamalad7.mixinextras.injector.ModifyReceiver;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.MutableRegistry;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryLoader;
-import net.minecraft.registry.RegistryOps;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.TheEndBiomeCreator;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
@@ -43,27 +40,20 @@ import net.fabricmc.fabric.test.datafixer.v1.DataFixerTest;
 
 @Mixin(RegistryLoader.class)
 public class RegistryLoaderMixin {
-	@SuppressWarnings({"unchecked", "DataFlowIssue"})
-	@Inject(
+	@SuppressWarnings("unchecked")
+	@ModifyReceiver(
 			method = "load",
 			at = @At(
 					value = "INVOKE",
 					target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V",
-					ordinal = 1,
-					shift = At.Shift.BEFORE
-			),
-			locals = LocalCapture.CAPTURE_FAILHARD
+					ordinal = 1
+			)
 	)
-	private static void registerTestmodBiome(
-			RegistryLoader.RegistryLoadable loadable,
-			DynamicRegistryManager baseRegistryManager,
-			List<RegistryLoader.Entry<?>> entries,
-			CallbackInfoReturnable<DynamicRegistryManager.Immutable> cir,
-			Map<RegistryKey<?>, Exception> map,
-			List<RegistryLoader.Loader<?>> loaders,
-			RegistryOps.RegistryInfoGetter registryInfoGetter
+	private static List<RegistryLoader.Loader<?>> registerTestmodBiome(
+			List<RegistryLoader.Loader<?>> instance,
+			Consumer<RegistryLoader.Loader<?>> consumer
 	) {
-		Stream<MutableRegistry<?>> registries = loaders.stream().map(RegistryLoader.Loader::registry);
+		Stream<MutableRegistry<?>> registries = instance.stream().map(RegistryLoader.Loader::registry);
 		Map<RegistryKey<?>, MutableRegistry<?>> registryMap = new Object2ObjectOpenHashMap<>();
 		registries.forEach(registry -> registryMap.put(registry.getKey(), registry));
 
@@ -72,10 +62,12 @@ public class RegistryLoaderMixin {
 		MutableRegistry<ConfiguredCarver<?>> configuredCarverRegistry = (MutableRegistry<ConfiguredCarver<?>>) registryMap.get(RegistryKeys.CONFIGURED_CARVER);
 
 		if (biomeRegistry == null || placedFeatureRegistry == null || configuredCarverRegistry == null || biomeRegistry.contains(DataFixerTest.BIOME_KEY)) {
-			return;
+			return null;
 		}
 
 		Biome customBiome = TheEndBiomeCreator.createEndHighlands(placedFeatureRegistry.createMutableEntryLookup(), configuredCarverRegistry.createMutableEntryLookup());
 		Registry.register(biomeRegistry, DataFixerTest.BIOME_KEY, customBiome);
+
+		return instance;
 	}
 }
