@@ -49,7 +49,11 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.CHESTS, "Chests");
 		translationBuilder.add(ConventionalBlockTags.WOODEN_CHESTS, "Wooden Chests");
 		translationBuilder.add(ConventionalBlockTags.GLASS_BLOCKS, "Glass Blocks");
+		translationBuilder.add(ConventionalBlockTags.GLASS_BLOCKS_TINTED, "Tinted Glass Blocks");
+		translationBuilder.add(ConventionalBlockTags.GLASS_BLOCKS_CHEAP, "Cheap Glass Blocks");
+		translationBuilder.add(ConventionalBlockTags.GLASS_BLOCKS_COLORLESS, "Colorless Glass Blocks");
 		translationBuilder.add(ConventionalBlockTags.GLASS_PANES, "Glass Panes");
+		translationBuilder.add(ConventionalBlockTags.GLASS_PANES_COLORLESS, "Colorless Glass Panes");
 		translationBuilder.add(ConventionalBlockTags.SHULKER_BOXES, "Shulker Boxes");
 		translationBuilder.add(ConventionalBlockTags.GLAZED_TERRACOTTAS, "Glazed Terracottas");
 		translationBuilder.add(ConventionalBlockTags.CONCRETES, "Concretes");
@@ -121,6 +125,8 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.SHIELD_TOOLS, "Shields");
 		translationBuilder.add(ConventionalItemTags.FISHING_ROD_TOOLS, "Fishing Rods");
 		translationBuilder.add(ConventionalItemTags.BRUSH_TOOLS, "Brushes");
+		translationBuilder.add(ConventionalItemTags.IGNITER_TOOLS, "Igniters");
+		translationBuilder.add(ConventionalItemTags.MACE_TOOLS, "Maces");
 		translationBuilder.add(ConventionalItemTags.MELEE_WEAPON_TOOLS, "Melee Weapons");
 		translationBuilder.add(ConventionalItemTags.RANGED_WEAPON_TOOLS, "Ranged Weapons");
 		translationBuilder.add(ConventionalItemTags.MINING_TOOL_TOOLS, "Mining Tools");
@@ -169,6 +175,20 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.COAL, "Coal");
 		translationBuilder.add(ConventionalItemTags.POTIONS, "Potions");
 		translationBuilder.add(ConventionalItemTags.FOODS, "Foods");
+		translationBuilder.add(ConventionalItemTags.FRUIT_FOODS, "Fruits");
+		translationBuilder.add(ConventionalItemTags.VEGETABLE_FOODS, "Vegetables");
+		translationBuilder.add(ConventionalItemTags.BERRY_FOODS, "Berries");
+		translationBuilder.add(ConventionalItemTags.BREAD_FOODS, "Breads");
+		translationBuilder.add(ConventionalItemTags.COOKIE_FOODS, "Cookies");
+		translationBuilder.add(ConventionalItemTags.RAW_MEAT_FOODS, "Raw Meats");
+		translationBuilder.add(ConventionalItemTags.COOKED_MEAT_FOODS, "Cooked Meats");
+		translationBuilder.add(ConventionalItemTags.RAW_FISH_FOODS, "Raw Fishes");
+		translationBuilder.add(ConventionalItemTags.COOKED_FISH_FOODS, "Cooked Fishes");
+		translationBuilder.add(ConventionalItemTags.SOUP_FOODS, "Soups");
+		translationBuilder.add(ConventionalItemTags.CANDY_FOODS, "Candies");
+		translationBuilder.add(ConventionalItemTags.GOLDEN_FOODS, "Golden Foods");
+		translationBuilder.add(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS, "Edible When Placed");
+		translationBuilder.add(ConventionalItemTags.FOOD_POISONING_FOODS, "Food Poisoning");
 		translationBuilder.add(ConventionalItemTags.FRUITS_FOODS, "Fruits");
 		translationBuilder.add(ConventionalItemTags.VEGETABLES_FOODS, "Vegetables");
 		translationBuilder.add(ConventionalItemTags.BERRIES_FOODS, "Berries");
@@ -180,8 +200,6 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.COOKED_FISHES_FOODS, "Cooked Fishes");
 		translationBuilder.add(ConventionalItemTags.SOUPS_FOODS, "Soups");
 		translationBuilder.add(ConventionalItemTags.CANDIES_FOODS, "Candies");
-		translationBuilder.add(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS, "Edible When Placed");
-		translationBuilder.add(ConventionalItemTags.FOOD_POISONING_FOODS, "Food Poisoning");
 		translationBuilder.add(ConventionalItemTags.BUCKETS, "Buckets");
 		translationBuilder.add(ConventionalItemTags.WATER_BUCKETS, "Water Buckets");
 		translationBuilder.add(ConventionalItemTags.ENTITY_WATER_BUCKETS, "Entity Water Buckets");
@@ -195,7 +213,11 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.CHESTS, "Chests");
 		translationBuilder.add(ConventionalItemTags.WOODEN_CHESTS, "Wooden Chests");
 		translationBuilder.add(ConventionalItemTags.GLASS_BLOCKS, "Glass Blocks");
+		translationBuilder.add(ConventionalItemTags.GLASS_BLOCKS_TINTED, "Tinted Glass Blocks");
+		translationBuilder.add(ConventionalItemTags.GLASS_BLOCKS_CHEAP, "Cheap Glass Blocks");
+		translationBuilder.add(ConventionalItemTags.GLASS_BLOCKS_COLORLESS, "Colorless Glass Blocks");
 		translationBuilder.add(ConventionalItemTags.GLASS_PANES, "Glass Panes");
+		translationBuilder.add(ConventionalItemTags.GLASS_PANES_COLORLESS, "Colorless Glass Panes");
 		translationBuilder.add(ConventionalItemTags.SHULKER_BOXES, "Shulker Boxes");
 		translationBuilder.add(ConventionalItemTags.GLAZED_TERRACOTTAS, "Glazed Terracottas");
 		translationBuilder.add(ConventionalItemTags.CONCRETES, "Concretes");
@@ -278,6 +300,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.BREEZE_RODS, "Breeze Rods");
 		translationBuilder.add(ConventionalItemTags.ROPES, "Ropes");
 		translationBuilder.add(ConventionalItemTags.CHAINS, "Chains");
+		translationBuilder.add(ConventionalItemTags.ENDER_PEARLS, "Ender Pearls");
 		translationBuilder.add(ConventionalItemTags.HIDDEN_FROM_RECIPE_VIEWERS, "Hidden From Recipe Viewers");
 
 		// Enchantments

@@ -43,7 +43,7 @@ abstract class ClientCommandSourceMixin implements FabricClientCommandSource {
 
 	@Override
 	public void sendError(Text message) {
-		sendFeedback(Text.literal("").append(message).formatted(Formatting.RED));
+		sendFeedback(Text.empty().append(message).formatted(Formatting.RED));
 	}
 
 	@Override
