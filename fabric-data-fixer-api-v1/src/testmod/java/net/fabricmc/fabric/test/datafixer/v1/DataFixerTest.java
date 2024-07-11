@@ -71,21 +71,21 @@ public class DataFixerTest implements ModInitializer, ServerLifecycleEvents.Serv
 	 */
 	public static final boolean GENERATE_MODE = Boolean.getBoolean("fabric.dataFixerTestMod.genMode");
 
-	public static final Identifier OLD_ITEM_ID = new Identifier(MOD_ID, "old_item");
-	public static final Identifier NEW_ITEM_ID = new Identifier(MOD_ID, "new_item");
+	public static final Identifier OLD_ITEM_ID = Identifier.of(MOD_ID, "old_item");
+	public static final Identifier NEW_ITEM_ID = Identifier.of(MOD_ID, "new_item");
 	public static final Item ITEM = new Item(new Item.Settings());
 
-	public static final Identifier OLD_BLOCK_ID = new Identifier(MOD_ID, "old_block");
-	public static final Identifier NEW_BLOCK_ID = new Identifier(MOD_ID, "new_block");
+	public static final Identifier OLD_BLOCK_ID = Identifier.of(MOD_ID, "old_block");
+	public static final Identifier NEW_BLOCK_ID = Identifier.of(MOD_ID, "new_block");
 	public static final Block BLOCK = new Block(AbstractBlock.Settings.create());
 
-	public static final Identifier OLD_CHEST_ID = new Identifier(MOD_ID, "old_chest");
-	public static final Identifier NEW_CHEST_ID = new Identifier(MOD_ID, "new_chest");
+	public static final Identifier OLD_CHEST_ID = Identifier.of(MOD_ID, "old_chest");
+	public static final Identifier NEW_CHEST_ID = Identifier.of(MOD_ID, "new_chest");
 	public static final Block CHEST = new Block(AbstractBlock.Settings.copy(Blocks.CHEST));
 	public static final BlockEntityType<ModdedChestBlockEntity> CHEST_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(ModdedChestBlockEntity::new, BLOCK).build();
 
-	public static final Identifier OLD_BIOME_ID = new Identifier(MOD_ID, "old_biome");
-	public static final Identifier NEW_BIOME_ID = new Identifier(MOD_ID, "new_biome");
+	public static final Identifier OLD_BIOME_ID = Identifier.of(MOD_ID, "old_biome");
+	public static final Identifier NEW_BIOME_ID = Identifier.of(MOD_ID, "new_biome");
 	public static final RegistryKey<Biome> BIOME_KEY = RegistryKey.of(
 			RegistryKeys.BIOME, GENERATE_MODE ? OLD_BIOME_ID : NEW_BIOME_ID);
 

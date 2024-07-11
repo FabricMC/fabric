@@ -27,6 +27,9 @@ import java.util.function.Supplier;
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.DataFixerUpper;
+
+import net.minecraft.util.Util;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Range;
 
@@ -77,8 +80,8 @@ public class FabricDataFixerBuilder extends DataFixerBuilder {
 	/**
 	 * Builds the final {@code DataFixer}.
 	 *
-	 * <p>This will build either an {@linkplain #buildUnoptimized() unoptimized fixer} or an
-	 * {@linkplain #buildOptimized(Set, Executor)}  optimized fixer}, depending on the vanilla game's settings.
+	 * <p>This will build either an {@linkplain #build() unoptimized fixer} or an
+	 * optimized fixer, depending on the vanilla game's settings.
 	 *
 	 * @param types          the set of required {@link com.mojang.datafixers.DSL.TypeReference}s, only used if the game is using optimized data fixers
 	 * @param executorGetter the executor supplier, only invoked if the game is using optimized data fixers
@@ -87,6 +90,10 @@ public class FabricDataFixerBuilder extends DataFixerBuilder {
 	@Contract(value = "_, _ -> new")
 	public DataFixerUpper build(Set<DSL.TypeReference> types, Supplier<Executor> executorGetter) {
 		Objects.requireNonNull(executorGetter, "executorGetter cannot be null");
-		return (DataFixerUpper) (types.isEmpty() ? this.buildUnoptimized() : this.buildOptimized(types, executorGetter.get()));
+		return (DataFixerUpper) (types.isEmpty() ? this.build().fixer() : Util.make(() -> {
+			Result result = this.build();
+			result.optimize(types, executorGetter.get()).join();
+			return result.fixer();
+		}));
 	}
 }

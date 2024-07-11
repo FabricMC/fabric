@@ -34,6 +34,9 @@ import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.DataFixerUpper;
 import com.mojang.datafixers.schemas.Schema;
+
+import net.minecraft.datafixer.DataFixTypes;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -74,7 +77,6 @@ public final class FabricDataFixes {
 	 * @param modId          the mod ID
 	 * @param currentVersion the current version of the mod's data
 	 * @param dataFixer      the data fixer
-	 * @throws IllegalArgumentException if the data fixer for {@code modId} is already registered
 	 */
 	public static void registerFixer(String modId,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
@@ -89,7 +91,6 @@ public final class FabricDataFixes {
 	 * @param currentVersion the current version of the mod's data
 	 * @param key            the optional key of the saved current version
 	 * @param dataFixer      the data fixer
-	 * @throws IllegalArgumentException if the data fixer for {@code modId} is already registered
 	 */
 	public static void registerFixer(String modId,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
@@ -112,7 +113,6 @@ public final class FabricDataFixes {
 	 * @param mod            the mod container
 	 * @param currentVersion the current version of the mod's data
 	 * @param dataFixer      the data fixer
-	 * @throws IllegalArgumentException if the data fixer for {@code mod} is already registered
 	 */
 	public static void registerFixer(ModContainer mod,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
@@ -127,7 +127,6 @@ public final class FabricDataFixes {
 	 * @param currentVersion the current version of the mod's data
 	 * @param key            the optional key of the saved current version
 	 * @param dataFixer      the data fixer
-	 * @throws IllegalArgumentException if the data fixer for {@code mod} is already registered
 	 */
 	public static void registerFixer(ModContainer mod,
 			@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
@@ -147,7 +146,6 @@ public final class FabricDataFixes {
 	 * @param mod       the mod container
 	 * @param dataFixer the data fixer
 	 * @throws RuntimeException         if the version field does not exist or is not a number
-	 * @throws IllegalArgumentException if the data fixer for {@code mod} is already registered
 	 */
 	public static void registerFixer(ModContainer mod, DataFixerUpper dataFixer) {
 		Objects.requireNonNull(mod, "mod cannot be null");
@@ -159,7 +157,6 @@ public final class FabricDataFixes {
 	 *
 	 * @param mod     the mod container
 	 * @param builder the data fixer builder
-	 * @throws IllegalArgumentException if the data fixer for {@code mod} is already registered
 	 */
 	public static void buildAndRegisterFixer(ModContainer mod,
 			FabricDataFixerBuilder builder) {
@@ -171,7 +168,6 @@ public final class FabricDataFixes {
 	 *
 	 * @param mod     the mod container
 	 * @param builder the data fixer builder
-	 * @throws IllegalArgumentException if the data fixer for {@code mod} is already registered
 	 */
 	public static void buildAndRegisterFixer(ModContainer mod,
 			@Nullable String key, FabricDataFixerBuilder builder) {
@@ -183,14 +179,14 @@ public final class FabricDataFixes {
 		);
 
 		registerFixer(mod.getMetadata().getId(), builder.getDataVersion(),
-				key, builder.build(SharedConstants.requiredDataFixTypes, executor));
+				key, builder.build(DataFixTypes.REQUIRED_TYPES, executor));
 	}
 
 	/**
-	 * Gets a mod's data fixer.
+	 * Gets a mod's data fixers.
 	 *
 	 * @param modId the mod ID
-	 * @return the mod's data fixer, or empty optional if the mod hasn't registered one
+	 * @return the mod's data fixers, or empty optional if the mod hasn't registered any
 	 */
 	public static Optional<List<Optional<DataFixerUpper>>> getFixers(String modId) {
 		Objects.requireNonNull(modId, "modId cannot be null");
