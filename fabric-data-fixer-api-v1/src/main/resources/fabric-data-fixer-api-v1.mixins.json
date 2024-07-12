@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.datafixer.v1",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "DataFixerUpperMixin",
+    "DataFixTypesMixin",
+    "NbtHelperMixin",
+    "SchemasMixin",
+    "VersionedChunkStorageMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
