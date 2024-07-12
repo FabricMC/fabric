@@ -47,6 +47,11 @@ public final class NoOpFabricDataFixesInternals extends FabricDataFixesInternals
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return true;
+	}
+
+	@Override
 	public @Nullable List<DataFixerEntry> getFixerEntries(String modId) {
 		return null;
 	}

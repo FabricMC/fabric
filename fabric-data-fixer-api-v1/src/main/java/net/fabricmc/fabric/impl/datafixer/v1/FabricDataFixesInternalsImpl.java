@@ -65,6 +65,11 @@ public final class FabricDataFixesInternalsImpl extends FabricDataFixesInternals
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return this.modDataFixers.isEmpty();
+	}
+
+	@Override
 	public @Nullable List<DataFixerEntry> getFixerEntries(String modId) {
 		return modDataFixers.get(modId);
 	}

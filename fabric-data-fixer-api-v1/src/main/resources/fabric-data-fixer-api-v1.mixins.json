@@ -6,7 +6,8 @@
     "DataFixerUpperMixin",
     "DataFixTypesMixin",
     "NbtHelperMixin",
-    "SchemasMixin"
+    "SchemasMixin",
+    "VersionedChunkStorageMixin"
   ],
   "injectors": {
     "defaultRequire": 1

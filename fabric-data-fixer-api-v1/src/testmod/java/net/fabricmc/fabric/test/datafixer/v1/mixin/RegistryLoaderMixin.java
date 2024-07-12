@@ -62,7 +62,7 @@ public class RegistryLoaderMixin {
 		MutableRegistry<ConfiguredCarver<?>> configuredCarverRegistry = (MutableRegistry<ConfiguredCarver<?>>) registryMap.get(RegistryKeys.CONFIGURED_CARVER);
 
 		if (biomeRegistry == null || placedFeatureRegistry == null || configuredCarverRegistry == null || biomeRegistry.contains(DataFixerTest.BIOME_KEY)) {
-			return null;
+			return instance;
 		}
 
 		Biome customBiome = TheEndBiomeCreator.createEndHighlands(placedFeatureRegistry.createMutableEntryLookup(), configuredCarverRegistry.createMutableEntryLookup());

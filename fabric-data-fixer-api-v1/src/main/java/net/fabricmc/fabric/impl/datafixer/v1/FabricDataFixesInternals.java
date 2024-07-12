@@ -144,6 +144,8 @@ public abstract class FabricDataFixesInternals {
 
 	public abstract void registerFixer(String modId, @Range(from = 0, to = Integer.MAX_VALUE) int currentVersion, @Nullable String key, DataFixerUpper dataFixer);
 
+	public abstract boolean isEmpty();
+
 	public abstract @Nullable List<DataFixerEntry> getFixerEntries(String modId);
 
 	@Contract(value = "-> new", pure = true)
