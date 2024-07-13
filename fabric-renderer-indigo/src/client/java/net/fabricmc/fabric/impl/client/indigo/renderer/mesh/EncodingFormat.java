@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
 import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -26,6 +27,7 @@ import net.minecraft.util.math.MathHelper;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
+import net.fabricmc.fabric.impl.client.indigo.renderer.material.MaterialViewImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
 
 /**
@@ -78,66 +80,75 @@ public abstract class EncodingFormat {
 	/** used for quick clearing of quad buffers. */
 	static final int[] EMPTY = new int[TOTAL_STRIDE];
 
-	private static final int DIRECTION_MASK = MathHelper.smallestEncompassingPowerOfTwo(ModelHelper.NULL_FACE_ID) - 1;
-	private static final int DIRECTION_BIT_COUNT = Integer.bitCount(DIRECTION_MASK);
-	private static final int CULL_SHIFT = 0;
-	private static final int CULL_INVERSE_MASK = ~(DIRECTION_MASK << CULL_SHIFT);
-	private static final int LIGHT_SHIFT = CULL_SHIFT + DIRECTION_BIT_COUNT;
-	private static final int LIGHT_INVERSE_MASK = ~(DIRECTION_MASK << LIGHT_SHIFT);
-	private static final int NORMALS_SHIFT = LIGHT_SHIFT + DIRECTION_BIT_COUNT;
-	private static final int NORMALS_COUNT = 4;
-	private static final int NORMALS_MASK = (1 << NORMALS_COUNT) - 1;
-	private static final int NORMALS_INVERSE_MASK = ~(NORMALS_MASK << NORMALS_SHIFT);
-	private static final int GEOMETRY_SHIFT = NORMALS_SHIFT + NORMALS_COUNT;
-	private static final int GEOMETRY_MASK = (1 << GeometryHelper.FLAG_BIT_COUNT) - 1;
-	private static final int GEOMETRY_INVERSE_MASK = ~(GEOMETRY_MASK << GEOMETRY_SHIFT);
-	private static final int MATERIAL_SHIFT = GEOMETRY_SHIFT + GeometryHelper.FLAG_BIT_COUNT;
-	private static final int MATERIAL_MASK = MathHelper.smallestEncompassingPowerOfTwo(RenderMaterialImpl.VALUE_COUNT) - 1;
-	private static final int MATERIAL_BIT_COUNT = Integer.bitCount(MATERIAL_MASK);
-	private static final int MATERIAL_INVERSE_MASK = ~(MATERIAL_MASK << MATERIAL_SHIFT);
+	private static final int DIRECTION_COUNT = Direction.values().length;
+	private static final int NULLABLE_DIRECTION_COUNT = DIRECTION_COUNT + 1;
+
+	private static final int CULL_BIT_LENGTH = MathHelper.ceilLog2(NULLABLE_DIRECTION_COUNT);
+	private static final int LIGHT_BIT_LENGTH = MathHelper.ceilLog2(DIRECTION_COUNT);
+	private static final int NORMALS_BIT_LENGTH = 4;
+	private static final int GEOMETRY_BIT_LENGTH = GeometryHelper.FLAG_BIT_COUNT;
+	private static final int MATERIAL_BIT_LENGTH = MaterialViewImpl.TOTAL_BIT_LENGTH;
+
+	private static final int CULL_BIT_OFFSET = 0;
+	private static final int LIGHT_BIT_OFFSET = CULL_BIT_OFFSET + CULL_BIT_LENGTH;
+	private static final int NORMALS_BIT_OFFSET = LIGHT_BIT_OFFSET + LIGHT_BIT_LENGTH;
+	private static final int GEOMETRY_BIT_OFFSET = NORMALS_BIT_OFFSET + NORMALS_BIT_LENGTH;
+	private static final int MATERIAL_BIT_OFFSET = GEOMETRY_BIT_OFFSET + GEOMETRY_BIT_LENGTH;
+	private static final int TOTAL_BIT_LENGTH = MATERIAL_BIT_OFFSET + MATERIAL_BIT_LENGTH;
+
+	private static final int CULL_MASK = bitMask(CULL_BIT_LENGTH, CULL_BIT_OFFSET);
+	private static final int LIGHT_MASK = bitMask(LIGHT_BIT_LENGTH, LIGHT_BIT_OFFSET);
+	private static final int NORMALS_MASK = bitMask(NORMALS_BIT_LENGTH, NORMALS_BIT_OFFSET);
+	private static final int GEOMETRY_MASK = bitMask(GEOMETRY_BIT_LENGTH, GEOMETRY_BIT_OFFSET);
+	private static final int MATERIAL_MASK = bitMask(MATERIAL_BIT_LENGTH, MATERIAL_BIT_OFFSET);
 
 	static {
-		Preconditions.checkArgument(MATERIAL_SHIFT + MATERIAL_BIT_COUNT <= 32, "Indigo header encoding bit count (%s) exceeds integer bit length)", TOTAL_STRIDE);
+		Preconditions.checkArgument(TOTAL_BIT_LENGTH <= 32, "Indigo header encoding bit count (%s) exceeds integer bit length)", TOTAL_STRIDE);
 	}
 
+	public static int bitMask(int bitLength, int bitOffset) {
+		return ((1 << bitLength) - 1) << bitOffset;
+	}
+
+	@Nullable
 	static Direction cullFace(int bits) {
-		return ModelHelper.faceFromIndex((bits >>> CULL_SHIFT) & DIRECTION_MASK);
+		return ModelHelper.faceFromIndex((bits & CULL_MASK) >>> CULL_BIT_OFFSET);
 	}
 
-	static int cullFace(int bits, Direction face) {
-		return (bits & CULL_INVERSE_MASK) | (ModelHelper.toFaceIndex(face) << CULL_SHIFT);
+	static int cullFace(int bits, @Nullable Direction face) {
+		return (bits & ~CULL_MASK) | (ModelHelper.toFaceIndex(face) << CULL_BIT_OFFSET);
 	}
 
 	static Direction lightFace(int bits) {
-		return ModelHelper.faceFromIndex((bits >>> LIGHT_SHIFT) & DIRECTION_MASK);
+		return ModelHelper.faceFromIndex((bits & LIGHT_MASK) >>> LIGHT_BIT_OFFSET);
 	}
 
 	static int lightFace(int bits, Direction face) {
-		return (bits & LIGHT_INVERSE_MASK) | (ModelHelper.toFaceIndex(face) << LIGHT_SHIFT);
+		return (bits & ~LIGHT_MASK) | (ModelHelper.toFaceIndex(face) << LIGHT_BIT_OFFSET);
 	}
 
 	/** indicate if vertex normal has been set - bits correspond to vertex ordinals. */
 	static int normalFlags(int bits) {
-		return (bits >>> NORMALS_SHIFT) & NORMALS_MASK;
+		return (bits & NORMALS_MASK) >>> NORMALS_BIT_OFFSET;
 	}
 
 	static int normalFlags(int bits, int normalFlags) {
-		return (bits & NORMALS_INVERSE_MASK) | ((normalFlags & NORMALS_MASK) << NORMALS_SHIFT);
+		return (bits & ~NORMALS_MASK) | ((normalFlags << NORMALS_BIT_OFFSET) & NORMALS_MASK);
 	}
 
 	static int geometryFlags(int bits) {
-		return (bits >>> GEOMETRY_SHIFT) & GEOMETRY_MASK;
+		return (bits & GEOMETRY_MASK) >>> GEOMETRY_BIT_OFFSET;
 	}
 
 	static int geometryFlags(int bits, int geometryFlags) {
-		return (bits & GEOMETRY_INVERSE_MASK) | ((geometryFlags & GEOMETRY_MASK) << GEOMETRY_SHIFT);
+		return (bits & ~GEOMETRY_MASK) | ((geometryFlags << GEOMETRY_BIT_OFFSET) & GEOMETRY_MASK);
 	}
 
 	static RenderMaterialImpl material(int bits) {
-		return RenderMaterialImpl.byIndex((bits >>> MATERIAL_SHIFT) & MATERIAL_MASK);
+		return RenderMaterialImpl.byIndex((bits & MATERIAL_MASK) >>> MATERIAL_BIT_OFFSET);
 	}
 
 	static int material(int bits, RenderMaterialImpl material) {
-		return (bits & MATERIAL_INVERSE_MASK) | (material.index() << MATERIAL_SHIFT);
+		return (bits & ~MATERIAL_MASK) | (material.index() << MATERIAL_BIT_OFFSET);
 	}
 }

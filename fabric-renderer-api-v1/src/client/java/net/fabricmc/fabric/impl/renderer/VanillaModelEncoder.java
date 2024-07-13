@@ -45,8 +45,8 @@ public class VanillaModelEncoder {
 	private static final RenderMaterial STANDARD_MATERIAL = RENDERER.materialFinder().shadeMode(ShadeMode.VANILLA).find();
 	private static final RenderMaterial NO_AO_MATERIAL = RENDERER.materialFinder().shadeMode(ShadeMode.VANILLA).ambientOcclusion(TriState.FALSE).find();
 
-	// Separate QuadEmitter parameter so that Indigo can pass its own emitter that handles vanilla quads differently.
-	public static void emitBlockQuads(BakedModel model, @Nullable BlockState state, Supplier<Random> randomSupplier, RenderContext context, QuadEmitter emitter) {
+	public static void emitBlockQuads(BakedModel model, @Nullable BlockState state, Supplier<Random> randomSupplier, RenderContext context) {
+		QuadEmitter emitter = context.getEmitter();
 		final RenderMaterial defaultMaterial = model.useAmbientOcclusion() ? STANDARD_MATERIAL : NO_AO_MATERIAL;
 
 		for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {

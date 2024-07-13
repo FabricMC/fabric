@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.renderer",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "client": [
     "client.BakedModelMixin",
     "client.MultipartBakedModelMixin",
