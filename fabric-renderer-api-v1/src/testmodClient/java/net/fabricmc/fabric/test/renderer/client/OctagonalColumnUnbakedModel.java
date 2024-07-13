@@ -36,6 +36,7 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -49,6 +50,12 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 	private static final float A = (float) (1 - Math.sqrt(2) / 2);
 	private static final float B = (float) (Math.sqrt(2) / 2);
 
+	private final ShadeMode shadeMode;
+
+	public OctagonalColumnUnbakedModel(ShadeMode shadeMode) {
+		this.shadeMode = shadeMode;
+	}
+
 	@Override
 	public Collection<Identifier> getModelDependencies() {
 		return Collections.emptySet();
@@ -58,8 +65,8 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 	public void setParents(Function<Identifier, UnbakedModel> modelLoader) {
 	}
 
-	@Nullable
 	@Override
+	@Nullable
 	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer) {
 		if (!RendererAccess.INSTANCE.hasRenderer()) {
 			return null;
@@ -69,7 +76,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 
 		Renderer renderer = RendererAccess.INSTANCE.getRenderer();
 		MaterialFinder finder = renderer.materialFinder();
-		RenderMaterial glintMaterial = finder.glint(TriState.TRUE).find();
+		RenderMaterial glintMaterial = finder.glint(TriState.TRUE).shadeMode(shadeMode).find();
 
 		MeshBuilder builder = renderer.meshBuilder();
 		QuadEmitter emitter = builder.getEmitter();
