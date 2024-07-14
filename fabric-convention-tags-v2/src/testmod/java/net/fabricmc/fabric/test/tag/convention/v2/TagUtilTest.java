@@ -17,12 +17,12 @@
 package net.fabricmc.fabric.test.tag.convention.v2;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +83,7 @@ public class TagUtilTest implements ModInitializer {
 	);
 
 	private static boolean isValidTagField(Field field) {
-		if ((field.getModifiers() & Opcodes.ACC_STATIC) == 0) {
+		if (!Modifier.isStatic(field.getModifiers())) {
 			// Ignore instance fields
 			return false;
 		}
