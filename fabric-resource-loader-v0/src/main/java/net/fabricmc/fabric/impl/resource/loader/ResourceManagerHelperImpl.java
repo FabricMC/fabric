@@ -59,6 +59,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 
 	private final Set<Identifier> addedListenerIds = new HashSet<>();
 	private final Set<ListenerFactory> listenerFactories = new LinkedHashSet<>();
+	private final Set<IdentifiableResourceReloadListener> addedListeners = new LinkedHashSet<>();
 	private final ResourceType type;
 
 	private ResourceManagerHelperImpl(ResourceType type) {
@@ -170,7 +171,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	}
 
 	protected void sort(List<ResourceReloader> listeners) {
-		listeners.removeAll(listenerFactories);
+		listeners.removeAll(addedListeners);
 
 		// General rules:
 		// - We *do not* touch the ordering of vanilla listeners. Ever.
@@ -184,6 +185,9 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		for (ListenerFactory addedListener : listenerFactories) {
 			listenersToAdd.add(addedListener.get(wrapperLookup));
 		}
+
+		addedListeners.clear();
+		addedListeners.addAll(listenersToAdd);
 
 		Set<Identifier> resolvedIds = new HashSet<>();
 
@@ -277,10 +281,12 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	}
 
 	private record RegistryResourceReloaderFactory(Identifier id, Function<RegistryWrapper.WrapperLookup, IdentifiableResourceReloadListener> listenerFactory) implements ListenerFactory {
+		private RegistryResourceReloaderFactory {
+			Objects.requireNonNull(listenerFactory);
+		}
+
 		@Override
 		public IdentifiableResourceReloadListener get(RegistryWrapper.WrapperLookup registry) {
-			Objects.requireNonNull(listenerFactory);
-
 			final IdentifiableResourceReloadListener listener = listenerFactory.apply(registry);
 
 			if (!id.equals(listener.getFabricId())) {
