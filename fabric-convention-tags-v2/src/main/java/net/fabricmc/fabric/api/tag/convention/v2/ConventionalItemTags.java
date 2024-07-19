@@ -64,7 +64,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> MELEE_WEAPON_TOOLS = register("tools/melee_weapon");
 	/**
 	 * A tag containing ranged-based weapons for recipes and loot tables.
-	 * Tools are considered ranged if they have the ability to damage targets at a distance.
+	 * Tools are considered ranged if they can damage entities beyond the weapon's and player's melee attack range.
 	 */
 	public static final TagKey<Item> RANGED_WEAPON_TOOLS = register("tools/ranged_weapon");
 	/**
