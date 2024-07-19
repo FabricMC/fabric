@@ -301,6 +301,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.ROPES, "Ropes");
 		translationBuilder.add(ConventionalItemTags.CHAINS, "Chains");
 		translationBuilder.add(ConventionalItemTags.ENDER_PEARLS, "Ender Pearls");
+		translationBuilder.add(ConventionalItemTags.SLIMEBALLS, "Slimeballs");
 		translationBuilder.add(ConventionalItemTags.HIDDEN_FROM_RECIPE_VIEWERS, "Hidden From Recipe Viewers");
 
 		// Enchantments

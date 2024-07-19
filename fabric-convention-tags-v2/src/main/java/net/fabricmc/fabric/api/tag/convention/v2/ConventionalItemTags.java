@@ -313,6 +313,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> ROPES = register("ropes");
 	public static final TagKey<Item> CHAINS = register("chains");
 	public static final TagKey<Item> ENDER_PEARLS = register("ender_pearls");
+	public static final TagKey<Item> SLIMEBALLS = register("slimeballs");
 
 	/**
 	 * Tag that holds all items that recipe viewers should not show to users.

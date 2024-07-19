@@ -684,6 +684,9 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.ENDER_PEARLS)
 				.add(Items.ENDER_PEARL);
 
+		getOrCreateTagBuilder(ConventionalItemTags.SLIMEBALLS)
+				.add(Items.SLIME_BALL);
+
 		getOrCreateTagBuilder(ConventionalItemTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
 	}
 
