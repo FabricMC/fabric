@@ -57,8 +57,19 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> MACE_TOOLS = register("tools/mace");
 
 	// Action-based tool tags
+	/**
+	 * A tag containing melee-based weapons for recipes and loot tables.
+	 * Tools are considered melee if they contain an ATTACK_DAMAGE attribute.
+	 */
 	public static final TagKey<Item> MELEE_WEAPON_TOOLS = register("tools/melee_weapon");
+	/**
+	 * A tag containing ranged-based weapons for recipes and loot tables.
+	 * Tools are considered ranged if they have the ability to damage targets at a distance.
+	 */
 	public static final TagKey<Item> RANGED_WEAPON_TOOLS = register("tools/ranged_weapon");
+	/**
+	 * A tag containing mining-based tools for recipes and loot tables.
+	 */
 	public static final TagKey<Item> MINING_TOOL_TOOLS = register("tools/mining_tool");
 
 	// Armor tags
