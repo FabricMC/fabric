@@ -325,6 +325,11 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> CHAINS = register("chains");
 	public static final TagKey<Item> ENDER_PEARLS = register("ender_pearls");
 	public static final TagKey<Item> SLIMEBALLS = register("slimeballs");
+	/**
+	 * For bonemeal-like items that can grow plants.
+	 * (Note: Could include durability-based modded bonemeal-like items. Check for durability DataComponentType to handle them properly)
+	 */
+	public static final TagKey<Item> FERTILIZERS = register("fertilizers");
 
 	/**
 	 * Tag that holds all items that recipe viewers should not show to users.
