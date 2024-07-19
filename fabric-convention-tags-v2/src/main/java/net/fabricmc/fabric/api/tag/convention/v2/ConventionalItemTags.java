@@ -59,7 +59,7 @@ public final class ConventionalItemTags {
 	// Action-based tool tags
 	/**
 	 * A tag containing melee-based weapons for recipes and loot tables.
-	 * Tools are considered melee if they contain an ATTACK_DAMAGE attribute.
+	 * Tools are considered melee if they contain a GENERIC_ATTACK_DAMAGE attribute.
 	 */
 	public static final TagKey<Item> MELEE_WEAPON_TOOLS = register("tools/melee_weapon");
 	/**
