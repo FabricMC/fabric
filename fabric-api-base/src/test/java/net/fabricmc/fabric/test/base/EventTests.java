@@ -25,11 +25,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.Bootstrap;
-import net.minecraft.SharedConstants;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -37,12 +34,6 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
 
 public class EventTests {
-	@BeforeAll
-	static void beforeAll() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
-	}
-
 	private static final Function<TestCallback[], TestCallback> INVOKER_FACTORY = listeners -> () -> {
 		for (TestCallback test : listeners) {
 			test.onTest();
