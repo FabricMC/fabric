@@ -24,6 +24,7 @@ import net.minecraft.block.HopperBlock;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.block.entity.HopperBlockEntity;
+import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -187,6 +188,20 @@ public class ContentRegistryGameTest {
 		brew(context, new ItemStack(Items.DIRT), PotionContentsComponent.createStack(Items.POTION, Potions.AWKWARD), brewingStand -> {
 			ItemStack bottle = brewingStand.getStack(0);
 			context.assertTrue(bottle.getItem() instanceof ContentRegistryTest.DirtyPotionItem, "potion became dirty");
+			context.complete();
+		});
+	}
+
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void testCustomSignBlockEntity(TestContext context) {
+		BlockPos supportPos = new BlockPos(0, 0, 0);
+		BlockPos pos = new BlockPos(0, 1, 0);
+		context.setBlockState(supportPos, Blocks.STONE);
+		context.setBlockState(pos, ContentRegistryTest.TEST_SIGN);
+		context.waitAndRun(2, () -> {
+			// Wait a bit before checking. The SignBlockEntity may be there right when the block is placed but it will
+			// be removed after a tick if it's not valid.
+			context.checkBlockEntity(pos, be -> be instanceof SignBlockEntity, () -> "Expected a SignBlockEntity");
 			context.complete();
 		});
 	}

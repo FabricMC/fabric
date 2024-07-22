@@ -23,6 +23,9 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SignBlock;
+import net.minecraft.block.WoodType;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.HoeItem;
@@ -50,6 +53,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.registry.BlockEntitySupportedBlocksRegistry;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
@@ -66,7 +70,9 @@ public final class ContentRegistryTest implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
 
 	public static final Identifier TEST_EVENT_ID = Identifier.of("fabric-content-registries-v0-testmod", "test_event");
+	public static final Identifier TEST_SIGN_ID = Identifier.of("fabric-content-registries-v0-testmod", "test_sign");
 	public static final RegistryEntry.Reference<GameEvent> TEST_EVENT = Registry.registerReference(Registries.GAME_EVENT, TEST_EVENT_ID, new GameEvent(GameEvent.DEFAULT_RANGE));
+	public static final Block TEST_SIGN = Registry.register(Registries.BLOCK, TEST_SIGN_ID, new SignBlock(WoodType.OAK, AbstractBlock.Settings.copy(Blocks.OAK_SIGN)));
 
 	@Override
 	public void onInitialize() {
@@ -169,6 +175,19 @@ public final class ContentRegistryTest implements ModInitializer {
 				builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.ofItems(Items.BUNDLE), Potions.LUCK);
 			}
 		});
+
+		BlockEntitySupportedBlocksRegistry.register(BlockEntityType.SIGN, TEST_SIGN);
+
+		try {
+			BlockEntitySupportedBlocksRegistry.register(BlockEntityType.SIGN, null);
+			BlockEntitySupportedBlocksRegistry.register(BlockEntityType.SIGN, null, null);
+			BlockEntitySupportedBlocksRegistry.register(null, TEST_SIGN);
+
+			throw new AssertionError("BlockEntitySupportedBlocksRegistry didn't throw when blocks or type were null!");
+		} catch (NullPointerException e) {
+			// expected behavior
+			LOGGER.info("BlockEntitySupportedBlocksRegistry test passed!");
+		}
 	}
 
 	public static class TestEventBlock extends Block {
