@@ -4,11 +4,11 @@ plugins {
 	id "idea"
 	id "maven-publish"
 	id 'jacoco'
-	id "fabric-loom" version "1.6.11" apply false
-	id "com.diffplug.spotless" version "6.20.0"
-	id "org.ajoberstar.grgit" version "3.1.0"
+	id "fabric-loom" version "1.7.2" apply false
+	id "com.diffplug.spotless" version "6.25.0"
+	id "org.ajoberstar.grgit" version "5.2.2"
 	id "me.modmuss50.remotesign" version "0.4.0" apply false
-	id "me.modmuss50.mod-publish-plugin" version "0.4.5"
+	id "me.modmuss50.mod-publish-plugin" version "0.6.2"
 }
 
 def ENV = System.getenv()
@@ -242,7 +242,7 @@ allprojects {
 
 		testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
 		testImplementation sourceSets.testmodClient.output
-		testImplementation 'org.mockito:mockito-core:5.4.0'
+		testImplementation 'org.mockito:mockito-core:5.12.0'
 	}
 
 	test {
@@ -282,7 +282,7 @@ allprojects {
 
 	checkstyle {
 		configFile = rootProject.file("checkstyle.xml")
-		toolVersion = "10.12.1"
+		toolVersion = "10.17.0"
 	}
 
 	tasks.withType(AbstractArchiveTask).configureEach {
