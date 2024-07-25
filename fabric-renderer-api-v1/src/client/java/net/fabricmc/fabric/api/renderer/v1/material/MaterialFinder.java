@@ -44,7 +44,8 @@ public interface MaterialFinder extends MaterialView {
 	MaterialFinder blendMode(BlendMode blendMode);
 
 	/**
-	 * Controls whether vertex colors should be modified for quad coloring.
+	 * Controls whether vertex colors should be modified for quad coloring. This property
+	 * is inverted, so a value of {@code false} means that quad coloring will be applied.
 	 *
 	 * <p>The default value is {@code false}.
 	 */
@@ -66,7 +67,8 @@ public interface MaterialFinder extends MaterialView {
 	MaterialFinder emissive(boolean isEmissive);
 
 	/**
-	 * Controls whether vertex colors should be modified for diffuse shading.
+	 * Controls whether vertex colors should be modified for diffuse shading. This property
+	 * is inverted, so a value of {@code false} means that diffuse shading will be applied.
 	 *
 	 * <p>The default value is {@code false}.
 	 *
