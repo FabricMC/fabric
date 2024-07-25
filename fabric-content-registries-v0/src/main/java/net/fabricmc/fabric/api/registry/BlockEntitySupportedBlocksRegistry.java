@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.registry;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
-
-import net.fabricmc.fabric.impl.content.registry.BlockEntityTypeHooks;
 
 /**
  * A registry that allows mods to modify this list of supported blocks per block entity type. For example, a custom sign
@@ -46,6 +46,10 @@ public final class BlockEntitySupportedBlocksRegistry {
 			Objects.requireNonNull(block, "A supported block cannot be null!");
 		}
 
-		((BlockEntityTypeHooks) type).fabric$addSupportedBlocks(supportedBlocks);
+		if (!(type.blocks instanceof HashSet<Block>)) {
+			type.blocks = new HashSet<>();
+		}
+
+		type.blocks.addAll(List.of(supportedBlocks));
 	}
 }
