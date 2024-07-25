@@ -218,13 +218,13 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.APPLE)
 				.add(Items.GOLDEN_APPLE)
 				.add(Items.ENCHANTED_GOLDEN_APPLE)
+				.add(Items.MELON_SLICE)
 				.addOptionalTag(ConventionalItemTags.FRUITS_FOODS);
 
 		getOrCreateTagBuilder(ConventionalItemTags.VEGETABLE_FOODS)
 				.add(Items.CARROT)
 				.add(Items.GOLDEN_CARROT)
 				.add(Items.POTATO)
-				.add(Items.MELON_SLICE)
 				.add(Items.BEETROOT)
 				.addOptionalTag(ConventionalItemTags.VEGETABLES_FOODS);
 
@@ -282,8 +282,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.GOLDEN_FOODS)
 				.add(Items.GOLDEN_APPLE)
 				.add(Items.ENCHANTED_GOLDEN_APPLE)
-				.add(Items.GOLDEN_CARROT)
-				.add(Items.GLISTERING_MELON_SLICE);
+				.add(Items.GOLDEN_CARROT);
 
 		getOrCreateTagBuilder(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
 				.add(Items.CAKE);
@@ -320,13 +319,13 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.FRUITS_FOODS)
 				.add(Items.APPLE)
 				.add(Items.GOLDEN_APPLE)
-				.add(Items.ENCHANTED_GOLDEN_APPLE);
+				.add(Items.ENCHANTED_GOLDEN_APPLE)
+				.add(Items.MELON_SLICE);
 
 		getOrCreateTagBuilder(ConventionalItemTags.VEGETABLES_FOODS)
 				.add(Items.CARROT)
 				.add(Items.GOLDEN_CARROT)
 				.add(Items.POTATO)
-				.add(Items.MELON_SLICE)
 				.add(Items.BEETROOT);
 
 		getOrCreateTagBuilder(ConventionalItemTags.BERRIES_FOODS)
