@@ -327,7 +327,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> SLIME_BALLS = register("slime_balls");
 	/**
 	 * For bonemeal-like items that can grow plants.
-	 * (Note: Could include durability-based modded bonemeal-like items. Check for durability {@link net.minecraft.component.ComponentType} to handle them properly)
+	 * (Note: Could include durability-based modded bonemeal-like items. Check for durability {@link net.minecraft.component.DataComponentTypes#DAMAGE} to handle them properly)
 	 */
 	public static final TagKey<Item> FERTILIZERS = register("fertilizers");
 
