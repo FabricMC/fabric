@@ -47,7 +47,7 @@ public final class BlockEntitySupportedBlocksRegistry {
 		}
 
 		if (!(type.blocks instanceof HashSet<Block>)) {
-			type.blocks = new HashSet<>();
+			type.blocks = new HashSet<>(type.blocks);
 		}
 
 		type.blocks.addAll(List.of(supportedBlocks));
