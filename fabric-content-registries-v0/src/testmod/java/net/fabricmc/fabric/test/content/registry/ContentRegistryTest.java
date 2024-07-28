@@ -106,11 +106,10 @@ public final class ContentRegistryTest implements ModInitializer {
 		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
 
 		// assert that StrippableBlockRegistry throws when the blocks don't have 'axis'
-		try {
-			StrippableBlockRegistry.register(Blocks.BLUE_WOOL, Blocks.OAK_LOG);
-			StrippableBlockRegistry.register(Blocks.HAY_BLOCK, Blocks.BLUE_WOOL);
-			throw new AssertionError("StrippableBlockRegistry didn't throw when blocks were missing the 'axis' property!");
-		} catch (IllegalArgumentException e) {
+		{
+			String errorMessage = "StrippableBlockRegistry didn't throw when blocks were missing the 'axis' property!";
+			assertThrows(IllegalArgumentException.class, () -> StrippableBlockRegistry.register(Blocks.BLUE_WOOL, Blocks.OAK_LOG), errorMessage);
+			assertThrows(IllegalArgumentException.class, () -> StrippableBlockRegistry.register(Blocks.HAY_BLOCK, Blocks.BLUE_WOOL), errorMessage);
 			// expected behavior
 			LOGGER.info("StrippableBlockRegistry test passed!");
 		}
@@ -127,15 +126,12 @@ public final class ContentRegistryTest implements ModInitializer {
 		OxidizableBlocksRegistry.registerWaxableBlockPair(Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE);
 
 		// assert that OxidizableBlocksRegistry throws when registered blocks are null
-		try {
-			OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.EMERALD_ORE, null);
-			OxidizableBlocksRegistry.registerOxidizableBlockPair(null, Blocks.COAL_ORE);
-
-			OxidizableBlocksRegistry.registerWaxableBlockPair(null, Blocks.DEAD_BRAIN_CORAL);
-			OxidizableBlocksRegistry.registerWaxableBlockPair(Blocks.BRAIN_CORAL, null);
-
-			throw new AssertionError("OxidizableBlocksRegistry didn't throw when blocks were null!");
-		} catch (NullPointerException e) {
+		{
+			String errorMessage = "OxidizableBlocksRegistry didn't throw when blocks were null!";
+			assertThrows(NullPointerException.class, () -> OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.EMERALD_ORE, null), errorMessage);
+			assertThrows(NullPointerException.class, () -> OxidizableBlocksRegistry.registerOxidizableBlockPair(null, Blocks.COAL_ORE), errorMessage);
+			assertThrows(NullPointerException.class, () -> OxidizableBlocksRegistry.registerWaxableBlockPair(null, Blocks.DEAD_BRAIN_CORAL), errorMessage);
+			assertThrows(NullPointerException.class, () -> OxidizableBlocksRegistry.registerWaxableBlockPair(Blocks.BRAIN_CORAL, null), errorMessage);
 			// expected behavior
 			LOGGER.info("OxidizableBlocksRegistry test passed!");
 		}
@@ -152,11 +148,9 @@ public final class ContentRegistryTest implements ModInitializer {
 		SculkSensorFrequencyRegistry.register(TEST_EVENT.registryKey(), 2);
 
 		// assert that SculkSensorFrequencyRegistry throws when registering a frequency outside the allowed range
-		try {
-			SculkSensorFrequencyRegistry.register(GameEvent.SHRIEK.registryKey(), 18);
-
-			throw new AssertionError("SculkSensorFrequencyRegistry didn't throw when frequency was outside allowed range!");
-		} catch (IllegalArgumentException e) {
+		{
+			String errorMessage = "SculkSensorFrequencyRegistry didn't throw when frequency was outside allowed range!";
+			assertThrows(IllegalArgumentException.class, () -> SculkSensorFrequencyRegistry.register(GameEvent.SHRIEK.registryKey(), 18), errorMessage);
 			// expected behavior
 			LOGGER.info("SculkSensorFrequencyRegistry test passed!");
 		}
@@ -178,15 +172,27 @@ public final class ContentRegistryTest implements ModInitializer {
 
 		BlockEntitySupportedBlocksRegistry.register(BlockEntityType.SIGN, TEST_SIGN);
 
-		try {
-			BlockEntitySupportedBlocksRegistry.register(BlockEntityType.SIGN, null);
-			BlockEntitySupportedBlocksRegistry.register(BlockEntityType.SIGN, null, null);
-			BlockEntitySupportedBlocksRegistry.register(null, TEST_SIGN);
-
-			throw new AssertionError("BlockEntitySupportedBlocksRegistry didn't throw when blocks or type were null!");
-		} catch (NullPointerException e) {
+		{
+			String errorMessage = "BlockEntitySupportedBlocksRegistry did not throw when arguments were null";
+			assertThrows(NullPointerException.class, () -> BlockEntitySupportedBlocksRegistry.register(BlockEntityType.SIGN, null), errorMessage);
+			assertThrows(NullPointerException.class, () -> BlockEntitySupportedBlocksRegistry.register(BlockEntityType.SIGN, null, null), errorMessage);
+			assertThrows(NullPointerException.class, () -> BlockEntitySupportedBlocksRegistry.register(null, TEST_SIGN), errorMessage);
 			// expected behavior
 			LOGGER.info("BlockEntitySupportedBlocksRegistry test passed!");
+		}
+	}
+
+	private static void assertThrows(Class<? extends Throwable> exception, Runnable action, String errorMessage) {
+		try {
+			action.run();
+
+			throw new AssertionError(errorMessage); // Failed, should have thrown something
+		} catch (Throwable e) {
+			if (exception.isInstance(e)) {
+				return; // Passed
+			}
+
+			throw e; // Threw the wrong exception
 		}
 	}
 
