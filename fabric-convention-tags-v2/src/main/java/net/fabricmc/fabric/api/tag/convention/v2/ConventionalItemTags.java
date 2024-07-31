@@ -59,7 +59,8 @@ public final class ConventionalItemTags {
 	// Action-based tool tags
 	/**
 	 * A tag containing melee-based weapons for recipes and loot tables.
-	 * Tools are considered melee if they contain a {@link net.minecraft.entity.attribute.EntityAttributes#GENERIC_ATTACK_DAMAGE} attribute.
+	 * Tools are considered melee if they are intentionally intended to be used for melee attack as a primary purpose.
+	 * (In other words, Pickaxes are not melee weapons as they are not intended to be a weapon as a primary purpose)
 	 */
 	public static final TagKey<Item> MELEE_WEAPON_TOOLS = register("tools/melee_weapon");
 	/**
