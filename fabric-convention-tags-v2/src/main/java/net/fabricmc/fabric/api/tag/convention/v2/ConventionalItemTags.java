@@ -325,7 +325,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> ROPES = register("ropes");
 	public static final TagKey<Item> CHAINS = register("chains");
 	public static final TagKey<Item> ENDER_PEARLS = register("ender_pearls");
-	public static final TagKey<Item> SLIMEBALLS = register("slimeballs");
+	public static final TagKey<Item> SLIME_BALLS = register("slime_balls");
 	/**
 	 * For bonemeal-like items that can grow plants.
 	 * (Note: Could include durability-based modded bonemeal-like items. Check for durability {@link net.minecraft.component.DataComponentTypes#DAMAGE} to handle them properly)
