@@ -1,0 +1,25 @@
+{
+  "pack": {
+    "pack_format": 48,
+    "description": ""
+  },
+  "fabric:overlays": {
+    "entries": [
+      {
+        "directory": "do_overlay",
+        "condition": {
+          "condition": "fabric:true"
+        }
+      },
+      {
+        "directory": "dont_overlay",
+        "condition": {
+          "condition": "fabric:not",
+          "value": {
+            "condition": "fabric:true"
+          }
+        }
+      }
+    ]
+  }
+}
