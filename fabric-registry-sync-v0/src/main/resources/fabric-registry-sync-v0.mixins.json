@@ -15,6 +15,7 @@
     "RegistryLoaderMixin",
     "SaveLoadingMixin",
     "SerializableRegistriesMixin",
+    "SimpleRegistryAccessor",
     "SimpleRegistryMixin"
   ],
   "injectors": {

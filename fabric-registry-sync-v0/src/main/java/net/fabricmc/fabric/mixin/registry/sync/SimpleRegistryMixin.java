@@ -48,6 +48,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.registry.MutableRegistry;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleRegistry;
@@ -55,6 +56,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryInfo;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -66,6 +68,7 @@ import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.RemapStateImpl;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
+import net.fabricmc.loader.api.FabricLoader;
 
 @Mixin(SimpleRegistry.class)
 public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, RemappableRegistry, ListenableRegistry<T> {
@@ -73,6 +76,9 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	// While Realms use "realms" namespace, it is irrelevant for Registry Sync.
 	@Unique
 	private static final Set<String> VANILLA_NAMESPACES = Set.of("minecraft", "brigadier");
+
+	@Unique
+	private static final Logger LOGGER = LoggerFactory.getLogger("FabricRegistrySync");
 
 	@Shadow
 	@Final
@@ -381,9 +387,17 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 		}
 	}
 
-	// Actually throw the exception when a duplicate is found.
 	@ModifyExpressionValue(method = "add", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;throwOrPause(Ljava/lang/Throwable;)Ljava/lang/Throwable;"))
 	private <E extends Throwable> E throwOnDuplicate(E t) throws E {
+		// I hate this as much as you do, blame Hypixel for sending duplicate entries to the client via dynamic registries.
+		if (!FabricLoader.getInstance().isDevelopmentEnvironment()
+				&& FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT
+				&& ((SimpleRegistryAccessor) Registries.REGISTRIES).isFrozen()) {
+			LOGGER.error("Exception caught when adding entry to registry. This is likely a server or mod issue.", t);
+			return t;
+		}
+
+		// Actually throw the exception when a duplicate is found, before the registries are frozen
 		throw t;
 	}
 }
