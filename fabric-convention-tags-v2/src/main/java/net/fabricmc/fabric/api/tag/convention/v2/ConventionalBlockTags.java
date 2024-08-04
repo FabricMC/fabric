@@ -49,7 +49,14 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> CHESTS = register("chests");
 	public static final TagKey<Block> WOODEN_CHESTS = register("chests/wooden");
 	public static final TagKey<Block> GLASS_BLOCKS = register("glass_blocks");
+	public static final TagKey<Block> GLASS_BLOCKS_COLORLESS = register("glass_blocks/colorless");
+	/**
+	 * Glass which is made from cheap resources like sand and only minor additional ingredients like dyes.
+	 */
+	public static final TagKey<Block> GLASS_BLOCKS_CHEAP = register("glass_blocks/cheap");
+	public static final TagKey<Block> GLASS_BLOCKS_TINTED = register("glass_blocks/tinted");
 	public static final TagKey<Block> GLASS_PANES = register("glass_panes");
+	public static final TagKey<Block> GLASS_PANES_COLORLESS = register("glass_panes/colorless");
 	public static final TagKey<Block> GLAZED_TERRACOTTAS = register("glazed_terracottas");
 	public static final TagKey<Block> CONCRETES = register("concretes");
 

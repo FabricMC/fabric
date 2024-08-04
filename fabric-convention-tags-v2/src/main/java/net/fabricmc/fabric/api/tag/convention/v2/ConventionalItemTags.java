@@ -49,6 +49,12 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> SHIELD_TOOLS = register("tools/shield");
 	public static final TagKey<Item> FISHING_ROD_TOOLS = register("tools/fishing_rod");
 	public static final TagKey<Item> BRUSH_TOOLS = register("tools/brush");
+	/**
+	 * A tag containing all existing fire starting tools such as Flint and Steel.
+	 * Fire Charge is not a tool (no durability) and thus, does not go in this tag.
+	 */
+	public static final TagKey<Item> IGNITER_TOOLS = register("tools/igniter");
+	public static final TagKey<Item> MACE_TOOLS = register("tools/mace");
 
 	// Action-based tool tags
 	public static final TagKey<Item> MELEE_WEAPON_TOOLS = register("tools/melee_weapon");
@@ -116,30 +122,34 @@ public final class ConventionalItemTags {
 	 * Apples and other foods that are considered fruits in the culinary field belong in this tag.
 	 * Cherries would go here as they are considered a "stone fruit" within culinary fields.
 	 */
-	public static final TagKey<Item> FRUITS_FOODS = register("foods/fruits");
+	public static final TagKey<Item> FRUIT_FOODS = register("foods/fruit");
 	/**
 	 * Tomatoes and other foods that are considered vegetables in the culinary field belong in this tag.
 	 */
-	public static final TagKey<Item> VEGETABLES_FOODS = register("foods/vegetables");
+	public static final TagKey<Item> VEGETABLE_FOODS = register("foods/vegetable");
 	/**
 	 * Strawberries, raspberries, and other berry foods belong in this tag.
 	 * Cherries would NOT go here as they are considered a "stone fruit" within culinary fields.
 	 */
-	public static final TagKey<Item> BERRIES_FOODS = register("foods/berries");
-	public static final TagKey<Item> BREADS_FOODS = register("foods/breads");
-	public static final TagKey<Item> COOKIES_FOODS = register("foods/cookies");
-	public static final TagKey<Item> RAW_MEATS_FOODS = register("foods/raw_meats");
-	public static final TagKey<Item> COOKED_MEATS_FOODS = register("foods/cooked_meats");
-	public static final TagKey<Item> RAW_FISHES_FOODS = register("foods/raw_fishes");
-	public static final TagKey<Item> COOKED_FISHES_FOODS = register("foods/cooked_fishes");
+	public static final TagKey<Item> BERRY_FOODS = register("foods/berry");
+	public static final TagKey<Item> BREAD_FOODS = register("foods/bread");
+	public static final TagKey<Item> COOKIE_FOODS = register("foods/cookie");
+	public static final TagKey<Item> RAW_MEAT_FOODS = register("foods/raw_meat");
+	public static final TagKey<Item> COOKED_MEAT_FOODS = register("foods/cooked_meat");
+	public static final TagKey<Item> RAW_FISH_FOODS = register("foods/raw_fish");
+	public static final TagKey<Item> COOKED_FISH_FOODS = register("foods/cooked_fish");
 	/**
 	 * Soups, stews, and other liquid food in bowls belongs in this tag.
 	 */
-	public static final TagKey<Item> SOUPS_FOODS = register("foods/soups");
+	public static final TagKey<Item> SOUP_FOODS = register("foods/soup");
 	/**
 	 * Sweets and candies like lollipops or chocolate belong in this tag.
 	 */
-	public static final TagKey<Item> CANDIES_FOODS = register("foods/candies");
+	public static final TagKey<Item> CANDY_FOODS = register("foods/candy");
+	/**
+	 * Any gold-based foods would go in this tag. Such as Golden Apples or Glistering Melon Slice.
+	 */
+	public static final TagKey<Item> GOLDEN_FOODS = register("foods/golden");
 	/**
 	 * Foods like cake that can be eaten when placed in the world belong in this tag.
 	 */
@@ -168,7 +178,14 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> CHESTS = register("chests");
 	public static final TagKey<Item> WOODEN_CHESTS = register("chests/wooden");
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
+	public static final TagKey<Item> GLASS_BLOCKS_COLORLESS = register("glass_blocks/colorless");
+	/**
+	 * Glass which is made from cheap resources like sand and only minor additional ingredients like dyes.
+	 */
+	public static final TagKey<Item> GLASS_BLOCKS_CHEAP = register("glass_blocks/cheap");
+	public static final TagKey<Item> GLASS_BLOCKS_TINTED = register("glass_blocks/tinted");
 	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
+	public static final TagKey<Item> GLASS_PANES_COLORLESS = register("glass_panes/colorless");
 	/**
 	 * Block tag equivalent is {@link BlockTags#SHULKER_BOXES}.
 	 */
@@ -295,6 +312,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> BREEZE_RODS = register("rods/breeze");
 	public static final TagKey<Item> ROPES = register("ropes");
 	public static final TagKey<Item> CHAINS = register("chains");
+	public static final TagKey<Item> ENDER_PEARLS = register("ender_pearls");
 
 	/**
 	 * Tag that holds all items that recipe viewers should not show to users.
@@ -391,6 +409,61 @@ public final class ConventionalItemTags {
 	 */
 	@Deprecated
 	public static final TagKey<Item> CONCRETE_POWDER = register("concrete_powder");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#FRUIT_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> FRUITS_FOODS = register("foods/fruits");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#VEGETABLE_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> VEGETABLES_FOODS = register("foods/vegetables");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#BERRY_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> BERRIES_FOODS = register("foods/berries");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#BREAD_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> BREADS_FOODS = register("foods/breads");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#COOKIE_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> COOKIES_FOODS = register("foods/cookies");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#RAW_MEAT_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> RAW_MEATS_FOODS = register("foods/raw_meats");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#COOKED_MEAT_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> COOKED_MEATS_FOODS = register("foods/cooked_meats");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#RAW_FISH_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> RAW_FISHES_FOODS = register("foods/raw_fishes");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#COOKED_FISH_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> COOKED_FISHES_FOODS = register("foods/cooked_fishes");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#SOUP_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> SOUPS_FOODS = register("foods/soups");
+	/**
+	 * This tag was typoed. Please use {@link ConventionalItemTags#CANDY_FOODS} tag instead.
+	 */
+	@Deprecated
+	public static final TagKey<Item> CANDIES_FOODS = register("foods/candies");
 
 	private static TagKey<Item> register(String tagId) {
 		return TagRegistration.ITEM_TAG.registerC(tagId);
