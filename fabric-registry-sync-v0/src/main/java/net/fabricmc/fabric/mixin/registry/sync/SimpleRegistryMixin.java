@@ -390,7 +390,8 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	@ModifyExpressionValue(method = "add", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;throwOrPause(Ljava/lang/Throwable;)Ljava/lang/Throwable;"))
 	private <E extends Throwable> E throwOnDuplicate(E t) throws E {
 		// I hate this as much as you do, blame Hypixel for sending duplicate entries to the client via dynamic registries.
-		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT
+		if (!FabricLoader.getInstance().isDevelopmentEnvironment()
+				&& FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT
 				&& ((SimpleRegistryAccessor) Registries.REGISTRIES).isFrozen()) {
 			LOGGER.error("Exception caught when adding entry to registry. This is likely a server or mod issue.", t);
 			return t;
