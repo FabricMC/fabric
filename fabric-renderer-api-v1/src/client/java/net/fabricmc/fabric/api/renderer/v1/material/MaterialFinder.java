@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.renderer.v1.material;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.item.ItemStack;
@@ -34,33 +35,42 @@ import net.fabricmc.fabric.api.util.TriState;
  */
 public interface MaterialFinder extends MaterialView {
 	/**
-	 * Defines how sprite pixels will be blended with the scene.
+	 * Controls how sprite pixels should be blended with the scene.
 	 *
-	 * <p>See {@link BlendMode} for more information.
+	 * <p>The default value is {@link BlendMode#DEFAULT}.
+	 *
+	 * @see BlendMode
 	 */
 	MaterialFinder blendMode(BlendMode blendMode);
 
 	/**
-	 * Vertex color(s) will be modified for quad color index unless disabled.
+	 * Controls whether vertex colors should be modified for quad coloring. This property
+	 * is inverted, so a value of {@code false} means that quad coloring will be applied.
+	 *
+	 * <p>The default value is {@code false}.
 	 */
 	MaterialFinder disableColorIndex(boolean disable);
 
 	/**
 	 * When true, sprite texture and color will be rendered at full brightness.
 	 * Lightmap values provided via {@link QuadEmitter#lightmap(int)} will be ignored.
-	 * False by default
 	 *
-	 * <p>This is the preferred method for emissive lighting effects.  Some renderers
-	 * with advanced lighting models may not use block lightmaps and this method will
+	 * <p>This is the preferred method for emissive lighting effects. Some renderers
+	 * with advanced lighting pipelines may not use block lightmaps and this method will
 	 * allow per-sprite emissive lighting in future extensions that support overlay sprites.
 	 *
 	 * <p>Note that color will still be modified by diffuse shading and ambient occlusion,
 	 * unless disabled via {@link #disableDiffuse(boolean)} and {@link #ambientOcclusion(TriState)}.
+	 *
+	 * <p>The default value is {@code false}.
 	 */
 	MaterialFinder emissive(boolean isEmissive);
 
 	/**
-	 * Vertex color(s) will be modified for diffuse shading unless disabled.
+	 * Controls whether vertex colors should be modified for diffuse shading. This property
+	 * is inverted, so a value of {@code false} means that diffuse shading will be applied.
+	 *
+	 * <p>The default value is {@code false}.
 	 *
 	 * <p>This property is guaranteed to be respected in block contexts. Some renderers may also respect it in item
 	 * contexts, but this is not guaranteed.
@@ -68,11 +78,15 @@ public interface MaterialFinder extends MaterialView {
 	MaterialFinder disableDiffuse(boolean disable);
 
 	/**
-	 * Controls whether vertex color(s) will be modified for ambient occlusion.
+	 * Controls whether vertex colors should be modified for ambient occlusion.
 	 *
-	 * <p>By default, ambient occlusion will be used if {@link BakedModel#useAmbientOcclusion() the model uses ambient occlusion}
-	 * and the block state has {@link BlockState#getLuminance() a luminance} of 0.
-	 * Set to {@link TriState#TRUE} or {@link TriState#FALSE} to override this behavior.
+	 * <p>If set to {@link TriState#DEFAULT}, ambient occlusion will be used if
+	 * {@linkplain BakedModel#useAmbientOcclusion() the model uses ambient occlusion} and the block state has
+	 * {@linkplain BlockState#getLuminance() a luminance} of 0. Set to {@link TriState#TRUE} or {@link TriState#FALSE}
+	 * to override this behavior. {@link TriState#TRUE} will not have an effect if
+	 * {@linkplain MinecraftClient#isAmbientOcclusionEnabled() ambient occlusion is disabled globally}.
+	 *
+	 * <p>The default value is {@link TriState#DEFAULT}.
 	 *
 	 * <p>This property is respected only in block contexts. It will not have an effect in other contexts.
 	 */
@@ -81,13 +95,32 @@ public interface MaterialFinder extends MaterialView {
 	/**
 	 * Controls whether glint should be applied.
 	 *
-	 * <p>By default, glint will be applied in item contexts if {@link ItemStack#hasGlint() the item stack has glint}.
-	 * Set to {@link TriState#TRUE} or {@link TriState#FALSE} to override this behavior.
+	 * <p>If set to {@link TriState#DEFAULT}, glint will be applied in item contexts if
+	 * {@linkplain ItemStack#hasGlint() the item stack has glint}. Set to {@link TriState#TRUE} or
+	 * {@link TriState#FALSE} to override this behavior.
+	 *
+	 * <p>The default value is {@link TriState#DEFAULT}.
 	 *
 	 * <p>This property is guaranteed to be respected in item contexts. Some renderers may also respect it in block
 	 * contexts, but this is not guaranteed.
 	 */
 	MaterialFinder glint(TriState mode);
+
+	/**
+	 * A hint to the renderer about how the quad is intended to be shaded, for example through ambient occlusion and
+	 * diffuse shading. The renderer is free to ignore this hint.
+	 *
+	 * <p>The default value is {@link ShadeMode#ENHANCED}.
+	 *
+	 * <p>This property is respected only in block contexts. It will not have an effect in other contexts.
+	 *
+	 * @see ShadeMode
+	 *
+	 * @apiNote The default implementation will be removed in the next breaking release.
+	 */
+	default MaterialFinder shadeMode(ShadeMode mode) {
+		return this;
+	}
 
 	/**
 	 * Copies all properties from the given {@link MaterialView} to this material finder.

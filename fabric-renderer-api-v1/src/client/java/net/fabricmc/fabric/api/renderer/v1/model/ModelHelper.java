@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import net.minecraft.client.MinecraftClient;
@@ -46,7 +47,7 @@ public final class ModelHelper {
 	 * Null is returned as {@link #NULL_FACE_ID}.
 	 * Use {@link #faceFromIndex(int)} to retrieve encoded face.
 	 */
-	public static int toFaceIndex(Direction face) {
+	public static int toFaceIndex(@Nullable Direction face) {
 		return face == null ? NULL_FACE_ID : face.getId();
 	}
 
@@ -57,6 +58,7 @@ public final class ModelHelper {
 	 * optionally including the null face. (Use &lt; or  &lt;= {@link #NULL_FACE_ID}
 	 * to exclude or include the null value, respectively.)
 	 */
+	@Nullable
 	public static Direction faceFromIndex(int faceIndex) {
 		return FACES[faceIndex];
 	}

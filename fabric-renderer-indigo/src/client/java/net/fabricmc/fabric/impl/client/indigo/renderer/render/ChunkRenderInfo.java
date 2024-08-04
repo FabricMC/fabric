@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
-import java.util.Map;
+import java.util.function.Function;
 
 import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
@@ -24,12 +24,8 @@ import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.chunk.BlockBufferAllocatorStorage;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
-import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
@@ -69,9 +65,7 @@ public class ChunkRenderInfo {
 	private final Long2IntOpenHashMap brightnessCache;
 	private final Long2FloatOpenHashMap aoLevelCache;
 
-	private final BlockPos.Mutable chunkOrigin = new BlockPos.Mutable();
-	BlockBufferAllocatorStorage builders;
-	Map<RenderLayer, BufferBuilder> buffers;
+	private Function<RenderLayer, BufferBuilder> bufferFunc;
 	BlockRenderView blockView;
 
 	ChunkRenderInfo() {
@@ -81,31 +75,21 @@ public class ChunkRenderInfo {
 		aoLevelCache.defaultReturnValue(Float.MAX_VALUE);
 	}
 
-	void prepare(ChunkRendererRegion blockView, BlockPos chunkOrigin, BlockBufferAllocatorStorage builders, Map<RenderLayer, BufferBuilder> buffers) {
+	void prepare(ChunkRendererRegion blockView, Function<RenderLayer, BufferBuilder> bufferFunc) {
 		this.blockView = blockView;
-		this.chunkOrigin.set(chunkOrigin);
-		this.builders = builders;
-		this.buffers = buffers;
+		this.bufferFunc = bufferFunc;
+
 		brightnessCache.clear();
 		aoLevelCache.clear();
 	}
 
 	void release() {
+		blockView = null;
+		bufferFunc = null;
 	}
 
-	/** Lazily retrieves output buffer for given layer, initializing as needed. */
-	public BufferBuilder getInitializedBuffer(RenderLayer renderLayer) {
-		// TODO 24w21b - possibly AW class_9810#method_60903 which does the same thing?
-		BufferBuilder builder = buffers.get(renderLayer);
-
-		if (builder == null) {
-			BufferAllocator byteBuilder = builders.get(renderLayer);
-			builder = new BufferBuilder(byteBuilder, VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
-
-			buffers.put(renderLayer, builder);
-		}
-
-		return builder;
+	BufferBuilder getBuffer(RenderLayer layer) {
+		return bufferFunc.apply(layer);
 	}
 
 	/**

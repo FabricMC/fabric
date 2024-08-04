@@ -30,6 +30,7 @@ import net.minecraft.util.math.random.Random;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -41,12 +42,12 @@ import net.fabricmc.fabric.api.util.TriState;
  */
 public class VanillaModelEncoder {
 	private static final Renderer RENDERER = RendererAccess.INSTANCE.getRenderer();
-	private static final RenderMaterial MATERIAL_STANDARD = RENDERER.materialFinder().find();
-	private static final RenderMaterial MATERIAL_NO_AO = RENDERER.materialFinder().ambientOcclusion(TriState.FALSE).find();
+	private static final RenderMaterial STANDARD_MATERIAL = RENDERER.materialFinder().shadeMode(ShadeMode.VANILLA).find();
+	private static final RenderMaterial NO_AO_MATERIAL = RENDERER.materialFinder().shadeMode(ShadeMode.VANILLA).ambientOcclusion(TriState.FALSE).find();
 
-	// Separate QuadEmitter parameter so that Indigo can pass its own emitter that handles vanilla quads differently.
-	public static void emitBlockQuads(BakedModel model, @Nullable BlockState state, Supplier<Random> randomSupplier, RenderContext context, QuadEmitter emitter) {
-		final RenderMaterial defaultMaterial = model.useAmbientOcclusion() ? MATERIAL_STANDARD : MATERIAL_NO_AO;
+	public static void emitBlockQuads(BakedModel model, @Nullable BlockState state, Supplier<Random> randomSupplier, RenderContext context) {
+		QuadEmitter emitter = context.getEmitter();
+		final RenderMaterial defaultMaterial = model.useAmbientOcclusion() ? STANDARD_MATERIAL : NO_AO_MATERIAL;
 
 		for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
 			final Direction cullFace = ModelHelper.faceFromIndex(i);
@@ -77,7 +78,7 @@ public class VanillaModelEncoder {
 
 			for (int j = 0; j < count; j++) {
 				final BakedQuad q = quads.get(j);
-				emitter.fromVanilla(q, MATERIAL_STANDARD, cullFace);
+				emitter.fromVanilla(q, STANDARD_MATERIAL, cullFace);
 				emitter.emit();
 			}
 		}
