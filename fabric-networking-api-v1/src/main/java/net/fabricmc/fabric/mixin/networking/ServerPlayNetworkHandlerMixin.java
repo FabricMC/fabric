@@ -30,6 +30,7 @@ import net.minecraft.server.network.ServerCommonNetworkHandler;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.UntrackedNetworkHandler;
 import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
@@ -45,8 +46,11 @@ abstract class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkHandler 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddon(CallbackInfo ci) {
 		this.addon = new ServerPlayNetworkAddon((ServerPlayNetworkHandler) (Object) this, connection, server);
-		// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
-		this.addon.lateInit();
+
+		if (!(this instanceof UntrackedNetworkHandler)) {
+			// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
+			this.addon.lateInit();
+		}
 	}
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
