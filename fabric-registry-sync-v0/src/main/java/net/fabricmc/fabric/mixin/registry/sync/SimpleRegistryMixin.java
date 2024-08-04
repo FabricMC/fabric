@@ -25,6 +25,7 @@ import java.util.Set;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
@@ -43,7 +44,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -54,7 +54,6 @@ import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryInfo;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -383,8 +382,8 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	}
 
 	// Actually throw the exception when a duplicate is found.
-	@Redirect(method = "add", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;throwOrPause(Ljava/lang/Throwable;)Ljava/lang/Throwable;"))
+	@ModifyExpressionValue(method = "add", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;throwOrPause(Ljava/lang/Throwable;)Ljava/lang/Throwable;"))
 	private <E extends Throwable> E throwOnDuplicate(E t) throws E {
-		throw Util.throwOrPause(t);
+		throw t;
 	}
 }
