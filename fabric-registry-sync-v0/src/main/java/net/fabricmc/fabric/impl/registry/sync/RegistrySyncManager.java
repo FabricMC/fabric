@@ -86,7 +86,6 @@ public final class RegistrySyncManager {
 			return;
 		}
 
-
 		final Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap();
 
 		if (map == null) {
@@ -96,10 +95,12 @@ public final class RegistrySyncManager {
 
 		if (!ServerConfigurationNetworking.canSend(handler, DIRECT_PACKET_HANDLER.getPacketId())) {
 			// Disconnect incompatible clients
-			handler.disconnect(switch (ServerNetworkingImpl.getAddon(handler).getClientBrand()) {
-				case "fabric" -> INCOMPATIBLE_FABRIC_CLIENT_TEXT;
-				case null, default -> INCOMPATIBLE_VANILLA_CLIENT_TEXT;
-			});
+			Text message = switch (ServerNetworkingImpl.getAddon(handler).getClientBrand()) {
+			case "fabric" -> INCOMPATIBLE_FABRIC_CLIENT_TEXT;
+			case null, default -> INCOMPATIBLE_VANILLA_CLIENT_TEXT;
+			};
+
+			handler.disconnect(message);
 			return;
 		}
 
@@ -158,9 +159,9 @@ public final class RegistrySyncManager {
 	}
 
 	/**
-	 * Creates a {@link Map<Identifier, Object2IntMap<Identifier>>} used to sync the registry ids.
+	 * Creates a {@link Map} used to sync the registry ids.
 	 *
-	 * @return a {@link Map<Identifier, Object2IntMap<Identifier>>} to sync, null when empty
+	 * @return a {@link Map} to sync, null when empty
 	 */
 	@Nullable
 	public static Map<Identifier, Object2IntMap<Identifier>> createAndPopulateRegistryMap() {
