@@ -57,8 +57,20 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> MACE_TOOLS = register("tools/mace");
 
 	// Action-based tool tags
+	/**
+	 * A tag containing melee-based weapons for recipes and loot tables.
+	 * Tools are considered melee if they are intentionally intended to be used for melee attack as a primary purpose.
+	 * (In other words, Pickaxes are not melee weapons as they are not intended to be a weapon as a primary purpose)
+	 */
 	public static final TagKey<Item> MELEE_WEAPON_TOOLS = register("tools/melee_weapon");
+	/**
+	 * A tag containing ranged-based weapons for recipes and loot tables.
+	 * Tools are considered ranged if they can damage entities beyond the weapon's and player's melee attack range.
+	 */
 	public static final TagKey<Item> RANGED_WEAPON_TOOLS = register("tools/ranged_weapon");
+	/**
+	 * A tag containing mining-based tools for recipes and loot tables.
+	 */
 	public static final TagKey<Item> MINING_TOOL_TOOLS = register("tools/mining_tool");
 
 	// Armor tags
@@ -313,6 +325,12 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> ROPES = register("ropes");
 	public static final TagKey<Item> CHAINS = register("chains");
 	public static final TagKey<Item> ENDER_PEARLS = register("ender_pearls");
+	public static final TagKey<Item> SLIME_BALLS = register("slime_balls");
+	/**
+	 * For bonemeal-like items that can grow plants.
+	 * (Note: Could include durability-based modded bonemeal-like items. Check for durability {@link net.minecraft.component.DataComponentTypes#DAMAGE} to handle them properly)
+	 */
+	public static final TagKey<Item> FERTILIZERS = register("fertilizers");
 
 	/**
 	 * Tag that holds all items that recipe viewers should not show to users.

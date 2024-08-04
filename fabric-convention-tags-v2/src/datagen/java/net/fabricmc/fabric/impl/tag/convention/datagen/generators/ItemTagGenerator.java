@@ -218,13 +218,13 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.APPLE)
 				.add(Items.GOLDEN_APPLE)
 				.add(Items.ENCHANTED_GOLDEN_APPLE)
+				.add(Items.MELON_SLICE)
 				.addOptionalTag(ConventionalItemTags.FRUITS_FOODS);
 
 		getOrCreateTagBuilder(ConventionalItemTags.VEGETABLE_FOODS)
 				.add(Items.CARROT)
 				.add(Items.GOLDEN_CARROT)
 				.add(Items.POTATO)
-				.add(Items.MELON_SLICE)
 				.add(Items.BEETROOT)
 				.addOptionalTag(ConventionalItemTags.VEGETABLES_FOODS);
 
@@ -282,8 +282,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.GOLDEN_FOODS)
 				.add(Items.GOLDEN_APPLE)
 				.add(Items.ENCHANTED_GOLDEN_APPLE)
-				.add(Items.GOLDEN_CARROT)
-				.add(Items.GLISTERING_MELON_SLICE);
+				.add(Items.GOLDEN_CARROT);
 
 		getOrCreateTagBuilder(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
 				.add(Items.CAKE);
@@ -320,13 +319,13 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.FRUITS_FOODS)
 				.add(Items.APPLE)
 				.add(Items.GOLDEN_APPLE)
-				.add(Items.ENCHANTED_GOLDEN_APPLE);
+				.add(Items.ENCHANTED_GOLDEN_APPLE)
+				.add(Items.MELON_SLICE);
 
 		getOrCreateTagBuilder(ConventionalItemTags.VEGETABLES_FOODS)
 				.add(Items.CARROT)
 				.add(Items.GOLDEN_CARROT)
 				.add(Items.POTATO)
-				.add(Items.MELON_SLICE)
 				.add(Items.BEETROOT);
 
 		getOrCreateTagBuilder(ConventionalItemTags.BERRIES_FOODS)
@@ -549,6 +548,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.MINING_TOOLS);
 
 		getOrCreateTagBuilder(ConventionalItemTags.MELEE_WEAPON_TOOLS)
+				.add(Items.MACE)
+				.add(Items.TRIDENT)
 				.add(Items.WOODEN_SWORD)
 				.add(Items.STONE_SWORD)
 				.add(Items.GOLDEN_SWORD)
@@ -561,7 +562,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.IRON_AXE)
 				.add(Items.DIAMOND_AXE)
 				.add(Items.NETHERITE_AXE)
-				.add(Items.MACE)
 				.addOptionalTag(ConventionalItemTags.MELEE_WEAPONS_TOOLS);
 
 		getOrCreateTagBuilder(ConventionalItemTags.RANGED_WEAPON_TOOLS)
@@ -683,6 +683,12 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 		getOrCreateTagBuilder(ConventionalItemTags.ENDER_PEARLS)
 				.add(Items.ENDER_PEARL);
+
+		getOrCreateTagBuilder(ConventionalItemTags.SLIME_BALLS)
+				.add(Items.SLIME_BALL);
+
+		getOrCreateTagBuilder(ConventionalItemTags.FERTILIZERS)
+				.add(Items.BONE_MEAL);
 
 		getOrCreateTagBuilder(ConventionalItemTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
 	}
