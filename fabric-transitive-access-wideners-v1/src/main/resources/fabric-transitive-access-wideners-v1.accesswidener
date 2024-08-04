@@ -58,6 +58,9 @@ transitive-accessible class net/minecraft/client/model/ModelPart$Quad
 transitive-accessible method net/minecraft/client/render/RenderLayer of (Lnet/minecraft/client/render/RenderPhase$ShaderProgram;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;
 transitive-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;Lnet/minecraft/client/render/VertexFormat;Lnet/minecraft/client/render/VertexFormat$DrawMode;IZZLnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
 transitive-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;Lnet/minecraft/client/render/VertexFormat;Lnet/minecraft/client/render/VertexFormat$DrawMode;ILnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
+transitive-accessible class net/minecraft/client/render/RenderLayer$MultiPhase
+transitive-accessible class net/minecraft/client/render/RenderLayer$MultiPhaseParameters
+transitive-accessible class net/minecraft/client/render/RenderLayer$OutlineMode
 
 # Registering custom block entity renderers
 transitive-accessible method net/minecraft/client/render/block/entity/BlockEntityRendererFactories register (Lnet/minecraft/block/entity/BlockEntityType;Lnet/minecraft/client/render/block/entity/BlockEntityRendererFactory;)V
@@ -333,3 +336,21 @@ transitive-accessible field net/minecraft/client/render/RenderPhase ITEM_ENTITY_
 transitive-accessible field net/minecraft/client/render/RenderPhase FULL_LINE_WIDTH Lnet/minecraft/client/render/RenderPhase$LineWidth;
 transitive-accessible field net/minecraft/client/render/RenderPhase NO_COLOR_LOGIC Lnet/minecraft/client/render/RenderPhase$ColorLogic;
 transitive-accessible field net/minecraft/client/render/RenderPhase OR_REVERSE Lnet/minecraft/client/render/RenderPhase$ColorLogic;
+
+# Protected static inner classes of RenderPhase
+transitive-accessible class net/minecraft/client/render/RenderPhase$Transparency
+transitive-accessible class net/minecraft/client/render/RenderPhase$ShaderProgram
+transitive-accessible class net/minecraft/client/render/RenderPhase$Texture
+transitive-accessible class net/minecraft/client/render/RenderPhase$TextureBase
+transitive-accessible class net/minecraft/client/render/RenderPhase$Texturing
+transitive-accessible class net/minecraft/client/render/RenderPhase$Lightmap
+transitive-accessible class net/minecraft/client/render/RenderPhase$Overlay
+transitive-accessible class net/minecraft/client/render/RenderPhase$Cull
+transitive-accessible class net/minecraft/client/render/RenderPhase$DepthTest
+transitive-accessible class net/minecraft/client/render/RenderPhase$WriteMaskState
+transitive-accessible class net/minecraft/client/render/RenderPhase$Layering
+transitive-accessible class net/minecraft/client/render/RenderPhase$Target
+transitive-accessible class net/minecraft/client/render/RenderPhase$LineWidth
+transitive-accessible class net/minecraft/client/render/RenderPhase$ColorLogic
+transitive-accessible class net/minecraft/client/render/RenderPhase$OffsetTexturing
+transitive-accessible class net/minecraft/client/render/RenderPhase$Textures
