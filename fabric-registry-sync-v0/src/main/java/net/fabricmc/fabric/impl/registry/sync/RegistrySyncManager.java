@@ -41,7 +41,6 @@ import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -148,9 +147,9 @@ public final class RegistrySyncManager {
 	}
 
 	/**
-	 * Creates a {@link NbtCompound} used to sync the registry ids.
+	 * Creates a {@link Map} used to sync the registry ids.
 	 *
-	 * @return a {@link NbtCompound} to sync, null when empty
+	 * @return a {@link Map} to sync, null when empty
 	 */
 	@Nullable
 	public static Map<Identifier, Object2IntMap<Identifier>> createAndPopulateRegistryMap() {
