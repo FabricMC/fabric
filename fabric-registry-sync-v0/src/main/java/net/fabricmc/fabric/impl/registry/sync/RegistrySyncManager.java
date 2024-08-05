@@ -58,7 +58,6 @@ import net.minecraft.util.thread.ThreadExecutor;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
-import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
@@ -66,14 +65,9 @@ public final class RegistrySyncManager {
 	public static final boolean DEBUG = Boolean.getBoolean("fabric.registry.debug");
 
 	public static final DirectRegistryPacketHandler DIRECT_PACKET_HANDLER = new DirectRegistryPacketHandler();
+
 	private static final Logger LOGGER = LoggerFactory.getLogger("FabricRegistrySync");
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = Boolean.getBoolean("fabric.registry.debug.writeContentsAsCsv");
-	private static final Text INCOMPATIBLE_FABRIC_CLIENT_TEXT = Text.literal("This server requires ").append(Text.literal("Fabric API").formatted(Formatting.GREEN))
-			.append(" installed on your client!").formatted(Formatting.YELLOW)
-			.append(Text.literal("\nContact server's administrator for more information!").formatted(Formatting.GOLD));
-	private static final Text INCOMPATIBLE_VANILLA_CLIENT_TEXT = Text.literal("This server requires ").append(Text.literal("Fabric Loader and Fabric API").formatted(Formatting.GREEN))
-			.append(" installed on your client!").formatted(Formatting.YELLOW)
-			.append(Text.literal("\nContact server's administrator for more information!").formatted(Formatting.GOLD));
 
 	//Set to true after vanilla's bootstrap has completed
 	public static boolean postBootstrap = false;
@@ -86,21 +80,15 @@ public final class RegistrySyncManager {
 			return;
 		}
 
+		if (!ServerConfigurationNetworking.canSend(handler, DIRECT_PACKET_HANDLER.getPacketId())) {
+			// Don't send if the client cannot receive
+			return;
+		}
+
 		final Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap();
 
 		if (map == null) {
 			// Don't send when there is nothing to map
-			return;
-		}
-
-		if (!ServerConfigurationNetworking.canSend(handler, DIRECT_PACKET_HANDLER.getPacketId())) {
-			// Disconnect incompatible clients
-			Text message = switch (ServerNetworkingImpl.getAddon(handler).getClientBrand()) {
-			case "fabric" -> INCOMPATIBLE_FABRIC_CLIENT_TEXT;
-			case null, default -> INCOMPATIBLE_VANILLA_CLIENT_TEXT;
-			};
-
-			handler.disconnect(message);
 			return;
 		}
 
