@@ -16,22 +16,24 @@
 
 package net.fabricmc.fabric.impl.modprotocol.client;
 
+import java.util.HashMap;
+
+import net.minecraft.util.Identifier;
+
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.impl.modprotocol.ModProtocol;
+import net.fabricmc.fabric.impl.modprotocol.ModProtocolInit;
 import net.fabricmc.fabric.impl.modprotocol.ModProtocolManager;
 import net.fabricmc.fabric.impl.modprotocol.RemoteProtocolStorage;
 import net.fabricmc.fabric.impl.modprotocol.payload.ModProtocolRequestS2CPayload;
 import net.fabricmc.fabric.impl.modprotocol.payload.ModProtocolResponseC2SPayload;
 
-import net.minecraft.text.Text;
-
-import java.util.HashMap;
-
 public final class ClientModProtocolInit {
+
 
 	public static void clientInit() {
 		ClientConfigurationNetworking.registerGlobalReceiver(ModProtocolRequestS2CPayload.ID, (payload, context) -> {
-			var map = new HashMap<String, ModProtocol>(payload.modProtocol().size());
+			var map = new HashMap<Identifier, ModProtocol>(payload.modProtocol().size());
 			for (var protocol : payload.modProtocol()) {
 				map.put(protocol.id(), protocol);
 			}
@@ -41,7 +43,12 @@ public final class ClientModProtocolInit {
 				context.responseSender().sendPacket(new ModProtocolResponseC2SPayload(validate.supportedProtocols()));
 				return;
 			}
-			context.responseSender().disconnect(Text.literal("Todo wrong protocol text"));
+			var b = new StringBuilder();
+			b.append("Disconnected due to mismatched protocols!").append('\n');
+			b.append("Missing entries:").append('\n');
+			ModProtocolManager.appendTextEntries(validate.missing(), ModProtocolManager.LOCAL_MOD_PROTOCOLS_BY_ID, -1, text -> b.append(" - ").append(text.getString()));
+			context.responseSender().disconnect(ModProtocolManager.constructMessage(validate.missing(), ModProtocolManager.LOCAL_MOD_PROTOCOLS_BY_ID));
+			ModProtocolInit.LOGGER.warn(b.toString());
 		});
 	}
 }

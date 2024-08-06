@@ -40,7 +40,6 @@ public final class ModProtocolInit {
 		ModProtocolManager.collectModProtocols();
 		PayloadTypeRegistry.configurationC2S().register(ModProtocolResponseC2SPayload.ID, ModProtocolResponseC2SPayload.PACKET_CODEC);
 		PayloadTypeRegistry.configurationS2C().register(ModProtocolRequestS2CPayload.ID, ModProtocolRequestS2CPayload.PACKET_CODEC);
-
 		ServerConfigurationNetworking.registerGlobalReceiver(ModProtocolResponseC2SPayload.ID, (payload, context) -> {
 			// Todo: store result on the connection for further usage/api
 			((RemoteProtocolStorage) context.networkHandler()).fabric$setRemoteProtocol(payload.supported());

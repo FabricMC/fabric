@@ -16,13 +16,19 @@
 
 package net.fabricmc.fabric.impl.modprotocol;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.server.ServerMetadata;
 
-public interface RemoteProtocolStorage {
+public interface ModProtocolHolder {
+	static ModProtocolHolder of(ServerMetadata input) {
+		return (ModProtocolHolder) (Object) input;
+	}
+
 	@Nullable
-	Object2IntMap<Identifier> fabric$getRemoteProtocol();
-	void fabric$setRemoteProtocol(Object2IntMap<Identifier> protocol);
+	List<ModProtocol> fabric$getModProtocol();
+	void fabric$setModProtocol(List<ModProtocol> protocol);
+
 }

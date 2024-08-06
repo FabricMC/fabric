@@ -21,6 +21,8 @@ import java.util.function.BiConsumer;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 
+import net.minecraft.util.Identifier;
+
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
@@ -44,7 +46,7 @@ public class ModProtocolLocator {
 				consumer.accept(container, decodeFullDefinition(entry, meta, true));
 			}
 		} else if (definition.getType() == CustomValue.CvType.NUMBER) {
-			consumer.accept(container, new ModProtocol(meta.getId(), meta.getName(), meta.getVersion().getFriendlyString(), IntList.of(definition.getAsNumber().intValue()), true, true));
+			consumer.accept(container, new ModProtocol(Identifier.of("mod", meta.getId()), meta.getName(), meta.getVersion().getFriendlyString(), IntList.of(definition.getAsNumber().intValue()), true, true));
 		} else {
 			consumer.accept(container, decodeFullDefinition(definition, meta, false));
 		}
@@ -55,7 +57,7 @@ public class ModProtocolLocator {
 			throw new RuntimeException("Mod Protocol entry provided by '" + meta.getId() + "' is not valid!");
 		}
 		var object = entry.getAsObject();
-		String id;
+		Identifier id;
 		String name;
 		String version;
 		boolean requiredClient;
@@ -70,9 +72,9 @@ public class ModProtocolLocator {
 		var requiredServerField = object.get("require_server");
 
 		if (!requireFullData && idField == null) {
-			id = meta.getId();
+			id = Identifier.of("mod", meta.getId());
 		} else if (idField.getType() == CustomValue.CvType.STRING) {
-			id = idField.getAsString();
+			id = Identifier.of(idField.getAsString());
 		} else {
 			throw new RuntimeException("Mod Protocol entry provided by '" + meta.getId() + "' is not valid!");
 		}

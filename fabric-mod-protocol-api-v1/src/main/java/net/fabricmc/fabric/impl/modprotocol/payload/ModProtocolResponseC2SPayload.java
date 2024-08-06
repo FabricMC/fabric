@@ -27,15 +27,15 @@ import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-import java.util.Map;
 
 
-public record ModProtocolResponseC2SPayload(Object2IntMap<String> supported) implements CustomPayload {
+public record ModProtocolResponseC2SPayload(Object2IntMap<Identifier> supported) implements CustomPayload {
 	public static final Id<ModProtocolResponseC2SPayload> ID = new Id<>(Identifier.of("fabric", "mod_protocol/response"));
-	public static final PacketCodec<PacketByteBuf, ModProtocolResponseC2SPayload> PACKET_CODEC = PacketCodecs.map(ModProtocolResponseC2SPayload::createMap, PacketCodecs.STRING, PacketCodecs.INTEGER)
+	public static final PacketCodec<PacketByteBuf, ModProtocolResponseC2SPayload> PACKET_CODEC =
+			PacketCodecs.map(ModProtocolResponseC2SPayload::createMap, Identifier.PACKET_CODEC, PacketCodecs.INTEGER)
 			.xmap(ModProtocolResponseC2SPayload::new, ModProtocolResponseC2SPayload::supported).cast();
 
-	private static Object2IntMap<String> createMap(int i) {
+	private static Object2IntMap<Identifier> createMap(int i) {
 		return new Object2IntOpenHashMap<>(i);
 	}
 

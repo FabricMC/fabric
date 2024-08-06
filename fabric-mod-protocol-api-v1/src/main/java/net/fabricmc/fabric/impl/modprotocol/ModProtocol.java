@@ -25,11 +25,12 @@ import it.unimi.dsi.fastutil.ints.IntList;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.util.Identifier;
 
-public record ModProtocol(String id, String displayName, String displayVersion, IntList protocols, boolean requiredClient, boolean requiredServer) {
+public record ModProtocol(Identifier id, String displayName, String displayVersion, IntList protocols, boolean requiredClient, boolean requiredServer) {
 	public static final int UNSUPPORTED = -1;
 	public static final Codec<ModProtocol> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Codec.STRING.fieldOf("id").forGetter(ModProtocol::id),
+		Identifier.CODEC.fieldOf("id").forGetter(ModProtocol::id),
 		Codec.STRING.fieldOf("name").forGetter(ModProtocol::displayName),
 		Codec.STRING.fieldOf("version").forGetter(ModProtocol::displayVersion),
 		Codec.INT_STREAM.xmap(x -> IntList.of(x.toArray()), x -> IntStream.of(x.toIntArray())).fieldOf("protocol").forGetter(ModProtocol::protocols),
@@ -52,7 +53,7 @@ public record ModProtocol(String id, String displayName, String displayVersion, 
 	public static final PacketCodec<PacketByteBuf, ModProtocol> PACKET_CODEC = PacketCodec.ofStatic(ModProtocol::encode, ModProtocol::decode);
 
 	private static ModProtocol decode(PacketByteBuf buf) {
-		var id = buf.readString();
+		var id = buf.readIdentifier();
 		var name = buf.readString();
 		var version = buf.readString();
 		var protocols = IntList.of(buf.readIntArray());
@@ -63,10 +64,14 @@ public record ModProtocol(String id, String displayName, String displayVersion, 
 	}
 
 	private static void encode(PacketByteBuf buf, ModProtocol protocol) {
-		buf.writeString(protocol.id);
+		buf.writeIdentifier(protocol.id);
 		buf.writeString(protocol.displayName);
 		buf.writeString(protocol.displayVersion);
 		buf.writeIntArray(protocol.protocols.toIntArray());
 		buf.writeByte((protocol.requiredClient ? 0b10 : 0) | (protocol.requiredServer ? 0b01 : 0));
+	}
+
+	public boolean syncWithServerMetadata() {
+		return this.requiredClient() || this.requiredServer();
 	}
 }
