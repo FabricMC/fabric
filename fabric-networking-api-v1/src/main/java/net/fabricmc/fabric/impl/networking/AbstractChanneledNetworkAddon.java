@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import net.minecraft.network.packet.BrandCustomPayload;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
@@ -52,6 +54,8 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	protected final Set<Identifier> sendableChannels;
 
 	protected int commonVersion = -1;
+	@Nullable
+	protected String brand = null;
 
 	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, String description) {
 		super(receiver, description);
@@ -85,6 +89,10 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 				this.receiveRegistration(false, registrationPayload);
 				return true;
 			}
+		}
+
+		if (payload instanceof BrandCustomPayload brand) {
+			this.brand = brand.brand();
 		}
 
 		@Nullable H handler = this.getHandler(channelName);
@@ -218,6 +226,11 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		return new CommonRegisterPayload(getNegotiatedVersion(), getPhase(), this.getReceivableChannels());
 	}
 
+	@Nullable
+	public String getBrand() {
+		return this.brand;
+	}
+
 	@Override
 	public int getNegotiatedVersion() {
 		if (commonVersion == -1) {
@@ -234,5 +247,9 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		case CONFIGURATION -> CommonRegisterPayload.CONFIGURATION_PHASE;
 		default -> null; // We don't support receiving this packet on any other phase
 		};
+	}
+
+	public void setBrand(String brand) {
+		this.brand = brand;
 	}
 }

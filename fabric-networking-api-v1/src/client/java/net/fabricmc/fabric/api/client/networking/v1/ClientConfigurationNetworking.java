@@ -19,6 +19,8 @@ package net.fabricmc.fabric.api.client.networking.v1;
 import java.util.Objects;
 import java.util.Set;
 
+import net.minecraft.client.network.ClientConfigurationNetworkHandler;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -279,6 +281,11 @@ public final class ClientConfigurationNetworking {
 		 * @return The MinecraftClient instance
 		 */
 		MinecraftClient client();
+
+		/**
+		 * @return The ClientConfigurationNetworkHandler instance
+		 */
+		ClientConfigurationNetworkHandler networkHandler();
 
 		/**
 		 * @return The packet sender
