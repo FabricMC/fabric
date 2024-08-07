@@ -50,7 +50,7 @@ class ArrayBackedEvent<T> extends Event<T> {
 		update();
 	}
 
-	void update() {
+	private void update() {
 		this.invoker = invokerFactory.apply(handlers);
 	}
 
@@ -122,5 +122,10 @@ class ArrayBackedEvent<T> extends Event<T> {
 			NodeSorting.sort(this.sortedPhases, "event phases", Comparator.comparing(data -> data.id));
 			rebuildInvoker(handlers.length);
 		}
+	}
+
+	@Override
+	public boolean hasListener() {
+		return this.handlers.length > 0;
 	}
 }
