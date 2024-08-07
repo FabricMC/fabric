@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.registry.sync;
 
+import net.fabricmc.fabric.api.event.Event;
+
 import net.minecraft.registry.Registries;
 
 import net.fabricmc.api.ModInitializer;
@@ -26,13 +28,16 @@ import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
 
+import net.minecraft.util.Identifier;
+
 public class FabricRegistryInit implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		PayloadTypeRegistry.configurationC2S().register(SyncCompletePayload.ID, SyncCompletePayload.CODEC);
 		PayloadTypeRegistry.configurationS2C().register(DirectRegistryPacketHandler.Payload.ID, DirectRegistryPacketHandler.Payload.CODEC);
-
-		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register(RegistrySyncManager::configureClient);
+		var registrySync = Identifier.of("fabric", "registry_sync");
+		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.addPhaseOrdering(registrySync, Event.DEFAULT_PHASE);
+		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register(registrySync, RegistrySyncManager::configureClient);
 		ServerConfigurationNetworking.registerGlobalReceiver(SyncCompletePayload.ID, (payload, context) -> {
 			context.networkHandler().completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
 		});

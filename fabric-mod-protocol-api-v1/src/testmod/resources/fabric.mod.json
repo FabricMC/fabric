@@ -10,13 +10,24 @@
   },
   "entrypoints": {
     "main": [
-
+      "net.fabricmc.fabric.test.modprotocol.ModProtocolTestmods::init"
     ],
     "client": [
 
     ]
   },
   "custom": {
-    "fabric:mod_protocol": 5
+    "fabric:mod_protocol": 5,
+    "test_fabric:mod_protocol": {
+      "name": "Name",
+      "id": "special:id",
+      "protocol": [0, 1, 2, 3],
+      "version": "Tater",
+      "require_client": false,
+      "require_server": false
+    },
+    "test2_fabric:mod_protocol": {
+      "protocol": [0, 1, 2, 3]
+    }
   }
 }

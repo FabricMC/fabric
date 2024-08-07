@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-/**
- * The Mod Protocol API (client side), version 1.
- *
- * See {@link net.fabricmc.fabric.api.modprotocol.v1}
- */
+package net.fabricmc.fabric.mixin.modprotocol;
 
-@ApiStatus.Experimental
-package net.fabricmc.fabric.api.client.modprotocol.v1;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.registry.Registries;
+
+import net.fabricmc.fabric.impl.modprotocol.ModProtocolInit;
+
+@Mixin(Registries.class)
+public class RegistriesMixin {
+	@Inject(method = "freezeRegistries", at = @At("TAIL"))
+	private static void onRegistryFrozen(CallbackInfo ci) {
+		ModProtocolInit.frozen = true;
+	}
+}

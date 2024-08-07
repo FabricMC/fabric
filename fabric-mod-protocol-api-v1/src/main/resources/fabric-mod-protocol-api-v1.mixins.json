@@ -5,6 +5,7 @@
   "mixins": [
     "ClientConnectionMixin",
     "MinecraftServerMixin",
+    "RegistriesMixin",
     "ServerCommonNetworkHandlerMixin",
     "ServerMetadataMixin"
   ],

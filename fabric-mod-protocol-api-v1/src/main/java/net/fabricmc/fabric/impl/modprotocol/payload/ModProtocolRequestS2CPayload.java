@@ -24,11 +24,11 @@ import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.modprotocol.ModProtocol;
+import net.fabricmc.fabric.impl.modprotocol.ModProtocolImpl;
 
-public record ModProtocolRequestS2CPayload(List<ModProtocol> modProtocol) implements CustomPayload {
+public record ModProtocolRequestS2CPayload(List<ModProtocolImpl> modProtocol) implements CustomPayload {
 	public static final Id<ModProtocolRequestS2CPayload> ID = new Id<>(Identifier.of("fabric", "mod_protocol_request"));
-	public static final PacketCodec<PacketByteBuf, ModProtocolRequestS2CPayload> PACKET_CODEC = ModProtocol.PACKET_CODEC.collect(PacketCodecs.toList())
+	public static final PacketCodec<PacketByteBuf, ModProtocolRequestS2CPayload> PACKET_CODEC = ModProtocolImpl.PACKET_CODEC.collect(PacketCodecs.toList())
 			.xmap(ModProtocolRequestS2CPayload::new, ModProtocolRequestS2CPayload::modProtocol);
 
 	@Override

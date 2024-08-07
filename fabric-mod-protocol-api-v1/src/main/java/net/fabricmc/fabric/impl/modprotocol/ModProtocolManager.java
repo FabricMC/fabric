@@ -25,6 +25,7 @@ import java.util.function.Consumer;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
@@ -41,16 +42,16 @@ import net.fabricmc.loader.api.ModContainer;
 
 public final class ModProtocolManager {
 	public static final List<String> NAMESPACE_PRIORITY = new ArrayList<>(List.of("special", "mod", "feature"));
-	public static final Comparator<ModProtocol> MOD_PROTOCOL_COMPARATOR = Comparator.<ModProtocol>comparingInt(x -> {
+	public static final Comparator<ModProtocolImpl> MOD_PROTOCOL_COMPARATOR = Comparator.<ModProtocolImpl>comparingInt(x -> {
 		var out = NAMESPACE_PRIORITY.indexOf(x.id().getNamespace());
 		return out == -1 ? NAMESPACE_PRIORITY.size() : out;
-	}).thenComparing(ModProtocol::id);
+	}).thenComparing(ModProtocolImpl::id);
 
-	public static final Map<Identifier, ModProtocol> LOCAL_MOD_PROTOCOLS_BY_ID = new HashMap<>();
-	public static final List<ModProtocol> LOCAL_MOD_PROTOCOLS = new ArrayList<>();
-	public static final List<ModProtocol> PING_SYNCED_PROTOCOLS = new ArrayList<>();
-	public static final List<ModProtocol> CLIENT_REQUIRED = new ArrayList<>();
-	public static final List<ModProtocol> SERVER_REQUIRED = new ArrayList<>();
+	public static final Map<Identifier, ModProtocolImpl> LOCAL_MOD_PROTOCOLS_BY_ID = new HashMap<>();
+	public static final List<ModProtocolImpl> LOCAL_MOD_PROTOCOLS = new ArrayList<>();
+	public static final List<ModProtocolImpl> PING_SYNCED_PROTOCOLS = new ArrayList<>();
+	public static final List<ModProtocolImpl> CLIENT_REQUIRED = new ArrayList<>();
+	public static final List<ModProtocolImpl> SERVER_REQUIRED = new ArrayList<>();
 
 	public static void setupClient(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
 		if (!ServerConfigurationNetworking.canSend(handler, ModProtocolRequestS2CPayload.ID)) {
@@ -64,7 +65,7 @@ public final class ModProtocolManager {
 		handler.addTask(new SyncConfigurationTask());
 	}
 
-	public static Text constructMessage(List<ModProtocol> missingProtocols, Map<Identifier, ModProtocol> localProtocols) {
+	public static Text constructMessage(List<ModProtocolImpl> missingProtocols, Map<Identifier, ModProtocolImpl> localProtocols) {
 		var text = Text.empty();
 		text.append(TextUtil.translatable("text.fabric.mod_protocol.mismatched.title").formatted(Formatting.GOLD)).append("\n");
 		text.append(TextUtil.translatable("text.fabric.mod_protocol.mismatched.desc").formatted(Formatting.YELLOW)).append("\n\n");
@@ -73,7 +74,7 @@ public final class ModProtocolManager {
 		return text;
 	}
 
-	public static void appendTextEntries(List<ModProtocol> missingProtocols, Map<Identifier, ModProtocol> localProtocols, int limit, Consumer<Text> consumer) {
+	public static void appendTextEntries(List<ModProtocolImpl> missingProtocols, Map<Identifier, ModProtocolImpl> localProtocols, int limit, Consumer<Text> consumer) {
 		missingProtocols.sort(MOD_PROTOCOL_COMPARATOR);
 		if (limit == -1) {
 			limit = missingProtocols.size();
@@ -83,12 +84,12 @@ public final class ModProtocolManager {
 			var protocol = missingProtocols.get(i);
 			var local = localProtocols.get(protocol.id());
 			var localVersion = local == null ? TextUtil.translatable("text.fabric.mod_protocol.missing").formatted(Formatting.DARK_RED)
-					: Text.literal(local.displayVersion()).formatted(Formatting.YELLOW);
+					: Text.literal(local.version()).formatted(Formatting.YELLOW);
 			var remoteVersion = local == protocol ? TextUtil.translatable("text.fabric.mod_protocol.missing").formatted(Formatting.DARK_RED)
-					: Text.literal(protocol.displayVersion()).formatted(Formatting.YELLOW);
+					: Text.literal(protocol.version()).formatted(Formatting.YELLOW);
 
 			var text = TextUtil.translatable("text.fabric.mod_protocol.entry",
-					Text.literal(protocol.displayName()).formatted(Formatting.WHITE), localVersion, remoteVersion).formatted(Formatting.GRAY);
+					Text.literal(protocol.name()).formatted(Formatting.WHITE), localVersion, remoteVersion).formatted(Formatting.GRAY);
 			if (i + 1 < size) {
 				text.append("\n");
 			}
@@ -99,25 +100,25 @@ public final class ModProtocolManager {
 		}
 	}
 
-	public static ValidationResult validateClient(Map<Identifier, ModProtocol> received) {
+	public static ValidationResult validateClient(Map<Identifier, ModProtocolImpl> received) {
 		return validate(received, LOCAL_MOD_PROTOCOLS_BY_ID, SERVER_REQUIRED);
 	}
 
-	public static ValidationResult validate(Map<Identifier, ModProtocol> received, Map<Identifier, ModProtocol> localById, List<ModProtocol> requiredRemote) {
+	public static ValidationResult validate(Map<Identifier, ModProtocolImpl> received, Map<Identifier, ModProtocolImpl> localById, List<ModProtocolImpl> requiredRemote) {
 		var supported = new Object2IntOpenHashMap<Identifier>();
-		var missingLocal = new ArrayList<ModProtocol>();
-		var missingRemote = new ArrayList<ModProtocol>();
+		var missingLocal = new ArrayList<ModProtocolImpl>();
+		var missingRemote = new ArrayList<ModProtocolImpl>();
 
 		for (var modProtocol : received.values()) {
 			var local = localById.get(modProtocol.id());
 			if (local != null) {
-				var version = local.getHighestVersion(modProtocol.protocols());
+				var version = local.getHighestVersion(modProtocol.protocol());
 				if (version != -1) {
 					supported.put(modProtocol.id(), version);
-				} else if (modProtocol.requiredClient()) {
+				} else if (modProtocol.requireClient()) {
 					missingLocal.add(modProtocol);
 				}
-			} else if (modProtocol.requiredClient()) {
+			} else if (modProtocol.requireClient()) {
 				missingLocal.add(modProtocol);
 			}
 		}
@@ -137,23 +138,52 @@ public final class ModProtocolManager {
 		ModProtocolLocator.provide(ModProtocolManager::add);
 	}
 
-	public static void add(ModContainer container, ModProtocol protocol) {
+	public static ModProtocolImpl add(@Nullable ModContainer container, ModProtocolImpl protocol) {
 		if (LOCAL_MOD_PROTOCOLS_BY_ID.containsKey(protocol.id())) {
-			ModProtocolInit.LOGGER.warn("Found duplicate protocol id '{}' provided by mod '{}'", protocol.id(), (container != null ? container.getMetadata().getId() : "<NULL!>"));
-			return;
+			if (container != null) {
+				ModProtocolInit.LOGGER.warn("Found duplicate protocol id '{}' provided by mod '{}'", protocol.id(), container.getMetadata().getId());
+			} else {
+				ModProtocolInit.LOGGER.warn("Found duplicate protocol id '{}' registered by a mod!'", protocol.id(), new RuntimeException());
+			}
+			return LOCAL_MOD_PROTOCOLS_BY_ID.get(protocol);
 		}
 		LOCAL_MOD_PROTOCOLS_BY_ID.put(protocol.id(), protocol);
 		LOCAL_MOD_PROTOCOLS.add(protocol);
 
-		if (protocol.requiredClient()) {
+		if (protocol.requireClient()) {
 			CLIENT_REQUIRED.add(protocol);
 		}
-		if (protocol.requiredServer()) {
+		if (protocol.requireServer()) {
 			SERVER_REQUIRED.add(protocol);
 		}
 		if (protocol.syncWithServerMetadata()) {
 			PING_SYNCED_PROTOCOLS.add(protocol);
 		}
+		return null;
+	}
+
+	@SuppressWarnings("ConstantValue")
+	public static boolean registerOrder(String firstNamespace, String secondNamespace) {
+		if (firstNamespace.equals(secondNamespace)) {
+			return false;
+		}
+		var firstIndex = NAMESPACE_PRIORITY.indexOf(firstNamespace);
+		var secondIndex = NAMESPACE_PRIORITY.indexOf(secondNamespace);
+		if (firstIndex != -1 && secondIndex != -1) {
+			if (firstIndex > secondIndex) {
+				ModProtocolInit.LOGGER.warn("Protocol '{}' is already set to display after '{}'!", firstNamespace, secondNamespace);
+				return false;
+			}
+			return true;
+		} else if (firstIndex == -1) {
+			NAMESPACE_PRIORITY.add(secondIndex, firstNamespace);
+		} else if (secondIndex == -1) {
+			NAMESPACE_PRIORITY.add(firstIndex + 1, secondNamespace);
+		} else {
+			NAMESPACE_PRIORITY.add(firstNamespace);
+			NAMESPACE_PRIORITY.add(secondNamespace);
+		}
+		return true;
 	}
 
 	public static class SyncConfigurationTask implements ServerPlayerConfigurationTask {
@@ -169,13 +199,13 @@ public final class ModProtocolManager {
 		}
 	}
 
-	public record ValidationResult(Object2IntMap<Identifier> supportedProtocols, List<ModProtocol> missingLocal, List<ModProtocol> missingRemote) {
+	public record ValidationResult(Object2IntMap<Identifier> supportedProtocols, List<ModProtocolImpl> missingLocal, List<ModProtocolImpl> missingRemote) {
 		public boolean isSuccess() {
 			return missingLocal.isEmpty() && missingRemote.isEmpty();
 		}
 
-		public List<ModProtocol> missing() {
-			var arr = new ArrayList<ModProtocol>();
+		public List<ModProtocolImpl> missing() {
+			var arr = new ArrayList<ModProtocolImpl>();
 			arr.addAll(missingLocal);
 			arr.addAll(missingRemote);
 			return arr;

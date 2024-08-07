@@ -28,7 +28,7 @@ public interface ModProtocolHolder {
 	}
 
 	@Nullable
-	List<ModProtocol> fabric$getModProtocol();
-	void fabric$setModProtocol(List<ModProtocol> protocol);
+	List<ModProtocolImpl> fabric$getModProtocol();
+	void fabric$setModProtocol(List<ModProtocolImpl> protocol);
 
 }

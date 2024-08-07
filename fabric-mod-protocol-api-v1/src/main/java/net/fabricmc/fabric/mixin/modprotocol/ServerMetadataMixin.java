@@ -30,22 +30,22 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.server.ServerMetadata;
 
-import net.fabricmc.fabric.impl.modprotocol.ModProtocol;
 import net.fabricmc.fabric.impl.modprotocol.ModProtocolHolder;
+import net.fabricmc.fabric.impl.modprotocol.ModProtocolImpl;
 
 @Mixin(ServerMetadata.class)
 public class ServerMetadataMixin implements ModProtocolHolder {
 	@Unique
 	@Nullable
-	private List<ModProtocol> modProtocol;
+	private List<ModProtocolImpl> modProtocol;
 
 	@Override
-	public List<ModProtocol> fabric$getModProtocol() {
+	public List<ModProtocolImpl> fabric$getModProtocol() {
 		return this.modProtocol;
 	}
 
 	@Override
-	public void fabric$setModProtocol(List<ModProtocol> protocol) {
+	public void fabric$setModProtocol(List<ModProtocolImpl> protocol) {
 		this.modProtocol = protocol;
 	}
 
@@ -58,7 +58,7 @@ public class ServerMetadataMixin implements ModProtocolHolder {
 				if (decoded.isSuccess()) {
 					var protocol = ops.get(input, "fabric:mod_protocol");
 					if (protocol.isSuccess()) {
-						var result = ModProtocol.LIST_CODEC.decode(ops, protocol.getOrThrow());
+						var result = ModProtocolImpl.LIST_CODEC.decode(ops, protocol.getOrThrow());
 						if (result.isSuccess()) {
 							ModProtocolHolder.of(decoded.getOrThrow().getFirst()).fabric$setModProtocol(result.getOrThrow().getFirst());
 						}
@@ -71,7 +71,7 @@ public class ServerMetadataMixin implements ModProtocolHolder {
 			public <T> DataResult<T> encode(ServerMetadata input, DynamicOps<T> ops, T prefix) {
 				var encode = original.encode(input, ops, prefix);
 				if (encode.isSuccess() && ModProtocolHolder.of(input).fabric$getModProtocol() != null) {
-					var protocol = ModProtocol.LIST_CODEC.encodeStart(ops, ModProtocolHolder.of(input).fabric$getModProtocol());
+					var protocol = ModProtocolImpl.LIST_CODEC.encodeStart(ops, ModProtocolHolder.of(input).fabric$getModProtocol());
 					if (protocol.isSuccess()) {
 						encode = ops.mergeToMap(encode.getOrThrow(), ops.createString("fabric:mod_protocol"), protocol.getOrThrow());
 					}

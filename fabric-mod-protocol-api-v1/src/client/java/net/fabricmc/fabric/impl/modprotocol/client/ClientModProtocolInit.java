@@ -21,7 +21,7 @@ import java.util.HashMap;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
-import net.fabricmc.fabric.impl.modprotocol.ModProtocol;
+import net.fabricmc.fabric.impl.modprotocol.ModProtocolImpl;
 import net.fabricmc.fabric.impl.modprotocol.ModProtocolInit;
 import net.fabricmc.fabric.impl.modprotocol.ModProtocolManager;
 import net.fabricmc.fabric.impl.modprotocol.RemoteProtocolStorage;
@@ -33,7 +33,7 @@ public final class ClientModProtocolInit {
 
 	public static void clientInit() {
 		ClientConfigurationNetworking.registerGlobalReceiver(ModProtocolRequestS2CPayload.ID, (payload, context) -> {
-			var map = new HashMap<Identifier, ModProtocol>(payload.modProtocol().size());
+			var map = new HashMap<Identifier, ModProtocolImpl>(payload.modProtocol().size());
 			for (var protocol : payload.modProtocol()) {
 				map.put(protocol.id(), protocol);
 			}

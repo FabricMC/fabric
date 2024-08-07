@@ -17,11 +17,36 @@
 package net.fabricmc.fabric.impl.modprotocol;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
 
 public interface RemoteProtocolStorage {
+	static int getProtocol(Object object, Identifier identifier) {
+		if (object instanceof RemoteProtocolStorage storage) {
+			var map = storage.fabric$getRemoteProtocol();
+
+			if (map != null) {
+				return map.getOrDefault(identifier, -1);
+			}
+		}
+
+		return -1;
+	}
+
+	static Object2IntMap<Identifier> getMap(Object object) {
+		if (object instanceof RemoteProtocolStorage storage) {
+			var map = storage.fabric$getRemoteProtocol();
+
+			if (map != null) {
+				return Object2IntMaps.unmodifiable(map);
+			}
+		}
+
+		return Object2IntMaps.emptyMap();
+	}
+
 	@Nullable
 	Object2IntMap<Identifier> fabric$getRemoteProtocol();
 	void fabric$setRemoteProtocol(Object2IntMap<Identifier> protocol);
