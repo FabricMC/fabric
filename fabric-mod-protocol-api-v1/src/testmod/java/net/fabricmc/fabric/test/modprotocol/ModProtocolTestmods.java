@@ -41,6 +41,12 @@ public final class ModProtocolTestmods {
 		var modContainer = FabricLoader.getInstance().getModContainer(ID).get();
 
 		ModProtocolRegistry.register(ModProtocolIds.special("test_modification"), "Hello there", "1.12.2", IntList.of(1, 2, 3), true, false);
+		ModProtocolRegistry.register(ModProtocolIds.special("test_modification2"), "Test2", "1.0", IntList.of(1), false, true);
+		ModProtocolRegistry.register(ModProtocolIds.special("test_modification3"), "Test3", "2.0", IntList.of(2), true, true);
+		ModProtocolRegistry.register(ModProtocolIds.special("test_modification4"), "Test4", "2.0", IntList.of(2), true, true);
+		//ModProtocolRegistry.register(ModProtocolIds.special("test_modification5"), "Test5", "1.0", IntList.of(1), true, true);
+		ModProtocolRegistry.register(ModProtocolIds.special("test_modification6"), "Test6", "1.0", IntList.of(1), true, true);
+		ModProtocolRegistry.register(ModProtocolIds.special("test_modification7"), "Test7", "1.0", IntList.of(1), true, true);
 
 		var testificate = modContainer.getMetadata().getCustomValue("test_fabric:mod_protocol");
 		var defaulted = modContainer.getMetadata().getCustomValue("test2_fabric:mod_protocol");
