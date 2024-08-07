@@ -16,22 +16,13 @@
 
 package net.fabricmc.fabric.test.modprotocol.unit;
 
-
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
-
-
 public class VersionMatchingTests {
 	@BeforeAll
-	static void beforeAll() {
-
-	}
-
+	static void beforeAll() { }
 
 	@BeforeEach
-	void setUp() {
-
-	}
+	void setUp() { }
 }

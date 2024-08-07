@@ -31,7 +31,7 @@
  *     <dl>
  *     		<dt>"fabric:mod_protocol": 1</dt>
  *     		<dd><p>This will automatically use mods id with "mod" namespace as the protocol identifier, as a single supported protocol version,
- *     		with display name and version being copied form mods metadata. It also marks the protocol as required on both client and server.</>
+ *     		with display name and version being copied form mods metadata. It also marks the protocol as required on both client and server.</p>
  *     		</dd>
  *     		<dt>"fabric:mod_protocol": {
  *     		 "protocol": [1, 2],

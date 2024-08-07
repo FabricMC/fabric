@@ -54,24 +54,30 @@ public class ServerMetadataMixin implements ModProtocolHolder {
 		return new Codec<>() {
 			@Override
 			public <T> DataResult<Pair<ServerMetadata, T>> decode(DynamicOps<T> ops, T input) {
-				var decoded = original.decode(ops, input);
+				DataResult<Pair<ServerMetadata, T>> decoded = original.decode(ops, input);
+
 				if (decoded.isSuccess()) {
-					var protocol = ops.get(input, "fabric:mod_protocol");
+					DataResult<T> protocol = ops.get(input, "fabric:mod_protocol");
+
 					if (protocol.isSuccess()) {
-						var result = ModProtocolImpl.LIST_CODEC.decode(ops, protocol.getOrThrow());
+						DataResult<Pair<List<ModProtocolImpl>, T>> result = ModProtocolImpl.LIST_CODEC.decode(ops, protocol.getOrThrow());
+
 						if (result.isSuccess()) {
 							ModProtocolHolder.of(decoded.getOrThrow().getFirst()).fabric$setModProtocol(result.getOrThrow().getFirst());
 						}
 					}
 				}
+
 				return decoded;
 			}
 
 			@Override
 			public <T> DataResult<T> encode(ServerMetadata input, DynamicOps<T> ops, T prefix) {
-				var encode = original.encode(input, ops, prefix);
+				DataResult<T> encode = original.encode(input, ops, prefix);
+
 				if (encode.isSuccess() && ModProtocolHolder.of(input).fabric$getModProtocol() != null) {
-					var protocol = ModProtocolImpl.LIST_CODEC.encodeStart(ops, ModProtocolHolder.of(input).fabric$getModProtocol());
+					DataResult<T> protocol = ModProtocolImpl.LIST_CODEC.encodeStart(ops, ModProtocolHolder.of(input).fabric$getModProtocol());
+
 					if (protocol.isSuccess()) {
 						encode = ops.mergeToMap(encode.getOrThrow(), ops.createString("fabric:mod_protocol"), protocol.getOrThrow());
 					}

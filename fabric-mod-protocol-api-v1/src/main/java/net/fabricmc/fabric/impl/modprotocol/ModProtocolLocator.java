@@ -30,19 +30,21 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 
 public class ModProtocolLocator {
 	public static void provide(BiConsumer<ModContainer, ModProtocolImpl> consumer) {
-		for (var mod : FabricLoader.getInstance().getAllMods()) {
+		for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
 			create(mod, consumer);
 		}
 	}
+
 	private static void create(ModContainer container, BiConsumer<ModContainer, ModProtocolImpl> consumer) {
-		var meta = container.getMetadata();
-		var definition = meta.getCustomValue("fabric:mod_protocol");
+		ModMetadata meta = container.getMetadata();
+		CustomValue definition = meta.getCustomValue("fabric:mod_protocol");
+
 		if (definition == null) {
 			return;
 		}
 
 		if (definition.getType() == CustomValue.CvType.ARRAY) {
-			for (var entry : definition.getAsArray()) {
+			for (CustomValue entry : definition.getAsArray()) {
 				consumer.accept(container, decodeFullDefinition(entry, meta, true));
 			}
 		} else if (definition.getType() == CustomValue.CvType.NUMBER) {
@@ -56,7 +58,8 @@ public class ModProtocolLocator {
 		if (entry.getType() != CustomValue.CvType.OBJECT) {
 			throw new RuntimeException("Mod Protocol entry provided by '" + meta.getId() + "' is not valid!");
 		}
-		var object = entry.getAsObject();
+
+		CustomValue.CvObject object = entry.getAsObject();
 		Identifier id;
 		String name;
 		String version;
@@ -64,12 +67,12 @@ public class ModProtocolLocator {
 		boolean requiredServer;
 		IntList protocols = new IntArrayList();
 
-		var idField = object.get("id");
-		var nameField = object.get("name");
-		var versionField = object.get("version");
-		var protocolField = object.get("protocol");
-		var requiredClientField = object.get("require_client");
-		var requiredServerField = object.get("require_server");
+		CustomValue idField = object.get("id");
+		CustomValue nameField = object.get("name");
+		CustomValue versionField = object.get("version");
+		CustomValue protocolField = object.get("protocol");
+		CustomValue requiredClientField = object.get("require_client");
+		CustomValue requiredServerField = object.get("require_server");
 
 		if (!requireFullData && idField == null) {
 			id = Identifier.of("mod", meta.getId());
@@ -82,7 +85,7 @@ public class ModProtocolLocator {
 		if (protocolField != null && protocolField.getType() == CustomValue.CvType.NUMBER) {
 			protocols.add(protocolField.getAsNumber().intValue());
 		} else if (protocolField != null && protocolField.getType() == CustomValue.CvType.ARRAY) {
-			for (var value : protocolField.getAsArray()) {
+			for (CustomValue value : protocolField.getAsArray()) {
 				if (value.getType() == CustomValue.CvType.NUMBER) {
 					protocols.add(value.getAsNumber().intValue());
 				} else {
@@ -124,7 +127,6 @@ public class ModProtocolLocator {
 		} else {
 			throw new RuntimeException("Mod Protocol entry provided by '" + meta.getId() + "' is not valid!");
 		}
-
 
 		return new ModProtocolImpl(id, name, version, IntList.of(protocols.toIntArray()), requiredClient, requiredServer);
 	}

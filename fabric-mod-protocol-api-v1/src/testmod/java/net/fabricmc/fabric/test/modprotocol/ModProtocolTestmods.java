@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.modprotocol;
 
 import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,8 @@ import net.fabricmc.fabric.api.modprotocol.v1.ServerModProtocolLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.impl.modprotocol.ModProtocolLocator;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.CustomValue;
 
 public final class ModProtocolTestmods {
 	public static final String ID = "fabric-mod-protocol-api-v1-testmod";
@@ -38,7 +41,7 @@ public final class ModProtocolTestmods {
 	}
 
 	public static void init() {
-		var modContainer = FabricLoader.getInstance().getModContainer(ID).get();
+		ModContainer modContainer = FabricLoader.getInstance().getModContainer(ID).get();
 
 		ModProtocolRegistry.register(ModProtocolIds.special("test_modification"), "Hello there", "1.12.2", IntList.of(1, 2, 3), true, false);
 		ModProtocolRegistry.register(ModProtocolIds.special("test_modification2"), "Test2", "1.0", IntList.of(1), false, true);
@@ -48,16 +51,16 @@ public final class ModProtocolTestmods {
 		ModProtocolRegistry.register(ModProtocolIds.special("test_modification6"), "Test6", "1.0", IntList.of(1), true, true);
 		ModProtocolRegistry.register(ModProtocolIds.special("test_modification7"), "Test7", "1.0", IntList.of(1), true, true);
 
-		var testificate = modContainer.getMetadata().getCustomValue("test_fabric:mod_protocol");
-		var defaulted = modContainer.getMetadata().getCustomValue("test2_fabric:mod_protocol");
+		CustomValue testificate = modContainer.getMetadata().getCustomValue("test_fabric:mod_protocol");
+		CustomValue defaulted = modContainer.getMetadata().getCustomValue("test2_fabric:mod_protocol");
 
 		ServerPlayConnectionEvents.JOIN.register(((handler, sender, server) -> {
-			var protocols = ServerModProtocolLookup.getAllSupportedProtocols(handler);
+			Object2IntMap<Identifier> protocols = ServerModProtocolLookup.getAllSupportedProtocols(handler);
 			LOGGER.info("Protocols supported by {}", handler.getDebugProfile().getName());
-			for (var entry : protocols.object2IntEntrySet()) {
+
+			for (Object2IntMap.Entry<Identifier> entry : protocols.object2IntEntrySet()) {
 				LOGGER.info(" - {}: {}", entry.getKey(), entry.getIntValue());
 			}
-
 		}));
 
 		LOGGER.info("Parser full array-like, {}", ModProtocolLocator.decodeFullDefinition(testificate, modContainer.getMetadata(), true));

@@ -33,6 +33,7 @@ public class MinecraftServerMixin {
 		if (!ModProtocolManager.PING_SYNCED_PROTOCOLS.isEmpty()) {
 			ModProtocolHolder.of(original).fabric$setModProtocol(ModProtocolManager.PING_SYNCED_PROTOCOLS);
 		}
+
 		return original;
 	}
 }

@@ -25,7 +25,8 @@ public final class ModProtocolIds {
 	public static final String MOD = "mod";
 	public static final String SPECIAL = "special";
 	public static final String FEATURE = "feature";
-	private ModProtocolIds() {}
+	private ModProtocolIds() { }
+
 	public static Identifier mod(String modId) {
 		return Identifier.of(MOD, modId);
 	}

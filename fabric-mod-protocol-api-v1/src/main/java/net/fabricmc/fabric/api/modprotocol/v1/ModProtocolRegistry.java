@@ -30,13 +30,13 @@ import net.fabricmc.fabric.impl.modprotocol.ModProtocolManager;
 /**
  * Utility methods allowing to lookup or register new protocols.
  *
- * <p>While lookup can be done anytime, registration is only possible before registries are frozen.</>
+ * <p>While lookup can be done anytime, registration is only possible before registries are frozen.</p>
  */
 public final class ModProtocolRegistry {
-	private ModProtocolRegistry() {}
+	private ModProtocolRegistry() { }
 
 	/**
-	 * Allows to get a locally registered protocol
+	 * Allows to get a locally registered protocol.
 	 * @param identifier protocol's id
 	 * @return requested ModProtocol or null if not found
 	 */
@@ -66,7 +66,6 @@ public final class ModProtocolRegistry {
 	public static ModProtocol register(Identifier identifier, String name, String version, IntList protocol, boolean requireClient, boolean requireServer) {
 		return ModProtocolManager.add(null, new ModProtocolImpl(identifier, name, version, IntList.of(protocol.toIntArray()), requireClient, requireServer));
 	}
-
 
 	/**
 	 * Allows to customise priority of namespaces when displaying missing protocols.

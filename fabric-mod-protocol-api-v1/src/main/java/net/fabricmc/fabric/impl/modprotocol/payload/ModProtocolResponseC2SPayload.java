@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.impl.modprotocol.payload;
 
-
-
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
@@ -26,8 +24,6 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
-
-
 
 public record ModProtocolResponseC2SPayload(Object2IntMap<Identifier> supported) implements CustomPayload {
 	public static final Id<ModProtocolResponseC2SPayload> ID = new Id<>(Identifier.of("fabric", "mod_protocol/response"));

@@ -17,7 +17,7 @@
 /**
  * The Mod Protocol API (client side), version 1.
  *
- * See {@link net.fabricmc.fabric.api.modprotocol.v1}
+ * <p>See {@link net.fabricmc.fabric.api.modprotocol.v1}</p>
  */
 
 @ApiStatus.Experimental

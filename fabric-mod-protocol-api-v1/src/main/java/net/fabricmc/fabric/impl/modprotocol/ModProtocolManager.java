@@ -32,6 +32,7 @@ import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -43,7 +44,7 @@ import net.fabricmc.loader.api.ModContainer;
 public final class ModProtocolManager {
 	public static final List<String> NAMESPACE_PRIORITY = new ArrayList<>(List.of("special", "mod", "feature"));
 	public static final Comparator<ModProtocolImpl> MOD_PROTOCOL_COMPARATOR = Comparator.<ModProtocolImpl>comparingInt(x -> {
-		var out = NAMESPACE_PRIORITY.indexOf(x.id().getNamespace());
+		int out = NAMESPACE_PRIORITY.indexOf(x.id().getNamespace());
 		return out == -1 ? NAMESPACE_PRIORITY.size() : out;
 	}).thenComparing(ModProtocolImpl::id);
 
@@ -66,35 +67,41 @@ public final class ModProtocolManager {
 	}
 
 	public static Text constructMessage(List<ModProtocolImpl> missingProtocols, Map<Identifier, ModProtocolImpl> localProtocols) {
-		var text = Text.empty();
+		MutableText text = Text.empty();
 		text.append(TextUtil.translatable("text.fabric.mod_protocol.mismatched.title").formatted(Formatting.GOLD)).append("\n");
 		text.append(TextUtil.translatable("text.fabric.mod_protocol.mismatched.desc").formatted(Formatting.YELLOW)).append("\n\n");
 		text.append(TextUtil.translatable("text.fabric.mod_protocol.mismatched.entries.title").formatted(Formatting.RED)).append("\n");
-		appendTextEntries(missingProtocols, localProtocols,  6, text::append);
+		appendTextEntries(missingProtocols, localProtocols, 6, text::append);
 		return text;
 	}
 
 	public static void appendTextEntries(List<ModProtocolImpl> missingProtocols, Map<Identifier, ModProtocolImpl> localProtocols, int limit, Consumer<Text> consumer) {
 		missingProtocols.sort(MOD_PROTOCOL_COMPARATOR);
+
 		if (limit == -1) {
 			limit = missingProtocols.size();
 		}
-		var size = Math.min(limit, missingProtocols.size());
+
+		int size = Math.min(limit, missingProtocols.size());
+
 		for (int i = 0; i < size; i++) {
-			var protocol = missingProtocols.get(i);
-			var local = localProtocols.get(protocol.id());
-			var localVersion = local == null ? TextUtil.translatable("text.fabric.mod_protocol.missing").formatted(Formatting.DARK_RED)
+			ModProtocolImpl protocol = missingProtocols.get(i);
+			ModProtocolImpl local = localProtocols.get(protocol.id());
+			Text localVersion = local == null ? TextUtil.translatable("text.fabric.mod_protocol.missing").formatted(Formatting.DARK_RED)
 					: Text.literal(local.version()).formatted(Formatting.YELLOW);
-			var remoteVersion = local == protocol ? TextUtil.translatable("text.fabric.mod_protocol.missing").formatted(Formatting.DARK_RED)
+			Text remoteVersion = local == protocol ? TextUtil.translatable("text.fabric.mod_protocol.missing").formatted(Formatting.DARK_RED)
 					: Text.literal(protocol.version()).formatted(Formatting.YELLOW);
 
-			var text = TextUtil.translatable("text.fabric.mod_protocol.entry",
+			MutableText text = TextUtil.translatable("text.fabric.mod_protocol.entry",
 					Text.literal(protocol.name()).formatted(Formatting.WHITE), localVersion, remoteVersion).formatted(Formatting.GRAY);
+
 			if (i + 1 < size) {
 				text.append("\n");
 			}
+
 			consumer.accept(text);
 		}
+
 		if (limit < missingProtocols.size()) {
 			consumer.accept(Text.literal("\n").append(TextUtil.translatable("text.fabric.mod_protocol.and_x_more", missingProtocols.size() - size).formatted(Formatting.GRAY, Formatting.ITALIC)));
 		}
@@ -109,10 +116,12 @@ public final class ModProtocolManager {
 		var missingLocal = new ArrayList<ModProtocolImpl>();
 		var missingRemote = new ArrayList<ModProtocolImpl>();
 
-		for (var modProtocol : received.values()) {
-			var local = localById.get(modProtocol.id());
+		for (ModProtocolImpl modProtocol : received.values()) {
+			ModProtocolImpl local = localById.get(modProtocol.id());
+
 			if (local != null) {
-				var version = local.getHighestVersion(modProtocol.protocol());
+				int version = local.getHighestVersion(modProtocol.protocol());
+
 				if (version != -1) {
 					supported.put(modProtocol.id(), version);
 				} else if (modProtocol.requireClient()) {
@@ -123,13 +132,13 @@ public final class ModProtocolManager {
 			}
 		}
 
-		for (var modProtocol : requiredRemote) {
-			var remote = received.get(modProtocol.id());
+		for (ModProtocolImpl modProtocol : requiredRemote) {
+			ModProtocolImpl remote = received.get(modProtocol.id());
+
 			if (remote == null) {
 				missingRemote.add(modProtocol);
 			}
 		}
-
 
 		return new ValidationResult(supported, missingLocal, missingRemote);
 	}
@@ -145,20 +154,25 @@ public final class ModProtocolManager {
 			} else {
 				ModProtocolInit.LOGGER.warn("Found duplicate protocol id '{}' registered by a mod!'", protocol.id(), new RuntimeException());
 			}
+
 			return LOCAL_MOD_PROTOCOLS_BY_ID.get(protocol);
 		}
+
 		LOCAL_MOD_PROTOCOLS_BY_ID.put(protocol.id(), protocol);
 		LOCAL_MOD_PROTOCOLS.add(protocol);
 
 		if (protocol.requireClient()) {
 			CLIENT_REQUIRED.add(protocol);
 		}
+
 		if (protocol.requireServer()) {
 			SERVER_REQUIRED.add(protocol);
 		}
+
 		if (protocol.syncWithServerMetadata()) {
 			PING_SYNCED_PROTOCOLS.add(protocol);
 		}
+
 		return null;
 	}
 
@@ -167,13 +181,16 @@ public final class ModProtocolManager {
 		if (firstNamespace.equals(secondNamespace)) {
 			return false;
 		}
-		var firstIndex = NAMESPACE_PRIORITY.indexOf(firstNamespace);
-		var secondIndex = NAMESPACE_PRIORITY.indexOf(secondNamespace);
+
+		int firstIndex = NAMESPACE_PRIORITY.indexOf(firstNamespace);
+		int secondIndex = NAMESPACE_PRIORITY.indexOf(secondNamespace);
+
 		if (firstIndex != -1 && secondIndex != -1) {
 			if (firstIndex > secondIndex) {
 				ModProtocolInit.LOGGER.warn("Protocol '{}' is already set to display after '{}'!", firstNamespace, secondNamespace);
 				return false;
 			}
+
 			return true;
 		} else if (firstIndex == -1) {
 			NAMESPACE_PRIORITY.add(secondIndex, firstNamespace);
@@ -183,11 +200,13 @@ public final class ModProtocolManager {
 			NAMESPACE_PRIORITY.add(firstNamespace);
 			NAMESPACE_PRIORITY.add(secondNamespace);
 		}
+
 		return true;
 	}
 
 	public static class SyncConfigurationTask implements ServerPlayerConfigurationTask {
 		public static final Key KEY = new Key("fabric:mod_protocol_sync");
+
 		@Override
 		public void sendPacket(Consumer<Packet<?>> sender) {
 			sender.accept(new CustomPayloadS2CPacket(new ModProtocolRequestS2CPayload(LOCAL_MOD_PROTOCOLS)));

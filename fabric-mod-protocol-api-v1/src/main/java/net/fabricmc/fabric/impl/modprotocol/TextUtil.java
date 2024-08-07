@@ -17,18 +17,36 @@
 package net.fabricmc.fabric.impl.modprotocol;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 
 public class TextUtil {
 	private static final Map<String, String> FALLBACK_TRANSLATIONS = new HashMap<>();
+
+	static {
+		try {
+			Optional<ModContainer> container = FabricLoader.getInstance().getModContainer(ModProtocolInit.MOD_ID);
+			Optional<Path> path = container.get().findPath("assets/fabric-mod-protocol-api-v1/lang/en_us.json");
+			JsonObject lang = JsonParser.parseString(Files.readString(path.get())).getAsJsonObject();
+
+			for (String key : lang.keySet()) {
+				FALLBACK_TRANSLATIONS.put(key, lang.get(key).getAsString());
+			}
+		} catch (Throwable e) {
+			ModProtocolInit.LOGGER.error("Failed to load translation file!", e);
+		}
+	}
 
 	public static MutableText translatable(String key, Object... args) {
 		return Text.translatableWithFallback(key, FALLBACK_TRANSLATIONS.get(key), args);
@@ -36,19 +54,5 @@ public class TextUtil {
 
 	public static MutableText translatable(String key) {
 		return Text.translatableWithFallback(key, FALLBACK_TRANSLATIONS.get(key));
-	}
-
-	static {
-		try {
-			var container = FabricLoader.getInstance().getModContainer(ModProtocolInit.MOD_ID);
-			var path = container.get().findPath("assets/fabric-mod-protocol-api-v1/lang/en_us.json");
-			var lang = JsonParser.parseString(Files.readString(path.get())).getAsJsonObject();
-
-			for (var key : lang.keySet()) {
-				FALLBACK_TRANSLATIONS.put(key, lang.get(key).getAsString());
-			}
-		} catch (Throwable e) {
-			ModProtocolInit.LOGGER.error("Failed to load translation file!", e);
-		}
 	}
 }

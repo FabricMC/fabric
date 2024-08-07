@@ -31,14 +31,14 @@ import net.fabricmc.fabric.impl.modprotocol.RemoteProtocolStorage;
  * Utility methods allowing to get protocol versions supported by the server.
  *
  * <p>Protocol identifier's can be any valid identifier, through by default mods defining it will use "mod" namespace and path equal to its id.
- * See {@link ModProtocolIds} for more information.</>
+ * See {@link ModProtocolIds} for more information.</p>
  */
 public final class ClientModProtocolLookup {
 	public static final int UNSUPPORTED = -1;
-	private ClientModProtocolLookup() {}
+	private ClientModProtocolLookup() { }
 
 	/**
-	 * Gets protocol version supported by the server
+	 * Gets protocol version supported by the server.
 	 *
 	 * @param handler the network handler connected to the server
 	 * @param protocolId protocol's id
@@ -49,7 +49,7 @@ public final class ClientModProtocolLookup {
 	}
 
 	/**
-	 * Gets protocol version supported by the server
+	 * Gets protocol version supported by the server.
 	 *
 	 * @param connection the ClientConnection connected to the server
 	 * @param protocolId protocol's id
@@ -60,7 +60,7 @@ public final class ClientModProtocolLookup {
 	}
 
 	/**
-	 * Gets protocol version supported by the server
+	 * Gets protocol version supported by the server.
 	 *
 	 * @param handler the network handler connected to the server
 	 * @param protocol protocol to check against
@@ -71,7 +71,7 @@ public final class ClientModProtocolLookup {
 	}
 
 	/**
-	 * Gets protocol version supported by the server
+	 * Gets protocol version supported by the server.
 	 *
 	 * @param connection the ClientConnection connected to the server
 	 * @param protocol protocol to check against
@@ -82,7 +82,7 @@ public final class ClientModProtocolLookup {
 	}
 
 	/**
-	 * Gets all protocols supported by the server
+	 * Gets all protocols supported by the server.
 	 *
 	 * @param handler the network handler connected to the server
 	 * @return Map of protocols supported by the server
@@ -92,7 +92,7 @@ public final class ClientModProtocolLookup {
 	}
 
 	/**
-	 * Gets all protocols supported by the server
+	 * Gets all protocols supported by the server.
 	 *
 	 * @param connection the ClientConnection connected to the server
 	 * @return Map of protocols supported by the server

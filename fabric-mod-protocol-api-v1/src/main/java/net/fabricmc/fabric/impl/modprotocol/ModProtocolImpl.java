@@ -27,39 +27,29 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.util.Identifier;
 
-public record ModProtocolImpl(Identifier id, String name, String version, IntList protocol, boolean requireClient, boolean requireServer) implements net.fabricmc.fabric.api.modprotocol.v1.ModProtocol {
+import net.fabricmc.fabric.api.modprotocol.v1.ModProtocol;
+
+public record ModProtocolImpl(Identifier id, String name, String version, IntList protocol, boolean requireClient, boolean requireServer) implements ModProtocol {
 	public static final int UNSUPPORTED = -1;
 	public static final Codec<ModProtocolImpl> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Identifier.CODEC.fieldOf("id").forGetter(ModProtocolImpl::id),
-		Codec.STRING.fieldOf("name").forGetter(ModProtocolImpl::name),
-		Codec.STRING.fieldOf("version").forGetter(ModProtocolImpl::version),
-		Codec.INT_STREAM.xmap(x -> IntList.of(x.toArray()), x -> IntStream.of(x.toIntArray())).fieldOf("protocol").forGetter(ModProtocolImpl::protocol),
-		Codec.BOOL.fieldOf("require_client").forGetter(ModProtocolImpl::requireClient),
-		Codec.BOOL.fieldOf("require_server").forGetter(ModProtocolImpl::requireServer)
+			Identifier.CODEC.fieldOf("id").forGetter(ModProtocolImpl::id),
+			Codec.STRING.fieldOf("name").forGetter(ModProtocolImpl::name),
+			Codec.STRING.fieldOf("version").forGetter(ModProtocolImpl::version),
+			Codec.INT_STREAM.xmap(x -> IntList.of(x.toArray()), x -> IntStream.of(x.toIntArray())).fieldOf("protocol").forGetter(ModProtocolImpl::protocol),
+			Codec.BOOL.fieldOf("require_client").forGetter(ModProtocolImpl::requireClient),
+			Codec.BOOL.fieldOf("require_server").forGetter(ModProtocolImpl::requireServer)
 	).apply(instance, ModProtocolImpl::new));
 	public static final Codec<List<ModProtocolImpl>> LIST_CODEC = CODEC.listOf();
-	public int getHighestVersion(IntList list) {
-		int value = UNSUPPORTED;
-		for (int i = 0; i < list.size(); i++) {
-			var proto = list.getInt(i);
-			if (this.protocol.contains(proto) && value < proto) {
-				value = proto;
-			}
-		}
-
-		return value;
-	}
-
 	public static final PacketCodec<PacketByteBuf, ModProtocolImpl> PACKET_CODEC = PacketCodec.ofStatic(ModProtocolImpl::encode, ModProtocolImpl::decode);
 
 	private static ModProtocolImpl decode(PacketByteBuf buf) {
-		var id = buf.readIdentifier();
-		var name = buf.readString();
-		var version = buf.readString();
-		var protocols = IntList.of(buf.readIntArray());
-		var b = buf.readByte();
-		var requireClient = (b & 0b10) != 0;
-		var requireServer = (b & 0b01) != 0;
+		Identifier id = buf.readIdentifier();
+		String name = buf.readString();
+		String version = buf.readString();
+		IntList protocols = IntList.of(buf.readIntArray());
+		byte b = buf.readByte();
+		boolean requireClient = (b & 0b10) != 0;
+		boolean requireServer = (b & 0b01) != 0;
 		return new ModProtocolImpl(id, name, version, protocols, requireClient, requireServer);
 	}
 
@@ -69,6 +59,21 @@ public record ModProtocolImpl(Identifier id, String name, String version, IntLis
 		buf.writeString(protocol.version);
 		buf.writeIntArray(protocol.protocol.toIntArray());
 		buf.writeByte((protocol.requireClient ? 0b10 : 0) | (protocol.requireServer ? 0b01 : 0));
+	}
+
+	public int getHighestVersion(IntList list) {
+		int value = UNSUPPORTED;
+		int size = list.size();
+
+		for (int i = 0; i < size; i++) {
+			int proto = list.getInt(i);
+
+			if (this.protocol.contains(proto) && value < proto) {
+				value = proto;
+			}
+		}
+
+		return value;
 	}
 
 	public boolean syncWithServerMetadata() {

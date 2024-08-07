@@ -33,19 +33,21 @@ public final class ModProtocolInit {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static boolean frozen = false;
 
-
 	public static void init() {
-		var phase = Identifier.of("fabric", "mod_protocol");
-		var registrySync = Identifier.of("fabric", "registry_sync");
+		Identifier phase = Identifier.of("fabric", "mod_protocol");
+		Identifier registrySync = Identifier.of("fabric", "registry_sync");
+
 		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.addPhaseOrdering(phase, Event.DEFAULT_PHASE);
 		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.addPhaseOrdering(phase, registrySync);
 		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register(phase, ModProtocolManager::setupClient);
-		ModProtocolManager.collectModProtocols();
+
 		PayloadTypeRegistry.configurationC2S().register(ModProtocolResponseC2SPayload.ID, ModProtocolResponseC2SPayload.PACKET_CODEC);
 		PayloadTypeRegistry.configurationS2C().register(ModProtocolRequestS2CPayload.ID, ModProtocolRequestS2CPayload.PACKET_CODEC);
 		ServerConfigurationNetworking.registerGlobalReceiver(ModProtocolResponseC2SPayload.ID, (payload, context) -> {
 			((RemoteProtocolStorage) context.networkHandler()).fabric$setRemoteProtocol(payload.supported());
 			context.networkHandler().completeTask(ModProtocolManager.SyncConfigurationTask.KEY);
 		});
+
+		ModProtocolManager.collectModProtocols();
 	}
 }

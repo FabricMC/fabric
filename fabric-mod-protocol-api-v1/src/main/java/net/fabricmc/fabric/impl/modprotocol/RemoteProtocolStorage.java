@@ -25,7 +25,7 @@ import net.minecraft.util.Identifier;
 public interface RemoteProtocolStorage {
 	static int getProtocol(Object object, Identifier identifier) {
 		if (object instanceof RemoteProtocolStorage storage) {
-			var map = storage.fabric$getRemoteProtocol();
+			Object2IntMap<Identifier> map = storage.fabric$getRemoteProtocol();
 
 			if (map != null) {
 				return map.getOrDefault(identifier, -1);
@@ -37,7 +37,7 @@ public interface RemoteProtocolStorage {
 
 	static Object2IntMap<Identifier> getMap(Object object) {
 		if (object instanceof RemoteProtocolStorage storage) {
-			var map = storage.fabric$getRemoteProtocol();
+			Object2IntMap<Identifier> map = storage.fabric$getRemoteProtocol();
 
 			if (map != null) {
 				return Object2IntMaps.unmodifiable(map);
