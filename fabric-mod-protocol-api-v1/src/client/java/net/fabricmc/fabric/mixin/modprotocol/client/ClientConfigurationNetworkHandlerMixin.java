@@ -16,21 +16,20 @@
 
 package net.fabricmc.fabric.mixin.modprotocol.client;
 
-import net.fabricmc.fabric.impl.modprotocol.ModProtocolManager;
-import net.fabricmc.fabric.impl.modprotocol.RemoteProtocolStorage;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientCommonNetworkHandler;
-import net.minecraft.client.network.ClientConnectionState;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.packet.s2c.config.FeaturesS2CPacket;
-import net.minecraft.network.packet.s2c.config.SelectKnownPacksS2CPacket;
-
 import org.spongepowered.asm.mixin.Mixin;
-import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientCommonNetworkHandler;
+import net.minecraft.client.network.ClientConfigurationNetworkHandler;
+import net.minecraft.client.network.ClientConnectionState;
+import net.minecraft.network.ClientConnection;
+import net.minecraft.network.packet.s2c.config.SelectKnownPacksS2CPacket;
+
+import net.fabricmc.fabric.impl.modprotocol.ModProtocolManager;
+import net.fabricmc.fabric.impl.modprotocol.RemoteProtocolStorage;
 
 @Mixin(ClientConfigurationNetworkHandler.class)
 public abstract class ClientConfigurationNetworkHandlerMixin extends ClientCommonNetworkHandler {
