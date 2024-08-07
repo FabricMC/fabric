@@ -47,6 +47,7 @@ abstract class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkHandler 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddon(CallbackInfo ci, @Local(argsOnly = true) ClientConnection connection) {
 		this.addon = new ServerPlayNetworkAddon((ServerPlayNetworkHandler) (Object) this, connection, server);
+
 		if (connection.getPacketListener() instanceof NetworkHandlerExtensions extension) {
 			this.addon.setBrand(extension.getAddon().getBrand());
 		}

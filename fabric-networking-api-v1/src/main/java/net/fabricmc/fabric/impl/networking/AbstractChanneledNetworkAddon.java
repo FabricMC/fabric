@@ -24,13 +24,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import net.minecraft.network.packet.BrandCustomPayload;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.PacketCallbacks;
+import net.minecraft.network.packet.BrandCustomPayload;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.text.Text;
@@ -231,6 +230,10 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		return this.brand;
 	}
 
+	public void setBrand(String brand) {
+		this.brand = brand;
+	}
+
 	@Override
 	public int getNegotiatedVersion() {
 		if (commonVersion == -1) {
@@ -247,9 +250,5 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		case CONFIGURATION -> CommonRegisterPayload.CONFIGURATION_PHASE;
 		default -> null; // We don't support receiving this packet on any other phase
 		};
-	}
-
-	public void setBrand(String brand) {
-		this.brand = brand;
 	}
 }
