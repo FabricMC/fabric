@@ -24,7 +24,10 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -87,6 +90,23 @@ public final class ScreenTests implements ClientModInitializer {
 			ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, key, scancode, modifiers) -> {
 				LOGGER.warn("Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
 			});
+		} else if (screen instanceof CreativeInventoryScreen) {
+			Screens.getButtons(screen).add(new TestButtonWidget());
+		}
+	}
+
+	// Test that mouseReleased is called
+	private static final class TestButtonWidget extends ButtonWidget {
+		private TestButtonWidget() {
+			super(10, 10, 10, 10, Text.literal("X"), button -> {
+				LOGGER.info("Pressed");
+			}, DEFAULT_NARRATION_SUPPLIER);
+		}
+
+		@Override
+		public boolean mouseReleased(double mouseX, double mouseY, int button) {
+			LOGGER.info("Released");
+			return true;
 		}
 	}
 }
