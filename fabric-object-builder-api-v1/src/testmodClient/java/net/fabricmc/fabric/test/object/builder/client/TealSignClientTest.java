@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.object.builder.client;
 
-import net.minecraft.client.render.block.entity.HangingSignBlockEntityRenderer;
 import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -27,6 +26,6 @@ public class TealSignClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		BlockEntityRendererFactoriesAccessor.callRegister(TealSignTest.TEST_SIGN_BLOCK_ENTITY, SignBlockEntityRenderer::new);
-		BlockEntityRendererFactoriesAccessor.callRegister(TealSignTest.TEST_HANGING_SIGN_BLOCK_ENTITY, HangingSignBlockEntityRenderer::new);
+		//BlockEntityRendererFactoriesAccessor.callRegister(TealSignTest.TEST_HANGING_SIGN_BLOCK_ENTITY, HangingSignBlockEntityRenderer::new);
 	}
 }
