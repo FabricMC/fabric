@@ -26,7 +26,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.CrafterBlock;
 import net.minecraft.block.entity.CrafterBlockEntity;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.RecipeEntry;
@@ -34,11 +33,10 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 @Mixin(CrafterBlock.class)
 public class CrafterBlockMixin {
@@ -59,15 +57,14 @@ public class CrafterBlockMixin {
 
 		if (target != null) {
 			// Attempt to move the entire stack, and decrement the size of success moves.
-			long moved = StorageUtil.move(
-					InventoryStorage.of(new SimpleInventory(itemStack.copy()), null),
-					target,
-					iv -> true,
-					itemStack.getCount(),
-					null
-			);
+			try (Transaction transaction = Transaction.openOuter()) {
+				long moved = target.insert(ItemVariant.of(itemStack), inputStack.getCount(), transaction);
 
-			itemStack.decrement((int) moved);
+				if (moved > 0) {
+					itemStack.decrement((int) moved);
+					transaction.commit();
+				}
+			}
 		}
 
 		// Any remaining will be dropped in the world by vanilla logic
