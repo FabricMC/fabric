@@ -206,6 +206,8 @@
   "tag.item.c.leathers": "Leathers",
   "tag.item.c.music_discs": "Music Discs",
   "tag.item.c.nuggets": "Nuggets",
+  "tag.item.c.nuggets.gold": "Gold Nuggets",
+  "tag.item.c.nuggets.iron": "Iron Nuggets",
   "tag.item.c.ores": "Ores",
   "tag.item.c.ores.netherite_scrap": "Netherite Scrap Ores",
   "tag.item.c.ores.quartz": "Quartz Ores",

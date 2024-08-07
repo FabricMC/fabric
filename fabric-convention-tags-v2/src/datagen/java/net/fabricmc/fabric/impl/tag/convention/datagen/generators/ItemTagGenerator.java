@@ -419,7 +419,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.GOLD_INGOTS)
 				.addOptionalTag(ConventionalItemTags.NETHERITE_INGOTS);
 		getOrCreateTagBuilder(ConventionalItemTags.NUGGETS)
-				.add(Items.GOLD_NUGGET, Items.IRON_NUGGET);
+				.addOptionalTag(ConventionalItemTags.IRON_NUGGETS)
+				.addOptionalTag(ConventionalItemTags.GOLD_NUGGETS);
 		copy(ConventionalBlockTags.ORES, ConventionalItemTags.ORES);
 		getOrCreateTagBuilder(ConventionalItemTags.ORES)
 				.addOptionalTag(ConventionalItemTags.NETHERITE_SCRAP_ORES)
@@ -491,6 +492,11 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.AMETHYST_SHARD);
 		getOrCreateTagBuilder(ConventionalItemTags.PRISMARINE_GEMS)
 				.add(Items.PRISMARINE_CRYSTALS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.IRON_NUGGETS)
+				.add(Items.IRON_NUGGET);
+		getOrCreateTagBuilder(ConventionalItemTags.GOLD_NUGGETS)
+				.add(Items.GOLD_NUGGET);
 	}
 
 	private void generateToolTags() {
