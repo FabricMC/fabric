@@ -338,6 +338,11 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> HIDDEN_FROM_RECIPE_VIEWERS = register("hidden_from_recipe_viewers");
 
 	/**
+	 * For eggs that are like chicken eggs, used for recipes.
+	 */
+	public static final TagKey<Item> EGGS = register("eggs");
+
+	/**
 	 * This tag is redundant. Please use {@link ConventionalItemTags#STORAGE_BLOCKS} tag instead.
 	 */
 	@Deprecated
