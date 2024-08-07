@@ -305,6 +305,15 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> STORAGE_BLOCKS_SLIME = register("storage_blocks/slime");
 	public static final TagKey<Item> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
 
+	// Crops
+	public static final TagKey<Item> CROPS = register("crops");
+	public static final TagKey<Item> BEETROOT_CROPS = register("crops/beetroot");
+	public static final TagKey<Item> CARROT_CROPS = register("crops/carrot");
+	public static final TagKey<Item> COCOA_BEAN_CROPS = register("crops/cocoa_bean");
+	public static final TagKey<Item> NETHER_WART_CROPS = register("crops/nether_wart");
+	public static final TagKey<Item> POTATO_CROPS = register("crops/potato");
+	public static final TagKey<Item> WHEAT_CROPS = register("crops/wheat");
+
 	// Other
 	public static final TagKey<Item> PLAYER_WORKSTATIONS_CRAFTING_TABLES = register("player_workstations/crafting_tables");
 	public static final TagKey<Item> PLAYER_WORKSTATIONS_FURNACES = register("player_workstations/furnaces");

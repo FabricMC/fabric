@@ -44,6 +44,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		generateFoodTags();
 		generateDyeTags();
 		generateDyedTags();
+		generateCropTags();
 		generateVillagerJobSites();
 		generateOtherTags();
 		copyItemTags();
@@ -647,6 +648,29 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.map(ItemConvertible::asItem)
 				.distinct() // cauldron blocks have the same item
 				.forEach(getOrCreateTagBuilder(ConventionalItemTags.VILLAGER_JOB_SITES)::add);
+	}
+
+	private void generateCropTags() {
+		getOrCreateTagBuilder(ConventionalItemTags.CROPS)
+				.addOptionalTag(ConventionalItemTags.BEETROOT_CROPS)
+				.addOptionalTag(ConventionalItemTags.CARROT_CROPS)
+				.addOptionalTag(ConventionalItemTags.COCOA_BEAN_CROPS)
+				.addOptionalTag(ConventionalItemTags.NETHER_WART_CROPS)
+				.addOptionalTag(ConventionalItemTags.POTATO_CROPS)
+				.addOptionalTag(ConventionalItemTags.WHEAT_CROPS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.BEETROOT_CROPS)
+				.add(Items.BEETROOT);
+		getOrCreateTagBuilder(ConventionalItemTags.CARROT_CROPS)
+				.add(Items.CARROT);
+		getOrCreateTagBuilder(ConventionalItemTags.COCOA_BEAN_CROPS)
+				.add(Items.COCOA_BEANS);
+		getOrCreateTagBuilder(ConventionalItemTags.NETHER_WART_CROPS)
+				.add(Items.NETHER_WART);
+		getOrCreateTagBuilder(ConventionalItemTags.POTATO_CROPS)
+				.add(Items.POTATO);
+		getOrCreateTagBuilder(ConventionalItemTags.WHEAT_CROPS)
+				.add(Items.WHEAT);
 	}
 
 	private void generateOtherTags() {
