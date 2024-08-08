@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
@@ -28,12 +29,12 @@ import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.modprotocol.payload.ModProtocolRequestS2CPayload;
 import net.fabricmc.fabric.impl.modprotocol.payload.ModProtocolResponseC2SPayload;
 
-public final class ModProtocolInit {
+public final class ModProtocolInit implements ModInitializer {
 	public static final String MOD_ID = "fabric-mod-protocol-api-v1";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static boolean frozen = false;
 
-	public static void init() {
+	public void onInitialize() {
 		Identifier phase = Identifier.of("fabric", "mod_protocol");
 		Identifier registrySync = Identifier.of("fabric", "registry_sync");
 

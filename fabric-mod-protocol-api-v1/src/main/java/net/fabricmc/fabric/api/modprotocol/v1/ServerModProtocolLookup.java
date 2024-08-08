@@ -32,6 +32,9 @@ import net.fabricmc.fabric.impl.modprotocol.RemoteProtocolStorage;
  * See {@link ModProtocolIds} for more information.</p>
  */
 public final class ServerModProtocolLookup {
+	/**
+	 * A protocol version returned by {@code getSupportedProtocol} methods, when the player doesn't support the requested protocol.
+	 */
 	public static final int UNSUPPORTED = -1;
 
 	private ServerModProtocolLookup() {

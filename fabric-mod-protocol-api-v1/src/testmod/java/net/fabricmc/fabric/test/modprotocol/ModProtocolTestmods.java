@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.modprotocol.v1.ModProtocolIds;
 import net.fabricmc.fabric.api.modprotocol.v1.ModProtocolRegistry;
 import net.fabricmc.fabric.api.modprotocol.v1.ServerModProtocolLookup;
@@ -32,7 +33,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
 
-public final class ModProtocolTestmods {
+public final class ModProtocolTestmods implements ModInitializer {
 	public static final String ID = "fabric-mod-protocol-api-v1-testmod";
 	public static final Logger LOGGER = LoggerFactory.getLogger(ID);
 
@@ -40,7 +41,7 @@ public final class ModProtocolTestmods {
 		return Identifier.of(ID, name);
 	}
 
-	public static void init() {
+	public void onInitialize() {
 		ModContainer modContainer = FabricLoader.getInstance().getModContainer(ID).get();
 
 		ModProtocolRegistry.register(ModProtocolIds.special("test_modification"), "Hello there", "1.12.2", IntList.of(1, 2, 3), true, false);

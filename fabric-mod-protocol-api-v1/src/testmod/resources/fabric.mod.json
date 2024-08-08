@@ -10,10 +10,7 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.modprotocol.ModProtocolTestmods::init"
-    ],
-    "client": [
-
+      "net.fabricmc.fabric.test.modprotocol.ModProtocolTestmods"
     ]
   },
   "custom": {
