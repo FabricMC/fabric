@@ -32,6 +32,7 @@
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
       "net/minecraft/class_1299\u0024class_1300": ["net/fabricmc/fabric/api/object/builder/v1/entity/FabricEntityType\u0024Builder<TT;>"],
+      "net/minecraft/class_2591": ["net/fabricmc/fabric/api/object/builder/v1/block/entity/FabricBlockEntityType"],
       "net/minecraft/class_2591\u0024class_2592": ["net/fabricmc/fabric/api/object/builder/v1/block/entity/FabricBlockEntityType\u0024Builder<TT;>"]
     }
   }
