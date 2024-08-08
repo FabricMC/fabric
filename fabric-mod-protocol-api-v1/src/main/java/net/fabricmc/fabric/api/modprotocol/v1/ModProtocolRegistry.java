@@ -38,7 +38,7 @@ public final class ModProtocolRegistry {
 	/**
 	 * Allows to get a locally registered protocol.
 	 * @param identifier protocol's id
-	 * @return requested ModProtocol or null if not found
+	 * @return the requested ModProtocol or {@code null} if not found
 	 */
 	@Nullable
 	public static ModProtocol get(Identifier identifier) {
@@ -68,7 +68,7 @@ public final class ModProtocolRegistry {
 	}
 
 	/**
-	 * Allows to customise priority of namespaces when displaying missing protocols.
+	 * Allows to customize priority of namespaces when displaying missing protocols.
 	 * @param firstNamespace namespace that should display first
 	 * @param secondNamespace namespace that should display second
 	 * @return true if change occurred, false if it didn't

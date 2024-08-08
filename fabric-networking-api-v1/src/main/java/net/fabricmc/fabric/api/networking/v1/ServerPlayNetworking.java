@@ -294,10 +294,10 @@ public final class ServerPlayNetworking {
 	}
 
 	/**
-	 * Gets the brand of the client player connected with.
+	 * Gets the brand of the client the player connected with.
 	 *
 	 * @param player the player
-	 * @return client's brand, which might be null if not sent.
+	 * @return client's brand, or {@code null} if not sent
 	 */
 	@Nullable
 	public static String getBrand(ServerPlayerEntity player) {
@@ -307,10 +307,10 @@ public final class ServerPlayNetworking {
 	}
 
 	/**
-	 * Gets the brand of the client player connected with.
+	 * Gets the brand of the client the player connected with.
 	 *
 	 * @param handler the network handler, representing the connection to the player/client
-	 * @return client's brand, which might be null if not sent.
+	 * @return client's brand, or {@code null} if not sent
 	 */
 	@Nullable
 	public static String getBrand(ServerPlayNetworkHandler handler) {

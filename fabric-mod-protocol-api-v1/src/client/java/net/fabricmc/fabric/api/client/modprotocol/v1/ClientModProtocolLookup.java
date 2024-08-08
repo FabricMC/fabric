@@ -30,52 +30,52 @@ import net.fabricmc.fabric.impl.modprotocol.RemoteProtocolStorage;
 /**
  * Utility methods allowing to get protocol versions supported by the server.
  *
- * <p>Protocol identifier's can be any valid identifier, through by default mods defining it will use "mod" namespace and path equal to its id.
- * See {@link ModProtocolIds} for more information.</p>
+ * <p>Protocol identifiers can be any valid {@link Identifier}. The default is {@code mod:(mod ID)}.
+ * @see ModProtocolIds
  */
 public final class ClientModProtocolLookup {
 	public static final int UNSUPPORTED = -1;
 	private ClientModProtocolLookup() { }
 
 	/**
-	 * Gets protocol version supported by the server.
+	 * Gets the protocol version supported by the server.
 	 *
 	 * @param handler the network handler connected to the server
 	 * @param protocolId protocol's id
-	 * @return Protocol version supported by the server
+	 * @return the protocol version supported by the server
 	 */
 	public static int getSupportedProtocol(ClientCommonNetworkHandler handler, Identifier protocolId) {
 		return RemoteProtocolStorage.getProtocol(handler, protocolId);
 	}
 
 	/**
-	 * Gets protocol version supported by the server.
+	 * Gets the protocol version supported by the server.
 	 *
 	 * @param connection the ClientConnection connected to the server
 	 * @param protocolId protocol's id
-	 * @return Protocol version supported by the server
+	 * @return the protocol version supported by the server
 	 */
 	public static int getSupportedProtocol(ClientConnection connection, Identifier protocolId) {
 		return RemoteProtocolStorage.getProtocol(connection, protocolId);
 	}
 
 	/**
-	 * Gets protocol version supported by the server.
+	 * Gets the protocol version supported by the server.
 	 *
 	 * @param handler the network handler connected to the server
 	 * @param protocol protocol to check against
-	 * @return Protocol version supported by the server
+	 * @return the protocol version supported by the server
 	 */
 	public static int getSupportedProtocol(ClientCommonNetworkHandler handler, ModProtocol protocol) {
 		return RemoteProtocolStorage.getProtocol(handler, protocol.id());
 	}
 
 	/**
-	 * Gets protocol version supported by the server.
+	 * Gets the protocol version supported by the server.
 	 *
 	 * @param connection the ClientConnection connected to the server
 	 * @param protocol protocol to check against
-	 * @return Protocol version supported by the server
+	 * @return the protocol version supported by the server
 	 */
 	public static int getSupportedProtocol(ClientConnection connection, ModProtocol protocol) {
 		return RemoteProtocolStorage.getProtocol(connection, protocol.id());
@@ -85,7 +85,7 @@ public final class ClientModProtocolLookup {
 	 * Gets all protocols supported by the server.
 	 *
 	 * @param handler the network handler connected to the server
-	 * @return Map of protocols supported by the server
+	 * @return the map of protocols to the versions supported by the server
 	 */
 	public static Object2IntMap<Identifier> getAllSupportedProtocols(ServerCommonNetworkHandler handler) {
 		return RemoteProtocolStorage.getMap(handler);
@@ -95,7 +95,7 @@ public final class ClientModProtocolLookup {
 	 * Gets all protocols supported by the server.
 	 *
 	 * @param connection the ClientConnection connected to the server
-	 * @return Map of protocols supported by the server
+	 * @return the map of protocols to the versions supported by the server
 	 */
 	public static Object2IntMap<Identifier> getAllSupportedProtocols(ClientConnection connection) {
 		return RemoteProtocolStorage.getMap(connection);

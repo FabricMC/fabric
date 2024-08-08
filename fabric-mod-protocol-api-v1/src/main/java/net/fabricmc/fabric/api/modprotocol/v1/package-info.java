@@ -42,8 +42,8 @@
  *     		 "require_server": true
  *     		}</dt>
  *      	<dd><p>Full object. Only required value is "protocol", which can be set directly for single version or as an array for multiple.</p>
- *      	<p>"id" is protocols identifiers, which can have any namespace and path, as long as it's valid.
- *      	It's optional and defaults to id with "mod" namespace and path equal to mod's id.
+ *      	<p>"id" is the protocols identifier, which can have any namespace and path, as long as it's valid.
+ *      	It is optional and defaults to an ID with "mod" namespace and path equal to mod's id.
  *      	</p>
  *     		<p>"name" is a name displayed if protocol doesn't match. It's optional and by default it uses one from mod's metadata.</p>
  *          <p>"version" is a version displayed if protocol doesn't match. It's optional and by default it uses one from mod's metadata.</p>
