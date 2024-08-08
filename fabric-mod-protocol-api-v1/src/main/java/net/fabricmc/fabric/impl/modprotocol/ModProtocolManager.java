@@ -59,7 +59,7 @@ public final class ModProtocolManager {
 			if (CLIENT_REQUIRED.isEmpty()) {
 				return;
 			} else {
-				handler.disconnect(constructMessage(CLIENT_REQUIRED, Map.of()));
+				handler.disconnect(constructMessage(new ArrayList<>(CLIENT_REQUIRED), Map.of()));
 			}
 		}
 
@@ -155,7 +155,7 @@ public final class ModProtocolManager {
 				ModProtocolInit.LOGGER.warn("Found duplicate protocol id '{}' registered by a mod!'", protocol.id(), new RuntimeException());
 			}
 
-			return LOCAL_MOD_PROTOCOLS_BY_ID.get(protocol);
+			return LOCAL_MOD_PROTOCOLS_BY_ID.get(protocol.id());
 		}
 
 		LOCAL_MOD_PROTOCOLS_BY_ID.put(protocol.id(), protocol);
