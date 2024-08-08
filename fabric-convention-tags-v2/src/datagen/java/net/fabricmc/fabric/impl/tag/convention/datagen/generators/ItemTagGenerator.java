@@ -653,22 +653,34 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	private void generateCropTags() {
 		getOrCreateTagBuilder(ConventionalItemTags.CROPS)
 				.addOptionalTag(ConventionalItemTags.BEETROOT_CROPS)
+				.addOptionalTag(ConventionalItemTags.CACTUS_CROPS)
 				.addOptionalTag(ConventionalItemTags.CARROT_CROPS)
 				.addOptionalTag(ConventionalItemTags.COCOA_BEAN_CROPS)
+				.addOptionalTag(ConventionalItemTags.MELON_CROPS)
 				.addOptionalTag(ConventionalItemTags.NETHER_WART_CROPS)
 				.addOptionalTag(ConventionalItemTags.POTATO_CROPS)
+				.addOptionalTag(ConventionalItemTags.PUMPKIN_CROPS)
+				.addOptionalTag(ConventionalItemTags.SUGAR_CANE_CROPS)
 				.addOptionalTag(ConventionalItemTags.WHEAT_CROPS);
 
 		getOrCreateTagBuilder(ConventionalItemTags.BEETROOT_CROPS)
 				.add(Items.BEETROOT);
+		getOrCreateTagBuilder(ConventionalItemTags.CACTUS_CROPS)
+				.add(Items.CACTUS);
 		getOrCreateTagBuilder(ConventionalItemTags.CARROT_CROPS)
 				.add(Items.CARROT);
 		getOrCreateTagBuilder(ConventionalItemTags.COCOA_BEAN_CROPS)
 				.add(Items.COCOA_BEANS);
+		getOrCreateTagBuilder(ConventionalItemTags.MELON_CROPS)
+				.add(Items.MELON);
 		getOrCreateTagBuilder(ConventionalItemTags.NETHER_WART_CROPS)
 				.add(Items.NETHER_WART);
 		getOrCreateTagBuilder(ConventionalItemTags.POTATO_CROPS)
 				.add(Items.POTATO);
+		getOrCreateTagBuilder(ConventionalItemTags.PUMPKIN_CROPS)
+				.add(Items.PUMPKIN);
+		getOrCreateTagBuilder(ConventionalItemTags.SUGAR_CANE_CROPS)
+				.add(Items.SUGAR_CANE);
 		getOrCreateTagBuilder(ConventionalItemTags.WHEAT_CROPS)
 				.add(Items.WHEAT);
 	}
