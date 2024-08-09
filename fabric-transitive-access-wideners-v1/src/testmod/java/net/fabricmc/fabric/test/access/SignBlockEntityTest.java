@@ -62,7 +62,7 @@ public final class SignBlockEntityTest implements ModInitializer {
 
 	public static class TestSign extends SignBlockEntity {
 		public TestSign(BlockPos pos, BlockState state) {
-			super(pos, state);
+			super(TEST_SIGN_BLOCK_ENTITY, pos, state);
 		}
 
 		@Override

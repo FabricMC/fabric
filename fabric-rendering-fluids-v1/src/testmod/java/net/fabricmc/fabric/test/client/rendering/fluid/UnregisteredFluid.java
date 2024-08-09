@@ -68,7 +68,7 @@ public abstract class UnregisteredFluid extends FlowableFluid {
 	}
 
 	@Override
-	public int getFlowSpeed(WorldView world) {
+	public int getMaxFlowDistance(WorldView world) {
 		return 4;
 	}
 
