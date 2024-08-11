@@ -218,6 +218,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.APPLE)
 				.add(Items.GOLDEN_APPLE)
 				.add(Items.ENCHANTED_GOLDEN_APPLE)
+				.add(Items.CHORUS_FRUIT)
 				.add(Items.MELON_SLICE)
 				.addOptionalTag(ConventionalItemTags.FRUITS_FOODS);
 
