@@ -121,6 +121,10 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> EMERALD_GEMS = register("gems/emerald");
 	public static final TagKey<Item> PRISMARINE_GEMS = register("gems/prismarine");
 
+	// Nuggets - vanilla instances
+	public static final TagKey<Item> IRON_NUGGETS = register("nuggets/iron");
+	public static final TagKey<Item> GOLD_NUGGETS = register("nuggets/gold");
+
 	// Dusts and Misc - vanilla instances
 	public static final TagKey<Item> REDSTONE_DUSTS = register("dusts/redstone");
 	public static final TagKey<Item> GLOWSTONE_DUSTS = register("dusts/glowstone");
@@ -300,6 +304,23 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> STORAGE_BLOCKS_REDSTONE = register("storage_blocks/redstone");
 	public static final TagKey<Item> STORAGE_BLOCKS_SLIME = register("storage_blocks/slime");
 	public static final TagKey<Item> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
+
+	// Crops
+	/**
+	 * For raw materials harvested from growable plants. Crop items can be edible like carrots or non-edible like
+	 * wheat and cocoa beans.
+	 */
+	public static final TagKey<Item> CROPS = register("crops");
+	public static final TagKey<Item> BEETROOT_CROPS = register("crops/beetroot");
+	public static final TagKey<Item> CACTUS_CROPS = register("crops/cactus");
+	public static final TagKey<Item> CARROT_CROPS = register("crops/carrot");
+	public static final TagKey<Item> COCOA_BEAN_CROPS = register("crops/cocoa_bean");
+	public static final TagKey<Item> MELON_CROPS = register("crops/melon");
+	public static final TagKey<Item> NETHER_WART_CROPS = register("crops/nether_wart");
+	public static final TagKey<Item> POTATO_CROPS = register("crops/potato");
+	public static final TagKey<Item> PUMPKIN_CROPS = register("crops/pumpkin");
+	public static final TagKey<Item> SUGAR_CANE_CROPS = register("crops/sugar_cane");
+	public static final TagKey<Item> WHEAT_CROPS = register("crops/wheat");
 
 	// Other
 	public static final TagKey<Item> PLAYER_WORKSTATIONS_CRAFTING_TABLES = register("player_workstations/crafting_tables");

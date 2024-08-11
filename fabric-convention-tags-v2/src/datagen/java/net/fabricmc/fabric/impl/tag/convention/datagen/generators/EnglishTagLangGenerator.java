@@ -170,6 +170,8 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.AMETHYST_GEMS, "Amethyst Gems");
 		translationBuilder.add(ConventionalItemTags.EMERALD_GEMS, "Emerald Gems");
 		translationBuilder.add(ConventionalItemTags.PRISMARINE_GEMS, "Prismarine Gems");
+		translationBuilder.add(ConventionalItemTags.IRON_NUGGETS, "Iron Nuggets");
+		translationBuilder.add(ConventionalItemTags.GOLD_NUGGETS, "Gold Nuggets");
 		translationBuilder.add(ConventionalItemTags.REDSTONE_DUSTS, "Redstone Dusts");
 		translationBuilder.add(ConventionalItemTags.GLOWSTONE_DUSTS, "Glowstone Dusts");
 		translationBuilder.add(ConventionalItemTags.COAL, "Coal");
@@ -289,6 +291,17 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_REDSTONE, "Redstone Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_SLIME, "Slime Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_WHEAT, "Wheat Storage Blocks");
+		translationBuilder.add(ConventionalItemTags.CROPS, "Crops");
+		translationBuilder.add(ConventionalItemTags.BEETROOT_CROPS, "Beetroot Crops");
+		translationBuilder.add(ConventionalItemTags.CACTUS_CROPS, "Cactus Crops");
+		translationBuilder.add(ConventionalItemTags.CARROT_CROPS, "Carrot Crops");
+		translationBuilder.add(ConventionalItemTags.COCOA_BEAN_CROPS, "Cocoa Bean Crops");
+		translationBuilder.add(ConventionalItemTags.MELON_CROPS, "Melon Crops");
+		translationBuilder.add(ConventionalItemTags.NETHER_WART_CROPS, "Nether Wart Crops");
+		translationBuilder.add(ConventionalItemTags.POTATO_CROPS, "Potato Crops");
+		translationBuilder.add(ConventionalItemTags.PUMPKIN_CROPS, "Pumpkin Crops");
+		translationBuilder.add(ConventionalItemTags.SUGAR_CANE_CROPS, "Sugar Cane Crops");
+		translationBuilder.add(ConventionalItemTags.WHEAT_CROPS, "Wheat Crops");
 		translationBuilder.add(ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, "Crafting Tables");
 		translationBuilder.add(ConventionalItemTags.PLAYER_WORKSTATIONS_FURNACES, "Furnaces");
 		translationBuilder.add(ConventionalItemTags.STRINGS, "Strings");
