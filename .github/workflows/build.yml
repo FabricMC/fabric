@@ -10,6 +10,7 @@ jobs:
       image: mcr.microsoft.com/openjdk/jdk:${{ matrix.java }}
       options: --user root
     steps:
+      - run: apt update && apt install git -y && git --version
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
