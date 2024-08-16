@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.rendering.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.class_9974;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
@@ -76,7 +77,7 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 
-		WorldRenderer.renderFilledBox(matrices, buffer, 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
+		class_9974.method_62300(matrices, buffer, 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
 		BufferRenderer.drawWithGlobalProgram(buffer.end());
 
 		matrices.pop();

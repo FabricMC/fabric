@@ -65,8 +65,8 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 			allow = 1)
 	private CompletableFuture<ModelLoader> loadModelPluginData(
 			CompletableFuture<Map<Identifier, JsonUnbakedModel>> self,
-			CompletionStage<Map<Identifier, List<BlockStatesLoader.SourceTrackedData>>> otherFuture,
-			BiFunction<Map<Identifier, JsonUnbakedModel>, Map<Identifier, List<BlockStatesLoader.SourceTrackedData>>, ModelLoader> modelLoaderConstructor,
+			CompletionStage<Map<Identifier, List<BlockStatesLoader.class_10095>>> otherFuture,
+			BiFunction<Map<Identifier, JsonUnbakedModel>, Map<Identifier, List<BlockStatesLoader.class_10095>>, ModelLoader> modelLoaderConstructor,
 			Executor executor,
 			// reload args
 			ResourceReloader.Synchronizer synchronizer,
@@ -76,7 +76,7 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 			Executor prepareExecutor,
 			Executor applyExecutor) {
 		CompletableFuture<List<ModelLoadingPlugin>> pluginsFuture = ModelLoadingPluginManager.preparePlugins(manager, prepareExecutor);
-		CompletableFuture<Pair<Map<Identifier, JsonUnbakedModel>, Map<Identifier, List<BlockStatesLoader.SourceTrackedData>>>> pairFuture = self.thenCombine(otherFuture, Pair::new);
+		CompletableFuture<Pair<Map<Identifier, JsonUnbakedModel>, Map<Identifier, List<BlockStatesLoader.class_10095>>>> pairFuture = self.thenCombine(otherFuture, Pair::new);
 		return pairFuture.thenCombineAsync(pluginsFuture, (pair, plugins) -> {
 			ModelLoadingPluginManager.CURRENT_PLUGINS.set(plugins);
 			ModelLoader modelLoader = modelLoaderConstructor.apply(pair.getLeft(), pair.getRight());

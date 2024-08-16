@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.transfer.ingame;
 
+import net.minecraft.util.ActionResult;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -29,7 +31,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
@@ -65,7 +66,7 @@ public class FluidChuteBlock extends Block implements BlockEntityProvider {
 	}
 
 	@Override
-	public ItemActionResult onUseWithItem(ItemStack stack, BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult blockHitResult) {
+	public ActionResult onUseWithItem(ItemStack stack, BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult blockHitResult) {
 		if (world.getBlockEntity(pos) instanceof FluidChuteBlockEntity chute) {
 			if (!FluidStorageUtil.interactWithFluidStorage(chute.storage, player, hand)) {
 				if (!world.isClient()) {
@@ -77,10 +78,10 @@ public class FluidChuteBlock extends Block implements BlockEntityProvider {
 					);
 				}
 
-				return ItemActionResult.CONSUME;
+				return ActionResult.CONSUME;
 			}
 		}
 
-		return ItemActionResult.success(world.isClient());
+		return ActionResult.SUCCESS;
 	}
 }

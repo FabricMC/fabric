@@ -144,8 +144,8 @@ public class CustomAtlasSourcesTest implements ClientModInitializer {
 			private static void blendRect(NativeImage src, NativeImage dst, int srcX, int srcY, int destX, int destY, int width, int height) {
 				for (int y = 0; y < height; ++y) {
 					for (int x = 0; x < width; ++x) {
-						int c = src.getColor(srcX + x, srcY + y);
-						dst.blend(destX + x, destY + y, c);
+						int c = src.getColorArgb(srcX + x, srcY + y);
+						dst.setColorArgb(destX + x, destY + y, c);
 					}
 				}
 			}

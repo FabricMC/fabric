@@ -22,10 +22,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+
+import net.minecraft.registry.tag.TagKey;
+
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -34,7 +38,6 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.TagManagerLoader;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
@@ -116,11 +119,11 @@ public final class ResourceConditionsImpl implements ModInitializer {
 	 */
 	public static final ThreadLocal<Map<RegistryKey<?>, Set<Identifier>>> LOADED_TAGS = new ThreadLocal<>();
 
-	public static void setTags(List<TagManagerLoader.RegistryTags<?>> tags) {
+	public static void setTags(List<Registry.PendingTagLoad<?>> tags) {
 		Map<RegistryKey<?>, Set<Identifier>> tagMap = new IdentityHashMap<>();
 
-		for (TagManagerLoader.RegistryTags<?> registryTags : tags) {
-			tagMap.put(registryTags.key(), registryTags.tags().keySet());
+		for (Registry.PendingTagLoad<?> registryTags : tags) {
+			tagMap.put(registryTags.getKey(), registryTags.getLookup().streamTagKeys().map(TagKey::id).collect(Collectors.toSet()));
 		}
 
 		LOADED_TAGS.set(tagMap);

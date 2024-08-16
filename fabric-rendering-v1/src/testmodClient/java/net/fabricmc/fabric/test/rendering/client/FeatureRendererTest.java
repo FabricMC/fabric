@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,17 +70,17 @@ public final class FeatureRendererTest implements ClientModInitializer {
 		});*/
 	}
 
-	private static class TestPlayerFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-		TestPlayerFeatureRenderer(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> context) {
-			super(context);
+	private static class TestPlayerFeatureRenderer extends FeatureRenderer<PlayerEntityRenderState, PlayerEntityModel> {
+		public TestPlayerFeatureRenderer(FeatureRendererContext<PlayerEntityRenderState, PlayerEntityModel> featureRendererContext) {
+			super(featureRendererContext);
 		}
 
 		@Override
-		public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+		public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
 			matrices.push();
 
 			// Translate to center above the player's head
-			matrices.translate(-0.5F, -entity.getHeight() + 0.25F, -0.5F);
+			matrices.translate(-0.5F, -state.height + 0.25F, -0.5F);
 			// Render a diamond block above the player's head
 			MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(Blocks.DIAMOND_BLOCK.getDefaultState(), matrices, vertexConsumers, light, OverlayTexture.DEFAULT_UV);
 

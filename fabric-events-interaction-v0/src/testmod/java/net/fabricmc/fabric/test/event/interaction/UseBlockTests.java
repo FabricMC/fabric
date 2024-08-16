@@ -45,7 +45,7 @@ public class UseBlockTests implements ModInitializer {
 				if (world.getBlockState(pos).isOf(Blocks.CHEST)) {
 					if (player.getStackInHand(hand).isOf(Items.WATER_BUCKET)) {
 						world.setBlockState(pos, Blocks.AIR.getDefaultState());
-						return ActionResult.success(world.isClient);
+						return ActionResult.SUCCESS;
 					}
 				}
 			}

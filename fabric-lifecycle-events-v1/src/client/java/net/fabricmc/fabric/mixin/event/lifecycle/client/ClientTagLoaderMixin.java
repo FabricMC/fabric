@@ -16,20 +16,27 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle.client;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.network.ClientTagLoader;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.packet.s2c.common.SynchronizeTagsS2CPacket;
 import net.minecraft.registry.DynamicRegistryManager;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 
-@Mixin(ClientTagLoader.class)
+@Mixin(ClientPlayNetworkHandler.class)
 public class ClientTagLoaderMixin {
-	@Inject(method = "load(Lnet/minecraft/registry/DynamicRegistryManager;Z)V", at = @At("TAIL"))
-	private void invokeTagsLoaded(DynamicRegistryManager registryManager, boolean local, CallbackInfo ci) {
-		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(registryManager, true);
+	@Shadow
+	@Final
+	private DynamicRegistryManager.Immutable combinedDynamicRegistries;
+
+	@Inject(method = "onSynchronizeTags", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/FuelRegistry;createDefault(Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;Lnet/minecraft/resource/featuretoggle/FeatureSet;)Lnet/minecraft/item/FuelRegistry;"))
+	private void invokeTagsLoaded(SynchronizeTagsS2CPacket packet, CallbackInfo ci) {
+		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(combinedDynamicRegistries, true);
 	}
 }

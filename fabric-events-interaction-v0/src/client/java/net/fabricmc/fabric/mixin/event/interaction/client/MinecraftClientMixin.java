@@ -171,8 +171,10 @@ public abstract class MinecraftClientMixin {
 				getNetworkHandler().sendPacket(PlayerInteractEntityC2SPacket.interactAt(entity, player.isSneaking(), hand, hitVec));
 			}
 
-			if (result.shouldSwingHand()) {
-				player.swingHand(hand);
+			if (result instanceof ActionResult.Success success) {
+				if (success.swingSource() == ActionResult.SwingSource.CLIENT) {
+					player.swingHand(hand);
+				}
 			}
 
 			ci.cancel();

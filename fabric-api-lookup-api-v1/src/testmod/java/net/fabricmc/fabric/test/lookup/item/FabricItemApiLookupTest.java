@@ -19,9 +19,7 @@ package net.fabricmc.fabric.test.lookup.item;
 import static net.fabricmc.fabric.test.lookup.FabricApiLookupTest.ensureException;
 
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.item.ToolItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
@@ -50,16 +48,6 @@ public class FabricItemApiLookupTest {
 		}, Items.DIAMOND, Items.DIAMOND_BLOCK);
 		// Test registerSelf
 		INSPECTABLE.registerSelf(HELLO_ITEM);
-		// Tools report their mining level
-		INSPECTABLE.registerFallback((stack, ignored) -> {
-			Item item = stack.getItem();
-
-			if (item instanceof ToolItem) {
-				return () -> Text.literal("Tool mining level: " + ((ToolItem) item).getMaterial());
-			} else {
-				return null;
-			}
-		});
 
 		testSelfRegistration();
 	}

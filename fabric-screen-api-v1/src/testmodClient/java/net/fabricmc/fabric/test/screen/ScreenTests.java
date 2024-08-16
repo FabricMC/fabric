@@ -18,6 +18,8 @@ package net.fabricmc.fabric.test.screen;
 
 import java.util.List;
 
+import net.minecraft.client.render.RenderLayer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +81,7 @@ public final class ScreenTests implements ClientModInitializer {
 			// Register render event to draw an icon on the screen
 			ScreenEvents.afterRender(screen).register((_screen, drawContext, mouseX, mouseY, tickDelta) -> {
 				// Render an armor icon to test
-				drawContext.drawGuiTexture(ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 124, (screen.height / 4) + 96, 20, 20);
+				drawContext.drawGuiTexture(RenderLayer::getGuiTextured, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 124, (screen.height / 4) + 96, 20, 20);
 			});
 
 			ScreenKeyboardEvents.allowKeyPress(screen).register((_screen, key, scancode, modifiers) -> {

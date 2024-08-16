@@ -82,6 +82,7 @@ transitive-accessible method net/minecraft/text/TranslatableTextContent getArg (
 
 # Creating block entity types
 transitive-extendable class net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
+transitive-accessible method net/minecraft/block/entity/BlockEntityType <init> (Lnet/minecraft/block/entity/BlockEntityType$BlockEntityFactory;Ljava/util/Set;)V
 
 # Villagers
 transitive-accessible field net/minecraft/village/VillagerType BIOME_TO_TYPE Ljava/util/Map;

@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.rendering.client;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Items;
@@ -28,7 +29,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 
 public class ArmorRenderingTests implements ClientModInitializer {
-	private BipedEntityModel<LivingEntity> armorModel;
+	private BipedEntityModel<BipedEntityRenderState> armorModel;
 	private final Identifier texture = Identifier.ofVanilla("textures/block/dirt.png");
 
 	// Renders a biped model with dirt texture, replacing diamond helmet and diamond chest plate rendering

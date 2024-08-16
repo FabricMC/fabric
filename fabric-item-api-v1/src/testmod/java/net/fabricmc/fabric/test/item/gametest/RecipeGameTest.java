@@ -20,6 +20,7 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.recipe.IngredientPlacement;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
@@ -103,6 +104,11 @@ public class RecipeGameTest implements FabricGameTest {
 			@Override
 			public RecipeType<?> getType() {
 				return null;
+			}
+
+			@Override
+			public IngredientPlacement getIngredientPlacement() {
+				return IngredientPlacement.NONE;
 			}
 		};
 	}

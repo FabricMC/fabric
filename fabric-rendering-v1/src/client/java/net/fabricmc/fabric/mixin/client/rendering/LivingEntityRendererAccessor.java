@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
+import net.minecraft.client.render.entity.state.LivingEntityRenderState;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
@@ -25,7 +27,7 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.LivingEntity;
 
 @Mixin(LivingEntityRenderer.class)
-public interface LivingEntityRendererAccessor<T extends LivingEntity, M extends EntityModel<T>> {
+public interface LivingEntityRendererAccessor<S extends LivingEntityRenderState, M extends EntityModel<? super S>> {
 	@Invoker("addFeature")
-	boolean callAddFeature(FeatureRenderer<T, M> featureRenderer);
+	boolean callAddFeature(FeatureRenderer<S, M> featureRenderer);
 }

@@ -16,13 +16,14 @@
 
 package net.fabricmc.fabric.test.event.interaction;
 
+import net.minecraft.util.ActionResult;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.api.ModInitializer;
@@ -35,7 +36,7 @@ public class UseItemTests implements ModInitializer {
 	public void onInitialize() {
 		UseItemCallback.EVENT.register((player, world, hand) -> {
 			LOGGER.info("UseItemCallback: before hook (client-side = %s)".formatted(world.isClient));
-			return TypedActionResult.pass(ItemStack.EMPTY);
+			return ActionResult.PASS;
 		});
 
 		// If a player is holding a blaze rod and right-clicks spawn a fireball!
@@ -46,16 +47,16 @@ public class UseItemTests implements ModInitializer {
 						player.getWorld().spawnEntity(new FireballEntity(player.getWorld(), player, new Vec3d(0, 0, 0), 0));
 					}
 
-					return TypedActionResult.success(player.getStackInHand(hand), world.isClient());
+					return ActionResult.SUCCESS;
 				}
 			}
 
-			return TypedActionResult.pass(ItemStack.EMPTY);
+			return ActionResult.PASS;
 		});
 
 		UseItemCallback.EVENT.register((player, world, hand) -> {
 			LOGGER.info("UseItemCallback: after hook (client-side = %s)".formatted(world.isClient));
-			return TypedActionResult.pass(ItemStack.EMPTY);
+			return ActionResult.PASS;
 		});
 	}
 }

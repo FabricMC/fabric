@@ -33,7 +33,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+
+import java.util.Set;
 
 public final class SignBlockEntityTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-transitive-access-wideners-v1-testmod";
@@ -50,7 +51,7 @@ public final class SignBlockEntityTest implements ModInitializer {
 		}
 	};
 	public static final SignItem TEST_SIGN_ITEM = new SignItem(new Item.Settings(), TEST_SIGN, TEST_WALL_SIGN);
-	public static final BlockEntityType<TestSign> TEST_SIGN_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(TestSign::new, TEST_SIGN, TEST_WALL_SIGN).build();
+	public static final BlockEntityType<TestSign> TEST_SIGN_BLOCK_ENTITY = new BlockEntityType(TestSign::new, Set.of(TEST_SIGN, TEST_WALL_SIGN));
 
 	@Override
 	public void onInitialize() {

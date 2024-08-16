@@ -25,6 +25,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import net.minecraft.entity.SpawnReason;
+
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +72,7 @@ public class EntityApiLookupImpl<A, C> implements EntityApiLookup<A, C> {
 			synchronized (REGISTERED_SELVES) {
 				REGISTERED_SELVES.forEach((apiClass, entityTypes) -> {
 					for (EntityType<?> entityType : entityTypes) {
-						Entity entity = entityType.create(server.getOverworld());
+						Entity entity = entityType.create(server.getOverworld(), SpawnReason.LOAD);
 
 						if (entity == null) {
 							String errorMessage = String.format(

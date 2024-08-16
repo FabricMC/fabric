@@ -32,7 +32,6 @@ public final class ResourceReloadListenerKeys {
 	public static final Identifier TEXTURES = Identifier.ofVanilla("textures");
 
 	// server
-	public static final Identifier TAGS = Identifier.ofVanilla("tags");
 	public static final Identifier RECIPES = Identifier.ofVanilla("recipes");
 	public static final Identifier ADVANCEMENTS = Identifier.ofVanilla("advancements");
 	public static final Identifier FUNCTIONS = Identifier.ofVanilla("functions");

@@ -25,6 +25,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.world.GameRules;
@@ -35,7 +36,7 @@ public final class EnumRuleType<E extends Enum<E>> extends GameRules.Type<EnumRu
 	private final E[] supportedValues;
 
 	public EnumRuleType(Function<GameRules.Type<EnumRule<E>>, EnumRule<E>> ruleFactory, BiConsumer<MinecraftServer, EnumRule<E>> changeCallback, E[] supportedValues, GameRules.Acceptor<EnumRule<E>> acceptor) {
-		super(null, ruleFactory, changeCallback, acceptor);
+		super(null, ruleFactory, changeCallback, acceptor, FeatureSet.empty());
 		this.supportedValues = supportedValues;
 	}
 

@@ -42,7 +42,6 @@ import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -121,15 +120,15 @@ public abstract class ClientPlayerInteractionManagerMixin {
 	public void interactItem(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
 		// hook interactBlock between the spectator check and sending the first packet to invoke the use item event first
 		// this needs to be in interactBlock to avoid sending a packet in line with the event javadoc
-		TypedActionResult<ItemStack> result = UseItemCallback.EVENT.invoker().interact(player, player.getWorld(), hand);
+		ActionResult result = UseItemCallback.EVENT.invoker().interact(player, player.getWorld(), hand);
 
-		if (result.getResult() != ActionResult.PASS) {
-			if (result.getResult() == ActionResult.SUCCESS) {
+		if (result != ActionResult.PASS) {
+			if (result == ActionResult.SUCCESS) {
 				// send interaction packet to the server with a new sequentially assigned id
 				sendSequencedPacket((ClientWorld) player.getWorld(), id -> new PlayerInteractItemC2SPacket(hand, id, player.getYaw(), player.getPitch()));
 			}
 
-			info.setReturnValue(result.getResult());
+			info.setReturnValue(result);
 		}
 	}
 

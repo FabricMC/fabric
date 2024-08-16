@@ -21,6 +21,7 @@ import java.util.function.Function;
 
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.entity.LivingEntity;
 
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
@@ -33,7 +34,7 @@ public final class RegistrationHelperImpl implements LivingEntityFeatureRenderer
 	}
 
 	@Override
-	public <T extends LivingEntity> void register(FeatureRenderer<T, ? extends EntityModel<T>> featureRenderer) {
+	public <T extends EntityRenderState> void register(FeatureRenderer<T, ? extends EntityModel<T>> featureRenderer) {
 		Objects.requireNonNull(featureRenderer, "Feature renderer cannot be null");
 		this.delegate.apply(featureRenderer);
 	}
