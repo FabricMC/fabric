@@ -20,9 +20,10 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 
-import net.minecraft.class_9909;
-import net.minecraft.class_9958;
 import net.minecraft.client.option.CloudRenderMode;
+import net.minecraft.client.render.Fog;
+import net.minecraft.client.render.FrameGraphBuilder;
+import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.util.math.Vec3d;
 
 import org.joml.Matrix4f;
@@ -37,7 +38,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.class_9922;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.PostEffectProcessor;
 import net.minecraft.client.render.BufferBuilderStorage;
@@ -71,8 +71,7 @@ public abstract class WorldRendererMixin {
 	@Unique private final WorldRenderContextImpl context = new WorldRenderContextImpl();
 
 	@Inject(method = "render", at = @At("HEAD"))
-	// TODO 24w33a port should arg (unnamed in Yarn currently!) be provided as part of the context?
-	private void beforeRender(class_9922 arg, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
+	private void beforeRender(ObjectAllocator objectAllocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
 		context.prepare((WorldRenderer) (Object) this, tickCounter, renderBlockOutline, camera, gameRenderer, lightmapTextureManager, projectionMatrix, positionMatrix, bufferBuilders.getEntityVertexConsumers(), world.getProfiler(), transparencyPostProcessor != null, world);
 		WorldRenderEvents.START.invoker().onStart(context);
 	}
@@ -176,8 +175,8 @@ public abstract class WorldRendererMixin {
 		InvalidateRenderStateCallback.EVENT.invoker().onInvalidate();
 	}
 
-	@Inject(at = @At("HEAD"), method = "method_62203", cancellable = true)
-	private void renderWeather(class_9909 arg, LightmapTextureManager lightmapTextureManager, Vec3d vec3d, float f, class_9958 arg2, CallbackInfo info) {
+	@Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
+	private void renderWeather(FrameGraphBuilder frameGraphBuilder, LightmapTextureManager lightmapTextureManager, Vec3d vec3d, float f, Fog fog, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.WeatherRenderer renderer = DimensionRenderingRegistry.getWeatherRenderer(world.getRegistryKey());
 
@@ -188,8 +187,8 @@ public abstract class WorldRendererMixin {
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "method_62204", cancellable = true)
-	private void renderCloud(class_9909 arg, Matrix4f matrix4f, Matrix4f matrix4f2, CloudRenderMode cloudRenderMode, Vec3d vec3d, float f, int i, float g, CallbackInfo info) {
+	@Inject(at = @At("HEAD"), method = "renderClouds", cancellable = true)
+	private void renderCloud(FrameGraphBuilder frameGraphBuilder, Matrix4f matrix4f, Matrix4f matrix4f2, CloudRenderMode cloudRenderMode, Vec3d vec3d, float f, int i, float g, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.CloudRenderer renderer = DimensionRenderingRegistry.getCloudRenderer(world.getRegistryKey());
 
@@ -202,7 +201,7 @@ public abstract class WorldRendererMixin {
 
 	// TODO 24w33a double check
 	@Inject(at = @At(value = "HEAD"), method = "renderSky", cancellable = true)
-	private void renderSky(class_9909 arg, Camera camera, float tickDelta, class_9958 arg2, CallbackInfo info) {
+	private void renderSky(FrameGraphBuilder frameGraphBuilder, Camera camera, float tickDelta, Fog fog, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.SkyRenderer renderer = DimensionRenderingRegistry.getSkyRenderer(world.getRegistryKey());
 
