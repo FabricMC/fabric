@@ -32,7 +32,6 @@ import com.mojang.serialization.DynamicOps;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -66,8 +65,8 @@ abstract class ReloadableRegistriesMixin {
 	@Unique
 	private static final WeakHashMap<RegistryOps<JsonElement>, RegistryWrapper.WrapperLookup> WRAPPERS = new WeakHashMap<>();
 
-	@WrapOperation(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/ReloadableRegistries$ReloadableWrapperLookup;getOps(Lcom/mojang/serialization/DynamicOps;)Lnet/minecraft/registry/RegistryOps;"))
-	private static RegistryOps<JsonElement> storeOps(@Coerce RegistryWrapper.WrapperLookup registries, DynamicOps<JsonElement> ops, Operation<RegistryOps<JsonElement>> original) {
+	@WrapOperation(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;getOps(Lcom/mojang/serialization/DynamicOps;)Lnet/minecraft/registry/RegistryOps;"))
+	private static RegistryOps<JsonElement> storeOps(RegistryWrapper.WrapperLookup registries, DynamicOps<JsonElement> ops, Operation<RegistryOps<JsonElement>> original) {
 		RegistryOps<JsonElement> created = original.call(registries, ops);
 		WRAPPERS.put(created, registries);
 		return created;
@@ -81,7 +80,7 @@ abstract class ReloadableRegistriesMixin {
 		}), fn, executor);
 	}
 
-	@WrapOperation(method = "method_58278", at = @At(value = "INVOKE", target = "Ljava/util/Optional;ifPresent(Ljava/util/function/Consumer;)V"))
+	@WrapOperation(method = "method_61239", at = @At(value = "INVOKE", target = "Ljava/util/Optional;ifPresent(Ljava/util/function/Consumer;)V"))
 	private static <T> void modifyLootTable(Optional<T> optionalTable, Consumer<? super T> action, Operation<Void> original, @Local(argsOnly = true) Identifier id, @Local(argsOnly = true) RegistryOps<JsonElement> ops) {
 		original.call(optionalTable.map(table -> modifyLootTable(table, id, ops)), action);
 	}
@@ -118,7 +117,7 @@ abstract class ReloadableRegistriesMixin {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Inject(method = "method_58279", at = @At("RETURN"))
+	@Inject(method = "method_61240", at = @At("RETURN"))
 	private static <T> void onLootTablesLoaded(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<MutableRegistry<?>> cir) {
 		if (lootDataType != LootDataType.LOOT_TABLES) return;
 

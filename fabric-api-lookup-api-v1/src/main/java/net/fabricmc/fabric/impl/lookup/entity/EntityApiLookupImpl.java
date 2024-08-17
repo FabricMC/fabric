@@ -25,14 +25,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import net.minecraft.entity.SpawnReason;
-
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.MinecraftServer;

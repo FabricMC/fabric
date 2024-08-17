@@ -35,7 +35,6 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.FixedBiomeSource;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;

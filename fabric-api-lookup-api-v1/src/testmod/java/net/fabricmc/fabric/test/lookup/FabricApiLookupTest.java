@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.lookup;
 
-import net.fabricmc.fabric.test.base.FabricTestBlockEntityType;
-
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.AbstractBlock;
@@ -31,6 +29,7 @@ import net.minecraft.util.math.Direction;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.test.lookup.api.ItemApis;
 import net.fabricmc.fabric.test.lookup.api.ItemInsertable;
 import net.fabricmc.fabric.test.lookup.compat.InventoryExtractableProvider;
@@ -60,12 +59,12 @@ public class FabricApiLookupTest implements ModInitializer {
 		Identifier chute = Identifier.of(MOD_ID, "chute");
 		Registry.register(Registries.BLOCK, chute, CHUTE_BLOCK);
 		Registry.register(Registries.ITEM, chute, CHUTE_ITEM);
-		CHUTE_BLOCK_ENTITY_TYPE = Registry.register(Registries.BLOCK_ENTITY_TYPE, chute, FabricTestBlockEntityType.create(ChuteBlockEntity::new, CHUTE_BLOCK));
+		CHUTE_BLOCK_ENTITY_TYPE = Registry.register(Registries.BLOCK_ENTITY_TYPE, chute, FabricBlockEntityTypeBuilder.create(ChuteBlockEntity::new, CHUTE_BLOCK));
 
 		Identifier cobbleGen = Identifier.of(MOD_ID, "cobble_gen");
 		Registry.register(Registries.BLOCK, cobbleGen, COBBLE_GEN_BLOCK);
 		Registry.register(Registries.ITEM, cobbleGen, COBBLE_GEN_ITEM);
-		COBBLE_GEN_BLOCK_ENTITY_TYPE = Registry.register(Registries.BLOCK_ENTITY_TYPE, cobbleGen, FabricTestBlockEntityType.create(CobbleGenBlockEntity::new, COBBLE_GEN_BLOCK));
+		COBBLE_GEN_BLOCK_ENTITY_TYPE = Registry.register(Registries.BLOCK_ENTITY_TYPE, cobbleGen, FabricBlockEntityTypeBuilder.create(CobbleGenBlockEntity::new, COBBLE_GEN_BLOCK));
 
 		InventoryExtractableProvider extractableProvider = new InventoryExtractableProvider();
 		InventoryInsertableProvider insertableProvider = new InventoryInsertableProvider();

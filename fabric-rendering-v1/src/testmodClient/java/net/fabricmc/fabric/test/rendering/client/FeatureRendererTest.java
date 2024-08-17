@@ -16,20 +16,18 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityType;
 import net.minecraft.registry.Registries;

@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.transfer.ingame;
 
-import net.fabricmc.fabric.test.base.FabricTestBlockEntityType;
-
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -29,10 +27,9 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
-
-import java.util.Set;
 
 public class TransferTestInitializer implements ModInitializer {
 	public static final String MOD_ID = "fabric-transfer-api-v1-testmod";
@@ -50,7 +47,7 @@ public class TransferTestInitializer implements ModInitializer {
 		registerBlock(FLUID_CHUTE, "fluid_chute");
 		Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "extract_stick"), EXTRACT_STICK);
 
-		FLUID_CHUTE_TYPE = FabricTestBlockEntityType.create(FluidChuteBlockEntity::new, FLUID_CHUTE);
+		FLUID_CHUTE_TYPE = FabricBlockEntityTypeBuilder.create(FluidChuteBlockEntity::new, FLUID_CHUTE);
 		Registry.register(Registries.BLOCK_ENTITY_TYPE, Identifier.of(MOD_ID, "fluid_chute"), FLUID_CHUTE_TYPE);
 
 		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeStorage.WATER, INFINITE_WATER_SOURCE);

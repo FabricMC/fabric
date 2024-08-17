@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import com.mojang.datafixers.types.Type;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -43,7 +42,7 @@ public class BlockEntityTypeMixin<T extends BlockEntity> implements FabricBlockE
 	private Set<Block> blocks;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void mutableBlocks(BlockEntityType.BlockEntityFactory<? extends T> factory, Set<Block> blocks, Type<?> type, CallbackInfo ci) {
+	private void mutableBlocks(BlockEntityType.BlockEntityFactory<? extends T> factory, Set<Block> blocks, CallbackInfo ci) {
 		this.blocks = new HashSet<>(this.blocks);
 	}
 

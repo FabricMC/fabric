@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.access;
 
+import java.util.Set;
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -33,8 +35,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.api.ModInitializer;
-
-import java.util.Set;
 
 public final class SignBlockEntityTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-transitive-access-wideners-v1-testmod";

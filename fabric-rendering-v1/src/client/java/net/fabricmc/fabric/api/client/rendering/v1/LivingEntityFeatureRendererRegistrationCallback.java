@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.client.render.entity.state.EntityRenderState;
-
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -25,6 +23,7 @@ import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.Deadmau5FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 

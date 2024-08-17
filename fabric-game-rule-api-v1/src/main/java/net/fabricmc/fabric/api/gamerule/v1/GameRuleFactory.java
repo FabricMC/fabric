@@ -22,11 +22,9 @@ import java.util.function.BiConsumer;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-
-import net.minecraft.resource.featuretoggle.FeatureSet;
-
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.GameRules;
 

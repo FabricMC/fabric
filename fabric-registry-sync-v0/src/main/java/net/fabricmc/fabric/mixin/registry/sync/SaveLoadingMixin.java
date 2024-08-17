@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 // Implements dynamic registry loading.
 @Mixin(SaveLoading.class)
 abstract class SaveLoadingMixin {
-	@ModifyArg(method = "load", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/SaveLoading;withRegistriesLoaded(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/CombinedDynamicRegistries;Lnet/minecraft/registry/ServerDynamicRegistryType;Ljava/util/List;)Lnet/minecraft/registry/CombinedDynamicRegistries;"), allow = 1)
+	@ModifyArg(method = "load", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/RegistryLoader;loadFromResource(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;", ordinal = 0), index = 2, allow = 1)
 	private static List<RegistryLoader.Entry<?>> modifyLoadedEntries(List<RegistryLoader.Entry<?>> entries) {
 		return DynamicRegistries.getDynamicRegistries();
 	}

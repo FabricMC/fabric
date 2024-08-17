@@ -28,11 +28,19 @@ import net.minecraft.util.Identifier;
 
 @Mixin(EntityModelLayers.class)
 public class EntityModelLayersMixin {
-	@Inject(method = "createSign", at = @At("HEAD"), cancellable = true)
-	private static void createSign(WoodType type, CallbackInfoReturnable<EntityModelLayer> cir) {
+	@Inject(method = "createStandingSign", at = @At("HEAD"), cancellable = true)
+	private static void createStandingSign(WoodType type, CallbackInfoReturnable<EntityModelLayer> cir) {
 		if (type.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
 			Identifier identifier = Identifier.of(type.name());
-			cir.setReturnValue(new EntityModelLayer(identifier.withPrefixedPath("sign/"), "main"));
+			cir.setReturnValue(new EntityModelLayer(identifier.withPrefixedPath("sign/standing/"), "main"));
+		}
+	}
+
+	@Inject(method = "createWallSign", at = @At("HEAD"), cancellable = true)
+	private static void createWallSign(WoodType type, CallbackInfoReturnable<EntityModelLayer> cir) {
+		if (type.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
+			Identifier identifier = Identifier.of(type.name());
+			cir.setReturnValue(new EntityModelLayer(identifier.withPrefixedPath("sign/wall/"), "main"));
 		}
 	}
 

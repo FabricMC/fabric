@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.object.builder;
 
-import net.fabricmc.fabric.test.base.FabricTestBlockEntityType;
-
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
@@ -39,6 +37,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
 public class BlockEntityTypeBuilderTest implements ModInitializer {
 	private static final Identifier INITIAL_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.id("initial_betrayal_block");
@@ -54,7 +53,7 @@ public class BlockEntityTypeBuilderTest implements ModInitializer {
 	static final Block SECOND_MULTI_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.YELLOW);
 
 	private static final Identifier BLOCK_ENTITY_TYPE_ID = ObjectBuilderTestConstants.id("betrayal_block");
-	public static final BlockEntityType<?> BLOCK_ENTITY_TYPE = FabricTestBlockEntityType.create(BetrayalBlockEntity::new, INITIAL_BETRAYAL_BLOCK, ADDED_BETRAYAL_BLOCK, FIRST_MULTI_BETRAYAL_BLOCK, SECOND_MULTI_BETRAYAL_BLOCK);
+	public static final BlockEntityType<?> BLOCK_ENTITY_TYPE = FabricBlockEntityTypeBuilder.create(BetrayalBlockEntity::new, INITIAL_BETRAYAL_BLOCK, ADDED_BETRAYAL_BLOCK, FIRST_MULTI_BETRAYAL_BLOCK, SECOND_MULTI_BETRAYAL_BLOCK);
 
 	@Override
 	public void onInitialize() {

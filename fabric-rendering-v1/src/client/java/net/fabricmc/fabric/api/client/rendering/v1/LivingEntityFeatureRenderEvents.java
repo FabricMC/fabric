@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -30,9 +30,9 @@ public final class LivingEntityFeatureRenderEvents {
 	/**
 	 * An event that can prevent capes from rendering.
 	 */
-	public static final Event<AllowCapeRender> ALLOW_CAPE_RENDER = EventFactory.createArrayBacked(AllowCapeRender.class, listeners -> player -> {
+	public static final Event<AllowCapeRender> ALLOW_CAPE_RENDER = EventFactory.createArrayBacked(AllowCapeRender.class, listeners -> state -> {
 		for (AllowCapeRender listener : listeners) {
-			if (!listener.allowCapeRender(player)) {
+			if (!listener.allowCapeRender(state)) {
 				return false;
 			}
 		}
@@ -45,7 +45,7 @@ public final class LivingEntityFeatureRenderEvents {
 		/**
 		 * @return false to prevent rendering the cape
 		 */
-		boolean allowCapeRender(AbstractClientPlayerEntity player);
+		boolean allowCapeRender(PlayerEntityRenderState state);
 	}
 
 	private LivingEntityFeatureRenderEvents() {

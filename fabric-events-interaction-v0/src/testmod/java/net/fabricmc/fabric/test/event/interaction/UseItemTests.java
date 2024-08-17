@@ -16,14 +16,12 @@
 
 package net.fabricmc.fabric.test.event.interaction;
 
-import net.minecraft.util.ActionResult;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.entity.projectile.FireballEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.api.ModInitializer;

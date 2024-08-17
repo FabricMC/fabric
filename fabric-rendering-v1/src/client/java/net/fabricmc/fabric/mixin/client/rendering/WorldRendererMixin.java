@@ -29,6 +29,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.class_9922;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.PostEffectProcessor;
 import net.minecraft.client.render.BufferBuilderStorage;
@@ -45,7 +46,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 
-import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.impl.client.rendering.WorldRenderContextImpl;
@@ -63,7 +63,8 @@ public abstract class WorldRendererMixin {
 	@Unique private final WorldRenderContextImpl context = new WorldRenderContextImpl();
 
 	@Inject(method = "render", at = @At("HEAD"))
-	private void beforeRender(RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
+	// TODO 24w33a port should arg (unnamed in Yarn currently!) be provided as part of the context?
+	private void beforeRender(class_9922 arg, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
 		context.prepare((WorldRenderer) (Object) this, tickCounter, renderBlockOutline, camera, gameRenderer, lightmapTextureManager, projectionMatrix, positionMatrix, bufferBuilders.getEntityVertexConsumers(), world.getProfiler(), transparencyPostProcessor != null, world);
 		WorldRenderEvents.START.invoker().onStart(context);
 	}
@@ -75,7 +76,7 @@ public abstract class WorldRendererMixin {
 	}
 
 	@Inject(
-			method = "render",
+			method = "method_62214",
 			at = @At(
 				value = "INVOKE",
 				target = "Lnet/minecraft/client/render/WorldRenderer;renderLayer(Lnet/minecraft/client/render/RenderLayer;DDDLorg/joml/Matrix4f;Lorg/joml/Matrix4f;)V",
@@ -87,24 +88,24 @@ public abstract class WorldRendererMixin {
 		WorldRenderEvents.BEFORE_ENTITIES.invoker().beforeEntities(context);
 	}
 
-	@ModifyExpressionValue(method = "render", at = @At(value = "NEW", target = "net/minecraft/client/util/math/MatrixStack"))
+	@ModifyExpressionValue(method = "method_62214", at = @At(value = "NEW", target = "net/minecraft/client/util/math/MatrixStack"))
 	private MatrixStack setMatrixStack(MatrixStack matrixStack) {
 		context.setMatrixStack(matrixStack);
 		return matrixStack;
 	}
 
-	@Inject(method = "render", at = @At(value = "CONSTANT", args = "stringValue=blockentities", ordinal = 0))
+	@Inject(method = "method_62214", at = @At(value = "CONSTANT", args = "stringValue=blockentities", ordinal = 0))
 	private void afterEntities(CallbackInfo ci) {
 		WorldRenderEvents.AFTER_ENTITIES.invoker().afterEntities(context);
 	}
 
 	@Inject(
-			method = "render",
+			method = "renderTargetBlockOutline",
 			at = @At(
 				value = "FIELD",
 				target = "Lnet/minecraft/client/MinecraftClient;crosshairTarget:Lnet/minecraft/util/hit/HitResult;",
 				shift = At.Shift.AFTER,
-				ordinal = 1
+				ordinal = 0
 			)
 	)
 	private void beforeRenderOutline(CallbackInfo ci) {
@@ -136,7 +137,7 @@ public abstract class WorldRendererMixin {
 	}
 
 	@Inject(
-			method = "render",
+			method = "method_62214",
 			at = @At(
 				value = "INVOKE",
 				target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;DDD)V",
@@ -152,14 +153,8 @@ public abstract class WorldRendererMixin {
 		WorldRenderEvents.AFTER_TRANSLUCENT.invoker().afterTranslucent(context);
 	}
 
-	@Inject(
-			method = "render",
-			at = @At(
-				value = "INVOKE",
-				target = "Lnet/minecraft/client/render/WorldRenderer;renderChunkDebugInfo(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/render/Camera;)V"
-			)
-	)
-	private void onChunkDebugRender(CallbackInfo ci) {
+	@Inject(method = "method_62214", at = @At("RETURN"))
+	private void onFinishWritingFramebuffer(CallbackInfo ci) {
 		WorldRenderEvents.LAST.invoker().onLast(context);
 	}
 
@@ -173,7 +168,8 @@ public abstract class WorldRendererMixin {
 		InvalidateRenderStateCallback.EVENT.invoker().onInvalidate();
 	}
 
-	@Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
+	// TODO 24w33a port
+	/*@Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
 	private void renderWeather(LightmapTextureManager manager, float tickDelta, double x, double y, double z, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.WeatherRenderer renderer = DimensionRenderingRegistry.getWeatherRenderer(world.getRegistryKey());
@@ -207,5 +203,5 @@ public abstract class WorldRendererMixin {
 				info.cancel();
 			}
 		}
-	}
+	}*/
 }

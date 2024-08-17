@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_17",
   "client": [
     "BlockColorsMixin",
-    "ClientRegistriesDynamicRegistriesMixin",
+    "ClientRegistriesMixin",
+    "ClientRegistriesDynamicRegistriesAccessor",
     "ItemColorsMixin",
     "ItemModelsMixin",
     "MinecraftClientMixin",
