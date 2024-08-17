@@ -47,8 +47,8 @@ public class ShapelessRecipeMixin {
 	private boolean fabric_requiresTesting = false;
 
 	@Inject(at = @At("RETURN"), method = "<init>")
-	private void cacheRequiresTesting(String group, CraftingRecipeCategory category, ItemStack output, DefaultedList<Ingredient> input, CallbackInfo ci) {
-		for (Ingredient ingredient : input) {
+	private void cacheRequiresTesting(String group, CraftingRecipeCategory category, ItemStack result, List<Ingredient> ingredients, CallbackInfo ci) {
+		for (Ingredient ingredient : ingredients) {
 			if (ingredient.requiresTesting()) {
 				fabric_requiresTesting = true;
 				break;

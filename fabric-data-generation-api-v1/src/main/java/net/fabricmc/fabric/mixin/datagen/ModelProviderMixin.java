@@ -83,7 +83,6 @@ public class ModelProviderMixin {
 		}
 	}
 
-	/
 	@Inject(method = "run", at = @At(value = "INVOKE_ASSIGN", target = "com/google/common/collect/Maps.newHashMap()Ljava/util/HashMap;", ordinal = 0, remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
 	private void runHead(DataWriter writer, CallbackInfoReturnable<CompletableFuture<?>> cir, Map<Block, BlockStateSupplier> map) {
 		fabricDataOutputThreadLocal.set(fabricDataOutput);

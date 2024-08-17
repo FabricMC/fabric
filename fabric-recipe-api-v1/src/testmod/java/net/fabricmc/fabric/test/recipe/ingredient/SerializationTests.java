@@ -57,7 +57,7 @@ public class SerializationTests {
 		JsonElement json = JsonParser.parseString(ingredientJson);
 
 		try {
-			Ingredient.DISALLOW_EMPTY_CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(JsonParseException::new);
+			Ingredient.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(JsonParseException::new);
 			throw new GameTestException("Using a custom ingredient inside an array ingredient should have failed.");
 		} catch (JsonParseException e) {
 			context.complete();
@@ -77,7 +77,7 @@ public class SerializationTests {
 			Ingredient ingredient = DefaultCustomIngredients.all(
 					Ingredient.ofItems(Items.STONE)
 			);
-			Codec<Ingredient> ingredientCodec = allowEmpty ? Ingredient.ALLOW_EMPTY_CODEC : Ingredient.DISALLOW_EMPTY_CODEC;
+			Codec<Ingredient> ingredientCodec = Ingredient.CODEC;
 			JsonObject json = ingredientCodec.encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow(IllegalStateException::new).getAsJsonObject();
 			context.assertTrue(json.toString().equals(ingredientJson), "Unexpected json: " + json);
 			// Make sure that we can deserialize it

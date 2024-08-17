@@ -47,8 +47,8 @@ mutable field net/minecraft/world/biome/SpawnSettings spawnCosts Ljava/util/Map;
 accessible method net/minecraft/world/biome/SpawnSettings$SpawnDensity <init> (DD)V
 
 # Generation Settings
-accessible field net/minecraft/world/biome/GenerationSettings carvers Ljava/util/Map;
-mutable field net/minecraft/world/biome/GenerationSettings carvers Ljava/util/Map;
+accessible field net/minecraft/world/biome/GenerationSettings carvers Lnet/minecraft/registry/entry/RegistryEntryList;
+mutable field net/minecraft/world/biome/GenerationSettings carvers Lnet/minecraft/registry/entry/RegistryEntryList;
 accessible field net/minecraft/world/biome/GenerationSettings features Ljava/util/List;
 mutable field net/minecraft/world/biome/GenerationSettings features Ljava/util/List;
 accessible field net/minecraft/world/biome/GenerationSettings flowerFeatures Ljava/util/function/Supplier;

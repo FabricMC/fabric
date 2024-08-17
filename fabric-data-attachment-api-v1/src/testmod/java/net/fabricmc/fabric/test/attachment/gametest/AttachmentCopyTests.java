@@ -21,6 +21,7 @@ import java.util.function.IntSupplier;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
@@ -52,7 +53,7 @@ public class AttachmentCopyTests implements FabricGameTest {
 		ServerWorld end = server.getWorld(World.END);
 		// using overworld and end to avoid portal code related to the nether
 
-		Entity entity = EntityType.PIG.create(overworld);
+		Entity entity = EntityType.PIG.create(overworld, SpawnReason.SPAWN_EGG);
 		Objects.requireNonNull(entity, "entity was null");
 		entity.setAttached(DUMMY, () -> 10);
 		entity.setAttached(COPY_ON_DEATH, () -> 10);
@@ -73,7 +74,7 @@ public class AttachmentCopyTests implements FabricGameTest {
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testMobConversion(TestContext context) {
-		MobEntity mob = Objects.requireNonNull(EntityType.ZOMBIE.create(context.getWorld()));
+		MobEntity mob = Objects.requireNonNull(EntityType.ZOMBIE.create(context.getWorld(), SpawnReason.SPAWN_EGG));
 		mob.setAttached(DUMMY, () -> 42);
 		mob.setAttached(COPY_ON_DEATH, () -> 42);
 		MobEntity converted = mob.convertTo(EntityType.DROWNED, false);

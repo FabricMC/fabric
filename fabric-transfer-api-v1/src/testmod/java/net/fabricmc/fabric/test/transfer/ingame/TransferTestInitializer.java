@@ -47,7 +47,7 @@ public class TransferTestInitializer implements ModInitializer {
 		registerBlock(FLUID_CHUTE, "fluid_chute");
 		Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "extract_stick"), EXTRACT_STICK);
 
-		FLUID_CHUTE_TYPE = FabricBlockEntityTypeBuilder.create(FluidChuteBlockEntity::new, FLUID_CHUTE);
+		FLUID_CHUTE_TYPE = FabricBlockEntityTypeBuilder.create(FluidChuteBlockEntity::new, FLUID_CHUTE).build();
 		Registry.register(Registries.BLOCK_ENTITY_TYPE, Identifier.of(MOD_ID, "fluid_chute"), FLUID_CHUTE_TYPE);
 
 		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeStorage.WATER, INFINITE_WATER_SOURCE);

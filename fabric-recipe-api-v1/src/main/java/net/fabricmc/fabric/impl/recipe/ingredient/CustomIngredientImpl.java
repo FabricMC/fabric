@@ -16,14 +16,19 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+
+import net.minecraft.item.Item;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.ItemStack;
@@ -71,7 +76,7 @@ public class CustomIngredientImpl extends Ingredient {
 	private final CustomIngredient customIngredient;
 
 	public CustomIngredientImpl(CustomIngredient customIngredient) {
-		super(Stream.empty());
+		super(RegistryEntryList.empty());
 
 		this.customIngredient = customIngredient;
 	}
@@ -87,9 +92,9 @@ public class CustomIngredientImpl extends Ingredient {
 	}
 
 	@Override
-	public ItemStack[] getMatchingStacks() {
+	public List<RegistryEntry<Item>> getMatchingStacks() {
 		if (this.matchingStacks == null) {
-			this.matchingStacks = customIngredient.getMatchingStacks().toArray(ItemStack[]::new);
+			this.matchingStacks = customIngredient.toVanilla().getMatchingStacks();
 		}
 
 		return this.matchingStacks;
@@ -100,11 +105,12 @@ public class CustomIngredientImpl extends Ingredient {
 		return stack != null && customIngredient.test(stack);
 	}
 
-	@Override
+	// TODO 24w33a
+	/*@Override
 	public boolean isEmpty() {
 		// We don't want to resolve the matching stacks,
 		// as this might cause the ingredient to use outdated tags when it's done too early.
 		// So we just return false when the matching stacks haven't been resolved yet (i.e. when the field is null).
 		return matchingStacks != null && matchingStacks.length == 0;
-	}
+	}*/
 }

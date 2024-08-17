@@ -37,7 +37,6 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.data.server.recipe.CraftingRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.RecipeExporter;
-import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.recipe.Recipe;
@@ -59,7 +58,8 @@ public abstract class FabricRecipeProvider extends RecipeGenerator {
 	protected final FabricDataOutput output;
 
 	public FabricRecipeProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-		super(output, registriesFuture);
+		// TODO 24w33a
+		super(null, null);
 		this.output = output;
 	}
 
@@ -93,7 +93,8 @@ public abstract class FabricRecipeProvider extends RecipeGenerator {
 		};
 	}
 
-	@Override
+	// TODO 24w33a
+	/*@Override
 	public CompletableFuture<?> run(DataWriter writer, RegistryWrapper.WrapperLookup wrapperLookup) {
 		Set<Identifier> generatedRecipes = Sets.newHashSet();
 		List<CompletableFuture<?>> list = new ArrayList<>();
@@ -132,7 +133,7 @@ public abstract class FabricRecipeProvider extends RecipeGenerator {
 			}
 		});
 		return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));
-	}
+	}*/
 
 	/**
 	 * Override this method to change the recipe identifier. The default implementation normalizes the namespace to the mod ID.

@@ -48,8 +48,7 @@ public final class Registration {
 	public static final Item OCTAGONAL_COLUMN_ITEM = register("octagonal_column", new BlockItem(OCTAGONAL_COLUMN_BLOCK, new Item.Settings()));
 	public static final Item RIVERSTONE_ITEM = register("riverstone", new BlockItem(RIVERSTONE_BLOCK, new Item.Settings()));
 
-	// TODO 24w33a Is build(null) still required here?
-	public static final BlockEntityType<FrameBlockEntity> FRAME_BLOCK_ENTITY_TYPE = register("frame", FabricBlockEntityTypeBuilder.create(FrameBlockEntity::new, FRAME_BLOCKS));
+	public static final BlockEntityType<FrameBlockEntity> FRAME_BLOCK_ENTITY_TYPE = register("frame", FabricBlockEntityTypeBuilder.create(FrameBlockEntity::new, FRAME_BLOCKS).build());
 
 	private static <T extends Block> T register(String path, T block) {
 		return Registry.register(Registries.BLOCK, RendererTest.id(path), block);

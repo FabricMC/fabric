@@ -205,17 +205,9 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		 * possible step if they're dense lists.
 		 */
 		GenerationSettingsContextImpl() {
-			unfreezeCarvers();
 			unfreezeFeatures();
 
 			rebuildFeatures = false;
-		}
-
-		private void unfreezeCarvers() {
-			Map<GenerationStep.Carver, RegistryEntryList<ConfiguredCarver<?>>> carversByStep = new EnumMap<>(GenerationStep.Carver.class);
-			carversByStep.putAll(generationSettings.carvers);
-
-			generationSettings.carvers = carversByStep;
 		}
 
 		private void unfreezeFeatures() {
@@ -226,16 +218,11 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		 * Re-freeze the lists in the generation settings to immutable variants, also fixes the flower features.
 		 */
 		public void freeze() {
-			freezeCarvers();
 			freezeFeatures();
 
 			if (rebuildFeatures) {
 				rebuildFlowerFeatures();
 			}
-		}
-
-		private void freezeCarvers() {
-			generationSettings.carvers = ImmutableMap.copyOf(generationSettings.carvers);
 		}
 
 		private void freezeFeatures() {
@@ -296,22 +283,18 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public void addCarver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> entry) {
+		public void addCarver(RegistryKey<ConfiguredCarver<?>> entry) {
 			// We do not need to delay evaluation of this since the registries are already fully built
-			generationSettings.carvers.put(step, plus(generationSettings.carvers.get(step), getEntry(carvers, entry)));
+			generationSettings.carvers = plus(generationSettings.carvers, getEntry(carvers, entry));
 		}
 
 		@Override
-		public boolean removeCarver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
+		public boolean removeCarver(RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
 			ConfiguredCarver<?> carver = getEntry(carvers, configuredCarverKey).value();
-			RegistryEntryList<ConfiguredCarver<?>> carvers = generationSettings.carvers.get(step);
-
-			if (carvers == null) return false;
-
-			List<RegistryEntry<ConfiguredCarver<?>>> genCarvers = new ArrayList<>(carvers.stream().toList());
+			List<RegistryEntry<ConfiguredCarver<?>>> genCarvers = new ArrayList<>(generationSettings.carvers.stream().toList());
 
 			if (genCarvers.removeIf(entry -> entry.value() == carver)) {
-				generationSettings.carvers.put(step, RegistryEntryList.of(genCarvers));
+				generationSettings.carvers = RegistryEntryList.of(genCarvers);
 				return true;
 			}
 

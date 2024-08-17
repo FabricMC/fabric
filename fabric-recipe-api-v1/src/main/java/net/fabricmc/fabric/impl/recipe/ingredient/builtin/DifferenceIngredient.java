@@ -50,9 +50,11 @@ public class DifferenceIngredient implements CustomIngredient {
 
 	@Override
 	public List<ItemStack> getMatchingStacks() {
-		List<ItemStack> stacks = new ArrayList<>(List.of(base.getMatchingStacks()));
-		stacks.removeIf(subtracted);
-		return stacks;
+		return List.of();
+		// TODO 24w33a port
+		//List<ItemStack> stacks = new ArrayList<>(List.of(base.getMatchingStacks()));
+		//stacks.removeIf(subtracted);
+		//return stacks;
 	}
 
 	@Override
@@ -75,22 +77,17 @@ public class DifferenceIngredient implements CustomIngredient {
 
 	private static class Serializer implements CustomIngredientSerializer<DifferenceIngredient> {
 		private static final Identifier ID = Identifier.of("fabric", "difference");
-		private static final MapCodec<DifferenceIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
-		private static final MapCodec<DifferenceIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
+		private static final MapCodec<DifferenceIngredient> CODEC = RecordCodecBuilder.mapCodec(instance ->
+				instance.group(
+						Ingredient.CODEC.fieldOf("base").forGetter(DifferenceIngredient::getBase),
+						Ingredient.CODEC.fieldOf("subtracted").forGetter(DifferenceIngredient::getSubtracted)
+				).apply(instance, DifferenceIngredient::new)
+		);
 		private static final PacketCodec<RegistryByteBuf, DifferenceIngredient> PACKET_CODEC = PacketCodec.tuple(
 				Ingredient.PACKET_CODEC, DifferenceIngredient::getBase,
 				Ingredient.PACKET_CODEC, DifferenceIngredient::getSubtracted,
 				DifferenceIngredient::new
 		);
-
-		private static MapCodec<DifferenceIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
-			return RecordCodecBuilder.mapCodec(instance ->
-					instance.group(
-							ingredientCodec.fieldOf("base").forGetter(DifferenceIngredient::getBase),
-							ingredientCodec.fieldOf("subtracted").forGetter(DifferenceIngredient::getSubtracted)
-					).apply(instance, DifferenceIngredient::new)
-			);
-		}
 
 		@Override
 		public Identifier getIdentifier() {
@@ -98,8 +95,8 @@ public class DifferenceIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public MapCodec<DifferenceIngredient> getCodec(boolean allowEmpty) {
-			return allowEmpty ? ALLOW_EMPTY_CODEC : DISALLOW_EMPTY_CODEC;
+		public MapCodec<DifferenceIngredient> getCodec() {
+			return CODEC;
 		}
 
 		@Override

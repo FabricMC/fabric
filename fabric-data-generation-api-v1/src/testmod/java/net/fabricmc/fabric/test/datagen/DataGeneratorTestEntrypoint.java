@@ -115,7 +115,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		final FabricDataGenerator.Pack pack = dataGenerator.createPack();
 
-		pack.addProvider(TestRecipeProvider::new);
+		// TODO 24w33a
+		//pack.addProvider(TestRecipeProvider::new);
 		pack.addProvider(TestModelProvider::new);
 		pack.addProvider(TestAdvancementProvider::new);
 		pack.addProvider(TestBlockLootTableProvider::new);
@@ -164,7 +165,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		registerable.register(TEST_DYNAMIC_REGISTRY_ITEM_KEY, new DataGeneratorTestContent.TestDatagenObject(":tiny_potato:"));
 	}
 
-	private static class TestRecipeProvider extends FabricRecipeProvider {
+	// TODO 24w33a
+	/*private static class TestRecipeProvider extends FabricRecipeProvider {
 		private TestRecipeProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 			super(output, registriesFuture);
 		}
@@ -199,7 +201,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			// - 9 undamaged pickaxes should match.
 			// - 1 undamaged pickaxe + 8 damaged pickaxes should match (regardless of the position).
 			// - 1 undamaged renamed pickaxe + 8 damaged pickaxes should match (components are not strictly matched here).
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND_BLOCK)
+			/*ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND_BLOCK)
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
@@ -216,27 +218,27 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 					.criterion("has_pickaxe", conditionsFromItem(Items.DIAMOND_PICKAXE))
-					.offerTo(exporter);
+					.offerTo(exporter);*/
 
 			// Test AND
 			// To test: charcoal should give a torch, but coal should not.
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.TORCH)
+			/*ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.TORCH)
 					// charcoal only
 					.input(DefaultCustomIngredients.all(Ingredient.fromTag(ItemTags.COALS), Ingredient.ofItems(Items.CHARCOAL)))
 					.criterion("has_charcoal", conditionsFromItem(Items.CHARCOAL))
-					.offerTo(exporter);
+					.offerTo(exporter);*/
 
 			// Test OR
 			// To test: a golden pickaxe or a golden shovel should give a block of gold.
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLD_BLOCK)
+			/*ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLD_BLOCK)
 					.input(DefaultCustomIngredients.any(Ingredient.ofItems(Items.GOLDEN_PICKAXE), Ingredient.ofItems(Items.GOLDEN_SHOVEL)))
 					.criterion("has_pickaxe", conditionsFromItem(Items.GOLDEN_PICKAXE))
 					.criterion("has_shovel", conditionsFromItem(Items.GOLDEN_SHOVEL))
-					.offerTo(exporter);
+					.offerTo(exporter);*/
 
 			// Test difference
 			// To test: only copper, netherite and emerald should match the recipe.
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.BEACON)
+			/*ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.BEACON)
 					.input(DefaultCustomIngredients.difference(
 							DefaultCustomIngredients.any(
 									Ingredient.fromTag(ItemTags.BEACON_PAYMENT_ITEMS),
@@ -245,7 +247,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					.criterion("has_payment", conditionsFromTag(ItemTags.BEACON_PAYMENT_ITEMS))
 					.offerTo(exporter);
 		}
-	}
+	}*/
 
 	private static class ExistingEnglishLangProvider extends FabricLanguageProvider {
 		private ExistingEnglishLangProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
@@ -257,7 +259,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			translationBuilder.add(SIMPLE_BLOCK, "Simple Block");
 			translationBuilder.add(Identifier.of(MOD_ID, "identifier_test"), "Identifier Test");
 			translationBuilder.add(EntityType.ALLAY, "Allay");
-			translationBuilder.add(EntityAttributes.GENERIC_ARMOR, "Generic Armor");
+			translationBuilder.add(EntityAttributes.ARMOR, "Generic Armor");
 
 			try {
 				Optional<Path> path = dataOutput.getModContainer().findPath("assets/testmod/lang/en_us.base.json");

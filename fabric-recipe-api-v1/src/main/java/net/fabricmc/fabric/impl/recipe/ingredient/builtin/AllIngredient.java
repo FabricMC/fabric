@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -30,18 +31,13 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
 public class AllIngredient extends CombinedIngredient {
-	private static final MapCodec<AllIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
-	private static final MapCodec<AllIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
-
-	private static MapCodec<AllIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
-		return ingredientCodec
-				.listOf()
-				.fieldOf("ingredients")
-				.xmap(AllIngredient::new, AllIngredient::getIngredients);
-	}
+	private static final MapCodec<AllIngredient> CODEC = Ingredient.CODEC
+			.listOf()
+			.fieldOf("ingredients")
+			.xmap(AllIngredient::new, AllIngredient::getIngredients);
 
 	public static final CustomIngredientSerializer<AllIngredient> SERIALIZER =
-			new Serializer<>(Identifier.of("fabric", "all"), AllIngredient::new, ALLOW_EMPTY_CODEC, DISALLOW_EMPTY_CODEC);
+			new Serializer<>(Identifier.of("fabric", "all"), AllIngredient::new, CODEC);
 
 	public AllIngredient(List<Ingredient> ingredients) {
 		super(ingredients);
@@ -61,7 +57,7 @@ public class AllIngredient extends CombinedIngredient {
 	@Override
 	public List<ItemStack> getMatchingStacks() {
 		// There's always at least one sub ingredient, so accessing ingredients[0] is safe.
-		List<ItemStack> previewStacks = new ArrayList<>(Arrays.asList(ingredients.get(0).getMatchingStacks()));
+		List<ItemStack> previewStacks = ingredients.get(0).getMatchingStacks().stream().map(a -> new ItemStack(a)).collect(Collectors.toCollection(ArrayList::new));
 
 		for (int i = 1; i < ingredients.size(); ++i) {
 			Ingredient ing = ingredients.get(i);
