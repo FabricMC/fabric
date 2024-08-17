@@ -17,6 +17,14 @@
 package net.fabricmc.fabric.mixin.client.rendering;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+
+import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
+
+import net.minecraft.class_9909;
+import net.minecraft.class_9958;
+import net.minecraft.client.option.CloudRenderMode;
+import net.minecraft.util.math.Vec3d;
+
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -168,9 +176,8 @@ public abstract class WorldRendererMixin {
 		InvalidateRenderStateCallback.EVENT.invoker().onInvalidate();
 	}
 
-	// TODO 24w33a port
-	/*@Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
-	private void renderWeather(LightmapTextureManager manager, float tickDelta, double x, double y, double z, CallbackInfo info) {
+	@Inject(at = @At("HEAD"), method = "method_62203", cancellable = true)
+	private void renderWeather(class_9909 arg, LightmapTextureManager lightmapTextureManager, Vec3d vec3d, float f, class_9958 arg2, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.WeatherRenderer renderer = DimensionRenderingRegistry.getWeatherRenderer(world.getRegistryKey());
 
@@ -181,8 +188,8 @@ public abstract class WorldRendererMixin {
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "renderClouds(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;FDDD)V", cancellable = true)
-	private void renderCloud(MatrixStack matrices, Matrix4f matrix4f, Matrix4f matrix4f2, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo info) {
+	@Inject(at = @At("HEAD"), method = "method_62204", cancellable = true)
+	private void renderCloud(class_9909 arg, Matrix4f matrix4f, Matrix4f matrix4f2, CloudRenderMode cloudRenderMode, Vec3d vec3d, float f, int i, float g, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.CloudRenderer renderer = DimensionRenderingRegistry.getCloudRenderer(world.getRegistryKey());
 
@@ -193,8 +200,9 @@ public abstract class WorldRendererMixin {
 		}
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Ljava/lang/Runnable;run()V", shift = At.Shift.AFTER, ordinal = 0), method = "renderSky(Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", cancellable = true)
-	private void renderSky(Matrix4f matrix4f, Matrix4f matrix4f2, float tickDelta, Camera camera, boolean bl, Runnable runnable, CallbackInfo info) {
+	// TODO 24w33a double check
+	@Inject(at = @At(value = "HEAD"), method = "renderSky", cancellable = true)
+	private void renderSky(class_9909 arg, Camera camera, float tickDelta, class_9958 arg2, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.SkyRenderer renderer = DimensionRenderingRegistry.getSkyRenderer(world.getRegistryKey());
 
@@ -203,5 +211,5 @@ public abstract class WorldRendererMixin {
 				info.cancel();
 			}
 		}
-	}*/
+	}
 }
