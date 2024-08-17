@@ -132,11 +132,8 @@ public final class ContentRegistryTest implements ModInitializer {
 			LOGGER.info("OxidizableBlocksRegistry test passed!");
 		}
 
-		VillagerInteractionRegistries.registerCollectable(Items.APPLE);
 		VillagerInteractionRegistries.registerFood(Items.APPLE, 4);
 		VillagerInteractionRegistries.registerCompostable(Items.APPLE);
-
-		VillagerInteractionRegistries.registerCollectable(Items.OAK_SAPLING);
 
 		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.ofVanilla("fake_loot_table")));
 

@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.registry;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,17 +45,6 @@ public final class VillagerInteractionRegistries {
 	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerInteractionRegistries.class);
 
 	private VillagerInteractionRegistries() {
-	}
-
-	/**
-	 * Registers an item to be collectable (picked up from item entity)
-	 * by any profession villagers.
-	 *
-	 * @param item the item to register
-	 */
-	public static void registerCollectable(ItemConvertible item) {
-		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
-		getCollectableRegistry().add(item.asItem());
 	}
 
 	/**
@@ -103,10 +91,6 @@ public final class VillagerInteractionRegistries {
 		if (oldValue != null) {
 			LOGGER.info("Overriding previous gift loot table of {} profession, was: {}, now: {}", profession.id(), oldValue, lootTable);
 		}
-	}
-
-	private static Set<Item> getCollectableRegistry() {
-		return ImmutableCollectionUtils.getAsMutableSet(VillagerEntityAccessor::fabric_getGatherableItems, VillagerEntityAccessor::fabric_setGatherableItems);
 	}
 
 	private static List<Item> getCompostableRegistry() {

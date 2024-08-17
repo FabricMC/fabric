@@ -18,6 +18,8 @@ package net.fabricmc.fabric.test.model.loading;
 
 import java.util.function.Supplier;
 
+import net.minecraft.client.render.entity.state.EntityRenderState;
+
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 
@@ -33,7 +35,7 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 
-public class BakedModelFeatureRenderer<T extends LivingEntity, M extends EntityModel<T>> extends FeatureRenderer<T, M> {
+public class BakedModelFeatureRenderer<T extends EntityRenderState, M extends EntityModel<T>> extends FeatureRenderer<T, M> {
 	private final Supplier<BakedModel> modelSupplier;
 
 	public BakedModelFeatureRenderer(FeatureRendererContext<T, M> context, Supplier<BakedModel> modelSupplier) {
@@ -42,15 +44,16 @@ public class BakedModelFeatureRenderer<T extends LivingEntity, M extends EntityM
 	}
 
 	@Override
-	public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+	public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T state, float limbAngle, float limbDistance) {
 		BakedModel model = modelSupplier.get();
 		VertexConsumer vertices = vertexConsumers.getBuffer(TexturedRenderLayers.getEntityCutout());
 		matrices.push();
 		//matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(headYaw));
 		//matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(headPitch));
-		matrices.multiply(new Quaternionf(new AxisAngle4f(animationProgress * 0.07F, 0, 1, 0)));
+		// TODO 24w33a Is limbAngle the same as animationProgress? Probably not
+		matrices.multiply(new Quaternionf(new AxisAngle4f(limbAngle * 0.07F, 0, 1, 0)));
 		matrices.scale(-0.75F, -0.75F, 0.75F);
-		float aboveHead = (float) (Math.sin(animationProgress * 0.08F)) * 0.5F + 0.5F;
+		float aboveHead = (float) (Math.sin(limbAngle * 0.08F)) * 0.5F + 0.5F;
 		matrices.translate(-0.5F, 0.75F + aboveHead, -0.5F);
 		MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(matrices.peek(), vertices, null, model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV);
 		matrices.pop();

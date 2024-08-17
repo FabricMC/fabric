@@ -16,10 +16,15 @@
 
 package net.fabricmc.fabric.mixin.resource.conditions;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import net.minecraft.registry.Registry;
+
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -36,8 +41,13 @@ import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 @Mixin(DataPackContents.class)
 public class DataPackContentsMixin {
+	@Shadow
+	@Final
+	private List<Registry.PendingTagLoad<?>> field_52345;
+
+	// TODO 24w33a - Double check this
 	@Inject(
-			method = "refresh",
+			method = "method_61248",
 			at = @At("HEAD")
 	)
 	private void hookRefresh(CallbackInfo ci) {
@@ -48,7 +58,13 @@ public class DataPackContentsMixin {
 			method = "reload",
 			at = @At("HEAD")
 	)
-	private static void hookReload(ResourceManager manager, CombinedDynamicRegistries<ServerDynamicRegistryType> combinedDynamicRegistries, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, int functionPermissionLevel, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<DataPackContents>> cir) {
+	private static void hookReload(ResourceManager manager, CombinedDynamicRegistries<ServerDynamicRegistryType> combinedDynamicRegistries, List<Registry.PendingTagLoad<?>> list, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, int functionPermissionLevel, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<DataPackContents>> cir) {
 		ResourceConditionsImpl.currentFeatures = enabledFeatures;
+	}
+
+	// Replacement for TagManagerLoaderMixin
+	@Inject(method = "method_61248", at = @At("HEAD"))
+	private void captureTags(CallbackInfo ci) {
+		ResourceConditionsImpl.setTags(field_52345);
 	}
 }

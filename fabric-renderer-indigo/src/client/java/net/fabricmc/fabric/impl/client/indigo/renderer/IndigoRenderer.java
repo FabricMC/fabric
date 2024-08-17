@@ -65,7 +65,7 @@ public class IndigoRenderer implements Renderer {
 		if (materialMap.containsKey(id)) return false;
 
 		// cast to prevent acceptance of impostor implementations
-		materialMap.put(id, (RenderMaterialImpl) material);
+		materialMap.put(id, material);
 		return true;
 	}
 }

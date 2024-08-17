@@ -81,12 +81,12 @@ public class TranslationConventionLogWarnings implements ModInitializer {
 			List<TagKey<Item>> untranslatedItemTags = new ObjectArrayList<>();
 			itemRegistry.streamTags().forEach(itemTagKey -> {
 				// We do not translate vanilla's tags at this moment.
-				if (itemTagKey.id().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
+				if (itemTagKey.getTag().id().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
 					return;
 				}
 
-				if (!language.hasTranslation(itemTagKey.getTranslationKey())) {
-					untranslatedItemTags.add(itemTagKey);
+				if (!language.hasTranslation(itemTagKey.getTag().getTranslationKey())) {
+					untranslatedItemTags.add(itemTagKey.getTag());
 				}
 			});
 
