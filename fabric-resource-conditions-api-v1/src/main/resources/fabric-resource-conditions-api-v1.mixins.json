@@ -11,8 +11,7 @@
     "ReloadableRegistriesMixin",
     "ResourcePackProfileMixin",
     "ServerAdvancementLoaderMixin",
-    "SinglePreparationResourceReloaderMixin",
-    "TagManagerLoaderMixin"
+    "SinglePreparationResourceReloaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

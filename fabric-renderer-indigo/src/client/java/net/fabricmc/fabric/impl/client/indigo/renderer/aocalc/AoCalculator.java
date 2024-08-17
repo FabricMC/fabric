@@ -156,7 +156,8 @@ public abstract class AoCalculator {
 		quad.toVanilla(vertexData, 0);
 
 		VanillaAoHelper.updateShape(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vertexData, lightFace, vanillaAoData, vanillaAoControlBits);
-		vanillaCalc.apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, lightFace, vanillaAoData, vanillaAoControlBits, quad.hasShade());
+		// TODO 24w33a
+		//vanillaCalc.apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, lightFace, vanillaAoData, vanillaAoControlBits, quad.hasShade());
 
 		System.arraycopy(vanillaCalc.brightness, 0, aoDest, 0, 4);
 		System.arraycopy(vanillaCalc.light, 0, lightDest, 0, 4);
@@ -375,7 +376,7 @@ public abstract class AoCalculator {
 			searchState = world.getBlockState(searchPos);
 		}
 
-		final boolean isClear0 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity(world, searchPos) == 0;
+		final boolean isClear0 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity() == 0;
 
 		searchPos.set(lightPos, aoFace.neighbors[1]);
 		searchState = world.getBlockState(searchPos);
@@ -388,7 +389,7 @@ public abstract class AoCalculator {
 			searchState = world.getBlockState(searchPos);
 		}
 
-		final boolean isClear1 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity(world, searchPos) == 0;
+		final boolean isClear1 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity() == 0;
 
 		searchPos.set(lightPos, aoFace.neighbors[2]);
 		searchState = world.getBlockState(searchPos);
@@ -401,7 +402,7 @@ public abstract class AoCalculator {
 			searchState = world.getBlockState(searchPos);
 		}
 
-		final boolean isClear2 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity(world, searchPos) == 0;
+		final boolean isClear2 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity() == 0;
 
 		searchPos.set(lightPos, aoFace.neighbors[3]);
 		searchState = world.getBlockState(searchPos);
@@ -414,7 +415,7 @@ public abstract class AoCalculator {
 			searchState = world.getBlockState(searchPos);
 		}
 
-		final boolean isClear3 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity(world, searchPos) == 0;
+		final boolean isClear3 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity() == 0;
 
 		// c = corner - values at corners of face
 		int cLight0, cLight1, cLight2, cLight3;
@@ -479,7 +480,7 @@ public abstract class AoCalculator {
 		searchPos.set(pos, lightFace);
 		searchState = world.getBlockState(searchPos);
 
-		if (isOnBlockFace || !searchState.isOpaqueFullCube(world, searchPos)) {
+		if (isOnBlockFace || !searchState.isOpaqueFullCube()) {
 			lightCenter = light(searchPos, searchState);
 			emCenter = hasEmissiveLighting(world, searchPos, searchState);
 		} else {

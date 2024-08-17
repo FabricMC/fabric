@@ -171,7 +171,7 @@ public class DefaultResourceConditionsTest {
 		ResourceConditionsImpl.LOADED_TAGS.set(
 				context.getWorld().getRegistryManager().streamAllRegistries().collect(Collectors.toMap(
 						DynamicRegistryManager.Entry::key,
-						e -> e.value().streamTags().map(TagKey::id).collect(Collectors.toUnmodifiableSet())
+						e -> e.value().streamTags().map(t -> t.getTag().id()).collect(Collectors.toUnmodifiableSet())
 				))
 		);
 

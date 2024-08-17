@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.renderer;
 
+import net.minecraft.util.ActionResult;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -26,7 +28,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -43,7 +44,7 @@ public class FrameBlock extends Block implements BlockEntityProvider, FabricBloc
 	}
 
 	@Override
-	public ItemActionResult onUseWithItem(ItemStack stack, BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult blockHitResult) {
+	public ActionResult onUseWithItem(ItemStack stack, BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult blockHitResult) {
 		if (world.getBlockEntity(pos) instanceof FrameBlockEntity frame) {
 			Block handBlock = Block.getBlockFromItem(stack.getItem());
 
@@ -58,20 +59,21 @@ public class FrameBlock extends Block implements BlockEntityProvider, FabricBloc
 						frame.setBlock(null);
 					}
 
-					return ItemActionResult.success(world.isClient());
+					if (world.isClient)
+						return ActionResult.SUCCESS;
 				}
 
-				return ItemActionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+				return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
 			}
 
 			// getBlockFromItem will return air if we do not have a block item in hand
 			if (handBlock == Blocks.AIR) {
-				return ItemActionResult.FAIL;
+				return ActionResult.FAIL;
 			}
 
 			// Do not allow blocks that may have a block entity
 			if (handBlock instanceof BlockEntityProvider) {
-				return ItemActionResult.FAIL;
+				return ActionResult.FAIL;
 			}
 
 			stack.decrement(1);
@@ -84,10 +86,11 @@ public class FrameBlock extends Block implements BlockEntityProvider, FabricBloc
 				frame.setBlock(handBlock);
 			}
 
-			return ItemActionResult.success(world.isClient());
+			if (world.isClient())
+				return ActionResult.SUCCESS;
 		}
 
-		return ItemActionResult.FAIL;
+		return ActionResult.FAIL;
 	}
 
 	@Nullable

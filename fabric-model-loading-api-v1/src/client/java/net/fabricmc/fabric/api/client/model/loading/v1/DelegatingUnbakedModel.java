@@ -49,7 +49,7 @@ public final class DelegatingUnbakedModel implements UnbakedModel {
 		this.dependencies = List.of(delegate);
 	}
 
-	@Override
+	/*@Override
 	public Collection<Identifier> getModelDependencies() {
 		return dependencies;
 	}
@@ -57,6 +57,12 @@ public final class DelegatingUnbakedModel implements UnbakedModel {
 	@Override
 	public void setParents(Function<Identifier, UnbakedModel> modelLoader) {
 		modelLoader.apply(delegate).setParents(modelLoader);
+	}*/
+
+	// TODO 24w44a
+	@Override
+	public void method_62326(class_10103 arg, class_10102 arg2) {
+
 	}
 
 	@Override

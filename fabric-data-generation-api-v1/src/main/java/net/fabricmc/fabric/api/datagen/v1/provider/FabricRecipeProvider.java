@@ -26,6 +26,9 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
+
+import net.minecraft.data.server.recipe.RecipeGenerator;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.advancement.Advancement;
@@ -52,7 +55,7 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
-public abstract class FabricRecipeProvider extends RecipeProvider {
+public abstract class FabricRecipeProvider extends RecipeGenerator {
 	protected final FabricDataOutput output;
 
 	public FabricRecipeProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
@@ -64,7 +67,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 	 * Implement this method and then use the range of methods in {@link RecipeProvider} or from one of the recipe json factories such as {@link ShapedRecipeJsonBuilder} or {@link ShapelessRecipeJsonBuilder}.
 	 */
 	@Override
-	public abstract void generate(RecipeExporter exporter);
+	public abstract void generate();
 
 	/**
 	 * Return a new exporter that applies the specified conditions to any recipe json provider it receives.
@@ -81,6 +84,11 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 			@Override
 			public Advancement.Builder getAdvancementBuilder() {
 				return exporter.getAdvancementBuilder();
+			}
+
+			@Override
+			public void addRootAdvancement() {
+
 			}
 		};
 	}
@@ -116,6 +124,11 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 			public Advancement.Builder getAdvancementBuilder() {
 				//noinspection removal
 				return Advancement.Builder.createUntelemetered().parent(CraftingRecipeJsonBuilder.ROOT);
+			}
+
+			@Override
+			public void addRootAdvancement() {
+
 			}
 		});
 		return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));

@@ -41,13 +41,19 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 public class FrameUnbakedModel implements UnbakedModel {
 	private static final SpriteIdentifier OBSIDIAN_SPRITE_ID = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, Identifier.ofVanilla("block/obsidian"));
 
-	@Override
+	// TODO 24w33a
+	/*@Override
 	public Collection<Identifier> getModelDependencies() {
 		return Collections.emptySet();
 	}
 
 	@Override
 	public void setParents(Function<Identifier, UnbakedModel> modelLoader) {
+	}*/
+
+	@Override
+	public void method_62326(class_10103 arg, class_10102 arg2) {
+
 	}
 
 	/*

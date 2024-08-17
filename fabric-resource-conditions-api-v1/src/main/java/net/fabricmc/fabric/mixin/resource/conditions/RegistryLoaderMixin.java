@@ -21,14 +21,15 @@ import java.io.Reader;
 import java.util.List;
 
 import com.google.gson.JsonElement;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.serialization.Decoder;
+
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.resource.ResourceManager;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -42,6 +43,8 @@ import net.minecraft.resource.Resource;
 
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 @Mixin(RegistryLoader.class)
 public class RegistryLoaderMixin {
 	@Unique
@@ -50,7 +53,13 @@ public class RegistryLoaderMixin {
 	/**
 	 * Capture the current registries, so they can be passed to the resource conditions.
 	 */
-	@WrapOperation(method = "loadFromResource(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/RegistryLoader;load(Lnet/minecraft/registry/RegistryLoader$RegistryLoadable;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;"))
+	@Inject(method = "loadFromResource(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;", at = @At("RETURN"))
+	private static void captureRegistries(ResourceManager resourceManager, List<RegistryWrapper.Impl<?>> registries, List<RegistryLoader.Entry<?>> entries, CallbackInfoReturnable<DynamicRegistryManager.Immutable> cir) {
+		REGISTRIES.set(cir.getReturnValue());
+	}
+
+	// TODO 24w33a - Double Check if replacement above will work
+	/*@WrapOperation(method = "loadFromResource(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/RegistryLoader;load(Lnet/minecraft/registry/RegistryLoader$RegistryLoadable;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;"))
 	private static DynamicRegistryManager.Immutable captureRegistries(@Coerce Object registryLoadable, DynamicRegistryManager baseRegistryManager, List<RegistryLoader.Entry<?>> entries, Operation<DynamicRegistryManager.Immutable> original) {
 		try {
 			REGISTRIES.set(baseRegistryManager);
@@ -58,7 +67,7 @@ public class RegistryLoaderMixin {
 		} finally {
 			REGISTRIES.remove();
 		}
-	}
+	}*/
 
 	@Inject(
 			method = "Lnet/minecraft/registry/RegistryLoader;parseAndAdd(Lnet/minecraft/registry/MutableRegistry;Lcom/mojang/serialization/Decoder;Lnet/minecraft/registry/RegistryOps;Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/resource/Resource;Lnet/minecraft/registry/entry/RegistryEntryInfo;)V",
@@ -67,14 +76,14 @@ public class RegistryLoaderMixin {
 	)
 	private static <E> void checkResourceCondition(
 			MutableRegistry<E> registry, Decoder<E> decoder, RegistryOps<JsonElement> ops, RegistryKey<E> key, Resource resource, RegistryEntryInfo entryInfo,
-			CallbackInfo ci, @Local Reader reader, @Local JsonElement json
+			CallbackInfo ci, @Local Reader reader, @Local JsonElement jsonElement
 	) throws IOException {
 		// This method is called both on the server (when loading resources) and on the client (when syncing from the
 		// server). We only want to apply resource conditions when loading via loadFromResource.
 		DynamicRegistryManager registries = REGISTRIES.get();
 		if (registries == null) return;
 
-		if (json.isJsonObject() && !ResourceConditionsImpl.applyResourceConditions(json.getAsJsonObject(), key.getRegistry().toString(), key.getValue(), registries)) {
+		if (jsonElement.isJsonObject() && !ResourceConditionsImpl.applyResourceConditions(jsonElement.getAsJsonObject(), key.getRegistry().toString(), key.getValue(), registries)) {
 			reader.close();
 			ci.cancel();
 		}

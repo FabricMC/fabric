@@ -59,9 +59,10 @@ import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingConstants;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
 
+// TODO 24w33a
 @Mixin(ModelLoader.class)
 abstract class ModelLoaderMixin implements ModelLoaderHooks {
-	@Final
+	/*@Final
 	@Shadow
 	private Set<Identifier> modelsToLoad;
 	@Final
@@ -200,5 +201,5 @@ abstract class ModelLoaderMixin implements ModelLoaderHooks {
 	@Override
 	public void fabric_add(ModelIdentifier id, UnbakedModel model) {
 		add(id, model);
-	}
+	}*/
 }

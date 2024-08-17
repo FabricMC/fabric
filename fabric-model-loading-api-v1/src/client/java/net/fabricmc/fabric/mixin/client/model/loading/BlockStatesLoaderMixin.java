@@ -31,16 +31,21 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.client.model.loading.BlockStatesLoaderHooks;
 
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.List;
+
 @Mixin(BlockStatesLoader.class)
 abstract class BlockStatesLoaderMixin implements BlockStatesLoaderHooks {
 	@Unique
 	@Nullable
 	private LoadingOverride loadingOverride;
 
-	@Inject(method = "loadBlockStates(Lnet/minecraft/util/Identifier;Lnet/minecraft/state/StateManager;)V", at = @At("HEAD"), cancellable = true)
-	private void onHeadLoadBlockStates(Identifier id, StateManager<Block, BlockState> stateManager, CallbackInfo ci) {
+	// TODO 24w33a - Mappings
+	@Inject(method = "method_62627", at = @At("HEAD"), cancellable = true)
+	private void onHeadLoadBlockStates(Identifier id, StateManager<Block, BlockState> stateManager, List<BlockStatesLoader.class_10094> list, CallbackInfoReturnable<BlockStatesLoader.class_10095> cir) {
 		if (loadingOverride != null && loadingOverride.loadBlockStates(id, stateManager)) {
-			ci.cancel();
+			cir.cancel();
 		}
 	}
 
