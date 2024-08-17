@@ -61,14 +61,12 @@ abstract class CombinedIngredient implements CustomIngredient {
 
 	static class Serializer<I extends CombinedIngredient> implements CustomIngredientSerializer<I> {
 		private final Identifier identifier;
-		private final MapCodec<I> allowEmptyCodec;
-		private final MapCodec<I> disallowEmptyCodec;
+		private final MapCodec<I> codec;
 		private final PacketCodec<RegistryByteBuf, I> packetCodec;
 
-		Serializer(Identifier identifier, Function<List<Ingredient>, I> factory, MapCodec<I> allowEmptyCodec, MapCodec<I> disallowEmptyCodec) {
+		Serializer(Identifier identifier, Function<List<Ingredient>, I> factory, MapCodec<I> codec) {
 			this.identifier = identifier;
-			this.allowEmptyCodec = allowEmptyCodec;
-			this.disallowEmptyCodec = disallowEmptyCodec;
+			this.codec = codec;
 			this.packetCodec = Ingredient.PACKET_CODEC.collect(PacketCodecs.toList())
 					.xmap(factory, I::getIngredients);
 		}
@@ -79,8 +77,8 @@ abstract class CombinedIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public MapCodec<I> getCodec(boolean allowEmpty) {
-			return allowEmpty ? allowEmptyCodec : disallowEmptyCodec;
+		public MapCodec<I> getCodec() {
+			return codec;
 		}
 
 		@Override

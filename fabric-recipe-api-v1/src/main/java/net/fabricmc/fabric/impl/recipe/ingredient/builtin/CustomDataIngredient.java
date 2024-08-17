@@ -60,14 +60,16 @@ public class CustomDataIngredient implements CustomIngredient {
 
 	@Override
 	public List<ItemStack> getMatchingStacks() {
-		List<ItemStack> stacks = new ArrayList<>(List.of(base.getMatchingStacks()));
+		return List.of();
+		// TODO 24w33a port
+		/*List<ItemStack> stacks = new ArrayList<>(List.of(base.getMatchingStacks()));
 		stacks.replaceAll(stack -> {
 			ItemStack copy = stack.copy();
 			copy.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, existingNbt -> NbtComponent.of(existingNbt.copyNbt().copyFrom(this.nbt)));
 			return copy;
 		});
 		stacks.removeIf(stack -> !base.test(stack));
-		return stacks;
+		return stacks;*/
 	}
 
 	@Override
@@ -91,8 +93,12 @@ public class CustomDataIngredient implements CustomIngredient {
 	private static class Serializer implements CustomIngredientSerializer<CustomDataIngredient> {
 		private static final Identifier ID = Identifier.of("fabric", "custom_data");
 
-		private static final MapCodec<CustomDataIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
-		private static final MapCodec<CustomDataIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
+		private static final MapCodec<CustomDataIngredient> CODEC = RecordCodecBuilder.mapCodec(instance ->
+			instance.group(
+					Ingredient.CODEC.fieldOf("base").forGetter(CustomDataIngredient::getBase),
+					StringNbtReader.NBT_COMPOUND_CODEC.fieldOf("nbt").forGetter(CustomDataIngredient::getNbt)
+			).apply(instance, CustomDataIngredient::new)
+		);
 
 		private static final PacketCodec<RegistryByteBuf, CustomDataIngredient> PACKET_CODEC = PacketCodec.tuple(
 				Ingredient.PACKET_CODEC, CustomDataIngredient::getBase,
@@ -100,23 +106,14 @@ public class CustomDataIngredient implements CustomIngredient {
 				CustomDataIngredient::new
 		);
 
-		private static MapCodec<CustomDataIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
-			return RecordCodecBuilder.mapCodec(instance ->
-					instance.group(
-							ingredientCodec.fieldOf("base").forGetter(CustomDataIngredient::getBase),
-							StringNbtReader.NBT_COMPOUND_CODEC.fieldOf("nbt").forGetter(CustomDataIngredient::getNbt)
-					).apply(instance, CustomDataIngredient::new)
-			);
-		}
-
 		@Override
 		public Identifier getIdentifier() {
 			return ID;
 		}
 
 		@Override
-		public MapCodec<CustomDataIngredient> getCodec(boolean allowEmpty) {
-			return allowEmpty ? ALLOW_EMPTY_CODEC : DISALLOW_EMPTY_CODEC;
+		public MapCodec<CustomDataIngredient> getCodec() {
+			return CODEC;
 		}
 
 		@Override

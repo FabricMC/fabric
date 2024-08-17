@@ -18,9 +18,18 @@ package net.fabricmc.fabric.test.lookup.client.entity;
 
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.PigEntityRenderer;
+import net.minecraft.client.render.entity.state.PigEntityRenderState;
+import net.minecraft.util.Identifier;
 
 public class InspectablePigEntityRenderer extends PigEntityRenderer {
+	private static final Identifier TEXTURE = Identifier.ofVanilla("missingno");
+
 	public InspectablePigEntityRenderer(EntityRendererFactory.Context context) {
 		super(context);
+	}
+
+	@Override
+	public Identifier getTexture(PigEntityRenderState context) {
+		return TEXTURE;
 	}
 }

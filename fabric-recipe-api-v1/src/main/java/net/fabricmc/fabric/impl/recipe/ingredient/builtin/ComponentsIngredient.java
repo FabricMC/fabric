@@ -16,13 +16,11 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
@@ -84,16 +82,13 @@ public class ComponentsIngredient implements CustomIngredient {
 
 	@Override
 	public List<ItemStack> getMatchingStacks() {
-		List<ItemStack> stacks = new ArrayList<>(List.of(base.getMatchingStacks()));
-		stacks.replaceAll(stack -> {
-			ItemStack copy = stack.copy();
+		return base.getMatchingStacks().stream().map(entry -> {
+			var stack = new ItemStack(entry);
 
-			copy.applyChanges(components);
+			stack.applyChanges(components);
 
-			return copy;
-		});
-		stacks.removeIf(stack -> !base.test(stack));
-		return stacks;
+			return stack;
+		}).filter(stack -> base.test(stack)).toList();
 	}
 
 	@Override
@@ -117,22 +112,17 @@ public class ComponentsIngredient implements CustomIngredient {
 
 	private static class Serializer implements CustomIngredientSerializer<ComponentsIngredient> {
 		private static final Identifier ID = Identifier.of("fabric", "components");
-		private static final MapCodec<ComponentsIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
-		private static final MapCodec<ComponentsIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
+		private static final MapCodec<ComponentsIngredient> CODEC = RecordCodecBuilder.mapCodec(instance ->
+				instance.group(
+						Ingredient.CODEC.fieldOf("base").forGetter(ComponentsIngredient::getBase),
+						ComponentChanges.CODEC.fieldOf("components").forGetter(ComponentsIngredient::getComponents)
+				).apply(instance, ComponentsIngredient::new)
+		);
 		private static final PacketCodec<RegistryByteBuf, ComponentsIngredient> PACKET_CODEC = PacketCodec.tuple(
 				Ingredient.PACKET_CODEC, ComponentsIngredient::getBase,
 				ComponentChanges.PACKET_CODEC, ComponentsIngredient::getComponents,
 				ComponentsIngredient::new
 		);
-
-		private static MapCodec<ComponentsIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
-			return RecordCodecBuilder.mapCodec(instance ->
-					instance.group(
-							ingredientCodec.fieldOf("base").forGetter(ComponentsIngredient::getBase),
-							ComponentChanges.CODEC.fieldOf("components").forGetter(ComponentsIngredient::getComponents)
-					).apply(instance, ComponentsIngredient::new)
-			);
-		}
 
 		@Override
 		public Identifier getIdentifier() {
@@ -140,8 +130,8 @@ public class ComponentsIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public MapCodec<ComponentsIngredient> getCodec(boolean allowEmpty) {
-			return allowEmpty ? ALLOW_EMPTY_CODEC : DISALLOW_EMPTY_CODEC;
+		public MapCodec<ComponentsIngredient> getCodec() {
+			return CODEC;
 		}
 
 		@Override

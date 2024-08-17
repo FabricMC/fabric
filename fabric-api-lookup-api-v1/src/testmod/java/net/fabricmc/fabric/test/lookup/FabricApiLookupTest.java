@@ -59,12 +59,12 @@ public class FabricApiLookupTest implements ModInitializer {
 		Identifier chute = Identifier.of(MOD_ID, "chute");
 		Registry.register(Registries.BLOCK, chute, CHUTE_BLOCK);
 		Registry.register(Registries.ITEM, chute, CHUTE_ITEM);
-		CHUTE_BLOCK_ENTITY_TYPE = Registry.register(Registries.BLOCK_ENTITY_TYPE, chute, FabricBlockEntityTypeBuilder.create(ChuteBlockEntity::new, CHUTE_BLOCK));
+		CHUTE_BLOCK_ENTITY_TYPE = Registry.register(Registries.BLOCK_ENTITY_TYPE, chute, FabricBlockEntityTypeBuilder.create(ChuteBlockEntity::new, CHUTE_BLOCK).build());
 
 		Identifier cobbleGen = Identifier.of(MOD_ID, "cobble_gen");
 		Registry.register(Registries.BLOCK, cobbleGen, COBBLE_GEN_BLOCK);
 		Registry.register(Registries.ITEM, cobbleGen, COBBLE_GEN_ITEM);
-		COBBLE_GEN_BLOCK_ENTITY_TYPE = Registry.register(Registries.BLOCK_ENTITY_TYPE, cobbleGen, FabricBlockEntityTypeBuilder.create(CobbleGenBlockEntity::new, COBBLE_GEN_BLOCK));
+		COBBLE_GEN_BLOCK_ENTITY_TYPE = Registry.register(Registries.BLOCK_ENTITY_TYPE, cobbleGen, FabricBlockEntityTypeBuilder.create(CobbleGenBlockEntity::new, COBBLE_GEN_BLOCK).build());
 
 		InventoryExtractableProvider extractableProvider = new InventoryExtractableProvider();
 		InventoryInsertableProvider insertableProvider = new InventoryInsertableProvider();

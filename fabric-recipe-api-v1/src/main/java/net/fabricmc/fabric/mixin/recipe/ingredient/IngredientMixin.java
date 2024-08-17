@@ -19,6 +19,9 @@ package net.fabricmc.fabric.mixin.recipe.ingredient;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+
+import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -35,12 +38,13 @@ import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientPacketCodec;
 
 @Mixin(Ingredient.class)
 public class IngredientMixin implements FabricIngredient {
-	@Inject(method = "createCodec", at = @At("RETURN"), cancellable = true)
+	// TODO 24w33a
+	/*@Inject(method = "createCodec", at = @At("RETURN"), cancellable = true)
 	private static void injectCodec(boolean allowEmpty, CallbackInfoReturnable<Codec<Ingredient>> cir) {
 		Codec<CustomIngredient> customIngredientCodec = CustomIngredientImpl.CODEC.dispatch(
 				CustomIngredientImpl.TYPE_KEY,
 				CustomIngredient::getSerializer,
-				serializer -> serializer.getCodec(allowEmpty));
+				CustomIngredientSerializer::getCodec);
 
 		cir.setReturnValue(Codec.either(customIngredientCodec, cir.getReturnValue()).xmap(
 				either -> either.map(CustomIngredient::toVanilla, ingredient -> ingredient),
@@ -49,7 +53,7 @@ public class IngredientMixin implements FabricIngredient {
 					return customIngredient == null ? Either.right(ingredient) : Either.left(customIngredient);
 				}
 		));
-	}
+	}*/
 
 	@ModifyExpressionValue(
 			method = "<clinit>",

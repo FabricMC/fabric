@@ -316,33 +316,16 @@ public interface BiomeModificationContext {
 		void addFeature(GenerationStep.Feature step, RegistryKey<PlacedFeature> placedFeatureKey);
 
 		/**
-		 * Adds a configured carver to one of this biomes generation steps.
+		 * Adds a configured carver to this biome.
 		 */
-		void addCarver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> carverKey);
+		void addCarver(RegistryKey<ConfiguredCarver<?>> carverKey);
 
 		/**
-		 * Removes all carvers with the given key from one of this biomes generation steps.
+		 * Removes all carvers with the given key from this biome.
 		 *
 		 * @return True if any carvers were removed.
 		 */
-		boolean removeCarver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> configuredCarverKey);
-
-		/**
-		 * Removes all carvers with the given key from all of this biomes generation steps.
-		 *
-		 * @return True if any carvers were removed.
-		 */
-		default boolean removeCarver(RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
-			boolean anyFound = false;
-
-			for (GenerationStep.Carver step : GenerationStep.Carver.values()) {
-				if (removeCarver(step, configuredCarverKey)) {
-					anyFound = true;
-				}
-			}
-
-			return anyFound;
-		}
+		boolean removeCarver(RegistryKey<ConfiguredCarver<?>> configuredCarverKey);
 	}
 
 	interface SpawnSettingsContext {

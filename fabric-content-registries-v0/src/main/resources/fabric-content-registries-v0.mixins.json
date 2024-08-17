@@ -14,7 +14,8 @@
     "FireBlockMixin",
     "OxidizableMixin",
     "ShovelItemAccessor",
-    "VillagerEntityAccessor"
+    "VillagerEntityAccessor",
+    "VillagerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
