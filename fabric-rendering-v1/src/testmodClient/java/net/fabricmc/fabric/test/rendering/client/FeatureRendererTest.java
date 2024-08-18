@@ -69,7 +69,7 @@ public final class FeatureRendererTest implements ClientModInitializer {
 	}
 
 	private static class TestPlayerFeatureRenderer extends FeatureRenderer<PlayerEntityRenderState, PlayerEntityModel> {
-		public TestPlayerFeatureRenderer(FeatureRendererContext<PlayerEntityRenderState, PlayerEntityModel> featureRendererContext) {
+		TestPlayerFeatureRenderer(FeatureRendererContext<PlayerEntityRenderState, PlayerEntityModel> featureRendererContext) {
 			super(featureRendererContext);
 		}
 

@@ -24,15 +24,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-
-import net.minecraft.item.Item;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.entry.RegistryEntryList;
-
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;

@@ -17,15 +17,6 @@
 package net.fabricmc.fabric.mixin.client.rendering;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-
-import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
-
-import net.minecraft.client.option.CloudRenderMode;
-import net.minecraft.client.render.Fog;
-import net.minecraft.client.render.FrameGraphBuilder;
-import net.minecraft.client.util.ObjectAllocator;
-import net.minecraft.util.math.Vec3d;
-
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -40,8 +31,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.PostEffectProcessor;
+import net.minecraft.client.option.CloudRenderMode;
 import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.Fog;
+import net.minecraft.client.render.FrameGraphBuilder;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -49,11 +43,14 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
+import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.impl.client.rendering.WorldRenderContextImpl;

@@ -16,10 +16,8 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -94,10 +92,10 @@ public class CustomDataIngredient implements CustomIngredient {
 		private static final Identifier ID = Identifier.of("fabric", "custom_data");
 
 		private static final MapCodec<CustomDataIngredient> CODEC = RecordCodecBuilder.mapCodec(instance ->
-			instance.group(
-					Ingredient.CODEC.fieldOf("base").forGetter(CustomDataIngredient::getBase),
-					StringNbtReader.NBT_COMPOUND_CODEC.fieldOf("nbt").forGetter(CustomDataIngredient::getNbt)
-			).apply(instance, CustomDataIngredient::new)
+				instance.group(
+						Ingredient.CODEC.fieldOf("base").forGetter(CustomDataIngredient::getBase),
+						StringNbtReader.NBT_COMPOUND_CODEC.fieldOf("nbt").forGetter(CustomDataIngredient::getNbt)
+				).apply(instance, CustomDataIngredient::new)
 		);
 
 		private static final PacketCodec<RegistryByteBuf, CustomDataIngredient> PACKET_CODEC = PacketCodec.tuple(

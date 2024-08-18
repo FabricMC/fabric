@@ -92,24 +92,22 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 	}
 
 	static class TestPlayerFeature extends FeatureRenderer<PlayerEntityRenderState, PlayerEntityModel> {
-		public TestPlayerFeature(FeatureRendererContext<PlayerEntityRenderState, PlayerEntityModel> featureRendererContext) {
+		TestPlayerFeature(FeatureRendererContext<PlayerEntityRenderState, PlayerEntityModel> featureRendererContext) {
 			super(featureRendererContext);
 		}
 
 		@Override
 		public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
-
 		}
 	}
 
 	static class GenericTestPlayerFeature<T extends PlayerEntityRenderState, M extends PlayerEntityModel> extends FeatureRenderer<T, M> {
-		public GenericTestPlayerFeature(FeatureRendererContext<T, M> featureRendererContext) {
+		GenericTestPlayerFeature(FeatureRendererContext<T, M> featureRendererContext) {
 			super(featureRendererContext);
 		}
 
 		@Override
 		public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T state, float limbAngle, float limbDistance) {
-
 		}
 	}
 
@@ -120,7 +118,6 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 
 		@Override
 		public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ArmorStandEntityRenderState state, float limbAngle, float limbDistance) {
-
 		}
 	}
 }

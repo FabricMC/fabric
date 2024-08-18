@@ -18,15 +18,13 @@ package net.fabricmc.fabric.mixin.content.registry;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
-import net.minecraft.item.Item;
-import net.minecraft.registry.tag.TagKey;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.impl.content.registry.VillagerInteractionRegistriesImpl;
 

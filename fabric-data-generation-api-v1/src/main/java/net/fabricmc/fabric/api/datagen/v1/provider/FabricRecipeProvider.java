@@ -89,7 +89,6 @@ public abstract class FabricRecipeProvider extends RecipeGenerator.RecipeProvide
 
 			@Override
 			public void addRootAdvancement() {
-
 			}
 		};
 	}
@@ -133,7 +132,6 @@ public abstract class FabricRecipeProvider extends RecipeGenerator.RecipeProvide
 
 				@Override
 				public void addRootAdvancement() {
-
 				}
 			});
 			return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));

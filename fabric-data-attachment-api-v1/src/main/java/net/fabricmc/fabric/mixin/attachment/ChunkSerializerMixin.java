@@ -18,9 +18,6 @@ package net.fabricmc.fabric.mixin.attachment;
 
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-
-import net.minecraft.world.chunk.Chunk;
-
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -35,6 +32,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ChunkSerializer;
 import net.minecraft.world.HeightLimitView;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.storage.StorageKey;
@@ -58,13 +56,14 @@ abstract class ChunkSerializerMixin {
 		}
 
 		if (nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY, NbtElement.COMPOUND_TYPE)) {
-			((ChunkSerializerMixin)(Object)serializer).attachmentNbtData = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY);
+			((ChunkSerializerMixin) (Object) serializer).attachmentNbtData = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY);
 		}
 	}
 
 	@Inject(method = "deserialize", at = @At("RETURN"))
 	private void setAttachmentDataInChunk(ServerWorld serverWorld, PointOfInterestStorage pointOfInterestStorage, StorageKey storageKey, ChunkPos chunkPos, CallbackInfoReturnable<ProtoChunk> cir) {
 		ProtoChunk chunk = cir.getReturnValue();
+
 		if (chunk != null && attachmentNbtData != null) {
 			var nbt = new NbtCompound();
 			nbt.put(AttachmentTarget.NBT_ATTACHMENT_KEY, attachmentNbtData);
@@ -72,12 +71,11 @@ abstract class ChunkSerializerMixin {
 		}
 	}
 
-
 	@Inject(method = "method_61793", at = @At("RETURN"))
 	private static void storeAttachmentNbtData(ServerWorld world, Chunk chunk, CallbackInfoReturnable<ChunkSerializer> cir) {
 		var nbt = new NbtCompound();
 		((AttachmentTargetImpl) chunk).fabric_writeAttachmentsToNbt(nbt, world.getRegistryManager());
-		((ChunkSerializerMixin)(Object)cir.getReturnValue()).attachmentNbtData = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY);
+		((ChunkSerializerMixin) (Object) cir.getReturnValue()).attachmentNbtData = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY);
 	}
 
 	@Inject(method = "serialize", at = @At("RETURN"))

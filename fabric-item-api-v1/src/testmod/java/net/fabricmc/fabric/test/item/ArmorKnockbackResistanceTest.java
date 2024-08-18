@@ -51,7 +51,7 @@ public class ArmorKnockbackResistanceTest implements ModInitializer {
 		}),
 			0,
 			SoundEvents.ITEM_ARMOR_EQUIP_LEATHER,
-			(stack) -> stack.getItem() == Items.LEATHER,
+				(stack) -> stack.getItem() == Items.LEATHER,
 			List.of(new ArmorMaterial.Layer(Identifier.of("fabric-item-api-v1-testmod", "wood"))),
 			0,
 			0.5F

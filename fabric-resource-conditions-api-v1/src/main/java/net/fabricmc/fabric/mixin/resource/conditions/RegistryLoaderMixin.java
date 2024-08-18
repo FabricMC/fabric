@@ -23,27 +23,24 @@ import java.util.List;
 import com.google.gson.JsonElement;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.serialization.Decoder;
-
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.resource.ResourceManager;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.MutableRegistry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryLoader;
 import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntryInfo;
 import net.minecraft.resource.Resource;
+import net.minecraft.resource.ResourceManager;
 
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
-
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(RegistryLoader.class)
 public class RegistryLoaderMixin {

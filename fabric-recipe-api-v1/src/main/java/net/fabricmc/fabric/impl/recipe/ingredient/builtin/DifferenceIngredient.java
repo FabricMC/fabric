@@ -16,10 +16,8 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 

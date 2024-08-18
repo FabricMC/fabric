@@ -33,7 +33,6 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.ShapelessRecipe;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.recipe.input.CraftingRecipeInput;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.ShapelessMatch;

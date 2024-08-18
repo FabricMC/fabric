@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *	 http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +16,16 @@
 
 package net.fabricmc.fabric.test.datagen;
 
-import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.*;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_THAT_DROPS_NOTHING;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_ITEM;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITH_VANILLA_LOOT_TABLE;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DATAGEN_DYNAMIC_REGISTRY_KEY;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DYNAMIC_REGISTRY_ITEM_KEY;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -199,11 +208,11 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 							.input(DefaultCustomIngredients.components(
-									       Ingredient.ofItems(Items.DIAMOND_PICKAXE),
-									       ComponentChanges.builder()
-											       .add(DataComponentTypes.DAMAGE, 0)
-											       .build()
-							       )
+										   Ingredient.ofItems(Items.DIAMOND_PICKAXE),
+										   ComponentChanges.builder()
+												   .add(DataComponentTypes.DAMAGE, 0)
+												   .build()
+								   )
 							)
 							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
