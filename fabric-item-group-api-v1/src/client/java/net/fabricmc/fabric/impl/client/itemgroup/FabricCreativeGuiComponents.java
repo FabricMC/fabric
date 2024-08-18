@@ -66,7 +66,7 @@ public class FabricCreativeGuiComponents {
 
 			int u = active && this.isHovered() ? 22 : 0;
 			int v = active ? 0 : 12;
-			drawContext.drawTexture(RenderLayer::getGuiTextured, BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 11 : 0), v, 11, 12, 11, 12);
+			drawContext.drawTexture(RenderLayer::getGuiTextured, BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 11 : 0), v, 11, 12, 256, 256);
 
 			if (this.isHovered()) {
 				drawContext.drawTooltip(MinecraftClient.getInstance().textRenderer, Text.translatable("fabric.gui.creativeTabPage", screen.getCurrentPage() + 1, getPageCount()), mouseX, mouseY);
