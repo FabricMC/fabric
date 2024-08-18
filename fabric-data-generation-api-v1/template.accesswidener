@@ -4,6 +4,9 @@ mutable field net/minecraft/data/DataGenerator output Lnet/minecraft/data/DataOu
 accessible field net/minecraft/data/server/recipe/RecipeProvider recipesPathResolver Lnet/minecraft/data/DataOutput$PathResolver;
 accessible field net/minecraft/data/server/recipe/RecipeProvider advancementsPathResolver Lnet/minecraft/data/DataOutput$PathResolver;
 
+accessible class net/minecraft/data/server/recipe/RecipeGenerator$RecipeProvider
+extendable method net/minecraft/data/server/recipe/RecipeGenerator$RecipeProvider run (Lnet/minecraft/data/DataWriter;)Ljava/util/concurrent/CompletableFuture;
+
 accessible field net/minecraft/data/server/tag/TagProvider$ProvidedTagBuilder builder Lnet/minecraft/registry/tag/TagBuilder;
 extendable method net/minecraft/data/server/tag/TagProvider$ProvidedTagBuilder add (Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/data/server/tag/TagProvider$ProvidedTagBuilder;
 extendable method net/minecraft/data/server/tag/TagProvider$ProvidedTagBuilder add ([Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/data/server/tag/TagProvider$ProvidedTagBuilder;

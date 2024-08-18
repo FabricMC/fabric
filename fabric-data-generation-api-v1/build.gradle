@@ -83,7 +83,7 @@ task generateAccessWidener() {
 
 		def classes = getClasses(inputJar)
 
-		visitMethods(classes["net/minecraft/data/server/recipe/RecipeProvider"]) { name, desc, owner ->
+		visitMethods(classes["net/minecraft/data/server/recipe/RecipeGenerator"]) { name, desc, owner ->
 			if (it.name == "generate")
 				return
 

@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import net.minecraft.registry.Registry;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,6 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.registry.CombinedDynamicRegistries;
+import net.minecraft.registry.Registry;
 import net.minecraft.registry.ServerDynamicRegistryType;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.featuretoggle.FeatureSet;
@@ -43,11 +42,10 @@ import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 public class DataPackContentsMixin {
 	@Shadow
 	@Final
-	private List<Registry.PendingTagLoad<?>> field_52345;
+	private List<Registry.PendingTagLoad<?>> pendingTagLoads;
 
-	// TODO 24w33a - Double check this
 	@Inject(
-			method = "method_61248",
+			method = "applyPendingTagLoads",
 			at = @At("HEAD")
 	)
 	private void hookRefresh(CallbackInfo ci) {
@@ -62,9 +60,8 @@ public class DataPackContentsMixin {
 		ResourceConditionsImpl.currentFeatures = enabledFeatures;
 	}
 
-	// Replacement for TagManagerLoaderMixin
-	@Inject(method = "method_61248", at = @At("HEAD"))
+	@Inject(method = "applyPendingTagLoads", at = @At("HEAD"))
 	private void captureTags(CallbackInfo ci) {
-		ResourceConditionsImpl.setTags(field_52345);
+		ResourceConditionsImpl.setTags(pendingTagLoads);
 	}
 }

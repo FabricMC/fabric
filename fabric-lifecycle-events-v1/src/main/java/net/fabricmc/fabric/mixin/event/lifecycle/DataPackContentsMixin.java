@@ -44,7 +44,7 @@ public class DataPackContentsMixin {
 		dynamicRegistryManager = combinedDynamicRegistries.getCombinedRegistryManager();
 	}
 
-	@Inject(method = "method_61248", at = @At("TAIL"))
+	@Inject(method = "applyPendingTagLoads", at = @At("TAIL"))
 	private void hookRefresh(CallbackInfo ci) {
 		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(dynamicRegistryManager, false);
 	}
