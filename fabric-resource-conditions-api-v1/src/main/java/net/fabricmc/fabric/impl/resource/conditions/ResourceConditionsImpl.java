@@ -27,6 +27,11 @@ import java.util.stream.Collectors;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.entry.RegistryEntryInfo;
+
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -62,14 +67,14 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		ResourceConditions.register(DefaultResourceConditionTypes.REGISTRY_CONTAINS);
 	}
 
-	public static boolean applyResourceConditions(JsonObject obj, String dataType, Identifier key, @Nullable RegistryWrapper.WrapperLookup registryLookup) {
+	public static boolean applyResourceConditions(JsonObject obj, String dataType, Identifier key, @Nullable RegistryOps.RegistryInfoGetter registryInfo) {
 		boolean debugLogEnabled = ResourceConditionsImpl.LOGGER.isDebugEnabled();
 
 		if (obj.has(ResourceConditions.CONDITIONS_KEY)) {
 			DataResult<ResourceCondition> conditions = ResourceCondition.CONDITION_CODEC.parse(JsonOps.INSTANCE, obj.get(ResourceConditions.CONDITIONS_KEY));
 
 			if (conditions.isSuccess()) {
-				boolean matched = conditions.getOrThrow().test(registryLookup);
+				boolean matched = conditions.getOrThrow().test(registryInfo);
 
 				if (debugLogEnabled) {
 					String verdict = matched ? "Allowed" : "Rejected";
@@ -87,9 +92,9 @@ public final class ResourceConditionsImpl implements ModInitializer {
 
 	// Condition implementations
 
-	public static boolean conditionsMet(List<ResourceCondition> conditions, @Nullable RegistryWrapper.WrapperLookup registryLookup, boolean and) {
+	public static boolean conditionsMet(List<ResourceCondition> conditions, @Nullable RegistryOps.RegistryInfoGetter registryInfo, boolean and) {
 		for (ResourceCondition condition : conditions) {
-			if (condition.test(registryLookup) != and) {
+			if (condition.test(registryInfo) != and) {
 				return !and;
 			}
 		}
@@ -164,19 +169,19 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		return set.isSubsetOf(currentFeatures);
 	}
 
-	public static boolean registryContains(@Nullable RegistryWrapper.WrapperLookup registryLookup, Identifier registryId, List<Identifier> entries) {
+	public static boolean registryContains(@Nullable RegistryOps.RegistryInfoGetter registryInfo, Identifier registryId, List<Identifier> entries) {
 		RegistryKey<? extends Registry<Object>> registryKey = RegistryKey.ofRegistry(registryId);
 
-		if (registryLookup == null) {
+		if (registryInfo == null) {
 			LOGGER.warn("Can't retrieve registry {}, failing registry_contains resource condition check", registryId);
 			return false;
 		}
 
-		Optional<RegistryWrapper.Impl<Object>> wrapper = registryLookup.getOptionalWrapper(registryKey);
+		Optional<RegistryOps.RegistryInfo<Object>> wrapper = registryInfo.getRegistryInfo(registryKey);
 
 		if (wrapper.isPresent()) {
 			for (Identifier id : entries) {
-				if (wrapper.get().getOptional(RegistryKey.of(registryKey, id)).isEmpty()) {
+				if (wrapper.get().entryLookup().getOptional(RegistryKey.of(registryKey, id)).isEmpty()) {
 					return false;
 				}
 			}

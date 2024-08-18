@@ -21,6 +21,9 @@ import java.util.List;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.registry.RegistryOps;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.registry.RegistryWrapper;
@@ -41,7 +44,7 @@ public record AllModsLoadedResourceCondition(List<String> modIds) implements Res
 	}
 
 	@Override
-	public boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup) {
+	public boolean test(@Nullable RegistryOps.RegistryInfoGetter registryInfo) {
 		return ResourceConditionsImpl.modsLoaded(this.modIds(), true);
 	}
 }

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.resource.conditions;
 
+import net.minecraft.registry.RegistryOps;
+
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,11 +41,11 @@ public class SinglePreparationResourceReloaderMixin {
 		fabric_applyResourceConditions(resourceManager, profiler, object, fabric_getRegistryLookup());
 	}
 
-	protected void fabric_applyResourceConditions(ResourceManager resourceManager, Profiler profiler, Object object, @Nullable RegistryWrapper.WrapperLookup registryLookup) {
+	protected void fabric_applyResourceConditions(ResourceManager resourceManager, Profiler profiler, Object object, @Nullable RegistryOps.RegistryInfoGetter registryLookup) {
 	}
 
 	@Nullable
-	protected RegistryWrapper.WrapperLookup fabric_getRegistryLookup() {
+	protected RegistryOps.RegistryInfoGetter fabric_getRegistryLookup() {
 		return null;
 	}
 }

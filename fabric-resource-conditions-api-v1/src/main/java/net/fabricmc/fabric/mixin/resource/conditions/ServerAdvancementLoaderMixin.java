@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.resource.conditions;
 
+import net.minecraft.registry.RegistryOps;
+
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,7 +33,7 @@ public class ServerAdvancementLoaderMixin extends SinglePreparationResourceReloa
 	private RegistryWrapper.WrapperLookup registryLookup;
 
 	@Override
-	protected @Nullable RegistryWrapper.WrapperLookup fabric_getRegistryLookup() {
-		return this.registryLookup;
+	protected @Nullable RegistryOps.RegistryInfoGetter fabric_getRegistryLookup() {
+		return new RegistryOps.CachedRegistryInfoGetter(this.registryLookup);
 	}
 }

@@ -20,6 +20,9 @@ import java.util.List;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.registry.RegistryOps;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.registry.RegistryWrapper;
@@ -40,7 +43,7 @@ public record OrResourceCondition(List<ResourceCondition> conditions) implements
 	}
 
 	@Override
-	public boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup) {
-		return ResourceConditionsImpl.conditionsMet(this.conditions(), registryLookup, false);
+	public boolean test(@Nullable RegistryOps.RegistryInfoGetter registryInfo) {
+		return ResourceConditionsImpl.conditionsMet(this.conditions(), registryInfo, false);
 	}
 }

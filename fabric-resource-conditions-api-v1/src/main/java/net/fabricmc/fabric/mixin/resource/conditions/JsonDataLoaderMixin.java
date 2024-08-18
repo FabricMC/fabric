@@ -21,6 +21,9 @@ import java.util.Map;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import net.minecraft.registry.RegistryOps;
+
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -45,7 +48,7 @@ public class JsonDataLoaderMixin extends SinglePreparationResourceReloaderMixin 
 
 	@Override
 	@SuppressWarnings("unchecked")
-	protected void fabric_applyResourceConditions(ResourceManager resourceManager, Profiler profiler, Object object, @Nullable RegistryWrapper.WrapperLookup registryLookup) {
+	protected void fabric_applyResourceConditions(ResourceManager resourceManager, Profiler profiler, Object object, @Nullable RegistryOps.RegistryInfoGetter registryInfo) {
 		profiler.push("Fabric resource conditions: %s".formatted(dataType));
 
 		Iterator<Map.Entry<Identifier, JsonElement>> it = ((Map<Identifier, JsonElement>) object).entrySet().iterator();

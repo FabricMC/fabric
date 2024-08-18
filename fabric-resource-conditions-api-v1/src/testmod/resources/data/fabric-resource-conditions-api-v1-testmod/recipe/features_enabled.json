@@ -1,9 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "minecraft:blue_dye"
-    }
+    "minecraft:blue_dye"
   ],
   "result": {
     "id": "minecraft:diamond"

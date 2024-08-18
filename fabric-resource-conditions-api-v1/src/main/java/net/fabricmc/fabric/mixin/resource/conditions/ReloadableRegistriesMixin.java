@@ -71,7 +71,7 @@ public class ReloadableRegistriesMixin {
 
 	@Inject(method = "method_61239", at = @At("HEAD"), cancellable = true)
 	private static void applyConditions(LootDataType lootDataType, RegistryOps ops, MutableRegistry mutableRegistry, Identifier id, JsonElement json, CallbackInfo ci) {
-		if (json.isJsonObject() && !ResourceConditionsImpl.applyResourceConditions(json.getAsJsonObject(), lootDataType.registryKey().getValue().getPath(), id, REGISTRY_LOOKUPS.get(ops))) {
+		if (json.isJsonObject() && !ResourceConditionsImpl.applyResourceConditions(json.getAsJsonObject(), lootDataType.registryKey().getValue().getPath(), id, new RegistryOps.CachedRegistryInfoGetter(REGISTRY_LOOKUPS.get(ops)))) {
 			ci.cancel();
 		}
 	}

@@ -19,6 +19,9 @@ package net.fabricmc.fabric.api.resource.conditions.v1;
 import java.util.List;
 
 import com.mojang.serialization.Codec;
+
+import net.minecraft.registry.RegistryOps;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.registry.RegistryWrapper;
@@ -56,8 +59,8 @@ public interface ResourceCondition {
 	 * (such as recipes or advancements). However, it may be {@code null} in client-side
 	 * resources, or for non-vanilla resource types.
 	 *
-	 * @param registryLookup the registry lookup, or {@code null} in case registry is unavailable
+	 * @param registryInfo the registry lookup, or {@code null} in case registry is unavailable
 	 * @return whether the condition was successful
 	 */
-	boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup);
+	boolean test(@Nullable RegistryOps.RegistryInfoGetter registryInfo);
 }

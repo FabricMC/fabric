@@ -17,6 +17,9 @@
 package net.fabricmc.fabric.impl.resource.conditions.conditions;
 
 import com.mojang.serialization.MapCodec;
+
+import net.minecraft.registry.RegistryOps;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.registry.RegistryWrapper;
@@ -34,7 +37,7 @@ public class TrueResourceCondition implements ResourceCondition {
 	}
 
 	@Override
-	public boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup) {
+	public boolean test(@Nullable RegistryOps.RegistryInfoGetter registryInfo) {
 		return true;
 	}
 }

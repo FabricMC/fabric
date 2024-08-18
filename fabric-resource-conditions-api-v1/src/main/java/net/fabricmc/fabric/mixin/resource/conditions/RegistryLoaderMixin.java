@@ -18,7 +18,7 @@ package net.fabricmc.fabric.mixin.resource.conditions;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.List;
+import java.util.Map;
 
 import com.google.gson.JsonElement;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -28,14 +28,11 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.MutableRegistry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryLoader;
 import net.minecraft.registry.RegistryOps;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntryInfo;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
@@ -45,26 +42,20 @@ import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 @Mixin(RegistryLoader.class)
 public class RegistryLoaderMixin {
 	@Unique
-	private static final ThreadLocal<DynamicRegistryManager> REGISTRIES = new ThreadLocal<>();
+	private static final ThreadLocal<RegistryOps.RegistryInfoGetter> REGISTRY_INFO = new ThreadLocal<>();
 
 	/**
 	 * Capture the current registries, so they can be passed to the resource conditions.
 	 */
-	@Inject(method = "loadFromResource(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;", at = @At("RETURN"))
-	private static void captureRegistries(ResourceManager resourceManager, List<RegistryWrapper.Impl<?>> registries, List<RegistryLoader.Entry<?>> entries, CallbackInfoReturnable<DynamicRegistryManager.Immutable> cir) {
-		REGISTRIES.set(cir.getReturnValue());
+	@Inject(method = "loadFromResource(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/RegistryOps$RegistryInfoGetter;Lnet/minecraft/registry/MutableRegistry;Lcom/mojang/serialization/Decoder;Ljava/util/Map;)V", at = @At("HEAD"))
+	private static <E> void captureRegistries(ResourceManager resourceManager, RegistryOps.RegistryInfoGetter infoGetter, MutableRegistry<E> registry, Decoder<E> elementDecoder, Map<RegistryKey<?>, Exception> errors, CallbackInfo ci) {
+		REGISTRY_INFO.set(infoGetter);
 	}
 
-	// TODO 24w33a - Double Check if replacement above will work - it doesnt
-	/*@WrapOperation(method = "loadFromResource(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/RegistryLoader;load(Lnet/minecraft/registry/RegistryLoader$RegistryLoadable;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;"))
-	private static DynamicRegistryManager.Immutable captureRegistries(@Coerce Object registryLoadable, DynamicRegistryManager baseRegistryManager, List<RegistryLoader.Entry<?>> entries, Operation<DynamicRegistryManager.Immutable> original) {
-		try {
-			REGISTRIES.set(baseRegistryManager);
-			return original.call(registryLoadable, baseRegistryManager, entries);
-		} finally {
-			REGISTRIES.remove();
-		}
-	}*/
+	@Inject(method = "loadFromResource(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/RegistryOps$RegistryInfoGetter;Lnet/minecraft/registry/MutableRegistry;Lcom/mojang/serialization/Decoder;Ljava/util/Map;)V", at = @At("RETURN"))
+	private static <E> void releaseRegistries(ResourceManager resourceManager, RegistryOps.RegistryInfoGetter infoGetter, MutableRegistry<E> registry, Decoder<E> elementDecoder, Map<RegistryKey<?>, Exception> errors, CallbackInfo ci) {
+		REGISTRY_INFO.remove();
+	}
 
 	@Inject(
 			method = "Lnet/minecraft/registry/RegistryLoader;parseAndAdd(Lnet/minecraft/registry/MutableRegistry;Lcom/mojang/serialization/Decoder;Lnet/minecraft/registry/RegistryOps;Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/resource/Resource;Lnet/minecraft/registry/entry/RegistryEntryInfo;)V",
@@ -77,10 +68,10 @@ public class RegistryLoaderMixin {
 	) throws IOException {
 		// This method is called both on the server (when loading resources) and on the client (when syncing from the
 		// server). We only want to apply resource conditions when loading via loadFromResource.
-		DynamicRegistryManager registries = REGISTRIES.get();
-		if (registries == null) return;
+		RegistryOps.RegistryInfoGetter registryInfoGetter = REGISTRY_INFO.get();
+		if (registryInfoGetter == null) return;
 
-		if (jsonElement.isJsonObject() && !ResourceConditionsImpl.applyResourceConditions(jsonElement.getAsJsonObject(), key.getRegistry().toString(), key.getValue(), registries)) {
+		if (jsonElement.isJsonObject() && !ResourceConditionsImpl.applyResourceConditions(jsonElement.getAsJsonObject(), key.getRegistry().toString(), key.getValue(), registryInfoGetter)) {
 			reader.close();
 			ci.cancel();
 		}

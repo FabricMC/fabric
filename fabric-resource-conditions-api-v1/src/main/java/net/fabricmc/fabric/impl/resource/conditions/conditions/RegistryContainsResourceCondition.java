@@ -21,6 +21,9 @@ import java.util.List;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.registry.RegistryOps;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.registry.RegistryKey;
@@ -56,7 +59,7 @@ public record RegistryContainsResourceCondition(Identifier registry, List<Identi
 	}
 
 	@Override
-	public boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup) {
-		return ResourceConditionsImpl.registryContains(registryLookup, this.registry(), this.entries());
+	public boolean test(@Nullable RegistryOps.RegistryInfoGetter registryInfo) {
+		return ResourceConditionsImpl.registryContains(registryInfo, this.registry(), this.entries());
 	}
 }
