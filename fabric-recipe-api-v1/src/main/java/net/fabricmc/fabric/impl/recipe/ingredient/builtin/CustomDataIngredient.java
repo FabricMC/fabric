@@ -23,6 +23,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.StringNbtReader;
@@ -30,6 +31,7 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
@@ -57,17 +59,14 @@ public class CustomDataIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public List<ItemStack> getMatchingStacks() {
-		return List.of();
-		// TODO 24w33a port
-		/*List<ItemStack> stacks = new ArrayList<>(List.of(base.getMatchingStacks()));
-		stacks.replaceAll(stack -> {
-			ItemStack copy = stack.copy();
-			copy.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, existingNbt -> NbtComponent.of(existingNbt.copyNbt().copyFrom(this.nbt)));
-			return copy;
-		});
-		stacks.removeIf(stack -> !base.test(stack));
-		return stacks;*/
+	public List<RegistryEntry<Item>> getMatchingStacks() {
+		return base.getMatchingStacks().stream()
+				.filter(registryEntry -> {
+					ItemStack itemStack = registryEntry.value().getDefaultStack();
+					itemStack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, existingNbt -> NbtComponent.of(existingNbt.copyNbt().copyFrom(nbt)));
+					return base.test(itemStack);
+				})
+				.toList();
 	}
 
 	@Override

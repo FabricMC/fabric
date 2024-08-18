@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.client.rendering;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -36,8 +37,16 @@ import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 
 @Mixin(ArmorFeatureRenderer.class)
 public abstract class ArmorFeatureRendererMixin<S extends BipedEntityRenderState, M extends BipedEntityModel<S>, A extends BipedEntityModel<S>> extends FeatureRenderer<S, M> {
+	@Unique
+	private BipedEntityRenderState bipedRenderState;
+
 	public ArmorFeatureRendererMixin(FeatureRendererContext<S, M> featureRendererContext) {
 		super(featureRendererContext);
+	}
+
+	@Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/state/BipedEntityRenderState;FF)V", at = @At("HEAD"))
+	private void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, S bipedEntityRenderState, float f, float g, CallbackInfo ci) {
+		this.bipedRenderState = bipedEntityRenderState;
 	}
 
 	@Inject(method = "renderArmor", at = @At("HEAD"), cancellable = true)
@@ -45,8 +54,7 @@ public abstract class ArmorFeatureRendererMixin<S extends BipedEntityRenderState
 		ArmorRenderer renderer = ArmorRendererRegistryImpl.get(stack.getItem());
 
 		if (renderer != null) {
-			// TODO fix me 1.21.2
-//			renderer.render(matrices, vertexConsumers, stack, entity, armorSlot, light, getContextModel());
+			renderer.render(matrices, vertexConsumers, stack, bipedRenderState, armorSlot, light, (BipedEntityModel<BipedEntityRenderState>) getContextModel());
 			ci.cancel();
 		}
 	}

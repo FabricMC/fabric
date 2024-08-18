@@ -1,40 +1,22 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "minecraft:diamond_pickaxe"
-    },
-    {
-      "item": "minecraft:diamond_pickaxe"
-    },
-    {
-      "item": "minecraft:diamond_pickaxe"
-    },
-    {
-      "item": "minecraft:diamond_pickaxe"
-    },
+    "minecraft:diamond_pickaxe",
+    "minecraft:diamond_pickaxe",
+    "minecraft:diamond_pickaxe",
+    "minecraft:diamond_pickaxe",
     {
       "fabric:type": "fabric:components",
-      "base": {
-        "item": "minecraft:diamond_pickaxe"
-      },
+      "base": "minecraft:diamond_pickaxe",
       "components": {
         "minecraft:damage": 0
       },
       "strict": false
     },
-    {
-      "item": "minecraft:diamond_pickaxe"
-    },
-    {
-      "item": "minecraft:diamond_pickaxe"
-    },
-    {
-      "item": "minecraft:diamond_pickaxe"
-    },
-    {
-      "item": "minecraft:diamond_pickaxe"
-    }
+    "minecraft:diamond_pickaxe",
+    "minecraft:diamond_pickaxe",
+    "minecraft:diamond_pickaxe",
+    "minecraft:diamond_pickaxe"
   ],
   "result": {
     "id": "minecraft:diamond_block"

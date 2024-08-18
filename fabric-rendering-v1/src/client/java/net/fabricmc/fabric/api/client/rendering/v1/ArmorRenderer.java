@@ -27,7 +27,6 @@ import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -72,13 +71,13 @@ public interface ArmorRenderer {
 	/**
 	 * Renders an armor part.
 	 *
-	 * @param matrices			the matrix stack
-	 * @param vertexConsumers	the vertex consumer provider
-	 * @param stack				the item stack of the armor item
-	 * @param entity			the entity wearing the armor item
-	 * @param slot				the equipment slot in which the armor stack is worn
-	 * @param light				packed lightmap coordinates
-	 * @param contextModel		the model provided by {@link FeatureRenderer#getContextModel()}
+	 * @param matrices			     the matrix stack
+	 * @param vertexConsumers	     the vertex consumer provider
+	 * @param stack				     the item stack of the armor item
+	 * @param bipedEntityRenderState the render state of the entity
+	 * @param slot				     the equipment slot in which the armor stack is worn
+	 * @param light				     packed lightmap coordinates
+	 * @param contextModel		     the model provided by {@link FeatureRenderer#getContextModel()}
 	 */
-	void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, ItemStack stack, LivingEntity entity, EquipmentSlot slot, int light, BipedEntityModel<BipedEntityRenderState> contextModel);
+	void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, ItemStack stack, BipedEntityRenderState bipedEntityRenderState, EquipmentSlot slot, int light, BipedEntityModel<BipedEntityRenderState> contextModel);
 }

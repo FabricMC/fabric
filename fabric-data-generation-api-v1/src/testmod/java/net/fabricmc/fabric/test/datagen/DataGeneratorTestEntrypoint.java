@@ -208,11 +208,11 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 							.input(DefaultCustomIngredients.components(
-										   Ingredient.ofItems(Items.DIAMOND_PICKAXE),
-										   ComponentChanges.builder()
-												   .add(DataComponentTypes.DAMAGE, 0)
-												   .build()
-								   )
+								Ingredient.ofItems(Items.DIAMOND_PICKAXE),
+								ComponentChanges.builder()
+									.add(DataComponentTypes.DAMAGE, 0)
+									.build()
+								)
 							)
 							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
 							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))

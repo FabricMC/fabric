@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "minecraft:diamond_ore"
-    },
-    {
-      "item": "fabric-item-api-v1-testmod:weird_pickaxe"
-    }
+    "minecraft:diamond_ore",
+    "fabric-item-api-v1-testmod:weird_pickaxe"
   ],
   "result": {
     "id": "minecraft:diamond",

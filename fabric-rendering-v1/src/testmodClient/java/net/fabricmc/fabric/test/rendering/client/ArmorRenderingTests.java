@@ -34,7 +34,7 @@ public class ArmorRenderingTests implements ClientModInitializer {
 	// Renders a biped model with dirt texture, replacing diamond helmet and diamond chest plate rendering
 	@Override
 	public void onInitializeClient() {
-		ArmorRenderer.register((matrices, vertexConsumers, stack, entity, slot, light, model) -> {
+		ArmorRenderer.register((matrices, vertexConsumers, stack, renderState, slot, light, model) -> {
 			if (armorModel == null) {
 				armorModel = new BipedEntityModel<>(MinecraftClient.getInstance().getEntityModelLoader().getModelPart(EntityModelLayers.PLAYER_OUTER_ARMOR));
 			}

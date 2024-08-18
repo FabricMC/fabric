@@ -58,7 +58,7 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 
 			// Obviously not recommended, just used for testing generics
 			// TODO 1.21.2
-//			registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer, context.getModelLoader()));
+			// registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer, context.getModelLoader()));
 
 			if (entityRenderer instanceof BipedEntityRenderer) {
 				// It works, method ref is encouraged
@@ -83,7 +83,7 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 
 		// Obviously not recommended, just used for testing generics.
 		// TODO 1.21.2
-//		registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer, context.getModelLoader()));
+		// registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer, context.getModelLoader()));
 
 		if (entityRenderer instanceof BipedEntityRenderer<?, ?, ?> bipedEntityRenderer) {
 			// It works, method ref is encouraged

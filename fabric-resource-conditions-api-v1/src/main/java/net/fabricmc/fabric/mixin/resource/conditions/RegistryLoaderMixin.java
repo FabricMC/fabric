@@ -55,7 +55,7 @@ public class RegistryLoaderMixin {
 		REGISTRIES.set(cir.getReturnValue());
 	}
 
-	// TODO 24w33a - Double Check if replacement above will work
+	// TODO 24w33a - Double Check if replacement above will work - it doesnt
 	/*@WrapOperation(method = "loadFromResource(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/RegistryLoader;load(Lnet/minecraft/registry/RegistryLoader$RegistryLoadable;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;"))
 	private static DynamicRegistryManager.Immutable captureRegistries(@Coerce Object registryLoadable, DynamicRegistryManager baseRegistryManager, List<RegistryLoader.Entry<?>> entries, Operation<DynamicRegistryManager.Immutable> original) {
 		try {

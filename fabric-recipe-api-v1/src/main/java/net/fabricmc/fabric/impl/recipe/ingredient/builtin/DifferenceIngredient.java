@@ -21,10 +21,12 @@ import java.util.List;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
@@ -47,12 +49,11 @@ public class DifferenceIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public List<ItemStack> getMatchingStacks() {
-		return List.of();
-		// TODO 24w33a port
-		//List<ItemStack> stacks = new ArrayList<>(List.of(base.getMatchingStacks()));
-		//stacks.removeIf(subtracted);
-		//return stacks;
+	public List<RegistryEntry<Item>> getMatchingStacks() {
+		final List<RegistryEntry<Item>> subtractedMatchingStacks = subtracted.getMatchingStacks();
+		return base.getMatchingStacks().stream()
+				.filter(registryEntry -> !subtractedMatchingStacks.contains(registryEntry))
+				.toList();
 	}
 
 	@Override

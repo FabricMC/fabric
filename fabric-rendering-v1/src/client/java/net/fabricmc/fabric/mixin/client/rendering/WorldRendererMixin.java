@@ -196,7 +196,6 @@ public abstract class WorldRendererMixin {
 		}
 	}
 
-	// TODO 24w33a double check
 	@Inject(at = @At(value = "HEAD"), method = "renderSky", cancellable = true)
 	private void renderSky(FrameGraphBuilder frameGraphBuilder, Camera camera, float tickDelta, Fog fog, CallbackInfo info) {
 		if (this.client.world != null) {

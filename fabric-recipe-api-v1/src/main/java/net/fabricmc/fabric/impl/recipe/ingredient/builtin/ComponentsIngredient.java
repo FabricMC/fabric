@@ -27,10 +27,12 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.ComponentType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
@@ -81,14 +83,14 @@ public class ComponentsIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public List<ItemStack> getMatchingStacks() {
-		return base.getMatchingStacks().stream().map(entry -> {
-			var stack = new ItemStack(entry);
-
-			stack.applyChanges(components);
-
-			return stack;
-		}).filter(stack -> base.test(stack)).toList();
+	public List<RegistryEntry<Item>> getMatchingStacks() {
+		return base.getMatchingStacks().stream()
+				.filter(registryEntry -> {
+					ItemStack itemStack = registryEntry.value().getDefaultStack();
+					itemStack.applyChanges(components);
+					return base.test(itemStack);
+				})
+				.toList();
 	}
 
 	@Override

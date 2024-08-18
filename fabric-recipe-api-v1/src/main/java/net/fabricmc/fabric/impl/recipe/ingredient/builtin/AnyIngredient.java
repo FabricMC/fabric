@@ -53,12 +53,11 @@ public class AnyIngredient extends CombinedIngredient {
 	}
 
 	@Override
-	public List<ItemStack> getMatchingStacks() {
-		return ingredients.stream().<ItemStack>mapMulti((ingredient, consumer) -> {
-			for (RegistryEntry<Item> entry : ingredient.getMatchingStacks()) {
-				consumer.accept(new ItemStack(entry));
-			}
-		}).toList();
+	public List<RegistryEntry<Item>> getMatchingStacks() {
+		return ingredients.stream()
+				.flatMap(ingredient -> ingredient.getMatchingStacks().stream())
+				.distinct()
+				.toList();
 	}
 
 	@Override
