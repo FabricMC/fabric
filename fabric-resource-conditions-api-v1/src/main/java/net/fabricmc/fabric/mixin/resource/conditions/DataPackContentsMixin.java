@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -40,28 +38,20 @@ import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 @Mixin(DataPackContents.class)
 public class DataPackContentsMixin {
-	@Shadow
-	@Final
-	private List<Registry.PendingTagLoad<?>> pendingTagLoads;
-
-	@Inject(
-			method = "applyPendingTagLoads",
-			at = @At("HEAD")
-	)
-	private void hookRefresh(CallbackInfo ci) {
-		ResourceConditionsImpl.LOADED_TAGS.remove();
-	}
-
 	@Inject(
 			method = "reload",
 			at = @At("HEAD")
 	)
-	private static void hookReload(ResourceManager manager, CombinedDynamicRegistries<ServerDynamicRegistryType> combinedDynamicRegistries, List<Registry.PendingTagLoad<?>> list, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, int functionPermissionLevel, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<DataPackContents>> cir) {
+	private static void hookReload(ResourceManager manager, CombinedDynamicRegistries<ServerDynamicRegistryType> combinedDynamicRegistries, List<Registry.PendingTagLoad<?>> pendingTagLoads, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, int functionPermissionLevel, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<DataPackContents>> cir) {
 		ResourceConditionsImpl.currentFeatures = enabledFeatures;
+		ResourceConditionsImpl.setTags(pendingTagLoads);
 	}
 
-	@Inject(method = "applyPendingTagLoads", at = @At("HEAD"))
-	private void captureTags(CallbackInfo ci) {
-		ResourceConditionsImpl.setTags(pendingTagLoads);
+	@Inject(
+			method = "applyPendingTagLoads",
+			at = @At("TAIL")
+	)
+	private void removeLoadedTags(CallbackInfo ci) {
+		ResourceConditionsImpl.LOADED_TAGS.remove();
 	}
 }
