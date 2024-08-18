@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.registry.sync",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "BlocksMixin",
     "BootstrapMixin",
     "ChunkSerializerMixin",
     "DebugChunkGeneratorAccessor",
