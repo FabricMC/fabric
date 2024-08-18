@@ -19,12 +19,9 @@ package net.fabricmc.fabric.api.resource.conditions.v1;
 import java.util.List;
 
 import com.mojang.serialization.Codec;
-
-import net.minecraft.registry.RegistryOps;
-
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.RegistryOps;
 
 /**
  * A resource condition. To create a custom condition type, implement this interface,

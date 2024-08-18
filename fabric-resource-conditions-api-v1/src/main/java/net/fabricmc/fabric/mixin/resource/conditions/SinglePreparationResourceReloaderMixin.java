@@ -16,15 +16,13 @@
 
 package net.fabricmc.fabric.mixin.resource.conditions;
 
-import net.minecraft.registry.RegistryOps;
-
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.SinglePreparationResourceReloader;
 import net.minecraft.util.profiler.Profiler;

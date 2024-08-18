@@ -1,7 +1,7 @@
 {
   "required": false,
   "package": "net.fabricmc.fabric.mixin.renderer.client.debughud",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "client": [
     "DebugHudMixin"
   ],

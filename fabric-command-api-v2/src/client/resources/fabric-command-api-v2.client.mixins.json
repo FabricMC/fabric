@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.command.client",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "client": [
     "ClientCommandSourceMixin",
     "ClientPlayNetworkHandlerMixin"

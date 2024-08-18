@@ -21,12 +21,9 @@ import java.util.List;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import net.minecraft.registry.RegistryOps;
-
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.RegistryOps;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;

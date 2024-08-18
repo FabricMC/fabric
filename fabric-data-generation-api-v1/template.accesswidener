@@ -1,9 +1,6 @@
 accessible field net/minecraft/data/DataGenerator output Lnet/minecraft/data/DataOutput;
 mutable field net/minecraft/data/DataGenerator output Lnet/minecraft/data/DataOutput;
 
-accessible field net/minecraft/data/server/recipe/RecipeProvider recipesPathResolver Lnet/minecraft/data/DataOutput$PathResolver;
-accessible field net/minecraft/data/server/recipe/RecipeProvider advancementsPathResolver Lnet/minecraft/data/DataOutput$PathResolver;
-
 accessible class net/minecraft/data/server/recipe/RecipeGenerator$RecipeProvider
 extendable method net/minecraft/data/server/recipe/RecipeGenerator$RecipeProvider run (Lnet/minecraft/data/DataWriter;)Ljava/util/concurrent/CompletableFuture;
 
@@ -51,7 +48,5 @@ transitive-accessible class net/minecraft/data/client/BlockStateModelGenerator$T
 transitive-accessible class net/minecraft/data/client/BlockStateModelGenerator$BlockTexturePool
 transitive-accessible class net/minecraft/data/client/BlockStateModelGenerator$LogTexturePool
 transitive-accessible class net/minecraft/data/client/BlockStateModelGenerator$BuiltinModelPool
-
-transitive-accessible field net/minecraft/data/server/loottable/BlockLootTableGenerator WITH_SHEARS Lnet/minecraft/loot/condition/LootCondition$Builder;
 
 ### Generated access wideners below

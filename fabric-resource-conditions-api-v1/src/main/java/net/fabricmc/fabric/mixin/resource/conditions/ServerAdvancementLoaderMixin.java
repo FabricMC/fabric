@@ -16,13 +16,12 @@
 
 package net.fabricmc.fabric.mixin.resource.conditions;
 
-import net.minecraft.registry.RegistryOps;
-
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.ServerAdvancementLoader;
 

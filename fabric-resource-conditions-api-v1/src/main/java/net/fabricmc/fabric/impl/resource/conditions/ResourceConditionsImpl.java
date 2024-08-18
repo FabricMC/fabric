@@ -27,11 +27,6 @@ import java.util.stream.Collectors;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
-
-import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.registry.entry.RegistryEntryInfo;
-
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -39,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.featuretoggle.FeatureSet;
