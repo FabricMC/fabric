@@ -23,6 +23,7 @@ import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.Deadmau5FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 
@@ -60,7 +61,7 @@ public interface LivingEntityFeatureRendererRegistrationCallback {
 	 * @param entityType     the entity type of the renderer
 	 * @param entityRenderer the entity renderer
 	 */
-	void registerRenderers(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer, RegistrationHelper registrationHelper, EntityRendererFactory.Context context);
+	void registerRenderers(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?, ?> entityRenderer, RegistrationHelper registrationHelper, EntityRendererFactory.Context context);
 
 	/**
 	 * A delegate object used to help register feature renderers for an entity renderer.
@@ -75,6 +76,6 @@ public interface LivingEntityFeatureRendererRegistrationCallback {
 		 * @param featureRenderer the feature renderer
 		 * @param <T> the type of entity
 		 */
-		<T extends LivingEntity> void register(FeatureRenderer<T, ? extends EntityModel<T>> featureRenderer);
+		<T extends EntityRenderState> void register(FeatureRenderer<T, ? extends EntityModel<T>> featureRenderer);
 	}
 }

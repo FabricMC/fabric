@@ -4,6 +4,7 @@ extendable  method    net/minecraft/block/AbstractBlock$Settings    <init>  ()V
 accessible    method    net/minecraft/world/poi/PointOfInterestTypes    register    (Lnet/minecraft/registry/Registry;Lnet/minecraft/registry/RegistryKey;Ljava/util/Set;II)Lnet/minecraft/world/poi/PointOfInterestType;
 
 extendable class net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
+accessible method net/minecraft/block/entity/BlockEntityType <init> (Lnet/minecraft/block/entity/BlockEntityType$BlockEntityFactory;Ljava/util/Set;)V
 accessible class net/minecraft/village/TradeOffers$TypeAwareBuyForOneEmeraldFactory
 mutable field net/minecraft/village/TradeOffers REBALANCED_PROFESSION_TO_LEVELED_TRADE Ljava/util/Map;
 mutable field net/minecraft/village/TradeOffers REBALANCED_WANDERING_TRADER_TRADES Ljava/util/List;

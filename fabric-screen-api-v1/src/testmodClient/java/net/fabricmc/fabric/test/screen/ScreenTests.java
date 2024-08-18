@@ -27,6 +27,7 @@ import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -79,7 +80,7 @@ public final class ScreenTests implements ClientModInitializer {
 			// Register render event to draw an icon on the screen
 			ScreenEvents.afterRender(screen).register((_screen, drawContext, mouseX, mouseY, tickDelta) -> {
 				// Render an armor icon to test
-				drawContext.drawGuiTexture(ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 124, (screen.height / 4) + 96, 20, 20);
+				drawContext.drawGuiTexture(RenderLayer::getGuiTextured, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 124, (screen.height / 4) + 96, 20, 20);
 			});
 
 			ScreenKeyboardEvents.allowKeyPress(screen).register((_screen, key, scancode, modifiers) -> {

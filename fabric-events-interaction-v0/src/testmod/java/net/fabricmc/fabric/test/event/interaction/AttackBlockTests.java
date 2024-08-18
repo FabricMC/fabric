@@ -41,7 +41,7 @@ public class AttackBlockTests implements ModInitializer {
 				if (world.getBlockState(pos).isOf(Blocks.CHEST)) {
 					if (player.getStackInHand(hand).isOf(Items.LAVA_BUCKET)) {
 						world.setBlockState(pos, Blocks.AIR.getDefaultState());
-						return ActionResult.success(world.isClient);
+						return ActionResult.SUCCESS;
 					}
 				}
 			}

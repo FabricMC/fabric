@@ -24,6 +24,7 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.GameRules;
 
@@ -146,7 +147,8 @@ public final class GameRuleFactory {
 				() -> IntegerArgumentType.integer(minimumValue, maximumValue),
 				type -> new BoundedIntRule(type, defaultValue, minimumValue, maximumValue), // Internally use a bounded int rule
 				changedCallback,
-				GameRules.Visitor::visitInt
+				GameRules.Visitor::visitInt,
+				FeatureSet.empty()
 		);
 	}
 
@@ -223,7 +225,8 @@ public final class GameRuleFactory {
 				() -> DoubleArgumentType.doubleArg(minimumValue, maximumValue),
 				type -> new DoubleRule(type, defaultValue, minimumValue, maximumValue),
 				changedCallback,
-				GameRuleFactory::visitDouble
+				GameRuleFactory::visitDouble,
+				FeatureSet.empty()
 		);
 	}
 

@@ -53,10 +53,7 @@ public class BlockEntityTypeBuilderTest implements ModInitializer {
 	static final Block SECOND_MULTI_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.YELLOW);
 
 	private static final Identifier BLOCK_ENTITY_TYPE_ID = ObjectBuilderTestConstants.id("betrayal_block");
-	public static final BlockEntityType<?> BLOCK_ENTITY_TYPE = FabricBlockEntityTypeBuilder.create(BetrayalBlockEntity::new, INITIAL_BETRAYAL_BLOCK)
-			.addBlock(ADDED_BETRAYAL_BLOCK)
-			.addBlocks(FIRST_MULTI_BETRAYAL_BLOCK, SECOND_MULTI_BETRAYAL_BLOCK)
-			.build();
+	public static final BlockEntityType<?> BLOCK_ENTITY_TYPE = FabricBlockEntityTypeBuilder.create(BetrayalBlockEntity::new, INITIAL_BETRAYAL_BLOCK, ADDED_BETRAYAL_BLOCK, FIRST_MULTI_BETRAYAL_BLOCK, SECOND_MULTI_BETRAYAL_BLOCK).build();
 
 	@Override
 	public void onInitialize() {

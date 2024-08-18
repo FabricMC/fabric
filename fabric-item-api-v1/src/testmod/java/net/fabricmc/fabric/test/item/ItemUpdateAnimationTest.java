@@ -27,7 +27,7 @@ import net.fabricmc.api.ModInitializer;
 
 public class ItemUpdateAnimationTest implements ModInitializer {
 	public static final ComponentType<Integer> TICKS = Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of("fabric-item-api-v1-testmod", "ticks"),
-																			ComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
+																			ComponentType.<Integer>builder().codec(Codecs.NON_NEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
 
 	@Override
 	public void onInitialize() {

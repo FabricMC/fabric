@@ -26,7 +26,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipData;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -71,7 +70,7 @@ public class TooltipComponentTestInit implements ModInitializer {
 		}),
 			0,
 			SoundEvents.ITEM_ARMOR_EQUIP_LEATHER,
-				() -> Ingredient.ofItems(Items.LEATHER),
+				(stack) -> stack.getItem() == Items.LEATHER,
 			List.of(new ArmorMaterial.Layer(Identifier.of("fabric-rendering-v1-testmod", "test_material"))),
 			0,
 			0

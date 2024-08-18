@@ -20,7 +20,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.RegistryOps;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
@@ -37,7 +37,7 @@ public record NotResourceCondition(ResourceCondition condition) implements Resou
 	}
 
 	@Override
-	public boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup) {
-		return !this.condition().test(registryLookup);
+	public boolean test(@Nullable RegistryOps.RegistryInfoGetter registryInfo) {
+		return !this.condition().test(registryInfo);
 	}
 }

@@ -16,23 +16,22 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.ArmorStandEntityRenderer;
 import net.minecraft.client.render.entity.BipedEntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.feature.ElytraFeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
 import net.minecraft.client.render.entity.model.ArmorStandArmorEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
@@ -58,65 +57,67 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 			}
 
 			// Obviously not recommended, just used for testing generics
-			registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer, context.getModelLoader()));
+			// TODO 1.21.2
+			// registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer, context.getModelLoader()));
 
 			if (entityRenderer instanceof BipedEntityRenderer) {
 				// It works, method ref is encouraged
-				registrationHelper.register(new HeldItemFeatureRenderer<>((BipedEntityRenderer<?, ?>) entityRenderer, context.getHeldItemRenderer()));
+				registrationHelper.register(new HeldItemFeatureRenderer<>((BipedEntityRenderer<?, ?, ?>) entityRenderer, context.getItemRenderer()));
 			}
 		});
 
 		LivingEntityFeatureRendererRegistrationCallback.EVENT.register(this::registerFeatures);
 	}
 
-	private void registerFeatures(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer, LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper registrationHelper, EntityRendererFactory.Context context) {
-		if (entityRenderer instanceof PlayerEntityRenderer) {
-			registrationHelper.register(new TestPlayerFeature((PlayerEntityRenderer) entityRenderer));
+	private void registerFeatures(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?, ?> entityRenderer, LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper registrationHelper, EntityRendererFactory.Context context) {
+		if (entityRenderer instanceof PlayerEntityRenderer playerEntityRenderer) {
+			registrationHelper.register(new TestPlayerFeature(playerEntityRenderer));
 
 			// This is T extends AbstractClientPlayerEntity
-			registrationHelper.register(new GenericTestPlayerFeature<>((PlayerEntityRenderer) entityRenderer));
+			registrationHelper.register(new GenericTestPlayerFeature<>(playerEntityRenderer));
 		}
 
-		if (entityRenderer instanceof ArmorStandEntityRenderer) {
-			registrationHelper.register(new TestArmorStandFeature((ArmorStandEntityRenderer) entityRenderer));
+		if (entityRenderer instanceof ArmorStandEntityRenderer armorStandEntityRenderer) {
+			registrationHelper.register(new TestArmorStandFeature(armorStandEntityRenderer));
 		}
 
 		// Obviously not recommended, just used for testing generics.
-		registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer, context.getModelLoader()));
+		// TODO 1.21.2
+		// registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer, context.getModelLoader()));
 
-		if (entityRenderer instanceof BipedEntityRenderer) {
+		if (entityRenderer instanceof BipedEntityRenderer<?, ?, ?> bipedEntityRenderer) {
 			// It works, method ref is encouraged
-			registrationHelper.register(new HeldItemFeatureRenderer<>((BipedEntityRenderer<?, ?>) entityRenderer, context.getHeldItemRenderer()));
+			registrationHelper.register(new HeldItemFeatureRenderer<>(bipedEntityRenderer, context.getItemRenderer()));
 		}
 	}
 
-	static class TestPlayerFeature extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-		TestPlayerFeature(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> context) {
+	static class TestPlayerFeature extends FeatureRenderer<PlayerEntityRenderState, PlayerEntityModel> {
+		TestPlayerFeature(FeatureRendererContext<PlayerEntityRenderState, PlayerEntityModel> featureRendererContext) {
+			super(featureRendererContext);
+		}
+
+		@Override
+		public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
+		}
+	}
+
+	static class GenericTestPlayerFeature<T extends PlayerEntityRenderState, M extends PlayerEntityModel> extends FeatureRenderer<T, M> {
+		GenericTestPlayerFeature(FeatureRendererContext<T, M> featureRendererContext) {
+			super(featureRendererContext);
+		}
+
+		@Override
+		public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T state, float limbAngle, float limbDistance) {
+		}
+	}
+
+	static class TestArmorStandFeature extends FeatureRenderer<ArmorStandEntityRenderState, ArmorStandArmorEntityModel> {
+		TestArmorStandFeature(FeatureRendererContext<ArmorStandEntityRenderState, ArmorStandArmorEntityModel> context) {
 			super(context);
 		}
 
 		@Override
-		public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-		}
-	}
-
-	static class GenericTestPlayerFeature<T extends AbstractClientPlayerEntity, M extends PlayerEntityModel<T>> extends FeatureRenderer<T, M> {
-		GenericTestPlayerFeature(FeatureRendererContext<T, M> context) {
-			super(context);
-		}
-
-		@Override
-		public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-		}
-	}
-
-	static class TestArmorStandFeature extends FeatureRenderer<ArmorStandEntity, ArmorStandArmorEntityModel> {
-		TestArmorStandFeature(FeatureRendererContext<ArmorStandEntity, ArmorStandArmorEntityModel> context) {
-			super(context);
-		}
-
-		@Override
-		public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ArmorStandEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+		public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ArmorStandEntityRenderState state, float limbAngle, float limbDistance) {
 		}
 	}
 }

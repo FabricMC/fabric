@@ -23,31 +23,30 @@ import java.util.Map;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.objectweb.asm.Opcodes;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Coerce;
 
+import net.minecraft.client.network.ClientRegistries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryLoader;
 import net.minecraft.registry.SerializableRegistries;
+import net.minecraft.resource.ResourceFactory;
 
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 
-@Mixin(targets = "net/minecraft/client/network/ClientRegistries$DynamicRegistries")
-public class ClientRegistriesDynamicRegistriesMixin {
-	@Shadow
-	@Final
-	private Map<RegistryKey<? extends Registry<?>>, List<SerializableRegistries.SerializedRegistryEntry>> dynamicRegistries;
-
+@Mixin(ClientRegistries.class)
+public class ClientRegistriesMixin {
 	/**
 	 * Keep the pre-24w04a behavior of removing empty registries, even if the client knows that registry.
 	 */
-	@WrapOperation(method = "load", at = @At(value = "FIELD", target = "Lnet/minecraft/registry/RegistryLoader;SYNCED_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC))
-	private List<RegistryLoader.Entry<?>> skipEmptyRegistries(Operation<List<RegistryLoader.Entry<?>>> operation) {
+	@WrapOperation(method = "method_62155", at = @At(value = "FIELD", target = "Lnet/minecraft/registry/RegistryLoader;SYNCED_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC))
+	private List<RegistryLoader.Entry<?>> skipEmptyRegistries(Operation<List<RegistryLoader.Entry<?>>> operation, ResourceFactory resourceFactory, @Coerce ClientRegistriesDynamicRegistriesAccessor storage, boolean bl) {
+		Map<RegistryKey<? extends Registry<?>>, List<SerializableRegistries.SerializedRegistryEntry>> dynamicRegistries = storage.getDynamicRegistries();
+
 		List<RegistryLoader.Entry<?>> result = new ArrayList<>(operation.call());
-		result.removeIf(entry -> DynamicRegistriesImpl.SKIP_EMPTY_SYNC_REGISTRIES.contains(entry.key()) && !this.dynamicRegistries.containsKey(entry.key()));
+		result.removeIf(entry -> DynamicRegistriesImpl.SKIP_EMPTY_SYNC_REGISTRIES.contains(entry.key()) && !dynamicRegistries.containsKey(entry.key()));
 		return result;
 	}
 }

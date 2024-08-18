@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.registry;
+package net.fabricmc.fabric.mixin.registry.sync.client;
 
-import net.fabricmc.fabric.api.util.Item2ObjectMap;
-import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
+import java.util.List;
+import java.util.Map;
 
-/**
- * Registry of items to 0-32767 fuel burn time values, in in-game ticks.
- */
-public interface FuelRegistry extends Item2ObjectMap<Integer> {
-	FuelRegistry INSTANCE = new FuelRegistryImpl();
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.SerializableRegistries;
+
+@Mixin(targets = "net/minecraft/client/network/ClientRegistries$DynamicRegistries")
+public interface ClientRegistriesDynamicRegistriesAccessor {
+	@Accessor
+	Map<RegistryKey<? extends Registry<?>>, List<SerializableRegistries.SerializedRegistryEntry>> getDynamicRegistries();
 }

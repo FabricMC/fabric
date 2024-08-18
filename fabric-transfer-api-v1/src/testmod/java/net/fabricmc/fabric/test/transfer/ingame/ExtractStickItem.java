@@ -56,7 +56,7 @@ public class ExtractStickItem extends Item {
 				}
 
 				transaction.commit();
-				return ActionResult.success(context.getWorld().isClient());
+				return ActionResult.SUCCESS;
 			}
 		}
 

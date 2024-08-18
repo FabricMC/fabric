@@ -85,9 +85,6 @@ transitive-accessible method net/minecraft/server/world/ServerWorld sendToPlayer
 transitive-accessible method net/minecraft/text/TextColor getHexCode ()Ljava/lang/String;
 transitive-accessible method net/minecraft/text/TranslatableTextContent getArg (I)Lnet/minecraft/text/StringVisitable;
 
-# Creating block entity types
-transitive-extendable class net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
-
 # Villagers
 transitive-accessible field net/minecraft/village/VillagerType BIOME_TO_TYPE Ljava/util/Map;
 transitive-accessible method net/minecraft/village/VillagerType <init> (Ljava/lang/String;)V
@@ -241,7 +238,7 @@ transitive-accessible method net/minecraft/block/WetSpongeBlock <init> (Lnet/min
 transitive-accessible method net/minecraft/block/WitherSkullBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 
 # Constructors of non-abstract item classes
-transitive-accessible method net/minecraft/item/MiningToolItem <init> (Lnet/minecraft/item/ToolMaterial;Lnet/minecraft/registry/tag/TagKey;Lnet/minecraft/item/Item$Settings;)V
+transitive-accessible method net/minecraft/item/MiningToolItem <init> (Lnet/minecraft/item/ToolMaterial;Lnet/minecraft/registry/tag/TagKey;FFLnet/minecraft/item/Item$Settings;)V
 
 # Protected static fields of RenderPhase
 transitive-accessible field net/minecraft/client/render/RenderPhase NO_TRANSPARENCY Lnet/minecraft/client/render/RenderPhase$Transparency;
@@ -250,12 +247,17 @@ transitive-accessible field net/minecraft/client/render/RenderPhase LIGHTNING_TR
 transitive-accessible field net/minecraft/client/render/RenderPhase GLINT_TRANSPARENCY Lnet/minecraft/client/render/RenderPhase$Transparency;
 transitive-accessible field net/minecraft/client/render/RenderPhase CRUMBLING_TRANSPARENCY Lnet/minecraft/client/render/RenderPhase$Transparency;
 transitive-accessible field net/minecraft/client/render/RenderPhase TRANSLUCENT_TRANSPARENCY Lnet/minecraft/client/render/RenderPhase$Transparency;
+transitive-accessible field net/minecraft/client/render/RenderPhase VIGNETTE_TRANSPARENCY Lnet/minecraft/client/render/RenderPhase$Transparency;
+transitive-accessible field net/minecraft/client/render/RenderPhase CROSSHAIR_TRANSPARENCY Lnet/minecraft/client/render/RenderPhase$Transparency;
+transitive-accessible field net/minecraft/client/render/RenderPhase MOJANG_LOGO_TRANSPARENCY Lnet/minecraft/client/render/RenderPhase$Transparency;
+transitive-accessible field net/minecraft/client/render/RenderPhase NAUSEA_OVERLAY_TRANSPARENCY Lnet/minecraft/client/render/RenderPhase$Transparency;
 transitive-accessible field net/minecraft/client/render/RenderPhase NO_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase POSITION_COLOR_LIGHTMAP_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase POSITION_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase POSITION_TEXTURE_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase POSITION_COLOR_TEXTURE_LIGHTMAP_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
-transitive-accessible field net/minecraft/client/render/RenderPhase COLOR_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
+transitive-accessible field net/minecraft/client/render/RenderPhase POSITION_COLOR_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
+transitive-accessible field net/minecraft/client/render/RenderPhase POSITION_TEXTURE_COLOR_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase SOLID_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase CUTOUT_MIPPED_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase CUTOUT_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
@@ -326,6 +328,7 @@ transitive-accessible field net/minecraft/client/render/RenderPhase DEPTH_MASK L
 transitive-accessible field net/minecraft/client/render/RenderPhase NO_LAYERING Lnet/minecraft/client/render/RenderPhase$Layering;
 transitive-accessible field net/minecraft/client/render/RenderPhase POLYGON_OFFSET_LAYERING Lnet/minecraft/client/render/RenderPhase$Layering;
 transitive-accessible field net/minecraft/client/render/RenderPhase VIEW_OFFSET_Z_LAYERING Lnet/minecraft/client/render/RenderPhase$Layering;
+transitive-accessible field net/minecraft/client/render/RenderPhase VIEW_OFFSET_Z_LAYERING_FORWARD Lnet/minecraft/client/render/RenderPhase$Layering;
 transitive-accessible field net/minecraft/client/render/RenderPhase MAIN_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase OUTLINE_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase TRANSLUCENT_TARGET Lnet/minecraft/client/render/RenderPhase$Target;

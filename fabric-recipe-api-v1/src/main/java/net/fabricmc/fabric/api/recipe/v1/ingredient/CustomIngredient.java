@@ -23,6 +23,7 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 
@@ -71,7 +72,7 @@ public interface CustomIngredient {
 	 *
 	 * <p>Note: no caching needs to be done by the implementation, this is already handled by the ingredient itself.
 	 */
-	List<ItemStack> getMatchingStacks();
+	List<RegistryEntry<Item>> getMatchingStacks();
 
 	/**
 	 * Returns whether this ingredient always requires {@linkplain #test direct stack testing}.

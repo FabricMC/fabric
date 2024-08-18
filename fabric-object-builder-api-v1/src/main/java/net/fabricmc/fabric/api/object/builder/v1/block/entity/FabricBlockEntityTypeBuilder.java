@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.object.builder.v1.block.entity;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import com.mojang.datafixers.types.Type;
@@ -33,10 +34,7 @@ import net.minecraft.util.math.BlockPos;
  *
  * <p>Alternatively, use the access widener for {@link BlockEntityType.BlockEntityFactory}
  * in Fabric Transitive Access Wideners (v1).
- *
- * @deprecated Use {@link BlockEntityType.Builder} directly.
  */
-@Deprecated
 public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 	private final Factory<? extends T> factory;
 	private final List<Block> blocks;
@@ -46,10 +44,6 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 		this.blocks = blocks;
 	}
 
-	/**
-	 * @deprecated Use {@link BlockEntityType.Builder#create(BlockEntityType.BlockEntityFactory, Block...)}.
-	 */
-	@Deprecated
 	public static <T extends BlockEntity> FabricBlockEntityTypeBuilder<T> create(Factory<? extends T> factory, Block... blocks) {
 		List<Block> blocksList = new ArrayList<>(blocks.length);
 		Collections.addAll(blocksList, blocks);
@@ -62,9 +56,7 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 	 *
 	 * @param block the supported block
 	 * @return this builder
-	 * @deprecated Use {@link BlockEntityType.Builder#create(BlockEntityType.BlockEntityFactory, Block...)}.
 	 */
-	@Deprecated
 	public FabricBlockEntityTypeBuilder<T> addBlock(Block block) {
 		this.blocks.add(block);
 		return this;
@@ -75,36 +67,21 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 	 *
 	 * @param blocks the supported blocks
 	 * @return this builder
-	 * @deprecated Use {@link BlockEntityType.Builder#create(BlockEntityType.BlockEntityFactory, Block...)}.
 	 */
-	@Deprecated
 	public FabricBlockEntityTypeBuilder<T> addBlocks(Block... blocks) {
 		Collections.addAll(this.blocks, blocks);
 		return this;
 	}
 
-	/**
-	 * @deprecated Use {@link BlockEntityType.Builder#build()}.
-	 */
-	@Deprecated
 	public BlockEntityType<T> build() {
 		return build(null);
 	}
 
-	/**
-	 * @deprecated Use {@link BlockEntityType.Builder#build(Type)}.
-	 */
-	@Deprecated
 	public BlockEntityType<T> build(Type<?> type) {
-		return BlockEntityType.Builder.<T>create(factory::create, blocks.toArray(new Block[0]))
-				.build(type);
+		return new BlockEntityType<T>(factory::create, new HashSet<>(blocks));
 	}
 
-	/**
-	 * @deprecated Use {@link BlockEntityType.BlockEntityFactory}.
-	 */
 	@FunctionalInterface
-	@Deprecated
 	public interface Factory<T extends BlockEntity> {
 		T create(BlockPos blockPos, BlockState blockState);
 	}

@@ -34,7 +34,8 @@ public class RiverstoneUnbakedModel implements UnbakedModel {
 	private static final Identifier STONE_MODEL_ID = Identifier.ofVanilla("block/stone");
 	private static final Identifier GOLD_BLOCK_MODEL_ID = Identifier.ofVanilla("block/gold_block");
 
-	@Override
+	// TODO 24w33a
+	/*@Override
 	public Collection<Identifier> getModelDependencies() {
 		return Collections.emptySet();
 	}
@@ -43,6 +44,11 @@ public class RiverstoneUnbakedModel implements UnbakedModel {
 	public void setParents(Function<Identifier, UnbakedModel> modelLoader) {
 		modelLoader.apply(STONE_MODEL_ID).setParents(modelLoader);
 		modelLoader.apply(GOLD_BLOCK_MODEL_ID).setParents(modelLoader);
+	}*/
+
+	@Override
+	public void method_62326(class_10103 arg, class_10102 arg2) {
+
 	}
 
 	@Nullable

@@ -1,7 +1,5 @@
 {
-  "carvers": {
-    "air": "minecraft:nether_cave"
-  },
+  "carvers": "minecraft:nether_cave",
   "downfall": 0.0,
   "effects": {
     "additions_sound": {

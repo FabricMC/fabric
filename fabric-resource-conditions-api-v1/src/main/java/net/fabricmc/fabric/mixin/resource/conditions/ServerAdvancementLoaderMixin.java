@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.ServerAdvancementLoader;
 
@@ -31,7 +32,7 @@ public class ServerAdvancementLoaderMixin extends SinglePreparationResourceReloa
 	private RegistryWrapper.WrapperLookup registryLookup;
 
 	@Override
-	protected @Nullable RegistryWrapper.WrapperLookup fabric_getRegistryLookup() {
-		return this.registryLookup;
+	protected @Nullable RegistryOps.RegistryInfoGetter fabric_getRegistryLookup() {
+		return new RegistryOps.CachedRegistryInfoGetter(this.registryLookup);
 	}
 }

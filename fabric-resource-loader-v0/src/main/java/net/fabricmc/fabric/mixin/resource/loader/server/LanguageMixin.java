@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -43,10 +42,8 @@ class LanguageMixin {
 	@Final
 	private static Logger LOGGER;
 
-	@Redirect(method = "create", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;", remap = false))
-	private static ImmutableMap<String, String> create(ImmutableMap.Builder<String, String> cir) {
-		Map<String, String> map = new HashMap<>(cir.buildOrThrow());
-
+	@Redirect(method = "create", at = @At(value = "INVOKE", target = "Ljava/util/Map;copyOf(Ljava/util/Map;)Ljava/util/Map;", remap = false))
+	private static Map<String, String> create(Map<String, String> map) {
 		for (Path path : ServerLanguageUtil.getModLanguageFiles()) {
 			loadFromPath(path, map::put);
 		}

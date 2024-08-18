@@ -19,17 +19,18 @@ package net.fabricmc.fabric.mixin.event.lifecycle.client;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.network.ClientTagLoader;
+import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.resource.ResourceFactory;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 
-@Mixin(ClientTagLoader.class)
-public class ClientTagLoaderMixin {
-	@Inject(method = "load(Lnet/minecraft/registry/DynamicRegistryManager;Z)V", at = @At("TAIL"))
-	private void invokeTagsLoaded(DynamicRegistryManager registryManager, boolean local, CallbackInfo ci) {
-		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(registryManager, true);
+@Mixin(ClientConfigurationNetworkHandler.class)
+public class ClientConfigurationNetworkHandlerMixin {
+	@Inject(method = "method_57043", at = @At(value = "RETURN"))
+	private void invokeTagsLoaded(ResourceFactory factory, CallbackInfoReturnable<DynamicRegistryManager.Immutable> cir) {
+		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(cir.getReturnValue(), true);
 	}
 }

@@ -16,18 +16,22 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
@@ -71,7 +75,8 @@ public class CustomIngredientImpl extends Ingredient {
 	private final CustomIngredient customIngredient;
 
 	public CustomIngredientImpl(CustomIngredient customIngredient) {
-		super(Stream.empty());
+		// We must pass a registry entry list that contains something that isn't air. It doesn't actually get used.
+		super(RegistryEntryList.of(Items.STONE.getRegistryEntry()));
 
 		this.customIngredient = customIngredient;
 	}
@@ -87,9 +92,9 @@ public class CustomIngredientImpl extends Ingredient {
 	}
 
 	@Override
-	public ItemStack[] getMatchingStacks() {
+	public List<RegistryEntry<Item>> getMatchingStacks() {
 		if (this.matchingStacks == null) {
-			this.matchingStacks = customIngredient.getMatchingStacks().toArray(ItemStack[]::new);
+			this.matchingStacks = customIngredient.getMatchingStacks();
 		}
 
 		return this.matchingStacks;
@@ -98,13 +103,5 @@ public class CustomIngredientImpl extends Ingredient {
 	@Override
 	public boolean test(@Nullable ItemStack stack) {
 		return stack != null && customIngredient.test(stack);
-	}
-
-	@Override
-	public boolean isEmpty() {
-		// We don't want to resolve the matching stacks,
-		// as this might cause the ingredient to use outdated tags when it's done too early.
-		// So we just return false when the matching stacks haven't been resolved yet (i.e. when the field is null).
-		return matchingStacks != null && matchingStacks.length == 0;
 	}
 }

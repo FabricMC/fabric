@@ -30,14 +30,16 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementEntry;
+import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.data.server.recipe.CraftingRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.RecipeExporter;
-import net.minecraft.data.server.recipe.RecipeProvider;
+import net.minecraft.data.server.recipe.RecipeGenerator;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
@@ -48,23 +50,25 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 /**
- * Extend this class and implement {@link FabricRecipeProvider#generate}.
+ * Extend this class and implement {@link FabricRecipeProvider#getRecipeGenerator}.
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
-public abstract class FabricRecipeProvider extends RecipeProvider {
+public abstract class FabricRecipeProvider extends RecipeGenerator.RecipeProvider {
 	protected final FabricDataOutput output;
+	private final CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture;
 
 	public FabricRecipeProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 		super(output, registriesFuture);
 		this.output = output;
+		this.registriesFuture = registriesFuture;
 	}
 
 	/**
-	 * Implement this method and then use the range of methods in {@link RecipeProvider} or from one of the recipe json factories such as {@link ShapedRecipeJsonBuilder} or {@link ShapelessRecipeJsonBuilder}.
+	 * Implement this method and then use the range of methods in {@link RecipeGenerator} or from one of the recipe json factories such as {@link ShapedRecipeJsonBuilder} or {@link ShapelessRecipeJsonBuilder}.
 	 */
 	@Override
-	public abstract void generate(RecipeExporter exporter);
+	protected abstract RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup registryLookup, RecipeExporter exporter);
 
 	/**
 	 * Return a new exporter that applies the specified conditions to any recipe json provider it receives.
@@ -82,43 +86,56 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 			public Advancement.Builder getAdvancementBuilder() {
 				return exporter.getAdvancementBuilder();
 			}
+
+			@Override
+			public void addRootAdvancement() {
+			}
 		};
 	}
 
 	@Override
-	public CompletableFuture<?> run(DataWriter writer, RegistryWrapper.WrapperLookup wrapperLookup) {
-		Set<Identifier> generatedRecipes = Sets.newHashSet();
-		List<CompletableFuture<?>> list = new ArrayList<>();
-		generate(new RecipeExporter() {
-			@Override
-			public void accept(Identifier recipeId, Recipe<?> recipe, @Nullable AdvancementEntry advancement) {
-				Identifier identifier = getRecipeIdentifier(recipeId);
+	public CompletableFuture<?> run(DataWriter writer) {
+		return registriesFuture.thenCompose((wrapperLookup -> {
+			Set<Identifier> generatedRecipes = Sets.newHashSet();
+			List<CompletableFuture<?>> list = new ArrayList<>();
+			getRecipeGenerator(wrapperLookup, new RecipeExporter() {
+				@Override
+				public void accept(Identifier recipeId, Recipe<?> recipe, @Nullable AdvancementEntry advancement) {
+					Identifier identifier = getRecipeIdentifier(recipeId);
 
-				if (!generatedRecipes.add(identifier)) {
-					throw new IllegalStateException("Duplicate recipe " + identifier);
+					if (!generatedRecipes.add(identifier)) {
+						throw new IllegalStateException("Duplicate recipe " + identifier);
+					}
+
+					RegistryOps<JsonElement> registryOps = wrapperLookup.getOps(JsonOps.INSTANCE);
+					JsonObject recipeJson = Recipe.CODEC.encodeStart(registryOps, recipe).getOrThrow(IllegalStateException::new).getAsJsonObject();
+					ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(recipe);
+					FabricDataGenHelper.addConditions(recipeJson, conditions);
+
+					final DataOutput.PathResolver recipesPathResolver = output.getResolver(RegistryKeys.RECIPE);
+					final DataOutput.PathResolver advancementsPathResolver = output.getResolver(RegistryKeys.ADVANCEMENT);
+
+					list.add(DataProvider.writeToPath(writer, recipeJson, recipesPathResolver.resolveJson(identifier)));
+
+					if (advancement != null) {
+						JsonObject advancementJson = Advancement.CODEC.encodeStart(registryOps, advancement.value()).getOrThrow(IllegalStateException::new).getAsJsonObject();
+						FabricDataGenHelper.addConditions(advancementJson, conditions);
+						list.add(DataProvider.writeToPath(writer, advancementJson, advancementsPathResolver.resolveJson(getRecipeIdentifier(advancement.id()))));
+					}
 				}
 
-				RegistryOps<JsonElement> registryOps = wrapperLookup.getOps(JsonOps.INSTANCE);
-				JsonObject recipeJson = Recipe.CODEC.encodeStart(registryOps, recipe).getOrThrow(IllegalStateException::new).getAsJsonObject();
-				ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(recipe);
-				FabricDataGenHelper.addConditions(recipeJson, conditions);
-
-				list.add(DataProvider.writeToPath(writer, recipeJson, recipesPathResolver.resolveJson(identifier)));
-
-				if (advancement != null) {
-					JsonObject advancementJson = Advancement.CODEC.encodeStart(registryOps, advancement.value()).getOrThrow(IllegalStateException::new).getAsJsonObject();
-					FabricDataGenHelper.addConditions(advancementJson, conditions);
-					list.add(DataProvider.writeToPath(writer, advancementJson, advancementsPathResolver.resolveJson(getRecipeIdentifier(advancement.id()))));
+				@Override
+				public Advancement.Builder getAdvancementBuilder() {
+					//noinspection removal
+					return Advancement.Builder.createUntelemetered().parent(CraftingRecipeJsonBuilder.ROOT);
 				}
-			}
 
-			@Override
-			public Advancement.Builder getAdvancementBuilder() {
-				//noinspection removal
-				return Advancement.Builder.createUntelemetered().parent(CraftingRecipeJsonBuilder.ROOT);
-			}
-		});
-		return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));
+				@Override
+				public void addRootAdvancement() {
+				}
+			});
+			return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));
+		}));
 	}
 
 	/**

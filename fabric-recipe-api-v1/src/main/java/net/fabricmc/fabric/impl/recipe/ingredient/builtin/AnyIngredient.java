@@ -17,31 +17,26 @@
 package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
 public class AnyIngredient extends CombinedIngredient {
-	private static final MapCodec<AnyIngredient> ALLOW_EMPTY_CODEC = createCodec(Ingredient.ALLOW_EMPTY_CODEC);
-	private static final MapCodec<AnyIngredient> DISALLOW_EMPTY_CODEC = createCodec(Ingredient.DISALLOW_EMPTY_CODEC);
-
-	private static MapCodec<AnyIngredient> createCodec(Codec<Ingredient> ingredientCodec) {
-		return ingredientCodec
-				.listOf()
-				.fieldOf("ingredients")
-				.xmap(AnyIngredient::new, AnyIngredient::getIngredients);
-	}
+	private static final MapCodec<AnyIngredient> CODEC = Ingredient.CODEC
+			.listOf()
+			.fieldOf("ingredients")
+			.xmap(AnyIngredient::new, AnyIngredient::getIngredients);
 
 	public static final CustomIngredientSerializer<AnyIngredient> SERIALIZER =
-			new CombinedIngredient.Serializer<>(Identifier.of("fabric", "any"), AnyIngredient::new, ALLOW_EMPTY_CODEC, DISALLOW_EMPTY_CODEC);
+			new CombinedIngredient.Serializer<>(Identifier.of("fabric", "any"), AnyIngredient::new, CODEC);
 
 	public AnyIngredient(List<Ingredient> ingredients) {
 		super(ingredients);
@@ -59,11 +54,11 @@ public class AnyIngredient extends CombinedIngredient {
 	}
 
 	@Override
-	public List<ItemStack> getMatchingStacks() {
-		List<ItemStack> previewStacks = new ArrayList<>();
+	public List<RegistryEntry<Item>> getMatchingStacks() {
+		List<RegistryEntry<Item>> previewStacks = new ArrayList<>();
 
 		for (Ingredient ingredient : ingredients) {
-			previewStacks.addAll(Arrays.asList(ingredient.getMatchingStacks()));
+			previewStacks.addAll(ingredient.getMatchingStacks());
 		}
 
 		return previewStacks;

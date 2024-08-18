@@ -16,10 +16,7 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.block.entity;
 
-import com.mojang.datafixers.types.Type;
-
 import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 
 /**
@@ -35,21 +32,5 @@ public interface FabricBlockEntityType {
 	 */
 	default void addSupportedBlock(Block block) {
 		throw new AssertionError("Implemented in Mixin");
-	}
-
-	/**
-	 * General-purpose Fabric-provided extensions for {@link BlockEntityType.Builder}.
-	 *
-	 * <p>Note: This interface is automatically implemented on {@link BlockEntityType.Builder} via Mixin and interface injection.
-	 */
-	interface Builder<T extends BlockEntity> {
-		/**
-		 * Builds the {@link BlockEntityType}, see {@link BlockEntityType.Builder#build(Type)}.
-		 *
-		 * @return the built {@link BlockEntityType}
-		 */
-		default BlockEntityType<T> build() {
-			throw new AssertionError("Implemented in Mixin");
-		}
 	}
 }

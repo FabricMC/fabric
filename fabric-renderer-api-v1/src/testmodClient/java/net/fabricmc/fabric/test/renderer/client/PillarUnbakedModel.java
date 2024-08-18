@@ -40,13 +40,19 @@ public class PillarUnbakedModel implements UnbakedModel {
 			.map(suffix -> new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, RendererTest.id("block/pillar_" + suffix)))
 			.toList();
 
-	@Override
+	// TODO 24w33a
+	/*@Override
 	public Collection<Identifier> getModelDependencies() {
 		return Collections.emptySet();
 	}
 
 	@Override
 	public void setParents(Function<Identifier, UnbakedModel> modelLoader) {
+	}*/
+
+	@Override
+	public void method_62326(class_10103 arg, class_10102 arg2) {
+
 	}
 
 	@Nullable

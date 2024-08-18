@@ -234,7 +234,9 @@ public class ConventionLogWarnings implements ModInitializer {
 			// We only care about vanilla registries
 			dynamicRegistries.streamAllRegistries().forEach(registryEntry -> {
 				if (registryEntry.key().getValue().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
-					registryEntry.value().streamTags().forEach(tagKey -> {
+					registryEntry.value().streamTags().forEach(listEntry -> {
+						TagKey<?> tagKey = TagKey.of(registryEntry.key(), listEntry.getTag().id());
+
 						// Grab legacy tags we migrated or discourage
 						if (LEGACY_C_TAGS.containsKey(tagKey)) {
 							legacyTags.add(tagKey);

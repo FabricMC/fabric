@@ -22,7 +22,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.RegistryOps;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
@@ -40,7 +40,7 @@ public record AndResourceCondition(List<ResourceCondition> conditions) implement
 	}
 
 	@Override
-	public boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup) {
-		return ResourceConditionsImpl.conditionsMet(this.conditions(), registryLookup, true);
+	public boolean test(@Nullable RegistryOps.RegistryInfoGetter registryInfo) {
+		return ResourceConditionsImpl.conditionsMet(this.conditions(), registryInfo, true);
 	}
 }

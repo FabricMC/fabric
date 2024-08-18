@@ -16,9 +16,11 @@
 
 package net.fabricmc.fabric.mixin.resource.conditions;
 
+import java.util.List;
 import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.stream.Stream;
 
 import com.google.gson.JsonElement;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -35,8 +37,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.loot.LootDataType;
 import net.minecraft.registry.CombinedDynamicRegistries;
-import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.MutableRegistry;
+import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.ReloadableRegistries;
@@ -55,21 +57,21 @@ public class ReloadableRegistriesMixin {
 	@Unique
 	private static final WeakHashMap<RegistryOps<?>, RegistryWrapper.WrapperLookup> REGISTRY_LOOKUPS = new WeakHashMap<>();
 
-	@WrapOperation(method = "reload", at = @At(value = "NEW", target = "net/minecraft/registry/ReloadableRegistries$ReloadableWrapperLookup"))
-	private static ReloadableRegistries.ReloadableWrapperLookup storeWrapperLookup(DynamicRegistryManager registryManager, Operation<ReloadableRegistries.ReloadableWrapperLookup> original, @Share("wrapper") LocalRef<RegistryWrapper.WrapperLookup> share) {
-		ReloadableRegistries.ReloadableWrapperLookup lookup = original.call(registryManager);
+	@WrapOperation(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;of(Ljava/util/stream/Stream;)Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;"))
+	private static RegistryWrapper.WrapperLookup storeWrapperLookup(Stream<RegistryWrapper.Impl<?>> wrappers, Operation<RegistryWrapper.WrapperLookup> original, @Share("wrapper") LocalRef<RegistryWrapper.WrapperLookup> share) {
+		RegistryWrapper.WrapperLookup lookup = original.call(wrappers);
 		share.set(lookup);
 		return lookup;
 	}
 
-	@Inject(method = "reload", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/registry/ReloadableRegistries$ReloadableWrapperLookup;getOps(Lcom/mojang/serialization/DynamicOps;)Lnet/minecraft/registry/RegistryOps;", shift = At.Shift.AFTER))
-	private static void storeWrapperLookup(CombinedDynamicRegistries<ServerDynamicRegistryType> dynamicRegistries, ResourceManager resourceManager, Executor prepareExecutor, CallbackInfoReturnable<CompletableFuture<CombinedDynamicRegistries<ServerDynamicRegistryType>>> cir, @Local RegistryOps ops, @Share("wrapper") LocalRef<RegistryWrapper.WrapperLookup> share) {
+	@Inject(method = "reload", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;getOps(Lcom/mojang/serialization/DynamicOps;)Lnet/minecraft/registry/RegistryOps;", shift = At.Shift.AFTER))
+	private static void storeWrapperLookup(CombinedDynamicRegistries<ServerDynamicRegistryType> dynamicRegistries, List<Registry.PendingTagLoad<?>> pendingTagLoads, ResourceManager resourceManager, Executor prepareExecutor, CallbackInfoReturnable<CompletableFuture<ReloadableRegistries.ReloadResult>> cir, @Local RegistryOps ops, @Share("wrapper") LocalRef<RegistryWrapper.WrapperLookup> share) {
 		REGISTRY_LOOKUPS.put(ops, share.get());
 	}
 
-	@Inject(method = "method_58278", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "method_61239", at = @At("HEAD"), cancellable = true)
 	private static void applyConditions(LootDataType lootDataType, RegistryOps ops, MutableRegistry mutableRegistry, Identifier id, JsonElement json, CallbackInfo ci) {
-		if (json.isJsonObject() && !ResourceConditionsImpl.applyResourceConditions(json.getAsJsonObject(), lootDataType.registryKey().getValue().getPath(), id, REGISTRY_LOOKUPS.get(ops))) {
+		if (json.isJsonObject() && !ResourceConditionsImpl.applyResourceConditions(json.getAsJsonObject(), lootDataType.registryKey().getValue().getPath(), id, new RegistryOps.CachedRegistryInfoGetter(REGISTRY_LOOKUPS.get(ops)))) {
 			ci.cancel();
 		}
 	}

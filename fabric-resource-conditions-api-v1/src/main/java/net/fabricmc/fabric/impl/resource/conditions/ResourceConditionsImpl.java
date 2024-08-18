@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
@@ -33,8 +34,8 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.TagManagerLoader;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
@@ -61,14 +62,14 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		ResourceConditions.register(DefaultResourceConditionTypes.REGISTRY_CONTAINS);
 	}
 
-	public static boolean applyResourceConditions(JsonObject obj, String dataType, Identifier key, @Nullable RegistryWrapper.WrapperLookup registryLookup) {
+	public static boolean applyResourceConditions(JsonObject obj, String dataType, Identifier key, @Nullable RegistryOps.RegistryInfoGetter registryInfo) {
 		boolean debugLogEnabled = ResourceConditionsImpl.LOGGER.isDebugEnabled();
 
 		if (obj.has(ResourceConditions.CONDITIONS_KEY)) {
 			DataResult<ResourceCondition> conditions = ResourceCondition.CONDITION_CODEC.parse(JsonOps.INSTANCE, obj.get(ResourceConditions.CONDITIONS_KEY));
 
 			if (conditions.isSuccess()) {
-				boolean matched = conditions.getOrThrow().test(registryLookup);
+				boolean matched = conditions.getOrThrow().test(registryInfo);
 
 				if (debugLogEnabled) {
 					String verdict = matched ? "Allowed" : "Rejected";
@@ -86,9 +87,9 @@ public final class ResourceConditionsImpl implements ModInitializer {
 
 	// Condition implementations
 
-	public static boolean conditionsMet(List<ResourceCondition> conditions, @Nullable RegistryWrapper.WrapperLookup registryLookup, boolean and) {
+	public static boolean conditionsMet(List<ResourceCondition> conditions, @Nullable RegistryOps.RegistryInfoGetter registryInfo, boolean and) {
 		for (ResourceCondition condition : conditions) {
-			if (condition.test(registryLookup) != and) {
+			if (condition.test(registryInfo) != and) {
 				return !and;
 			}
 		}
@@ -116,11 +117,11 @@ public final class ResourceConditionsImpl implements ModInitializer {
 	 */
 	public static final ThreadLocal<Map<RegistryKey<?>, Set<Identifier>>> LOADED_TAGS = new ThreadLocal<>();
 
-	public static void setTags(List<TagManagerLoader.RegistryTags<?>> tags) {
+	public static void setTags(List<Registry.PendingTagLoad<?>> tags) {
 		Map<RegistryKey<?>, Set<Identifier>> tagMap = new IdentityHashMap<>();
 
-		for (TagManagerLoader.RegistryTags<?> registryTags : tags) {
-			tagMap.put(registryTags.key(), registryTags.tags().keySet());
+		for (Registry.PendingTagLoad<?> registryTags : tags) {
+			tagMap.put(registryTags.getKey(), registryTags.getLookup().streamTagKeys().map(TagKey::id).collect(Collectors.toSet()));
 		}
 
 		LOADED_TAGS.set(tagMap);
@@ -163,19 +164,19 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		return set.isSubsetOf(currentFeatures);
 	}
 
-	public static boolean registryContains(@Nullable RegistryWrapper.WrapperLookup registryLookup, Identifier registryId, List<Identifier> entries) {
+	public static boolean registryContains(@Nullable RegistryOps.RegistryInfoGetter registryInfo, Identifier registryId, List<Identifier> entries) {
 		RegistryKey<? extends Registry<Object>> registryKey = RegistryKey.ofRegistry(registryId);
 
-		if (registryLookup == null) {
+		if (registryInfo == null) {
 			LOGGER.warn("Can't retrieve registry {}, failing registry_contains resource condition check", registryId);
 			return false;
 		}
 
-		Optional<RegistryWrapper.Impl<Object>> wrapper = registryLookup.getOptionalWrapper(registryKey);
+		Optional<RegistryOps.RegistryInfo<Object>> wrapper = registryInfo.getRegistryInfo(registryKey);
 
 		if (wrapper.isPresent()) {
 			for (Identifier id : entries) {
-				if (wrapper.get().getOptional(RegistryKey.of(registryKey, id)).isEmpty()) {
+				if (wrapper.get().entryLookup().getOptional(RegistryKey.of(registryKey, id)).isEmpty()) {
 					return false;
 				}
 			}

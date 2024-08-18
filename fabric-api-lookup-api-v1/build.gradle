@@ -7,5 +7,6 @@ moduleDependencies(project, [
 
 testDependencies(project, [
 	':fabric-rendering-v1',
-	':fabric-object-builder-api-v1'
+	':fabric-object-builder-api-v1',
+	':fabric-transitive-access-wideners-v1'
 ])

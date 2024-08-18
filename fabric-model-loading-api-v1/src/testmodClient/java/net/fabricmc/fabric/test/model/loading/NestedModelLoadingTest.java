@@ -19,6 +19,9 @@ package net.fabricmc.fabric.test.model.loading;
 import static net.fabricmc.fabric.test.model.loading.ModelTestModClient.id;
 
 import com.mojang.logging.LogUtils;
+
+import net.minecraft.class_10096;
+
 import org.slf4j.Logger;
 
 import net.minecraft.client.render.model.ModelLoader;
@@ -66,11 +69,11 @@ public class NestedModelLoadingTest implements ClientModInitializer {
 				} else if (id.equals(NESTED_MODEL_3)) {
 					// Will be overridden by the model modifier below anyway.
 					LOGGER.info("   Returning dummy model for nested model 3");
-					ret = context.getOrLoadModel(ModelLoader.MISSING_ID);
+					ret = context.getOrLoadModel(class_10096.field_53660);
 				} else if (id.equals(NESTED_MODEL_4)) {
 					// Will be overridden by the model modifier below anyway.
 					LOGGER.info("    Returning dummy model for nested model 4");
-					ret = context.getOrLoadModel(ModelLoader.MISSING_ID);
+					ret = context.getOrLoadModel(class_10096.field_53660);
 				} else if (id.equals(NESTED_MODEL_5)) {
 					LOGGER.info("     Target model started loading");
 					ret = context.getOrLoadModel(TARGET_MODEL);

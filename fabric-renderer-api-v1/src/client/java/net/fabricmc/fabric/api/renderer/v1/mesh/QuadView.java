@@ -200,7 +200,7 @@ public interface QuadView {
 		// Mimic material properties to the largest possible extent
 		int outputColorIndex = material().disableColorIndex() ? -1 : colorIndex();
 		boolean outputShade = !material().disableDiffuse();
-		return new BakedQuad(vertexData, outputColorIndex, lightFace(), sprite, outputShade);
+		return new BakedQuad(vertexData, outputColorIndex, lightFace(), sprite, outputShade, 0 /* TODO 24w33a */);
 	}
 
 	/**

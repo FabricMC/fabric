@@ -27,6 +27,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.registry.tag.BlockTags;
@@ -52,7 +53,7 @@ public class DefaultResourceConditionsTest {
 
 	private void expectCondition(TestContext context, String name, ResourceCondition condition, boolean expected) {
 		RegistryWrapper.WrapperLookup registryLookup = context.getWorld().getRegistryManager();
-		boolean actual = condition.test(registryLookup);
+		boolean actual = condition.test(new RegistryOps.CachedRegistryInfoGetter(registryLookup));
 
 		if (actual != expected) {
 			throw new AssertionError("Test \"%s\" for condition %s failed; expected %s, got %s".formatted(name, condition.getType().id(), expected, actual));
@@ -171,7 +172,7 @@ public class DefaultResourceConditionsTest {
 		ResourceConditionsImpl.LOADED_TAGS.set(
 				context.getWorld().getRegistryManager().streamAllRegistries().collect(Collectors.toMap(
 						DynamicRegistryManager.Entry::key,
-						e -> e.value().streamTags().map(TagKey::id).collect(Collectors.toUnmodifiableSet())
+						e -> e.value().streamTags().map(t -> t.getTag().id()).collect(Collectors.toUnmodifiableSet())
 				))
 		);
 

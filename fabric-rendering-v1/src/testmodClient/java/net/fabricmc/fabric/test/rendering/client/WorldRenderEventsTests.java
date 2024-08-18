@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.rendering.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.class_9974;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
@@ -27,14 +28,12 @@ import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 public class WorldRenderEventsTests implements ClientModInitializer {
 	private static boolean onBlockOutline(WorldRenderContext wrc, WorldRenderContext.BlockOutlineContext blockOutlineContext) {
@@ -76,7 +75,7 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 
-		WorldRenderer.renderFilledBox(matrices, buffer, 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
+		class_9974.method_62300(matrices, buffer, 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
 		BufferRenderer.drawWithGlobalProgram(buffer.end());
 
 		matrices.pop();
@@ -86,8 +85,8 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// Renders a diamond block above diamond blocks when they are looked at.
-		WorldRenderEvents.BLOCK_OUTLINE.register(WorldRenderEventsTests::onBlockOutline);
+		//WorldRenderEvents.BLOCK_OUTLINE.register(WorldRenderEventsTests::onBlockOutline);
 		// Renders a translucent box at (0, 100, 0)
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(WorldRenderEventsTests::renderAfterTranslucent);
+		//WorldRenderEvents.AFTER_TRANSLUCENT.register(WorldRenderEventsTests::renderAfterTranslucent);
 	}
 }

@@ -54,7 +54,6 @@ import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
-import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.registry.LandPathNodeTypesRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.SculkSensorFrequencyRegistry;
@@ -94,8 +93,6 @@ public final class ContentRegistryTest implements ModInitializer {
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.DIAMOND_BLOCK, 4, 4);
 		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.getDefaultState());
-		FuelRegistry.INSTANCE.add(Items.OBSIDIAN, 50);
-		FuelRegistry.INSTANCE.add(ItemTags.DIRT, 100);
 		LandPathNodeTypesRegistry.register(Blocks.DEAD_BUSH, PathNodeType.DAMAGE_OTHER, PathNodeType.DANGER_OTHER);
 		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
 
@@ -134,11 +131,8 @@ public final class ContentRegistryTest implements ModInitializer {
 			LOGGER.info("OxidizableBlocksRegistry test passed!");
 		}
 
-		VillagerInteractionRegistries.registerCollectable(Items.APPLE);
 		VillagerInteractionRegistries.registerFood(Items.APPLE, 4);
 		VillagerInteractionRegistries.registerCompostable(Items.APPLE);
-
-		VillagerInteractionRegistries.registerCollectable(Items.OAK_SAPLING);
 
 		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.ofVanilla("fake_loot_table")));
 
@@ -162,8 +156,8 @@ public final class ContentRegistryTest implements ModInitializer {
 		 * This testmod uses an accessor due to Loom limitations that prevent TAWs from applying across Gradle subproject boundaries */
 		FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> {
 			builder.registerPotionType(dirtyPotion);
-			builder.registerItemRecipe(Items.POTION, Ingredient.fromTag(ItemTags.DIRT), dirtyPotion);
-			builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.fromTag(ItemTags.SMALL_FLOWERS), Potions.HEALING);
+			builder.registerItemRecipe(Items.POTION, Ingredient.fromTag(Registries.ITEM.getEntryList(ItemTags.DIRT).get()), dirtyPotion);
+			builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.fromTag(Registries.ITEM.getEntryList(ItemTags.SMALL_FLOWERS).get()), Potions.HEALING);
 
 			if (builder.getEnabledFeatures().contains(FeatureFlags.BUNDLE)) {
 				builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.ofItems(Items.BUNDLE), Potions.LUCK);

@@ -23,7 +23,6 @@ import java.util.Locale;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.recipe.RecipeManager;
-import net.minecraft.registry.tag.TagManagerLoader;
 import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.server.function.FunctionLoader;
 import net.minecraft.util.Identifier;
@@ -33,7 +32,7 @@ import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 
 @Mixin({
 		/* public */
-		RecipeManager.class, ServerAdvancementLoader.class, FunctionLoader.class, TagManagerLoader.class
+		RecipeManager.class, ServerAdvancementLoader.class, FunctionLoader.class
 		/* private */
 })
 public abstract class KeyedResourceReloadListenerMixin implements IdentifiableResourceReloadListener {
@@ -52,8 +51,6 @@ public abstract class KeyedResourceReloadListenerMixin implements IdentifiableRe
 				this.fabric$id = ResourceReloadListenerKeys.ADVANCEMENTS;
 			} else if (self instanceof FunctionLoader) {
 				this.fabric$id = ResourceReloadListenerKeys.FUNCTIONS;
-			} else if (self instanceof TagManagerLoader) {
-				this.fabric$id = ResourceReloadListenerKeys.TAGS;
 			} else {
 				this.fabric$id = Identifier.ofVanilla("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 			}
@@ -66,13 +63,7 @@ public abstract class KeyedResourceReloadListenerMixin implements IdentifiableRe
 	@SuppressWarnings({"ConstantConditions", "RedundantCast"})
 	public Collection<Identifier> getFabricDependencies() {
 		if (this.fabric$dependencies == null) {
-			Object self = this;
-
-			if (self instanceof TagManagerLoader) {
-				this.fabric$dependencies = Collections.emptyList();
-			} else {
-				this.fabric$dependencies = Collections.singletonList(ResourceReloadListenerKeys.TAGS);
-			}
+			this.fabric$dependencies = Collections.emptyList();
 		}
 
 		return this.fabric$dependencies;

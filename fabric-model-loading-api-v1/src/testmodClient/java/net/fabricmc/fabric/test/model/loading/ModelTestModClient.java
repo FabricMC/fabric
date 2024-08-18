@@ -22,6 +22,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CropBlock;
 import net.minecraft.block.HorizontalConnectingBlock;
+import net.minecraft.class_10096;
 import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.model.BakedModel;
@@ -84,7 +85,7 @@ public class ModelTestModClient implements ClientModInitializer {
 				ModelIdentifier id = context.topLevelId();
 
 				if (id != null && id.equals(fenceId)) {
-					return context.getOrLoadModel(ModelLoader.MISSING_ID);
+					return context.getOrLoadModel(class_10096.field_53660);
 				}
 
 				return model;
@@ -95,7 +96,7 @@ public class ModelTestModClient implements ClientModInitializer {
 				Identifier id = context.resourceId();
 
 				if (id != null && id.equals(BROWN_GLAZED_TERRACOTTA_MODEL_ID)) {
-					return context.baker().getOrLoadModel(ModelLoader.MISSING_ID);
+					return context.baker().getOrLoadModel(class_10096.field_53660);
 				}
 
 				return model;

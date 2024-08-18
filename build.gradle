@@ -4,7 +4,7 @@ plugins {
 	id "idea"
 	id "maven-publish"
 	id 'jacoco'
-	id "fabric-loom" version "1.6.11" apply false
+	id "fabric-loom" version "1.7.3" apply false
 	id "com.diffplug.spotless" version "6.20.0"
 	id "org.ajoberstar.grgit" version "5.2.2"
 	id "me.modmuss50.remotesign" version "0.4.0" apply false
@@ -365,8 +365,7 @@ apply from: "gradle/module-validation.gradle"
 apply from: "gradle/module-versioning.gradle"
 
 loom {
-	// Required as the item-group API uses access widened classes in its API, without this the javadoc generation fails.
-	accessWidenerPath = file("fabric-item-group-api-v1/src/main/resources/fabric-item-group-api-v1.accesswidener")
+	accessWidenerPath = file("gradle/javadoc.accesswidener")
 }
 
 javadoc {
@@ -550,6 +549,8 @@ tasks.register('serverPropertiesJar', Jar) {
 }
 
 tasks.register('runProductionAutoTestServer', JavaExec) {
+	// TODO re-enable with https://github.com/FabricMC/fabric-loader/pull/967
+	enabled = false
 	dependsOn remapJar, remapTestmodJar, serverPropertiesJar
 	classpath.from configurations.productionRuntimeServer, serverPropertiesJar
 	mainClass = "net.fabricmc.installer.ServerLauncher"

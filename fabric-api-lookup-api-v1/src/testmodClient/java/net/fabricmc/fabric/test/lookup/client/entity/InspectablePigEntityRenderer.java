@@ -18,7 +18,7 @@ package net.fabricmc.fabric.test.lookup.client.entity;
 
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.PigEntityRenderer;
-import net.minecraft.entity.passive.PigEntity;
+import net.minecraft.client.render.entity.state.PigEntityRenderState;
 import net.minecraft.util.Identifier;
 
 public class InspectablePigEntityRenderer extends PigEntityRenderer {
@@ -29,7 +29,7 @@ public class InspectablePigEntityRenderer extends PigEntityRenderer {
 	}
 
 	@Override
-	public Identifier getTexture(PigEntity pigEntity) {
+	public Identifier getTexture(PigEntityRenderState context) {
 		return TEXTURE;
 	}
 }

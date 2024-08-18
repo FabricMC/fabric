@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.content.registry",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AxeItemAccessor",
     "BrewingRecipeRegistryBuilderMixin",
@@ -11,11 +11,11 @@
     "HoeItemAccessor",
     "HoneycombItemMixin",
     "LandPathNodeMakerMixin",
-    "AbstractFurnaceBlockEntityMixin",
     "FireBlockMixin",
     "OxidizableMixin",
     "ShovelItemAccessor",
-    "VillagerEntityAccessor"
+    "VillagerEntityAccessor",
+    "VillagerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

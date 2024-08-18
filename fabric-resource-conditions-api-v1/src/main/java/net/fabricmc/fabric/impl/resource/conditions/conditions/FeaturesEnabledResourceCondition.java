@@ -23,7 +23,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.util.Identifier;
@@ -52,7 +52,7 @@ public record FeaturesEnabledResourceCondition(Collection<Identifier> features) 
 	}
 
 	@Override
-	public boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup) {
+	public boolean test(@Nullable RegistryOps.RegistryInfoGetter registryInfo) {
 		return ResourceConditionsImpl.featuresEnabled(this.features());
 	}
 }

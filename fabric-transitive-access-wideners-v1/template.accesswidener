@@ -80,9 +80,6 @@ transitive-accessible method net/minecraft/server/world/ServerWorld sendToPlayer
 transitive-accessible method net/minecraft/text/TextColor getHexCode ()Ljava/lang/String;
 transitive-accessible method net/minecraft/text/TranslatableTextContent getArg (I)Lnet/minecraft/text/StringVisitable;
 
-# Creating block entity types
-transitive-extendable class net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
-
 # Villagers
 transitive-accessible field net/minecraft/village/VillagerType BIOME_TO_TYPE Ljava/util/Map;
 transitive-accessible method net/minecraft/village/VillagerType <init> (Ljava/lang/String;)V

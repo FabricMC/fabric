@@ -1,6 +1,3 @@
 accessWidener	v1	named
 
-accessible method net/minecraft/block/entity/AbstractFurnaceBlockEntity addFuel (Ljava/util/Map;Lnet/minecraft/registry/tag/TagKey;I)V
-accessible method net/minecraft/block/entity/AbstractFurnaceBlockEntity addFuel (Ljava/util/Map;Lnet/minecraft/item/ItemConvertible;I)V
-
 accessible method net/minecraft/recipe/BrewingRecipeRegistry$Recipe <init> (Lnet/minecraft/registry/entry/RegistryEntry;Lnet/minecraft/recipe/Ingredient;Lnet/minecraft/registry/entry/RegistryEntry;)V

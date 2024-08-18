@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
@@ -56,7 +56,7 @@ public record RegistryContainsResourceCondition(Identifier registry, List<Identi
 	}
 
 	@Override
-	public boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup) {
-		return ResourceConditionsImpl.registryContains(registryLookup, this.registry(), this.entries());
+	public boolean test(@Nullable RegistryOps.RegistryInfoGetter registryInfo) {
+		return ResourceConditionsImpl.registryContains(registryInfo, this.registry(), this.entries());
 	}
 }

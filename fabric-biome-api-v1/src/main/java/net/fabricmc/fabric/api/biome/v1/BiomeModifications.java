@@ -55,9 +55,9 @@ public final class BiomeModifications {
 	 *
 	 * @see BiomeSelectors
 	 */
-	public static void addCarver(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
+	public static void addCarver(Predicate<BiomeSelectionContext> biomeSelector, RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
 		create(configuredCarverKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
-			context.getGenerationSettings().addCarver(step, configuredCarverKey);
+			context.getGenerationSettings().addCarver(configuredCarverKey);
 		});
 	}
 

@@ -54,8 +54,8 @@ public abstract class EntityRenderersMixin {
 	// synthetic lambda in reloadEntityRenderers
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Redirect(method = "method_32174", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRendererFactory;create(Lnet/minecraft/client/render/entity/EntityRendererFactory$Context;)Lnet/minecraft/client/render/entity/EntityRenderer;"))
-	private static EntityRenderer<?> createEntityRenderer(EntityRendererFactory<?> entityRendererFactory, EntityRendererFactory.Context context, ImmutableMap.Builder builder, EntityRendererFactory.Context context2, EntityType<?> entityType) {
-		EntityRenderer<?> entityRenderer = entityRendererFactory.create(context);
+	private static EntityRenderer<?, ?> createEntityRenderer(EntityRendererFactory<?> entityRendererFactory, EntityRendererFactory.Context context, ImmutableMap.Builder builder, EntityRendererFactory.Context context2, EntityType<?> entityType) {
+		EntityRenderer<?, ?> entityRenderer = entityRendererFactory.create(context);
 
 		if (entityRenderer instanceof LivingEntityRenderer) { // Must be living for features
 			LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entityRenderer;
@@ -68,8 +68,8 @@ public abstract class EntityRenderersMixin {
 	// private static synthetic method_32175(Lcom/google/common/collect/ImmutableMap$Builder;Lnet/minecraft/class_5617$class_5618;Ljava/lang/String;Lnet/minecraft/class_5617;)V
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Redirect(method = "method_32175", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRendererFactory;create(Lnet/minecraft/client/render/entity/EntityRendererFactory$Context;)Lnet/minecraft/client/render/entity/EntityRenderer;"))
-	private static EntityRenderer<? extends PlayerEntity> createPlayerEntityRenderer(EntityRendererFactory playerEntityRendererFactory, EntityRendererFactory.Context context) {
-		EntityRenderer<? extends PlayerEntity> entityRenderer = playerEntityRendererFactory.create(context);
+	private static EntityRenderer<? extends PlayerEntity, ?> createPlayerEntityRenderer(EntityRendererFactory playerEntityRendererFactory, EntityRendererFactory.Context context) {
+		EntityRenderer<? extends PlayerEntity, ?> entityRenderer = playerEntityRendererFactory.create(context);
 
 		LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entityRenderer;
 		LivingEntityFeatureRendererRegistrationCallback.EVENT.invoker().registerRenderers(EntityType.PLAYER, (LivingEntityRenderer) entityRenderer, new RegistrationHelperImpl(accessor::callAddFeature), context);

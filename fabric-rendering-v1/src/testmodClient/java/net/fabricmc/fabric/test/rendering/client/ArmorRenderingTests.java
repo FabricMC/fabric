@@ -19,8 +19,8 @@ package net.fabricmc.fabric.test.rendering.client;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
@@ -28,13 +28,13 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 
 public class ArmorRenderingTests implements ClientModInitializer {
-	private BipedEntityModel<LivingEntity> armorModel;
+	private BipedEntityModel<BipedEntityRenderState> armorModel;
 	private final Identifier texture = Identifier.ofVanilla("textures/block/dirt.png");
 
 	// Renders a biped model with dirt texture, replacing diamond helmet and diamond chest plate rendering
 	@Override
 	public void onInitializeClient() {
-		ArmorRenderer.register((matrices, vertexConsumers, stack, entity, slot, light, model) -> {
+		ArmorRenderer.register((matrices, vertexConsumers, stack, renderState, slot, light, model) -> {
 			if (armorModel == null) {
 				armorModel = new BipedEntityModel<>(MinecraftClient.getInstance().getEntityModelLoader().getModelPart(EntityModelLayers.PLAYER_OUTER_ARMOR));
 			}

@@ -24,7 +24,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.PickaxeItem;
-import net.minecraft.item.ToolMaterials;
+import net.minecraft.item.ToolMaterial;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.potion.Potions;
 import net.minecraft.registry.Registries;
@@ -40,12 +40,11 @@ import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
-import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.util.TriState;
 
 public class CustomDamageTest implements ModInitializer {
 	public static final ComponentType<Integer> WEIRD = Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of("fabric-item-api-v1-testmod", "weird"),
-																			ComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
+																			ComponentType.<Integer>builder().codec(Codecs.NON_NEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
 	public static final CustomDamageHandler WEIRD_DAMAGE_HANDLER = (stack, amount, entity, slot, breakCallback) -> {
 		// If sneaking, apply all damage to vanilla. Otherwise, increment a tag on the stack by one and don't apply any damage
 		if (entity.isSneaking()) {
@@ -61,7 +60,6 @@ public class CustomDamageTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.ITEM, Identifier.of("fabric-item-api-v1-testmod", "weird_pickaxe"), WEIRD_PICK);
-		FuelRegistry.INSTANCE.add(WEIRD_PICK, 200);
 		FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> builder.registerPotionRecipe(Potions.WATER, WEIRD_PICK, Potions.AWKWARD));
 		EnchantmentEvents.ALLOW_ENCHANTING.register(((enchantment, target, enchantingContext) -> {
 			if (target.isOf(Items.DIAMOND_PICKAXE) && enchantment.matchesKey(Enchantments.SHARPNESS) && EnchantmentHelper.hasAnyEnchantmentsIn(target, EnchantmentTags.MINING_EXCLUSIVE_SET)) {
@@ -74,7 +72,7 @@ public class CustomDamageTest implements ModInitializer {
 
 	public static class WeirdPick extends PickaxeItem {
 		protected WeirdPick() {
-			super(ToolMaterials.GOLD, new Item.Settings().customDamage(WEIRD_DAMAGE_HANDLER));
+			super(ToolMaterial.GOLD, 3f, 5f, new Item.Settings().customDamage(WEIRD_DAMAGE_HANDLER));
 		}
 
 		@Override

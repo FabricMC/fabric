@@ -60,7 +60,7 @@ public class BlockRenderContext extends AbstractBlockRenderContext {
 
 	public void render(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, boolean cull, Random random, long seed, int overlay) {
 		try {
-			Vec3d offset = state.getModelOffset(blockView, pos);
+			Vec3d offset = state.getModelOffset(pos);
 			matrixStack.translate(offset.x, offset.y, offset.z);
 
 			this.vertexConsumer = buffer;

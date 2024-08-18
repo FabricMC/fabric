@@ -33,7 +33,6 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.ShapelessRecipe;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.recipe.input.CraftingRecipeInput;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.ShapelessMatch;
@@ -42,13 +41,13 @@ import net.fabricmc.fabric.impl.recipe.ingredient.ShapelessMatch;
 public class ShapelessRecipeMixin {
 	@Final
 	@Shadow
-	DefaultedList<Ingredient> ingredients;
+	List<Ingredient> ingredients;
 	@Unique
 	private boolean fabric_requiresTesting = false;
 
 	@Inject(at = @At("RETURN"), method = "<init>")
-	private void cacheRequiresTesting(String group, CraftingRecipeCategory category, ItemStack output, DefaultedList<Ingredient> input, CallbackInfo ci) {
-		for (Ingredient ingredient : input) {
+	private void cacheRequiresTesting(String group, CraftingRecipeCategory category, ItemStack result, List<Ingredient> ingredients, CallbackInfo ci) {
+		for (Ingredient ingredient : ingredients) {
 			if (ingredient.requiresTesting()) {
 				fabric_requiresTesting = true;
 				break;

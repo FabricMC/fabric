@@ -50,7 +50,7 @@ import net.minecraft.data.DataOutput;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.server.recipe.RecipeExporter;
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
+import net.minecraft.data.server.recipe.RecipeGenerator;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Items;
@@ -170,80 +170,90 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		public void generate(RecipeExporter exporter) {
-			offerPlanksRecipe2(exporter, SIMPLE_BLOCK, ItemTags.ACACIA_LOGS, 1);
+		protected RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup registryLookup, RecipeExporter exporter) {
+			return new RecipeGenerator(registryLookup, exporter) {
+				@Override
+				public void generate() {
+					offerPlanksRecipe2(SIMPLE_BLOCK, ItemTags.ACACIA_LOGS, 1);
 
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND_ORE, 4).input(Items.ITEM_FRAME)
-					.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
-					.offerTo(withConditions(exporter, ResourceConditions.registryContains(RegistryKeys.ITEM, Registries.ITEM.getId(Items.DIAMOND_BLOCK))));
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.EMERALD, 4).input(Items.ITEM_FRAME, 2)
-					.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
-					.offerTo(withConditions(exporter, ResourceConditions.registryContains(BiomeKeys.PLAINS, BiomeKeys.BADLANDS)));
+					createShapeless(RecipeCategory.MISC, Items.DIAMOND_ORE, 4).input(Items.ITEM_FRAME)
+							.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
+							.offerTo(withConditions(exporter, ResourceConditions.registryContains(RegistryKeys.ITEM, Registries.ITEM.getId(Items.DIAMOND_BLOCK))));
+					createShapeless(RecipeCategory.MISC, Items.EMERALD, 4).input(Items.ITEM_FRAME, 2)
+							.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
+							.offerTo(withConditions(exporter, ResourceConditions.registryContains(BiomeKeys.PLAINS, BiomeKeys.BADLANDS)));
 
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));
+					createShapeless(RecipeCategory.MISC, Items.GOLD_INGOT).input(Items.DIRT).criterion("has_dirt", conditionsFromItem(Items.DIRT)).offerTo(withConditions(exporter, NEVER_LOADED));
+					createShapeless(RecipeCategory.MISC, Items.DIAMOND).input(Items.STICK).criterion("has_stick", conditionsFromItem(Items.STICK)).offerTo(withConditions(exporter, ALWAYS_LOADED));
 
-			/* Generate test recipes using all types of custom ingredients for easy testing */
-			// Testing procedure for vanilla and fabric clients:
-			// - Create a new fabric server with the ingredient API.
-			// - Copy the generated recipes to a datapack, for example to world/datapacks/<packname>/data/test/recipe/.
-			// - Remember to also include a pack.mcmeta file in world/datapacks/<packname>.
-			// (see https://minecraft.wiki/w/Tutorials/Creating_a_data_pack)
-			// - Start the server and connect to it with a vanilla client.
-			// - Test all the following recipes
+					/* Generate test recipes using all types of custom ingredients for easy testing */
+					// Testing procedure for vanilla and fabric clients:
+					// - Create a new fabric server with the ingredient API.
+					// - Copy the generated recipes to a datapack, for example to world/datapacks/<packname>/data/test/recipe/.
+					// - Remember to also include a pack.mcmeta file in world/datapacks/<packname>.
+					// (see https://minecraft.wiki/w/Tutorials/Creating_a_data_pack)
+					// - Start the server and connect to it with a vanilla client.
+					// - Test all the following recipes
 
-			// Test partial NBT
-			// 1 undamaged pickaxe + 8 pickaxes with any damage value to test shapeless matching logic.
-			// Interesting test cases:
-			// - 9 damaged pickaxes should not match.
-			// - 9 undamaged pickaxes should match.
-			// - 1 undamaged pickaxe + 8 damaged pickaxes should match (regardless of the position).
-			// - 1 undamaged renamed pickaxe + 8 damaged pickaxes should match (components are not strictly matched here).
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND_BLOCK)
-					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
-					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
-					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
-					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
-					.input(DefaultCustomIngredients.components(
-							Ingredient.ofItems(Items.DIAMOND_PICKAXE),
-							ComponentChanges.builder()
+					// Test partial NBT
+					// 1 undamaged pickaxe + 8 pickaxes with any damage value to test shapeless matching logic.
+					// Interesting test cases:
+					// - 9 damaged pickaxes should not match.
+					// - 9 undamaged pickaxes should match.
+					// - 1 undamaged pickaxe + 8 damaged pickaxes should match (regardless of the position).
+					// - 1 undamaged renamed pickaxe + 8 damaged pickaxes should match (components are not strictly matched here).
+					createShapeless(RecipeCategory.MISC, Items.DIAMOND_BLOCK)
+							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+							.input(DefaultCustomIngredients.components(
+								Ingredient.ofItems(Items.DIAMOND_PICKAXE),
+								ComponentChanges.builder()
 									.add(DataComponentTypes.DAMAGE, 0)
 									.build()
+								)
 							)
-					)
-					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
-					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
-					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
-					.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
-					.criterion("has_pickaxe", conditionsFromItem(Items.DIAMOND_PICKAXE))
-					.offerTo(exporter);
+							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+							.input(Ingredient.ofItems(Items.DIAMOND_PICKAXE))
+							.criterion("has_pickaxe", conditionsFromItem(Items.DIAMOND_PICKAXE))
+							.offerTo(exporter);
 
-			// Test AND
-			// To test: charcoal should give a torch, but coal should not.
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.TORCH)
-					// charcoal only
-					.input(DefaultCustomIngredients.all(Ingredient.fromTag(ItemTags.COALS), Ingredient.ofItems(Items.CHARCOAL)))
-					.criterion("has_charcoal", conditionsFromItem(Items.CHARCOAL))
-					.offerTo(exporter);
+					// Test AND
+					// To test: charcoal should give a torch, but coal should not.
+					createShapeless(RecipeCategory.MISC, Items.TORCH)
+							// charcoal only
+							.input(DefaultCustomIngredients.all(ingredientFromTag(ItemTags.COALS), Ingredient.ofItems(Items.CHARCOAL)))
+							.criterion("has_charcoal", conditionsFromItem(Items.CHARCOAL))
+							.offerTo(exporter);
 
-			// Test OR
-			// To test: a golden pickaxe or a golden shovel should give a block of gold.
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.GOLD_BLOCK)
-					.input(DefaultCustomIngredients.any(Ingredient.ofItems(Items.GOLDEN_PICKAXE), Ingredient.ofItems(Items.GOLDEN_SHOVEL)))
-					.criterion("has_pickaxe", conditionsFromItem(Items.GOLDEN_PICKAXE))
-					.criterion("has_shovel", conditionsFromItem(Items.GOLDEN_SHOVEL))
-					.offerTo(exporter);
+					// Test OR
+					// To test: a golden pickaxe or a golden shovel should give a block of gold.
+					createShapeless(RecipeCategory.MISC, Items.GOLD_BLOCK)
+							.input(DefaultCustomIngredients.any(Ingredient.ofItems(Items.GOLDEN_PICKAXE), Ingredient.ofItems(Items.GOLDEN_SHOVEL)))
+							.criterion("has_pickaxe", conditionsFromItem(Items.GOLDEN_PICKAXE))
+							.criterion("has_shovel", conditionsFromItem(Items.GOLDEN_SHOVEL))
+							.offerTo(exporter);
 
-			// Test difference
-			// To test: only copper, netherite and emerald should match the recipe.
-			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.BEACON)
-					.input(DefaultCustomIngredients.difference(
-							DefaultCustomIngredients.any(
-									Ingredient.fromTag(ItemTags.BEACON_PAYMENT_ITEMS),
-									Ingredient.ofItems(Items.COPPER_INGOT)),
-							Ingredient.ofItems(Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND)))
-					.criterion("has_payment", conditionsFromTag(ItemTags.BEACON_PAYMENT_ITEMS))
-					.offerTo(exporter);
+					// Test difference
+					// To test: only copper, netherite and emerald should match the recipe.
+					createShapeless(RecipeCategory.MISC, Items.BEACON)
+							.input(DefaultCustomIngredients.difference(
+									DefaultCustomIngredients.any(
+											ingredientFromTag(ItemTags.BEACON_PAYMENT_ITEMS),
+											Ingredient.ofItems(Items.COPPER_INGOT)),
+									Ingredient.ofItems(Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND)))
+							.criterion("has_payment", conditionsFromTag(ItemTags.BEACON_PAYMENT_ITEMS))
+							.offerTo(exporter);
+				}
+			};
+		}
+
+		@Override
+		public String getName() {
+			return "Test Recipes";
 		}
 	}
 
@@ -257,7 +267,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			translationBuilder.add(SIMPLE_BLOCK, "Simple Block");
 			translationBuilder.add(Identifier.of(MOD_ID, "identifier_test"), "Identifier Test");
 			translationBuilder.add(EntityType.ALLAY, "Allay");
-			translationBuilder.add(EntityAttributes.GENERIC_ARMOR, "Generic Armor");
+			translationBuilder.add(EntityAttributes.ARMOR, "Generic Armor");
 
 			try {
 				Optional<Path> path = dataOutput.getModContainer().findPath("assets/testmod/lang/en_us.base.json");

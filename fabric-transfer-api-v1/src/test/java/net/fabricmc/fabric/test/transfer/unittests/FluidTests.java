@@ -81,7 +81,7 @@ class FluidTests extends AbstractTransferApiTest {
 		WATER = FluidVariant.of(Fluids.WATER);
 		LAVA = FluidVariant.of(Fluids.LAVA);
 		TEST = Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(TransferTestInitializer.MOD_ID, "test"),
-								ComponentType.<Integer>builder().codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
+								ComponentType.<Integer>builder().codec(Codecs.NON_NEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
 	}
 
 	@Test

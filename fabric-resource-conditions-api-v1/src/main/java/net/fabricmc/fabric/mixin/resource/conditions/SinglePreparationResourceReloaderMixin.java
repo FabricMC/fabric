@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.SinglePreparationResourceReloader;
 import net.minecraft.util.profiler.Profiler;
@@ -39,11 +39,11 @@ public class SinglePreparationResourceReloaderMixin {
 		fabric_applyResourceConditions(resourceManager, profiler, object, fabric_getRegistryLookup());
 	}
 
-	protected void fabric_applyResourceConditions(ResourceManager resourceManager, Profiler profiler, Object object, @Nullable RegistryWrapper.WrapperLookup registryLookup) {
+	protected void fabric_applyResourceConditions(ResourceManager resourceManager, Profiler profiler, Object object, @Nullable RegistryOps.RegistryInfoGetter registryLookup) {
 	}
 
 	@Nullable
-	protected RegistryWrapper.WrapperLookup fabric_getRegistryLookup() {
+	protected RegistryOps.RegistryInfoGetter fabric_getRegistryLookup() {
 		return null;
 	}
 }

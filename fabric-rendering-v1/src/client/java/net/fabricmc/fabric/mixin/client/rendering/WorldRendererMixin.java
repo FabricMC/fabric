@@ -31,8 +31,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.PostEffectProcessor;
+import net.minecraft.client.option.CloudRenderMode;
 import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.Fog;
+import net.minecraft.client.render.FrameGraphBuilder;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -40,10 +43,12 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
@@ -63,7 +68,7 @@ public abstract class WorldRendererMixin {
 	@Unique private final WorldRenderContextImpl context = new WorldRenderContextImpl();
 
 	@Inject(method = "render", at = @At("HEAD"))
-	private void beforeRender(RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
+	private void beforeRender(ObjectAllocator objectAllocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
 		context.prepare((WorldRenderer) (Object) this, tickCounter, renderBlockOutline, camera, gameRenderer, lightmapTextureManager, projectionMatrix, positionMatrix, bufferBuilders.getEntityVertexConsumers(), world.getProfiler(), transparencyPostProcessor != null, world);
 		WorldRenderEvents.START.invoker().onStart(context);
 	}
@@ -75,7 +80,7 @@ public abstract class WorldRendererMixin {
 	}
 
 	@Inject(
-			method = "render",
+			method = "method_62214",
 			at = @At(
 				value = "INVOKE",
 				target = "Lnet/minecraft/client/render/WorldRenderer;renderLayer(Lnet/minecraft/client/render/RenderLayer;DDDLorg/joml/Matrix4f;Lorg/joml/Matrix4f;)V",
@@ -87,24 +92,24 @@ public abstract class WorldRendererMixin {
 		WorldRenderEvents.BEFORE_ENTITIES.invoker().beforeEntities(context);
 	}
 
-	@ModifyExpressionValue(method = "render", at = @At(value = "NEW", target = "net/minecraft/client/util/math/MatrixStack"))
+	@ModifyExpressionValue(method = "method_62214", at = @At(value = "NEW", target = "net/minecraft/client/util/math/MatrixStack"))
 	private MatrixStack setMatrixStack(MatrixStack matrixStack) {
 		context.setMatrixStack(matrixStack);
 		return matrixStack;
 	}
 
-	@Inject(method = "render", at = @At(value = "CONSTANT", args = "stringValue=blockentities", ordinal = 0))
+	@Inject(method = "method_62214", at = @At(value = "CONSTANT", args = "stringValue=blockentities", ordinal = 0))
 	private void afterEntities(CallbackInfo ci) {
 		WorldRenderEvents.AFTER_ENTITIES.invoker().afterEntities(context);
 	}
 
 	@Inject(
-			method = "render",
+			method = "renderTargetBlockOutline",
 			at = @At(
 				value = "FIELD",
 				target = "Lnet/minecraft/client/MinecraftClient;crosshairTarget:Lnet/minecraft/util/hit/HitResult;",
 				shift = At.Shift.AFTER,
-				ordinal = 1
+				ordinal = 0
 			)
 	)
 	private void beforeRenderOutline(CallbackInfo ci) {
@@ -136,7 +141,7 @@ public abstract class WorldRendererMixin {
 	}
 
 	@Inject(
-			method = "render",
+			method = "method_62214",
 			at = @At(
 				value = "INVOKE",
 				target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;DDD)V",
@@ -152,14 +157,8 @@ public abstract class WorldRendererMixin {
 		WorldRenderEvents.AFTER_TRANSLUCENT.invoker().afterTranslucent(context);
 	}
 
-	@Inject(
-			method = "render",
-			at = @At(
-				value = "INVOKE",
-				target = "Lnet/minecraft/client/render/WorldRenderer;renderChunkDebugInfo(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/render/Camera;)V"
-			)
-	)
-	private void onChunkDebugRender(CallbackInfo ci) {
+	@Inject(method = "method_62214", at = @At("RETURN"))
+	private void onFinishWritingFramebuffer(CallbackInfo ci) {
 		WorldRenderEvents.LAST.invoker().onLast(context);
 	}
 
@@ -174,7 +173,7 @@ public abstract class WorldRendererMixin {
 	}
 
 	@Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
-	private void renderWeather(LightmapTextureManager manager, float tickDelta, double x, double y, double z, CallbackInfo info) {
+	private void renderWeather(FrameGraphBuilder frameGraphBuilder, LightmapTextureManager lightmapTextureManager, Vec3d vec3d, float f, Fog fog, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.WeatherRenderer renderer = DimensionRenderingRegistry.getWeatherRenderer(world.getRegistryKey());
 
@@ -185,8 +184,8 @@ public abstract class WorldRendererMixin {
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "renderClouds(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;FDDD)V", cancellable = true)
-	private void renderCloud(MatrixStack matrices, Matrix4f matrix4f, Matrix4f matrix4f2, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo info) {
+	@Inject(at = @At("HEAD"), method = "renderClouds", cancellable = true)
+	private void renderCloud(FrameGraphBuilder frameGraphBuilder, Matrix4f matrix4f, Matrix4f matrix4f2, CloudRenderMode cloudRenderMode, Vec3d vec3d, float f, int i, float g, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.CloudRenderer renderer = DimensionRenderingRegistry.getCloudRenderer(world.getRegistryKey());
 
@@ -197,8 +196,8 @@ public abstract class WorldRendererMixin {
 		}
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Ljava/lang/Runnable;run()V", shift = At.Shift.AFTER, ordinal = 0), method = "renderSky(Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", cancellable = true)
-	private void renderSky(Matrix4f matrix4f, Matrix4f matrix4f2, float tickDelta, Camera camera, boolean bl, Runnable runnable, CallbackInfo info) {
+	@Inject(at = @At(value = "HEAD"), method = "renderSky", cancellable = true)
+	private void renderSky(FrameGraphBuilder frameGraphBuilder, Camera camera, float tickDelta, Fog fog, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.SkyRenderer renderer = DimensionRenderingRegistry.getSkyRenderer(world.getRegistryKey());
 

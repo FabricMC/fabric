@@ -56,13 +56,19 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		this.shadeMode = shadeMode;
 	}
 
-	@Override
+	// TODO 24w33a
+	/*@Override
 	public Collection<Identifier> getModelDependencies() {
 		return Collections.emptySet();
 	}
 
 	@Override
 	public void setParents(Function<Identifier, UnbakedModel> modelLoader) {
+	}*/
+
+	@Override
+	public void method_62326(class_10103 arg, class_10102 arg2) {
+
 	}
 
 	@Override
