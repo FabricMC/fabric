@@ -43,7 +43,7 @@ public class IngredientMatchTests {
 		Ingredient allIngredient = DefaultCustomIngredients.all(Ingredient.ofItems(Items.APPLE, Items.CARROT), Ingredient.ofItems(Items.STICK, Items.CARROT));
 
 		assertEquals(1, allIngredient.getMatchingStacks().size());
-		assertEquals(Items.CARROT, allIngredient.getMatchingStacks().getFirst());
+		assertEquals(Items.CARROT, allIngredient.getMatchingStacks().getFirst().value());
 		assertEquals(false, allIngredient.getMatchingStacks().isEmpty());
 
 		assertEquals(false, allIngredient.test(new ItemStack(Items.APPLE)));
@@ -66,10 +66,10 @@ public class IngredientMatchTests {
 		Ingredient anyIngredient = DefaultCustomIngredients.any(Ingredient.ofItems(Items.APPLE, Items.CARROT), Ingredient.ofItems(Items.STICK, Items.CARROT));
 
 		assertEquals(4, anyIngredient.getMatchingStacks().size());
-		assertEquals(Items.APPLE, anyIngredient.getMatchingStacks().getFirst());
-		assertEquals(Items.CARROT, anyIngredient.getMatchingStacks().get(1));
-		assertEquals(Items.STICK, anyIngredient.getMatchingStacks().get(2));
-		assertEquals(Items.CARROT, anyIngredient.getMatchingStacks().get(3));
+		assertEquals(Items.APPLE, anyIngredient.getMatchingStacks().getFirst().value());
+		assertEquals(Items.CARROT, anyIngredient.getMatchingStacks().get(1).value());
+		assertEquals(Items.STICK, anyIngredient.getMatchingStacks().get(2).value());
+		assertEquals(Items.CARROT, anyIngredient.getMatchingStacks().get(3).value());
 		assertEquals(false, anyIngredient.getMatchingStacks().isEmpty());
 
 		assertEquals(true, anyIngredient.test(new ItemStack(Items.APPLE)));
@@ -84,7 +84,7 @@ public class IngredientMatchTests {
 		Ingredient differenceIngredient = DefaultCustomIngredients.difference(Ingredient.ofItems(Items.APPLE, Items.CARROT), Ingredient.ofItems(Items.STICK, Items.CARROT));
 
 		assertEquals(1, differenceIngredient.getMatchingStacks().size());
-		assertEquals(Items.APPLE, differenceIngredient.getMatchingStacks().getFirst());
+		assertEquals(Items.APPLE, differenceIngredient.getMatchingStacks().getFirst().value());
 		assertEquals(false, differenceIngredient.getMatchingStacks().isEmpty());
 
 		assertEquals(true, differenceIngredient.test(new ItemStack(Items.APPLE)));
@@ -195,7 +195,8 @@ public class IngredientMatchTests {
 		List<RegistryEntry<Item>> matchingStacks = customDataIngredient.getMatchingStacks();
 		assertEquals(1, matchingStacks.size());
 		assertEquals(Items.STICK, matchingStacks.getFirst().value());
-		assertEquals(NbtComponent.of(requiredNbt), matchingStacks.getFirst().value().getDefaultStack().get(DataComponentTypes.CUSTOM_DATA));
+		// Test disabled as the vanilla API no longer exposes the stack with data.
+		// assertEquals(NbtComponent.of(requiredNbt), matchingStacks.getFirst().value().getDefaultStack().get(DataComponentTypes.CUSTOM_DATA));
 
 		context.complete();
 	}

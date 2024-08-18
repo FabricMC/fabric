@@ -27,6 +27,7 @@ import com.mojang.serialization.JsonOps;
 
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
 import net.minecraft.test.TestContext;
@@ -71,17 +72,18 @@ public class SerializationTests {
 	public void testCustomIngredientSerialization(TestContext context) {
 		for (boolean allowEmpty : List.of(false, true)) {
 			String ingredientJson = """
-					{"ingredients":[{"item":"minecraft:stone"}],"fabric:type":"fabric:all"}
+					{"ingredients":["minecraft:stone"],"fabric:type":"fabric:all"}
 					""".trim();
 
+			RegistryOps<JsonElement> registryOps = context.getWorld().getRegistryManager().getOps(JsonOps.INSTANCE);
 			Ingredient ingredient = DefaultCustomIngredients.all(
 					Ingredient.ofItems(Items.STONE)
 			);
 			Codec<Ingredient> ingredientCodec = Ingredient.CODEC;
-			JsonObject json = ingredientCodec.encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow(IllegalStateException::new).getAsJsonObject();
+			JsonObject json = ingredientCodec.encodeStart(registryOps, ingredient).getOrThrow(IllegalStateException::new).getAsJsonObject();
 			context.assertTrue(json.toString().equals(ingredientJson), "Unexpected json: " + json);
 			// Make sure that we can deserialize it
-			Ingredient deserialized = ingredientCodec.parse(JsonOps.INSTANCE, json).getOrThrow(JsonParseException::new);
+			Ingredient deserialized = ingredientCodec.parse(registryOps, json).getOrThrow(JsonParseException::new);
 			context.assertTrue(deserialized.getCustomIngredient() != null, "Custom ingredient was not deserialized");
 			context.assertTrue(deserialized.getCustomIngredient().getSerializer() == ingredient.getCustomIngredient().getSerializer(), "Serializer did not match");
 		}

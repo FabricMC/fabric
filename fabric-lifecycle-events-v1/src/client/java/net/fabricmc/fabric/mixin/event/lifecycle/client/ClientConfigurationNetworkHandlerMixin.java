@@ -16,27 +16,21 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle.client;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.packet.s2c.common.SynchronizeTagsS2CPacket;
+import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.resource.ResourceFactory;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 
-@Mixin(ClientPlayNetworkHandler.class)
-public class ClientTagLoaderMixin {
-	@Shadow
-	@Final
-	private DynamicRegistryManager.Immutable combinedDynamicRegistries;
-
-	@Inject(method = "onSynchronizeTags", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/FuelRegistry;createDefault(Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;Lnet/minecraft/resource/featuretoggle/FeatureSet;)Lnet/minecraft/item/FuelRegistry;"))
-	private void invokeTagsLoaded(SynchronizeTagsS2CPacket packet, CallbackInfo ci) {
-		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(combinedDynamicRegistries, true);
+@Mixin(ClientConfigurationNetworkHandler.class)
+public class ClientConfigurationNetworkHandlerMixin {
+	@Inject(method = "method_57043", at = @At(value = "RETURN"))
+	private void invokeTagsLoaded(ResourceFactory factory, CallbackInfoReturnable<DynamicRegistryManager.Immutable> cir) {
+		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(cir.getReturnValue(), true);
 	}
 }

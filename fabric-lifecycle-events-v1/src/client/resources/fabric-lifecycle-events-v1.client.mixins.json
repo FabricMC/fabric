@@ -5,7 +5,7 @@
   "client": [
     "ClientChunkManagerMixin",
     "ClientPlayNetworkHandlerMixin",
-    "ClientTagLoaderMixin",
+    "ClientConfigurationNetworkHandlerMixin",
     "ClientWorldClientEntityHandlerMixin",
     "ClientWorldMixin",
     "MinecraftClientMixin",
