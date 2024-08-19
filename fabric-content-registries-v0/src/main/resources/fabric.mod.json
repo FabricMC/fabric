@@ -29,7 +29,8 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_1845\u0024class_9665": ["net/fabricmc/fabric/api/registry/FabricBrewingRecipeRegistryBuilder"]
+      "net/minecraft/class_1845\u0024class_9665": ["net/fabricmc/fabric/api/registry/FabricBrewingRecipeRegistryBuilder"],
+      "net/minecraft/class_9895\u0024class_9896": ["net/fabricmc/fabric/api/registry/FabricFuelRegistryBuilder"]
     }
   }
 }

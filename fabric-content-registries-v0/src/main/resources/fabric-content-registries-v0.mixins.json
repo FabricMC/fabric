@@ -7,6 +7,8 @@
     "BrewingRecipeRegistryBuilderMixin",
     "PathContextMixin",
     "FarmerWorkTaskAccessor",
+    "FuelRegistryMixin",
+    "FuelRegistryBuilderMixin",
     "GiveGiftsToHeroTaskAccessor",
     "HoeItemAccessor",
     "HoneycombItemMixin",
