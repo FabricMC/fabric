@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.registry;
 
 import net.minecraft.item.FuelRegistry;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 
@@ -45,6 +46,10 @@ public interface FabricFuelRegistryBuilder {
 			listener.buildExclusions(builder);
 		}
 	});
+
+	default FuelRegistry.Builder remove(ItemConvertible item) {
+		throw new AssertionError("Must be implemented via interface injection");
+	}
 
 	default RegistryWrapper<Item> getItemLookup() {
 		throw new AssertionError("Must be implemented via interface injection");

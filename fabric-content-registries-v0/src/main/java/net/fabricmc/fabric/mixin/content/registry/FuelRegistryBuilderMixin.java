@@ -16,12 +16,14 @@
 
 package net.fabricmc.fabric.mixin.content.registry;
 
+import it.unimi.dsi.fastutil.objects.Object2IntSortedMap;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.item.FuelRegistry;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 
@@ -39,6 +41,16 @@ public abstract class FuelRegistryBuilderMixin implements FabricFuelRegistryBuil
 	@Shadow
 	@Final
 	private FeatureSet featureSet;
+
+	@Shadow
+	@Final
+	private Object2IntSortedMap<Item> fuelValues;
+
+	@Override
+	public FuelRegistry.Builder remove(ItemConvertible item) {
+		this.fuelValues.removeInt(item.asItem());
+		return (FuelRegistry.Builder) (Object) this;
+	}
 
 	@Override
 	public RegistryWrapper<Item> getItemLookup() {
