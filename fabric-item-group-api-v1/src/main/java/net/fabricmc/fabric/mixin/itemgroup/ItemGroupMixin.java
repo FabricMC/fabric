@@ -71,14 +71,14 @@ abstract class ItemGroupMixin implements FabricItemGroupImpl {
 		var mutableSearchTabStacks = new LinkedList<>(searchTabStacks);
 		var entries = new FabricItemGroupEntries(context, mutableDisplayStacks, mutableSearchTabStacks);
 
-		final Event<ItemGroupEvents.ModifyEntries> modifyEntriesEvent = ItemGroupEventsImpl.getModifyEntriesEvent(registryKey);
-
-		if (modifyEntriesEvent != null) {
-			modifyEntriesEvent.invoker().modifyEntries(entries);
-		}
-
-		// Now trigger the global event
+		// Now trigger the events
 		if (registryKey != ItemGroups.OPERATOR || context.hasPermissions()) {
+			final Event<ItemGroupEvents.ModifyEntries> modifyEntriesEvent = ItemGroupEventsImpl.getModifyEntriesEvent(registryKey);
+
+			if (modifyEntriesEvent != null) {
+				modifyEntriesEvent.invoker().modifyEntries(entries);
+			}
+
 			ItemGroupEvents.MODIFY_ENTRIES_ALL.invoker().modifyEntries(self, entries);
 		}
 
