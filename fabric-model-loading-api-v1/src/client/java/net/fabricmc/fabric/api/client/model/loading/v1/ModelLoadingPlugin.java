@@ -47,7 +47,7 @@ public interface ModelLoadingPlugin {
 	 * Called towards the beginning of the model loading process, every time resource are (re)loaded.
 	 * Use the context object to extend model loading as desired.
 	 */
-	void onInitializeModelLoader(Context pluginContext);
+	void initialize(Context pluginContext);
 
 	@ApiStatus.NonExtendable
 	interface Context {

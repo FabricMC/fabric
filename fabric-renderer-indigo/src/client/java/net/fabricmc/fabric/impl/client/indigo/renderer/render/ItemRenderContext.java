@@ -120,7 +120,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 		return vanillaModelConsumer;
 	}
 
-	public void renderModel(ItemStack itemStack, ModelTransformationMode transformMode, boolean invert, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int lightmap, int overlay, BakedModel model) {
+	public void renderModel(ItemStack itemStack, ModelTransformationMode transformMode, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int lightmap, int overlay, BakedModel model) {
 		this.itemStack = itemStack;
 		this.transformMode = transformMode;
 		this.matrixStack = matrixStack;

@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +35,6 @@ import net.minecraft.util.Identifier;
  */
 public final class DelegatingUnbakedModel implements UnbakedModel {
 	private final Identifier delegate;
-	private final List<Identifier> dependencies;
 
 	/**
 	 * Constructs a new delegating model.
@@ -46,23 +43,11 @@ public final class DelegatingUnbakedModel implements UnbakedModel {
 	 */
 	public DelegatingUnbakedModel(Identifier delegate) {
 		this.delegate = delegate;
-		this.dependencies = List.of(delegate);
 	}
 
-	/*@Override
-	public Collection<Identifier> getModelDependencies() {
-		return dependencies;
-	}
-
-	@Override
-	public void setParents(Function<Identifier, UnbakedModel> modelLoader) {
-		modelLoader.apply(delegate).setParents(modelLoader);
-	}*/
-
-	// TODO 24w44a
 	@Override
 	public void method_62326(class_10103 arg, class_10102 arg2) {
-
+		arg.method_62642(delegate);
 	}
 
 	@Override

@@ -25,7 +25,6 @@ import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.impl.client.indigo.renderer.material.MaterialFinderImpl;
-import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshBuilderImpl;
 
 /**

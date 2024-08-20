@@ -36,6 +36,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.BlockModelRenderer;
+import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -147,17 +148,18 @@ public abstract class AoCalculator {
 	// Because this instance is effectively thread-local, we preserve instances
 	// to avoid making a new allocation each call.
 	private final float[] vanillaAoData = new float[Direction.values().length * 2];
-	private final BitSet vanillaAoControlBits = new BitSet(3);
+	private final BitSet vanillaAoFlags = new BitSet(3);
 	private final int[] vertexData = new int[EncodingFormat.QUAD_STRIDE];
+	private final DummyBakedQuad dummyBakedQuad = new DummyBakedQuad();
 
 	private void calcVanilla(QuadViewImpl quad, float[] aoDest, int[] lightDest) {
-		vanillaAoControlBits.clear();
+		vanillaAoFlags.clear();
 		final Direction lightFace = quad.lightFace();
 		quad.toVanilla(vertexData, 0);
+		dummyBakedQuad.prepare(quad.lightFace(), quad.hasShade());
 
-		VanillaAoHelper.updateShape(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vertexData, lightFace, vanillaAoData, vanillaAoControlBits);
-		// TODO 24w33a
-		//vanillaCalc.apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, lightFace, vanillaAoData, vanillaAoControlBits, quad.hasShade());
+		VanillaAoHelper.getQuadDimensions(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vertexData, lightFace, vanillaAoData, vanillaAoFlags);
+		vanillaCalc.apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vanillaAoData, vanillaAoFlags, dummyBakedQuad);
 
 		System.arraycopy(vanillaCalc.brightness, 0, aoDest, 0, 4);
 		System.arraycopy(vanillaCalc.light, 0, lightDest, 0, 4);
@@ -581,5 +583,32 @@ public abstract class AoCalculator {
 		if (a == 0) return b;
 		if (b == 0) return a;
 		return Math.min(a, b);
+	}
+
+	// This quad is passed to the vanilla AO calc. It only calls getFace, isEmissive, getLightEmission, and hasShade.
+	// Since Indigo already applies vanilla's light emission value in MutableQuadView#fromVanilla, this quad should not
+	// provide its own light emission.
+	private static class DummyBakedQuad extends BakedQuad {
+		private Direction lightFace;
+		private boolean shade;
+
+		DummyBakedQuad() {
+			super(new int[32], -1, Direction.UP, null, true, 0);
+		}
+
+		public void prepare(Direction lightFace, boolean shade) {
+			this.lightFace = lightFace;
+			this.shade = shade;
+		}
+
+		@Override
+		public Direction getFace() {
+			return lightFace;
+		}
+
+		@Override
+		public boolean hasShade() {
+			return shade;
+		}
 	}
 }

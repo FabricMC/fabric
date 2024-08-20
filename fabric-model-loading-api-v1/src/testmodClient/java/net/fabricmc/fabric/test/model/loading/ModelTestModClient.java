@@ -26,7 +26,6 @@ import net.minecraft.class_10096;
 import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceType;
@@ -69,6 +68,7 @@ public class ModelTestModClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		ModelLoadingPlugin.register(pluginContext -> {
 			pluginContext.addModels(HALF_RED_SAND_MODEL_ID);
+
 			// remove bottom face of gold blocks
 			pluginContext.modifyModelAfterBake().register(ModelModifier.WRAP_PHASE, (model, context) -> {
 				Identifier id = context.resourceId();
@@ -79,17 +79,19 @@ public class ModelTestModClient implements ClientModInitializer {
 
 				return model;
 			});
+
 			// make fences with west: true and everything else false appear to be a missing model visually
 			ModelIdentifier fenceId = BlockModels.getModelId(Blocks.OAK_FENCE.getDefaultState().with(HorizontalConnectingBlock.WEST, true));
 			pluginContext.modifyModelOnLoad().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
 				ModelIdentifier id = context.topLevelId();
 
 				if (id != null && id.equals(fenceId)) {
-					return context.getOrLoadModel(class_10096.field_53660);
+					return new DelegatingUnbakedModel(class_10096.field_53660);
 				}
 
 				return model;
 			});
+
 			// make brown glazed terracotta appear to be a missing model visually, but without affecting the item, by using pre-bake
 			// using load here would make the item also appear missing
 			pluginContext.modifyModelBeforeBake().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
@@ -109,14 +111,15 @@ public class ModelTestModClient implements ClientModInitializer {
 				// All the block state models are top-level...
 				// Use a delegating unbaked model to make sure the identical models only get baked a single time.
 				Identifier wheatStage0Id = Identifier.ofVanilla("block/wheat_stage0");
-
-				UnbakedModel stage0Model = new DelegatingUnbakedModel(wheatStage0Id);
+				Identifier wheatStage7Id = Identifier.ofVanilla("block/wheat_stage7");
+				UnbakedModel wheatStage0Model = new DelegatingUnbakedModel(wheatStage0Id);
+				UnbakedModel wheatStage7Model = new DelegatingUnbakedModel(wheatStage7Id);
 
 				for (int age = 0; age <= 6; age++) {
-					context.setModel(state.with(CropBlock.AGE, age), stage0Model);
+					context.setModel(state.with(CropBlock.AGE, age), wheatStage0Model);
 				}
 
-				context.setModel(state.with(CropBlock.AGE, 7), context.getOrLoadModel(Identifier.ofVanilla("block/wheat_stage7")));
+				context.setModel(state.with(CropBlock.AGE, 7), wheatStage7Model);
 			});
 		});
 
