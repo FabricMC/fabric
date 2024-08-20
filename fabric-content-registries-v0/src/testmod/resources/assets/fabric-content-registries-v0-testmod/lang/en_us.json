@@ -1,0 +1,9 @@
+{
+  "item.fabric-content-registries-v0-testmod.smelting_fuel_excluded_by_item": "Smelting Fuel Excluded by Item",
+  "item.fabric-content-registries-v0-testmod.smelting_fuel_excluded_by_tag": "Smelting Fuel Excluded by Tag",
+  "item.fabric-content-registries-v0-testmod.smelting_fuel_excluded_by_vanilla_tag": "Smelting Fuel Excluded by Vanilla Tag",
+  "item.fabric-content-registries-v0-testmod.smelting_fuel_included_by_item": "Smelting Fuel Included by Item",
+  "item.fabric-content-registries-v0-testmod.smelting_fuel_included_by_tag": "Smelting Fuel Included by Tag",
+  "tag.item.fabric-content-registries-v0-testmod.smelting_fuels_excluded_by_tag": "Smelting Fuels Excluded by Tag",
+  "tag.item.fabric-content-registries-v0-testmod.smelting_fuels_included_by_tag": "Smelting Fuels Included by Tag"
+}
