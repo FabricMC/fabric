@@ -269,7 +269,6 @@ transitive-accessible field net/minecraft/client/render/RenderPhase ENTITY_CUTOU
 transitive-accessible field net/minecraft/client/render/RenderPhase ENTITY_CUTOUT_NONULL_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase ENTITY_CUTOUT_NONULL_OFFSET_Z_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase ITEM_ENTITY_TRANSLUCENT_CULL_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
-transitive-accessible field net/minecraft/client/render/RenderPhase ENTITY_TRANSLUCENT_CULL_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase ENTITY_TRANSLUCENT_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase ENTITY_TRANSLUCENT_EMISSIVE_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase ENTITY_SMOOTH_CUTOUT_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
@@ -287,7 +286,6 @@ transitive-accessible field net/minecraft/client/render/RenderPhase ARMOR_ENTITY
 transitive-accessible field net/minecraft/client/render/RenderPhase TRANSLUCENT_GLINT_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase GLINT_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase ENTITY_GLINT_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
-transitive-accessible field net/minecraft/client/render/RenderPhase DIRECT_ENTITY_GLINT_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase CRUMBLING_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase TEXT_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase TEXT_BACKGROUND_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;

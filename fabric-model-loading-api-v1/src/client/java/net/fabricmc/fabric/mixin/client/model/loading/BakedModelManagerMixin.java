@@ -110,9 +110,9 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 		CompletableFuture<Pair<BlockStatesLoader.BlockStateDefinition, Map<Identifier, UnbakedModel>>> pairFuture = self.thenCombine(otherFuture, Pair::new);
 		return pairFuture.thenCombineAsync(eventDispatcherFuture, (pair, eventDispatcher) -> {
 			ModelLoadingEventDispatcher.CURRENT.set(eventDispatcher);
-			ReferencedModelsCollector ReferencedModelsCollector = function.apply(pair.getLeft(), pair.getRight());
+			ReferencedModelsCollector referencedModelsCollector = function.apply(pair.getLeft(), pair.getRight());
 			ModelLoadingEventDispatcher.CURRENT.remove();
-			return ReferencedModelsCollector;
+			return referencedModelsCollector;
 		}, executor);
 	}
 
