@@ -33,9 +33,9 @@ public class RiverstoneUnbakedModel implements UnbakedModel {
 	private static final Identifier GOLD_BLOCK_MODEL_ID = Identifier.ofVanilla("block/gold_block");
 
 	@Override
-	public void method_62326(class_10103 arg, class_10102 arg2) {
-		arg.method_62642(STONE_MODEL_ID);
-		arg.method_62642(GOLD_BLOCK_MODEL_ID);
+	public void resolve(Resolver resolver, ModelType currentlyResolvingType) {
+		resolver.resolve(STONE_MODEL_ID);
+		resolver.resolve(GOLD_BLOCK_MODEL_ID);
 	}
 
 	@Nullable

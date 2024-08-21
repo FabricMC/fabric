@@ -85,7 +85,7 @@ public class ModelLoadingEventDispatcher {
 		}
 	}
 
-	public BlockStatesLoader.class_10095 loadBlockStateModels() {
+	public BlockStatesLoader.BlockStateDefinition loadBlockStateModels() {
 		Map<ModelIdentifier, BlockStatesLoader.BlockModel> map = new HashMap<>();
 
 		pluginContext.blockStateResolvers.forEach((block, resolver) -> {
@@ -105,7 +105,7 @@ public class ModelLoadingEventDispatcher {
 			resolveBlockStates(resolver, block, output);
 		});
 
-		return new BlockStatesLoader.class_10095(map);
+		return new BlockStatesLoader.BlockStateDefinition(map);
 	}
 
 	private void resolveBlockStates(BlockStateResolver resolver, Block block, BiConsumer<BlockState, UnbakedModel> output) {

@@ -18,10 +18,7 @@
     "ItemColorsMixin",
     "LivingEntityRendererAccessor",
     "TooltipComponentMixin",
-    "WorldRendererMixin",
-    "shader.GameRendererMixin",
-    "shader.ShaderProgramImportProcessorMixin",
-    "shader.ShaderProgramMixin"
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

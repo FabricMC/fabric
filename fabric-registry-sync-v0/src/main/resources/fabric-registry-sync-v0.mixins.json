@@ -5,7 +5,7 @@
   "mixins": [
     "BlocksMixin",
     "BootstrapMixin",
-    "ChunkSerializerMixin",
+    "SerializedChunkMixin",
     "DebugChunkGeneratorAccessor",
     "ExperimentalRegistriesValidatorMixin",
     "IdListMixin",

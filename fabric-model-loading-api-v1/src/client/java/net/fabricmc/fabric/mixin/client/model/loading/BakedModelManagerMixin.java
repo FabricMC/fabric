@@ -35,10 +35,10 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_10097;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.render.model.BlockStatesLoader;
+import net.minecraft.client.render.model.ReferencedModelsCollector;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
@@ -79,14 +79,14 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 	}
 
 	@ModifyExpressionValue(method = "reload", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/BakedModelManager.reloadBlockStates(Lnet/minecraft/client/render/model/BlockStatesLoader;Lnet/minecraft/resource/ResourceManager;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
-	private CompletableFuture<BlockStatesLoader.class_10095> hookBlockStateModelLoading(CompletableFuture<BlockStatesLoader.class_10095> modelsFuture) {
-		CompletableFuture<BlockStatesLoader.class_10095> resolvedModelsFuture = eventDispatcherFuture.thenApplyAsync(ModelLoadingEventDispatcher::loadBlockStateModels);
+	private CompletableFuture<BlockStatesLoader.BlockStateDefinition> hookBlockStateModelLoading(CompletableFuture<BlockStatesLoader.BlockStateDefinition> modelsFuture) {
+		CompletableFuture<BlockStatesLoader.BlockStateDefinition> resolvedModelsFuture = eventDispatcherFuture.thenApplyAsync(ModelLoadingEventDispatcher::loadBlockStateModels);
 		return modelsFuture.thenCombine(resolvedModelsFuture, (models, resolvedModels) -> {
 			Map<ModelIdentifier, BlockStatesLoader.BlockModel> map = models.models();
 
 			if (!(map instanceof HashMap)) {
 				map = new HashMap<>(map);
-				models = new BlockStatesLoader.class_10095(map);
+				models = new BlockStatesLoader.BlockStateDefinition(map);
 			}
 
 			map.putAll(resolvedModels.models());
@@ -102,17 +102,17 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 					ordinal = 0,
 					remap = false
 			))
-	private CompletableFuture<class_10097> hookModelDiscovery(
-			CompletableFuture<BlockStatesLoader.class_10095> self,
+	private CompletableFuture<ReferencedModelsCollector> hookModelDiscovery(
+			CompletableFuture<BlockStatesLoader.BlockStateDefinition> self,
 			CompletionStage<Map<Identifier, UnbakedModel>> otherFuture,
-			BiFunction<BlockStatesLoader.class_10095, Map<Identifier, UnbakedModel>, class_10097> function,
+			BiFunction<BlockStatesLoader.BlockStateDefinition, Map<Identifier, UnbakedModel>, ReferencedModelsCollector> function,
 			Executor executor) {
-		CompletableFuture<Pair<BlockStatesLoader.class_10095, Map<Identifier, UnbakedModel>>> pairFuture = self.thenCombine(otherFuture, Pair::new);
+		CompletableFuture<Pair<BlockStatesLoader.BlockStateDefinition, Map<Identifier, UnbakedModel>>> pairFuture = self.thenCombine(otherFuture, Pair::new);
 		return pairFuture.thenCombineAsync(eventDispatcherFuture, (pair, eventDispatcher) -> {
 			ModelLoadingEventDispatcher.CURRENT.set(eventDispatcher);
-			class_10097 class_10097 = function.apply(pair.getLeft(), pair.getRight());
+			ReferencedModelsCollector ReferencedModelsCollector = function.apply(pair.getLeft(), pair.getRight());
 			ModelLoadingEventDispatcher.CURRENT.remove();
-			return class_10097;
+			return ReferencedModelsCollector;
 		}, executor);
 	}
 

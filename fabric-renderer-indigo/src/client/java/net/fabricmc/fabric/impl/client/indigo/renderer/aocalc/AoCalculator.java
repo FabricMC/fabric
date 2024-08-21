@@ -158,8 +158,9 @@ public abstract class AoCalculator {
 		quad.toVanilla(vertexData, 0);
 		dummyBakedQuad.prepare(quad.lightFace(), quad.hasShade());
 
+		// TODO I think we can remove DummyBakedQuad
 		VanillaAoHelper.getQuadDimensions(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vertexData, lightFace, vanillaAoData, vanillaAoFlags);
-		vanillaCalc.apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vanillaAoData, vanillaAoFlags, dummyBakedQuad);
+		vanillaCalc.apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, lightFace, vanillaAoData, vanillaAoFlags, quad.hasShade());
 
 		System.arraycopy(vanillaCalc.brightness, 0, aoDest, 0, 4);
 		System.arraycopy(vanillaCalc.light, 0, lightDest, 0, 4);

@@ -261,15 +261,15 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 	private VertexConsumer createTranslucentVertexConsumer(boolean glint) {
 		if (glint && isGlintDynamicDisplay) {
-			return createDynamicDisplayGlintVertexConsumer(MinecraftClient.isFabulousGraphicsOrBetter() && !isTranslucentDirect ? TexturedRenderLayers.getItemEntityTranslucentCull() : TexturedRenderLayers.getEntityTranslucentCull());
+			return createDynamicDisplayGlintVertexConsumer(MinecraftClient.isFabulousGraphicsOrBetter() && !isTranslucentDirect ? TexturedRenderLayers.getItemEntityTranslucentCull() : TexturedRenderLayers.getItemEntityTranslucentCull());
 		}
 
 		if (isTranslucentDirect) {
-			return ItemRenderer.getDirectItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getEntityTranslucentCull(), true, glint);
+			return ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getItemEntityTranslucentCull(), true, glint);
 		} else if (MinecraftClient.isFabulousGraphicsOrBetter()) {
 			return ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getItemEntityTranslucentCull(), true, glint);
 		} else {
-			return ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getEntityTranslucentCull(), true, glint);
+			return ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getItemEntityTranslucentCull(), true, glint);
 		}
 	}
 
@@ -278,7 +278,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 			return createDynamicDisplayGlintVertexConsumer(TexturedRenderLayers.getEntityCutout());
 		}
 
-		return ItemRenderer.getDirectItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getEntityCutout(), true, glint);
+		return ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getEntityCutout(), true, glint);
 	}
 
 	private VertexConsumer createDynamicDisplayGlintVertexConsumer(RenderLayer layer) {

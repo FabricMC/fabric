@@ -205,7 +205,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 			material = RenderMaterialImpl.setDisableDiffuse((RenderMaterialImpl) material, true);
 		}
 
-		if (applyLightEmission && quad.isEmissive()) {
+		if (applyLightEmission && quad.getLightEmission() > 0) {
 			int lightEmission = quad.getLightEmission();
 
 			for (int i = 0; i < 4; i++) {
