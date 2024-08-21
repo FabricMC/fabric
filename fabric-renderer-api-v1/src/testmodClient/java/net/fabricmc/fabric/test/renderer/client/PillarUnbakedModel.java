@@ -38,7 +38,7 @@ public class PillarUnbakedModel implements UnbakedModel {
 			.toList();
 
 	@Override
-	public void method_62326(class_10103 arg, class_10102 arg2) {
+	public void resolve(Resolver resolver, ModelType currentlyResolvingType) {
 	}
 
 	@Nullable

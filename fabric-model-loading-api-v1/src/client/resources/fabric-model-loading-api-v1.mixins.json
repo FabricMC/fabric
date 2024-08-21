@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "BakedModelManagerMixin",
-    "class_10097Mixin",
+    "ReferencedModelsCollectorMixin",
     "ModelLoaderBakerImplMixin",
     "ModelLoaderMixin"
   ],

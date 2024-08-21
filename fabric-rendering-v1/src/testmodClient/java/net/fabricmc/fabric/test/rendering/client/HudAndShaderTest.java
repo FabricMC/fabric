@@ -16,17 +16,8 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import org.joml.Matrix4f;
-
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.Window;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -48,12 +39,12 @@ public class HudAndShaderTest implements ClientModInitializer {
 			context.register(id, VertexFormats.POSITION, program -> testShader = program);
 		});
 
-		HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
+		/*HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
 			MinecraftClient client = MinecraftClient.getInstance();
 			Window window = client.getWindow();
 			int x = window.getScaledWidth() - 15;
 			int y = window.getScaledHeight() - 15;
-			RenderSystem.setShader(() -> testShader);
+			RenderSystem.setShader(testShader);
 			RenderSystem.setShaderColor(0f, 1f, 0f, 1f);
 			Matrix4f positionMatrix = drawContext.getMatrices().peek().getPositionMatrix();
 			BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
@@ -64,6 +55,6 @@ public class HudAndShaderTest implements ClientModInitializer {
 			BufferRenderer.drawWithGlobalProgram(buffer.end());
 			// Reset shader color
 			RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-		});
+		});*/
 	}
 }

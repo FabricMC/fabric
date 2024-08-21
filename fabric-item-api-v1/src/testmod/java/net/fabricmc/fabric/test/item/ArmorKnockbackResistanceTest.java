@@ -42,14 +42,14 @@ public class ArmorKnockbackResistanceTest implements ModInitializer {
 	}
 
 	private static ArmorMaterial createTestArmorMaterial() {
-		return new ArmorMaterial(Util.make(new EnumMap<>(ArmorItem.Type.class), (map) -> {
-			map.put(ArmorItem.Type.BOOTS, 1);
-			map.put(ArmorItem.Type.LEGGINGS, 2);
-			map.put(ArmorItem.Type.CHESTPLATE, 3);
-			map.put(ArmorItem.Type.HELMET, 1);
-			map.put(ArmorItem.Type.BODY, 3);
-		}),
-			0,
+		return new ArmorMaterial(
+			Util.make(new EnumMap<>(ArmorItem.Type.class), (map) -> {
+				map.put(ArmorItem.Type.BOOTS, 1);
+				map.put(ArmorItem.Type.LEGGINGS, 2);
+				map.put(ArmorItem.Type.CHESTPLATE, 3);
+				map.put(ArmorItem.Type.HELMET, 1);
+				map.put(ArmorItem.Type.BODY, 3);
+			}),
 			SoundEvents.ITEM_ARMOR_EQUIP_LEATHER,
 				(stack) -> stack.getItem() == Items.LEATHER,
 			List.of(new ArmorMaterial.Layer(Identifier.of("fabric-item-api-v1-testmod", "wood"))),

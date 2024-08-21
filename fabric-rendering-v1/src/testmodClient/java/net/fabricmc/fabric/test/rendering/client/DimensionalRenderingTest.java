@@ -19,10 +19,10 @@ package net.fabricmc.fabric.test.rendering.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.joml.Matrix4f;
 
+import net.minecraft.class_10142;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.DimensionEffects;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -41,7 +41,7 @@ public class DimensionalRenderingTest implements ClientModInitializer {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.depthMask(false);
-		RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+		RenderSystem.setShader(class_10142.POSITION_TEX_COLOR);
 		RenderSystem.setShaderTexture(0, END_SKY);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);

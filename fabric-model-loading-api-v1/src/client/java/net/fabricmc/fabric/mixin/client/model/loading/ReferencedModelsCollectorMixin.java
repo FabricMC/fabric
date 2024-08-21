@@ -25,8 +25,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.class_10097;
 import net.minecraft.client.render.model.BlockStatesLoader;
+import net.minecraft.client.render.model.ReferencedModelsCollector;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
@@ -34,37 +34,37 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingConstants;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
 
-@Mixin(class_10097.class)
-abstract class class_10097Mixin {
+@Mixin(ReferencedModelsCollector.class)
+abstract class ReferencedModelsCollectorMixin {
 	@Unique
 	@Nullable
 	private ModelLoadingEventDispatcher fabric_eventDispatcher;
 
 	@Shadow
-	abstract UnbakedModel method_62638(Identifier identifier);
+	abstract UnbakedModel computeResolvedModel(Identifier identifier);
 
 	@Shadow
-	abstract void method_62635(ModelIdentifier modelIdentifier, UnbakedModel unbakedModel);
+	abstract void addTopLevelModel(ModelIdentifier modelIdentifier, UnbakedModel unbakedModel);
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onReturnInit(CallbackInfo ci) {
 		fabric_eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
 	}
 
-	@Inject(method = "method_62632", at = @At("RETURN"))
-	private void onAddStandardModels(BlockStatesLoader.class_10095 blockStateModels, CallbackInfo ci) {
+	@Inject(method = "addBlockStates", at = @At("RETURN"))
+	private void onAddStandardModels(BlockStatesLoader.BlockStateDefinition blockStateModels, CallbackInfo ci) {
 		if (fabric_eventDispatcher == null) {
 			return;
 		}
 
 		fabric_eventDispatcher.addExtraModels(id -> {
 			ModelIdentifier modelId = ModelLoadingConstants.toResourceModelId(id);
-			UnbakedModel unbakedModel = method_62638(id);
-			method_62635(modelId, unbakedModel);
+			UnbakedModel unbakedModel = computeResolvedModel(id);
+			addTopLevelModel(modelId, unbakedModel);
 		});
 	}
 
-	@ModifyVariable(method = "method_62640", at = @At(value = "STORE", ordinal = 0), ordinal = 0)
+	@ModifyVariable(method = "getModel", at = @At(value = "STORE", ordinal = 0), ordinal = 0)
 	@Nullable
 	private UnbakedModel onLoadResourceModel(@Nullable UnbakedModel model, Identifier id) {
 		if (fabric_eventDispatcher == null) {
@@ -80,7 +80,7 @@ abstract class class_10097Mixin {
 		return fabric_eventDispatcher.modifyModelOnLoad(model, id, null);
 	}
 
-	@ModifyVariable(method = "method_62635", at = @At("HEAD"), argsOnly = true)
+	@ModifyVariable(method = "addTopLevelModel", at = @At("HEAD"), argsOnly = true)
 	private UnbakedModel onAddTopLevelModel(UnbakedModel model, ModelIdentifier modelId) {
 		if (fabric_eventDispatcher == null) {
 			return model;
