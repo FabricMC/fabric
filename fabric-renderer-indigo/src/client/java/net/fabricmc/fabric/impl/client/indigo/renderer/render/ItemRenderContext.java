@@ -21,7 +21,6 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
@@ -33,8 +32,6 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MatrixUtil;
@@ -85,7 +82,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private int lightmap;
 
 	private boolean isDefaultTranslucent;
-	private boolean isTranslucentDirect;
 	private boolean isDefaultGlint;
 	private boolean isGlintDynamicDisplay;
 
@@ -146,24 +142,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 	}
 
 	private void computeOutputInfo() {
-		isDefaultTranslucent = true;
-		isTranslucentDirect = true;
-
-		Item item = itemStack.getItem();
-
-		if (item instanceof BlockItem blockItem) {
-			BlockState state = blockItem.getBlock().getDefaultState();
-			RenderLayer renderLayer = RenderLayers.getBlockLayer(state);
-
-			if (renderLayer != RenderLayer.getTranslucent()) {
-				isDefaultTranslucent = false;
-			}
-
-			if (transformMode != ModelTransformationMode.GUI && !transformMode.isFirstPerson()) {
-				isTranslucentDirect = false;
-			}
-		}
-
+		isDefaultTranslucent = RenderLayers.getItemLayer(itemStack) == TexturedRenderLayers.getItemEntityTranslucentCull();
 		isDefaultGlint = itemStack.hasGlint();
 		isGlintDynamicDisplay = ItemRendererAccessor.fabric_callUsesDynamicDisplay(itemStack);
 	}
@@ -209,7 +188,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 	/**
 	 * Caches custom blend mode / vertex consumers and mimics the logic
-	 * in {@code RenderLayers.getEntityBlockLayer}. Layers other than
+	 * in {@code RenderLayers.getItemLayer}. Layers other than
 	 * translucent are mapped to cutout.
 	 */
 	private VertexConsumer getVertexConsumer(BlendMode blendMode, TriState glintMode) {
@@ -231,13 +210,13 @@ public class ItemRenderContext extends AbstractRenderContext {
 		if (translucent) {
 			if (glint) {
 				if (translucentGlintVertexConsumer == null) {
-					translucentGlintVertexConsumer = createTranslucentVertexConsumer(true);
+					translucentGlintVertexConsumer = createVertexConsumer(TexturedRenderLayers.getItemEntityTranslucentCull(), true);
 				}
 
 				return translucentGlintVertexConsumer;
 			} else {
 				if (translucentVertexConsumer == null) {
-					translucentVertexConsumer = createTranslucentVertexConsumer(false);
+					translucentVertexConsumer = createVertexConsumer(TexturedRenderLayers.getItemEntityTranslucentCull(), false);
 				}
 
 				return translucentVertexConsumer;
@@ -245,13 +224,13 @@ public class ItemRenderContext extends AbstractRenderContext {
 		} else {
 			if (glint) {
 				if (cutoutGlintVertexConsumer == null) {
-					cutoutGlintVertexConsumer = createCutoutVertexConsumer(true);
+					cutoutGlintVertexConsumer = createVertexConsumer(TexturedRenderLayers.getEntityCutout(), true);
 				}
 
 				return cutoutGlintVertexConsumer;
 			} else {
 				if (cutoutVertexConsumer == null) {
-					cutoutVertexConsumer = createCutoutVertexConsumer(false);
+					cutoutVertexConsumer = createVertexConsumer(TexturedRenderLayers.getEntityCutout(), false);
 				}
 
 				return cutoutVertexConsumer;
@@ -259,40 +238,22 @@ public class ItemRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	private VertexConsumer createTranslucentVertexConsumer(boolean glint) {
-		if (glint && isGlintDynamicDisplay) {
-			return createDynamicDisplayGlintVertexConsumer(MinecraftClient.isFabulousGraphicsOrBetter() && !isTranslucentDirect ? TexturedRenderLayers.getItemEntityTranslucentCull() : TexturedRenderLayers.getItemEntityTranslucentCull());
-		}
+	private VertexConsumer createVertexConsumer(RenderLayer layer, boolean glint) {
+		if (isGlintDynamicDisplay && glint) {
+			if (dynamicDisplayGlintEntry == null) {
+				dynamicDisplayGlintEntry = matrixStack.peek().copy();
 
-		if (isTranslucentDirect) {
-			return ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getItemEntityTranslucentCull(), true, glint);
-		} else if (MinecraftClient.isFabulousGraphicsOrBetter()) {
-			return ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getItemEntityTranslucentCull(), true, glint);
-		} else {
-			return ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getItemEntityTranslucentCull(), true, glint);
-		}
-	}
-
-	private VertexConsumer createCutoutVertexConsumer(boolean glint) {
-		if (glint && isGlintDynamicDisplay) {
-			return createDynamicDisplayGlintVertexConsumer(TexturedRenderLayers.getEntityCutout());
-		}
-
-		return ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, TexturedRenderLayers.getEntityCutout(), true, glint);
-	}
-
-	private VertexConsumer createDynamicDisplayGlintVertexConsumer(RenderLayer layer) {
-		if (dynamicDisplayGlintEntry == null) {
-			dynamicDisplayGlintEntry = matrixStack.peek().copy();
-
-			if (transformMode == ModelTransformationMode.GUI) {
-				MatrixUtil.scale(dynamicDisplayGlintEntry.getPositionMatrix(), 0.5F);
-			} else if (transformMode.isFirstPerson()) {
-				MatrixUtil.scale(dynamicDisplayGlintEntry.getPositionMatrix(), 0.75F);
+				if (transformMode == ModelTransformationMode.GUI) {
+					MatrixUtil.scale(dynamicDisplayGlintEntry.getPositionMatrix(), 0.5F);
+				} else if (transformMode.isFirstPerson()) {
+					MatrixUtil.scale(dynamicDisplayGlintEntry.getPositionMatrix(), 0.75F);
+				}
 			}
+
+			return ItemRenderer.getDynamicDisplayGlintConsumer(vertexConsumerProvider, layer, dynamicDisplayGlintEntry);
 		}
 
-		return ItemRenderer.getDynamicDisplayGlintConsumer(vertexConsumerProvider, layer, dynamicDisplayGlintEntry);
+		return ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, layer, true, glint);
 	}
 
 	private class BakedModelConsumerImpl implements BakedModelConsumer {

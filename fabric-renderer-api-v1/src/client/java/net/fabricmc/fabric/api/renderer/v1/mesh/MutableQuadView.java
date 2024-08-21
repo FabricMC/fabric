@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
@@ -303,29 +302,7 @@ public interface MutableQuadView extends QuadView {
 	 *
 	 * <p>Calling this method does not emit the quad.
 	 */
-	default MutableQuadView fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace) {
-		return fromVanilla(quad, material, cullFace, true);
-	}
-
-	// TODO: If this is unmarked as experimental, update the javadoc of the other overloads.
-	/**
-	 * Enables bulk vertex data transfer using the standard Minecraft quad format.
-	 *
-	 * <p>The material applied to this quad view might be slightly different from the {@code material} parameter regarding diffuse shading.
-	 * If either the baked quad {@link BakedQuad#hasShade() does not have shade} or the material {@link MaterialFinder#disableDiffuse(boolean) does not have shade},
-	 * diffuse shading will be disabled for this quad view.
-	 * This is reflected in the quad view's {@link #material()}, but the {@code material} parameter is unchanged (it is immutable anyway).
-	 *
-	 * <p>If {@code applyLightEmission} is {@code true}, the {@linkplain BakedQuad#getLightEmission() baked quad's light emission} will be applied
-	 * to the lightmap values from the vertex data after copying. Otherwise, the light emission will be ignored.
-	 *
-	 * <p>Calling this method does not emit the quad.
-	 *
-	 * @apiNote This method is marked as experimental because future snapshots may change the item renderer to also respect quad light emission,
-	 * in which case this method will be removed. See <a href="https://bugs.mojang.com/browse/MC-275296">MC-275296</a>.
-	 */
-	@ApiStatus.Experimental
-	MutableQuadView fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace, boolean applyLightEmission);
+	MutableQuadView fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace);
 
 	/**
 	 * @deprecated Use {@link #color(int, int)} instead.

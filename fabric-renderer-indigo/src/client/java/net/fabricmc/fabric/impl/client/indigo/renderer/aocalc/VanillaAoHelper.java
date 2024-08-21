@@ -28,7 +28,7 @@ import net.minecraft.world.BlockRenderView;
 public final class VanillaAoHelper {
 	// Renderer method we call isn't declared as static, but uses no
 	// instance data and is called from multiple threads in vanilla also.
-	private static BlockModelRenderer BLOCK_RENDERER = MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer();
+	private static final BlockModelRenderer BLOCK_RENDERER = MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer();
 
 	public static void getQuadDimensions(BlockRenderView blockRenderView, BlockState blockState, BlockPos pos, int[] vertexData, Direction face, float[] aoData, BitSet controlBits) {
 		BLOCK_RENDERER.getQuadDimensions(blockRenderView, blockState, pos, vertexData, face, aoData, controlBits);

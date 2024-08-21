@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
@@ -139,14 +138,7 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter fromVanilla(int[] quadData, int startIndex);
 
 	@Override
-	default QuadEmitter fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace) {
-		MutableQuadView.super.fromVanilla(quad, material, cullFace);
-		return this;
-	}
-
-	@ApiStatus.Experimental
-	@Override
-	QuadEmitter fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace, boolean applyLightEmission);
+	QuadEmitter fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace);
 
 	/**
 	 * Tolerance for determining if the depth parameter to {@link #square(Direction, float, float, float, float, float)}
