@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
@@ -200,7 +201,23 @@ public interface QuadView {
 		// Mimic material properties to the largest possible extent
 		int outputColorIndex = material().disableColorIndex() ? -1 : colorIndex();
 		boolean outputShade = !material().disableDiffuse();
-		return new BakedQuad(vertexData, outputColorIndex, lightFace(), sprite, outputShade, 0 /* TODO 24w33a */);
+		// The output light emission is equal to the minimum of all four sky light values and all four block light values.
+		int outputLightEmission = 15;
+
+		for (int i = 0; i < 4; i++) {
+			int lightmap = lightmap(i);
+
+			if (lightmap == 0) {
+				outputLightEmission = 0;
+				break;
+			}
+
+			int blockLight = LightmapTextureManager.getBlockLightCoordinates(lightmap);
+			int skyLight = LightmapTextureManager.getSkyLightCoordinates(lightmap);
+			outputLightEmission = Math.min(outputLightEmission, Math.min(blockLight, skyLight));
+		}
+
+		return new BakedQuad(vertexData, outputColorIndex, lightFace(), sprite, outputShade, outputLightEmission);
 	}
 
 	/**

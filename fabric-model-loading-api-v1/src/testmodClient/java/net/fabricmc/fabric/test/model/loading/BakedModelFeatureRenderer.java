@@ -18,8 +18,6 @@ package net.fabricmc.fabric.test.model.loading;
 
 import java.util.function.Supplier;
 
-import net.minecraft.client.render.entity.state.EntityRenderState;
-
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 
@@ -31,29 +29,27 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.MathHelper;
 
-public class BakedModelFeatureRenderer<T extends EntityRenderState, M extends EntityModel<T>> extends FeatureRenderer<T, M> {
+public class BakedModelFeatureRenderer<S extends LivingEntityRenderState, M extends EntityModel<S>> extends FeatureRenderer<S, M> {
 	private final Supplier<BakedModel> modelSupplier;
 
-	public BakedModelFeatureRenderer(FeatureRendererContext<T, M> context, Supplier<BakedModel> modelSupplier) {
+	public BakedModelFeatureRenderer(FeatureRendererContext<S, M> context, Supplier<BakedModel> modelSupplier) {
 		super(context);
 		this.modelSupplier = modelSupplier;
 	}
 
 	@Override
-	public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T state, float limbAngle, float limbDistance) {
+	public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, S state, float limbAngle, float limbDistance) {
 		BakedModel model = modelSupplier.get();
 		VertexConsumer vertices = vertexConsumers.getBuffer(TexturedRenderLayers.getEntityCutout());
 		matrices.push();
-		//matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(headYaw));
-		//matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(headPitch));
-		// TODO 24w33a Is limbAngle the same as animationProgress? Probably not
-		matrices.multiply(new Quaternionf(new AxisAngle4f(limbAngle * 0.07F, 0, 1, 0)));
+		matrices.multiply(new Quaternionf(new AxisAngle4f(state.age * 0.07F - state.bodyYaw * MathHelper.RADIANS_PER_DEGREE, 0, 1, 0)));
 		matrices.scale(-0.75F, -0.75F, 0.75F);
-		float aboveHead = (float) (Math.sin(limbAngle * 0.08F)) * 0.5F + 0.5F;
+		float aboveHead = (float) (Math.sin(state.age * 0.08F)) * 0.5F + 0.5F;
 		matrices.translate(-0.5F, 0.75F + aboveHead, -0.5F);
 		MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(matrices.peek(), vertices, null, model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV);
 		matrices.pop();

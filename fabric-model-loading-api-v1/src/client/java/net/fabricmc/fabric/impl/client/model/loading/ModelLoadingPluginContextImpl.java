@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.impl.client.model.loading;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -44,7 +44,7 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoadingPluginContextImpl.class);
 
 	final Set<Identifier> extraModels = new LinkedHashSet<>();
-	final Map<Identifier, BlockStateResolver> blockStateResolvers = new HashMap<>();
+	final Map<Block, BlockStateResolver> blockStateResolvers = new IdentityHashMap<>();
 
 	private final Event<ModelResolver> modelResolvers = EventFactory.createArrayBacked(ModelResolver.class, resolvers -> context -> {
 		for (ModelResolver resolver : resolvers) {
@@ -124,9 +124,7 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 			throw new IllegalArgumentException("Received unregistered block");
 		}
 
-		Identifier blockId = optionalKey.get().getValue();
-
-		if (blockStateResolvers.put(blockId, resolver) != null) {
+		if (blockStateResolvers.put(block, resolver) != null) {
 			throw new IllegalArgumentException("Duplicate block state resolver for " + block);
 		}
 	}

@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.renderer;
 
-import net.minecraft.util.ActionResult;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -27,6 +25,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -46,8 +45,6 @@ public class FrameBlock extends Block implements BlockEntityProvider, FabricBloc
 	@Override
 	public ActionResult onUseWithItem(ItemStack stack, BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult blockHitResult) {
 		if (world.getBlockEntity(pos) instanceof FrameBlockEntity frame) {
-			Block handBlock = Block.getBlockFromItem(stack.getItem());
-
 			@Nullable
 			Block currentBlock = frame.getBlock();
 
@@ -59,26 +56,31 @@ public class FrameBlock extends Block implements BlockEntityProvider, FabricBloc
 						frame.setBlock(null);
 					}
 
-					if (world.isClient)
-						return ActionResult.SUCCESS;
+					return ActionResult.SUCCESS;
+				} else {
+					return ActionResult.PASS;
 				}
-
-				return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
 			}
+
+			Block handBlock = Block.getBlockFromItem(stack.getItem());
 
 			// getBlockFromItem will return air if we do not have a block item in hand
 			if (handBlock == Blocks.AIR) {
-				return ActionResult.FAIL;
+				return ActionResult.PASS;
 			}
 
 			// Do not allow blocks that may have a block entity
 			if (handBlock instanceof BlockEntityProvider) {
-				return ActionResult.FAIL;
+				return ActionResult.PASS;
 			}
 
-			stack.decrement(1);
+			if (currentBlock == handBlock) {
+				return ActionResult.PASS;
+			}
 
 			if (!world.isClient()) {
+				stack.decrementUnlessCreative(1, player);
+
 				if (currentBlock != null) {
 					player.getInventory().offerOrDrop(new ItemStack(currentBlock));
 				}
@@ -86,11 +88,10 @@ public class FrameBlock extends Block implements BlockEntityProvider, FabricBloc
 				frame.setBlock(handBlock);
 			}
 
-			if (world.isClient())
-				return ActionResult.SUCCESS;
+			return ActionResult.SUCCESS;
 		}
 
-		return ActionResult.FAIL;
+		return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
 	}
 
 	@Nullable

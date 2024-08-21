@@ -78,7 +78,7 @@ public class VanillaModelEncoder {
 
 			for (int j = 0; j < count; j++) {
 				final BakedQuad q = quads.get(j);
-				emitter.fromVanilla(q, STANDARD_MATERIAL, cullFace);
+				emitter.fromVanilla(q, STANDARD_MATERIAL, cullFace, false);
 				emitter.emit();
 			}
 		}

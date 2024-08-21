@@ -30,6 +30,7 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
@@ -194,7 +195,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public final MutableQuadViewImpl fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace) {
+	public final MutableQuadViewImpl fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace, boolean applyLightEmission) {
 		fromVanilla(quad.getVertexData(), 0);
 		data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(0, cullFace);
 		nominalFace(quad.getFace());
@@ -202,6 +203,14 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 		if (!quad.hasShade()) {
 			material = RenderMaterialImpl.setDisableDiffuse((RenderMaterialImpl) material, true);
+		}
+
+		if (applyLightEmission && quad.isEmissive()) {
+			int lightEmission = quad.getLightEmission();
+
+			for (int i = 0; i < 4; i++) {
+				lightmap(i, LightmapTextureManager.applyEmission(lightmap(i), lightEmission));
+			}
 		}
 
 		material(material);

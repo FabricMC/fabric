@@ -25,7 +25,6 @@ import org.jetbrains.annotations.UnknownNullability;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.ModelIdentifier;
@@ -109,19 +108,6 @@ public final class ModelModifier {
 			 */
 			@UnknownNullability("#resourceId() != null")
 			ModelIdentifier topLevelId();
-
-			/**
-			 * Loads a model using an {@link Identifier}, or gets it if it was already loaded.
-			 *
-			 * @param id the model identifier
-			 * @return the unbaked model, or a missing model if it is not present
-			 */
-			UnbakedModel getOrLoadModel(Identifier id);
-
-			/**
-			 * The current model loader instance, which changes between resource reloads.
-			 */
-			ModelLoader loader();
 		}
 	}
 
@@ -177,11 +163,6 @@ public final class ModelModifier {
 			 * {@linkplain Baker#bake load baked models}.
 			 */
 			Baker baker();
-
-			/**
-			 * The current model loader instance, which changes between resource reloads.
-			 */
-			ModelLoader loader();
 		}
 	}
 
@@ -250,11 +231,6 @@ public final class ModelModifier {
 			 * {@linkplain Baker#bake load baked models}.
 			 */
 			Baker baker();
-
-			/**
-			 * The current model loader instance, which changes between resource reloads.
-			 */
-			ModelLoader loader();
 		}
 	}
 

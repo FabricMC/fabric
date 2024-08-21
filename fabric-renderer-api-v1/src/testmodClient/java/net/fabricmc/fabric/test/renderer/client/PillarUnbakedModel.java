@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -31,7 +29,6 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.test.renderer.RendererTest;
 
@@ -40,19 +37,8 @@ public class PillarUnbakedModel implements UnbakedModel {
 			.map(suffix -> new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, RendererTest.id("block/pillar_" + suffix)))
 			.toList();
 
-	// TODO 24w33a
-	/*@Override
-	public Collection<Identifier> getModelDependencies() {
-		return Collections.emptySet();
-	}
-
-	@Override
-	public void setParents(Function<Identifier, UnbakedModel> modelLoader) {
-	}*/
-
 	@Override
 	public void method_62326(class_10103 arg, class_10102 arg2) {
-
 	}
 
 	@Nullable
