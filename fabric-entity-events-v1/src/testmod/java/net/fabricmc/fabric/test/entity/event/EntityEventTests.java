@@ -90,6 +90,10 @@ public final class EntityEventTests implements ModInitializer {
 			return true;
 		});
 
+		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, damageDealt, damageTaken, blocked) -> {
+			LOGGER.info("Entity {} received {} damage from {} (dealt {}, blocked {})", entity.getName().getString(), damageTaken, source.getName(), damageDealt, blocked);
+		});
+
 		ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) -> {
 			LOGGER.info("{} is going to die to {} damage from {} damage source", entity.getName().getString(), amount, source.getName());
 
