@@ -17,11 +17,15 @@
 package net.fabricmc.fabric.api.attachment.v1;
 
 import java.util.Objects;
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
@@ -138,6 +142,19 @@ public final class AttachmentRegistry {
 		 * @return the builder
 		 */
 		Builder<A> initializer(Supplier<A> initializer);
+
+		/**
+		 * Specifies which clients the attached data should be synchronized with. By default, no data is synced.
+		 *
+		 * <p>In the case of player targets, it is desirable to only sync the data with the client of the target itself.
+		 * This can be achieved by passing {@code (target, player) -> target == player}.</p>
+		 *
+		 * @param syncTargetTest A predicate that determines whether this attachment should be synchronized with the given
+		 *                   {@link ServerPlayerEntity}'s client. The (serverside) {@link AttachmentTarget} is also provided
+		 *                   as an argument.
+		 * @return the builder
+		 */
+		Builder<A> shouldSyncWith(PacketCodec<PacketByteBuf, A> packetCodec, BiPredicate<AttachmentTarget, ServerPlayerEntity> syncTargetTest);
 
 		/**
 		 * Builds and registers the {@link AttachmentType}.

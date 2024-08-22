@@ -19,6 +19,8 @@ package net.fabricmc.fabric.impl.attachment;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
@@ -26,9 +28,13 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
 public final class AttachmentRegistryImpl {
@@ -48,6 +54,10 @@ public final class AttachmentRegistryImpl {
 		return attachmentRegistry.get(id);
 	}
 
+	public static Set<Identifier> getRegisteredAttachments() {
+		return attachmentRegistry.keySet();
+	}
+
 	public static <A> AttachmentRegistry.Builder<A> builder() {
 		return new BuilderImpl<>();
 	}
@@ -57,6 +67,10 @@ public final class AttachmentRegistryImpl {
 		private Supplier<A> defaultInitializer = null;
 		@Nullable
 		private Codec<A> persistenceCodec = null;
+		@Nullable
+		private PacketCodec<PacketByteBuf, A> packetCodec = null;
+		@Nullable
+		private BiPredicate<AttachmentTarget, ServerPlayerEntity> syncTargetTest = null;
 		private boolean copyOnDeath = false;
 
 		@Override
@@ -82,8 +96,26 @@ public final class AttachmentRegistryImpl {
 		}
 
 		@Override
+		public AttachmentRegistry.Builder<A> shouldSyncWith(PacketCodec<PacketByteBuf, A> packetCodec,
+															BiPredicate<AttachmentTarget, ServerPlayerEntity> syncTargetTest) {
+			Objects.requireNonNull(packetCodec, "packet codec cannot be null");
+			Objects.requireNonNull(syncTargetTest, "predicate cannot be null");
+
+			this.packetCodec = packetCodec;
+			this.syncTargetTest = syncTargetTest;
+			return this;
+		}
+
+		@Override
 		public AttachmentType<A> buildAndRegister(Identifier id) {
-			var attachment = new AttachmentTypeImpl<>(id, defaultInitializer, persistenceCodec, copyOnDeath);
+			var attachment = new AttachmentTypeImpl<>(
+					id,
+					defaultInitializer,
+					persistenceCodec,
+					packetCodec,
+					syncTargetTest,
+					copyOnDeath
+			);
 			register(id, attachment);
 			return attachment;
 		}

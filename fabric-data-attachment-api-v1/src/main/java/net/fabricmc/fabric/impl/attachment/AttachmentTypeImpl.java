@@ -16,18 +16,25 @@
 
 package net.fabricmc.fabric.impl.attachment;
 
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
 public record AttachmentTypeImpl<A>(
 		Identifier identifier,
 		@Nullable Supplier<A> initializer,
 		@Nullable Codec<A> persistenceCodec,
+		@Nullable PacketCodec<PacketByteBuf, A> packetCodec,
+		@Nullable BiPredicate<AttachmentTarget, ServerPlayerEntity> syncTargetTest,
 		boolean copyOnDeath
 ) implements AttachmentType<A> { }
