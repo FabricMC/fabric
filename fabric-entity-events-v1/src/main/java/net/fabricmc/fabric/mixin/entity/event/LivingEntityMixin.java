@@ -51,6 +51,8 @@ import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin {
 	@Shadow
@@ -80,6 +82,13 @@ abstract class LivingEntityMixin {
 	private void beforeDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
 		if (!ServerLivingEntityEvents.ALLOW_DAMAGE.invoker().allowDamage((LivingEntity) (Object) this, source, amount)) {
 			cir.setReturnValue(false);
+		}
+	}
+
+	@Inject(method = "damage", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void afterDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir, float dealt, boolean blocked) {
+		if (amount > 0f) {
+			ServerLivingEntityEvents.AFTER_DAMAGE.invoker().afterDamage((LivingEntity) (Object) this, source, dealt, amount, blocked);
 		}
 	}
 

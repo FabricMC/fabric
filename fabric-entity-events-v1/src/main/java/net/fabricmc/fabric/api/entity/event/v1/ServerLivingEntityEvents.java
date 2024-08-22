@@ -42,6 +42,12 @@ public final class ServerLivingEntityEvents {
 		return true;
 	});
 
+	public static final Event<AfterDamage> AFTER_DAMAGE = EventFactory.createArrayBacked(AfterDamage.class, callbacks -> (entity, source, damageDealt, damageTaken, blocked) -> {
+		for (AfterDamage callback : callbacks) {
+			callback.afterDamage(entity, source, damageDealt, damageTaken, blocked);
+		}
+	});
+
 	/**
 	 * An event that is called when an entity takes fatal damage.
 	 *
@@ -102,6 +108,12 @@ public final class ServerLivingEntityEvents {
 		 * @return true if the damage should go ahead, false to cancel the damage.
 		 */
 		boolean allowDamage(LivingEntity entity, DamageSource source, float amount);
+	}
+
+	@FunctionalInterface
+	public interface AfterDamage {
+
+		void afterDamage(LivingEntity entity, DamageSource source, float damageDealt, float damageTaken, boolean blocked);
 	}
 
 	@FunctionalInterface
