@@ -16,17 +16,20 @@
 
 package net.fabricmc.fabric.impl.attachment.sync;
 
+import java.util.List;
+
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 
-public class AcceptedAttachmentsPayloadS2C implements CustomPayload {
-	public static final AcceptedAttachmentsPayloadS2C INSTANCE = new AcceptedAttachmentsPayloadS2C();
-	public static final Id<AcceptedAttachmentsPayloadS2C> ID = new Id<>(AttachmentSync.CONFIG_PACKET_ID);
-	public static final PacketCodec<PacketByteBuf, AcceptedAttachmentsPayloadS2C> CODEC = PacketCodec.unit(INSTANCE);
-
-	private AcceptedAttachmentsPayloadS2C() {
-	}
+public record EntityAttachmentChangePayloadS2C(int entityId, List<AttachmentChange> changes) implements CustomPayload {
+	public static final PacketCodec<PacketByteBuf, EntityAttachmentChangePayloadS2C> CODEC = PacketCodec.tuple(
+			PacketCodecs.VAR_INT, EntityAttachmentChangePayloadS2C::entityId,
+			AttachmentChange.LIST_PACKET_CODEC, EntityAttachmentChangePayloadS2C::changes,
+			EntityAttachmentChangePayloadS2C::new
+	);
+	public static final Id<EntityAttachmentChangePayloadS2C> ID = new Id<>(AttachmentSync.ENTITY_PACKET_ID);
 
 	@Override
 	public Id<? extends CustomPayload> getId() {

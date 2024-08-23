@@ -19,14 +19,19 @@ package net.fabricmc.fabric.impl.attachment.sync;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.util.math.BlockPos;
 
-public class AcceptedAttachmentsPayloadS2C implements CustomPayload {
-	public static final AcceptedAttachmentsPayloadS2C INSTANCE = new AcceptedAttachmentsPayloadS2C();
-	public static final Id<AcceptedAttachmentsPayloadS2C> ID = new Id<>(AttachmentSync.CONFIG_PACKET_ID);
-	public static final PacketCodec<PacketByteBuf, AcceptedAttachmentsPayloadS2C> CODEC = PacketCodec.unit(INSTANCE);
-
-	private AcceptedAttachmentsPayloadS2C() {
-	}
+/*
+ * Only used for syncing *after* initial login and chunk login.
+ */
+// Not a GlobalPos since the client only knows of one world at a time
+public record BlockEntityAttachmentChangePayloadS2C(BlockPos pos, AttachmentChange change) implements CustomPayload {
+	public static final PacketCodec<PacketByteBuf, BlockEntityAttachmentChangePayloadS2C> CODEC = PacketCodec.tuple(
+			BlockPos.PACKET_CODEC, BlockEntityAttachmentChangePayloadS2C::pos,
+			AttachmentChange.PACKET_CODEC, BlockEntityAttachmentChangePayloadS2C::change,
+			BlockEntityAttachmentChangePayloadS2C::new
+	);
+	public static final Id<BlockEntityAttachmentChangePayloadS2C> ID = new Id<>(AttachmentSync.BLOCK_ENTITY_PACKET_ID);
 
 	@Override
 	public Id<? extends CustomPayload> getId() {

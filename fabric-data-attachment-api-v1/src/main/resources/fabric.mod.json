@@ -44,7 +44,7 @@
       "net/minecraft/class_2586": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"],
       "net/minecraft/class_2791": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"],
       "net/minecraft/class_1297": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"],
-      "net/minecraft/class_3218": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"]
+      "net/minecraft/class_1937": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"]
     }
   }
 }

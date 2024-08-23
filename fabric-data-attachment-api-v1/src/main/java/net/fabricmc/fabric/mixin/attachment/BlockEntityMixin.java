@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -25,11 +28,29 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
+import net.fabricmc.fabric.impl.attachment.sync.BlockEntityAttachmentChangePayloadS2C;
 
 @Mixin(BlockEntity.class)
 abstract class BlockEntityMixin implements AttachmentTargetImpl {
+	@Shadow
+	@Final
+	protected BlockPos pos;
+
+	@Shadow
+	public abstract boolean hasWorld();
+
+	@Shadow
+	@Nullable
+	protected World world;
+
 	@Inject(
 			method = "read",
 			at = @At("RETURN")
@@ -44,5 +65,15 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	)
 	private void writeBlockEntityAttachments(RegistryWrapper.WrapperLookup wrapperLookup, CallbackInfoReturnable<NbtCompound> cir) {
 		this.fabric_writeAttachmentsToNbt(cir.getReturnValue(), wrapperLookup);
+	}
+
+	@Override
+	public void fabric_syncChange(AttachmentType<?> type, Object change) {
+		if (this.hasWorld() && !this.world.isClient) {
+			var payload = new BlockEntityAttachmentChangePayloadS2C(this.pos, new AttachmentChange(type, change));
+
+			PlayerLookup.tracking((BlockEntity) (Object) this)
+					.forEach(player -> AttachmentSync.syncIfPossible(payload, type, this, player));
+		}
 	}
 }

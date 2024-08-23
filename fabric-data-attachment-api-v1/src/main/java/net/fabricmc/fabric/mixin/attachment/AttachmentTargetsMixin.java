@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.BiPredicate;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,14 +29,17 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 
 @Mixin({BlockEntity.class, Entity.class, World.class, Chunk.class})
 abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
@@ -60,9 +66,14 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			((Chunk) thisObject).setNeedsSaving(true);
 
 			if (type.isPersistent() && ((Chunk) thisObject).getStatus().equals(ChunkStatus.EMPTY)) {
-				AttachmentEntrypoint.LOGGER.warn("Attaching persistent attachment {} to chunk with chunk status EMPTY. Attachment might be discarded.", type.identifier());
+				AttachmentEntrypoint.LOGGER.warn(
+						"Attaching persistent attachment {} to chunk with chunk status EMPTY. Attachment might be discarded.",
+						type.identifier()
+				);
 			}
 		}
+
+		this.fabric_syncChange(type, value);
 
 		if (value == null) {
 			if (fabric_dataAttachments == null) {
@@ -108,5 +119,27 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Override
 	public Map<AttachmentType<?>, ?> fabric_getAttachments() {
 		return fabric_dataAttachments;
+	}
+
+	@Override
+	@Nullable
+	public List<AttachmentChange> fabric_getInitialAttachmentsFor(ServerPlayerEntity player) {
+		// TODO optimize
+		if (fabric_dataAttachments == null) {
+			return null;
+		}
+
+		List<AttachmentChange> list = new ArrayList<>();
+
+		for (Map.Entry<AttachmentType<?>, Object> entry : fabric_dataAttachments.entrySet()) {
+			AttachmentType<?> type = entry.getKey();
+			BiPredicate<AttachmentTarget, ServerPlayerEntity> syncTargetTest = type.syncTargetTest();
+
+			if (syncTargetTest != null && syncTargetTest.test(this, player)) {
+				list.add(new AttachmentChange(type, entry.getValue()));
+			}
+		}
+
+		return list.isEmpty() ? null : list;
 	}
 }

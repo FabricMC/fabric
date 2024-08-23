@@ -16,15 +16,18 @@
 
 package net.fabricmc.fabric.impl.attachment;
 
+import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 
 public interface AttachmentTargetImpl extends AttachmentTarget {
 	/**
@@ -32,7 +35,7 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 	 * WorldChunk, and when an entity is respawned and a new instance is created. For entity respawns, it is
 	 * triggered on player respawn, entity conversion, return from the End, or cross-world entity teleportation.
 	 * In the first two cases, only the attachments with {@link AttachmentType#copyOnDeath()} will be transferred.
-	*/
+	 */
 	@SuppressWarnings("unchecked")
 	static void transfer(AttachmentTarget original, AttachmentTarget target, boolean isDeath) {
 		Map<AttachmentType<?>, ?> attachments = ((AttachmentTargetImpl) original).fabric_getAttachments();
@@ -65,5 +68,14 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 
 	default boolean fabric_hasPersistentAttachments() {
 		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	@Nullable
+	default List<AttachmentChange> fabric_getInitialAttachmentsFor(ServerPlayerEntity player) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	default void fabric_syncChange(AttachmentType<?> type, Object change) {
+		// default can be reached and should be no-op, e.g. in ProtoChunk
 	}
 }

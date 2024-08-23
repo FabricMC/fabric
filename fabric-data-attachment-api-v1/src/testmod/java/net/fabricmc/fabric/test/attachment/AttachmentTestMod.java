@@ -23,6 +23,7 @@ import com.mojang.serialization.Codec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -57,6 +58,10 @@ public class AttachmentTestMod implements ModInitializer {
 	public static final AttachmentType<String> FEATURE_ATTACHMENT = AttachmentRegistry.create(
 			Identifier.of(MOD_ID, "feature")
 	);
+	public static final AttachmentType<Boolean> SYNCED_ATTACHMENT = AttachmentRegistry.<Boolean>builder()
+			.initializer(() -> false)
+			.shouldSyncWith(PacketCodecs.BOOL.cast(), (target, player) -> target == player)
+			.buildAndRegister(Identifier.of(MOD_ID, "synced"));
 
 	public static final ChunkPos FAR_CHUNK_POS = new ChunkPos(300, 0);
 
