@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl;
+package net.fabricmc.fabric.impl.crash.report.info;
 
 import java.lang.management.LockInfo;
 import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
 
 public class ThreadPrinting {
-
 	public static String fullThreadInfoToString(ThreadInfo threadInfo) {
 		StringBuilder sb = new StringBuilder("\"" + threadInfo.getThreadName() + "\""
 				+ (threadInfo.isDaemon() ? " daemon" : "")

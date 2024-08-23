@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import net.minecraft.server.dedicated.DedicatedServerWatchdog;
 
-import net.fabricmc.fabric.impl.ThreadPrinting;
+import net.fabricmc.fabric.impl.crash.report.info.ThreadPrinting;
 
 @Mixin(DedicatedServerWatchdog.class)
 public class DedicatedServerWatchdogMixin {
