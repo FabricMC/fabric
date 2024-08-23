@@ -73,7 +73,9 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			}
 		}
 
-		this.fabric_syncChange(type, value);
+		if (type.isSynced()) {
+			this.fabric_syncChange(type, value);
+		}
 
 		if (value == null) {
 			if (fabric_dataAttachments == null) {

@@ -106,6 +106,13 @@ public interface AttachmentType<A> {
 	PacketCodec<PacketByteBuf, A> packetCodec();
 
 	/**
+	 * @return whether this attachment type can be synchronized with clients
+	 */
+	default boolean isSynced() {
+		return packetCodec() != null;
+	}
+
+	/**
 	 * A predicate that determines with which players this attachment should be synchronized with.
 	 *
 	 * @return the predicate
