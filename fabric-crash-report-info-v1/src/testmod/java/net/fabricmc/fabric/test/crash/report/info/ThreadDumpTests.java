@@ -31,7 +31,6 @@ import net.minecraft.util.crash.ReportType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
-
 public class ThreadDumpTests implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ThreadDumpTests.class);
 
