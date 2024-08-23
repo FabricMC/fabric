@@ -16,14 +16,13 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
-import java.util.Map;
+import java.util.function.Function;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.chunk.BlockBufferAllocatorStorage;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
@@ -69,12 +68,12 @@ public class TerrainRenderContext extends AbstractBlockRenderContext {
 
 	@Override
 	protected VertexConsumer getVertexConsumer(RenderLayer layer) {
-		return chunkInfo.getInitializedBuffer(layer);
+		return chunkInfo.getBuffer(layer);
 	}
 
-	public void prepare(ChunkRendererRegion blockView, BlockPos chunkOrigin, BlockBufferAllocatorStorage builders, Map<RenderLayer, BufferBuilder> builderMap) {
+	public void prepare(ChunkRendererRegion blockView, Function<RenderLayer, BufferBuilder> bufferFunc) {
+		chunkInfo.prepare(blockView, bufferFunc);
 		blockInfo.prepareForWorld(blockView, true);
-		chunkInfo.prepare(blockView, chunkOrigin, builders, builderMap);
 	}
 
 	public void release() {

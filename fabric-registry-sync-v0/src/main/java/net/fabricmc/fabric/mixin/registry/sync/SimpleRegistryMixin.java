@@ -73,6 +73,9 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	@Unique
 	private static final Set<String> VANILLA_NAMESPACES = Set.of("minecraft", "brigadier");
 
+	@Unique
+	private static final Logger LOGGER = LoggerFactory.getLogger("FabricRegistrySync");
+
 	@Shadow
 	@Final
 	private ObjectList<RegistryEntry.Reference<T>> rawIdToEntry;

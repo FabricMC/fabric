@@ -18,7 +18,11 @@ package net.fabricmc.fabric.test.resource.loader;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
@@ -116,5 +120,22 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 				serverResources = true;
 			}
 		});
+
+		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(RegistryReloader.ID, RegistryReloader::new);
+	}
+
+	private record RegistryReloader(RegistryWrapper.WrapperLookup wrapperLookup) implements SimpleSynchronousResourceReloadListener {
+		private static final Identifier ID = Identifier.of(MODID, "registry_reloader");
+
+		@Override
+		public Identifier getFabricId() {
+			return ID;
+		}
+
+		@Override
+		public void reload(ResourceManager manager) {
+			Objects.requireNonNull(wrapperLookup);
+			wrapperLookup.getWrapperOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
+		}
 	}
 }

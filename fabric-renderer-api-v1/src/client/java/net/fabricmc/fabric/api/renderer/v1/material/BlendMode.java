@@ -17,13 +17,15 @@
 package net.fabricmc.fabric.api.renderer.v1.material;
 
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 
 /**
- * Defines how sprite pixels will be blended with the scene.
+ * Controls how sprite pixels will be blended with the scene.
  */
 public enum BlendMode {
 	/**
-	 * Emulate blending behavior of {@code BlockRenderLayer} associated with the block.
+	 * Emulate blending behavior of the {@link RenderLayer} associated with the block state through
+	 * {@link RenderLayers}.
 	 */
 	DEFAULT(null),
 

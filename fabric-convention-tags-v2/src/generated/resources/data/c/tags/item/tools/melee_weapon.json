@@ -1,5 +1,7 @@
 {
   "values": [
+    "minecraft:mace",
+    "minecraft:trident",
     "minecraft:wooden_sword",
     "minecraft:stone_sword",
     "minecraft:golden_sword",

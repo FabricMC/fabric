@@ -32,7 +32,7 @@ public final class Registration {
 	public static final FrameBlock FRAME_MULTIPART_BLOCK = register("frame_multipart", new FrameBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque()));
 	public static final FrameBlock FRAME_VARIANT_BLOCK = register("frame_variant", new FrameBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque()));
 	public static final Block PILLAR_BLOCK = register("pillar", new Block(AbstractBlock.Settings.create()));
-	public static final Block OCTAGONAL_COLUMN_BLOCK = register("octagonal_column", new Block(AbstractBlock.Settings.create().nonOpaque().strength(1.8F)));
+	public static final Block OCTAGONAL_COLUMN_BLOCK = register("octagonal_column", new OctagonalColumnBlock(AbstractBlock.Settings.create().nonOpaque().strength(1.8F)));
 	public static final Block RIVERSTONE_BLOCK = register("riverstone", new Block(AbstractBlock.Settings.copy(Blocks.STONE)));
 
 	public static final FrameBlock[] FRAME_BLOCKS = new FrameBlock[] {

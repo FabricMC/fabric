@@ -24,6 +24,7 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelResolver;
+import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
 import net.fabricmc.fabric.test.renderer.RendererTest;
 
 public class ModelResolverImpl implements ModelResolver {
@@ -42,6 +43,10 @@ public class ModelResolverImpl implements ModelResolver {
 	private static final Set<Identifier> OCTAGONAL_COLUMN_MODEL_LOCATIONS = Set.of(
 			RendererTest.id("block/octagonal_column"),
 			RendererTest.id("item/octagonal_column")
+	);
+
+	private static final Set<Identifier> OCTAGONAL_COLUMN_VANILLA_MODEL_LOCATIONS = Set.of(
+			RendererTest.id("block/octagonal_column_vanilla")
 	);
 
 	private static final Set<Identifier> RIVERSTONE_MODEL_LOCATIONS = Set.of(
@@ -63,7 +68,11 @@ public class ModelResolverImpl implements ModelResolver {
 		}
 
 		if (OCTAGONAL_COLUMN_MODEL_LOCATIONS.contains(id)) {
-			return new OctagonalColumnUnbakedModel();
+			return new OctagonalColumnUnbakedModel(ShadeMode.ENHANCED);
+		}
+
+		if (OCTAGONAL_COLUMN_VANILLA_MODEL_LOCATIONS.contains(id)) {
+			return new OctagonalColumnUnbakedModel(ShadeMode.VANILLA);
 		}
 
 		if (RIVERSTONE_MODEL_LOCATIONS.contains(id)) {
