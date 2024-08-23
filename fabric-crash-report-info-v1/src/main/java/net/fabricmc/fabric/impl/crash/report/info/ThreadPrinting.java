@@ -21,6 +21,9 @@ import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
 
 public class ThreadPrinting {
+	/**
+	 * A modified copy of {@link ThreadInfo#toString} without the MAX_FRAMES check.
+	 */
 	public static String fullThreadInfoToString(ThreadInfo threadInfo) {
 		StringBuilder sb = new StringBuilder("\"" + threadInfo.getThreadName() + "\""
 				+ (threadInfo.isDaemon() ? " daemon" : "")

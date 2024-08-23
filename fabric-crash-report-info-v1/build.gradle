@@ -1,1 +1,5 @@
 version = getSubprojectVersion(project)
+
+testDependencies(project, [
+	':fabric-command-api-v2'
+])
