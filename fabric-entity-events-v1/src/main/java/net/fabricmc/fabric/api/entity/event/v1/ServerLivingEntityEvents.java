@@ -125,7 +125,7 @@ public final class ServerLivingEntityEvents {
 
 		/**
 		 * Called after a living entity took damage, unless they were killed. The damage taken is given as damage taken
-		 * before armor or enchantments are applied.
+		 * before armor or enchantments are applied, but after other effects like shields are applied.
 		 *
 		 * @param entity the entity that was damaged
 		 * @param source the source of the damage
