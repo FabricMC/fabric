@@ -28,7 +28,6 @@ import net.fabricmc.fabric.impl.ThreadPrinting;
 
 @Mixin(DedicatedServerWatchdog.class)
 public class DedicatedServerWatchdogMixin {
-
 	@ModifyArg(method = "createCrashReport(Ljava/lang/String;J)Lnet/minecraft/util/crash/CrashReport;",
 			at = @At(value = "INVOKE",
 					target = "Ljava/lang/StringBuilder;append(Ljava/lang/Object;)Ljava/lang/StringBuilder;",
@@ -39,6 +38,7 @@ public class DedicatedServerWatchdogMixin {
 		if (object instanceof ThreadInfo threadInfo) {
 			return ThreadPrinting.fullThreadInfoToString(threadInfo);
 		}
+
 		return object;
 	}
 }
