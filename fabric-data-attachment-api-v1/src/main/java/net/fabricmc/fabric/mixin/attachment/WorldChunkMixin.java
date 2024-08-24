@@ -56,9 +56,9 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 	@Final
 	private World world;
 	@Unique
-	private Map<BlockPos, Map<AttachmentType<?>, AttachmentChange>> blockEntityGloballySynced = new HashMap<>();
+	private Map<BlockPos, Map<AttachmentType<?>, AttachmentChange>> alwaysSentToNewcomersBE = new HashMap<>();
 	@Unique
-	private Map<BlockPos, Map<AttachmentType<?>, AttachmentChange>> blockEntityOtherSynced = new HashMap<>();
+	private Map<BlockPos, Map<AttachmentType<?>, AttachmentChange>> maybeSentToNewcomersBE = new HashMap<>();
 
 	@Inject(method = "<init>(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/ProtoChunk;Lnet/minecraft/world/chunk/WorldChunk$EntityLoader;)V", at = @At("TAIL"))
 	private void transferProtoChunkAttachement(ServerWorld world, ProtoChunk protoChunk, WorldChunk.EntityLoader entityLoader, CallbackInfo ci) {
@@ -67,15 +67,21 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 
 	@Inject(method = "removeBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;markRemoved()V"))
 	private void removeBlockEntityAttachments(BlockPos pos, CallbackInfo ci) {
-		blockEntityGloballySynced.remove(pos);
-		blockEntityOtherSynced.remove(pos);
+		alwaysSentToNewcomersBE.remove(pos);
+		maybeSentToNewcomersBE.remove(pos);
 	}
 
 	@Override
 	public void fabric_acknowledgeBlockEntityAttachment(BlockPos pos, AttachmentType<?> type, @Nullable Object value) {
-		Map<BlockPos, Map<AttachmentType<?>, AttachmentChange>> globalMap = ((AttachmentTypeImpl<?>) type).syncType() == SyncType.ALL
-				? blockEntityGloballySynced
-				: blockEntityOtherSynced;
+		SyncType syncType = ((AttachmentTypeImpl<?>) type).syncType();
+
+		if (syncType == SyncType.TARGET_ONLY) {
+			return;
+		}
+
+		Map<BlockPos, Map<AttachmentType<?>, AttachmentChange>> globalMap = syncType == SyncType.CUSTOM
+				? maybeSentToNewcomersBE
+				: alwaysSentToNewcomersBE;
 		var targetInfo = new AttachmentTargetInfo.BlockEntityTarget(pos);
 
 		if (value == null && globalMap.containsKey(pos)) {
@@ -97,20 +103,11 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 		AttachmentSyncPayload chunkPayload = super.fabric_getInitialSyncPayload(player);
 		List<AttachmentChange> changes = chunkPayload == null ? new ArrayList<>() : chunkPayload.attachments();
 
-		this.blockEntityGloballySynced.values().forEach(m -> changes.addAll(m.values()));
-		this.blockEntityOtherSynced.forEach((blockPos, map) -> {
+		this.alwaysSentToNewcomersBE.values().forEach(m -> changes.addAll(m.values()));
+		this.maybeSentToNewcomersBE.forEach((blockPos, map) -> {
 			for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : map.entrySet()) {
-				AttachmentType<?> type = entry.getKey();
-				boolean add;
-
-				switch (((AttachmentTypeImpl<?>) type).syncType()) {
-				case TARGET_ONLY -> add = (Object) this == player;
-				case ALL_BUT_TARGET -> add = (Object) this != player;
-				case CUSTOM -> add = ((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(this, player);
-				default -> throw new IllegalStateException();
-				}
-
-				if (add) {
+				// sync type should always be CUSTOM here
+				if (((AttachmentTypeImpl<?>) entry.getKey()).customSyncTargetTest().test(this, player)) {
 					changes.add(entry.getValue());
 				}
 			}

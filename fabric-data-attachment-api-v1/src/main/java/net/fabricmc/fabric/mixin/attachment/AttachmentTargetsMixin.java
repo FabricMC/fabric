@@ -44,10 +44,16 @@ import net.fabricmc.fabric.impl.attachment.sync.SyncType;
 abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, Object> fabric_dataAttachments = null;
+	/*
+	 * All of the attachment changes that should always be sent to newcomers, players that begin to track this target
+	 */
 	@Nullable
-	private IdentityHashMap<AttachmentType<?>, AttachmentChange> fabric_globallySynced = null;
+	private IdentityHashMap<AttachmentType<?>, AttachmentChange> fabric_alwaysSentToNewcomers = null;
+	/*
+	 * Same as above, except that the changes might not be sent to any newcomer, needs to be checked before sending
+	 */
 	@Nullable
-	private IdentityHashMap<AttachmentType<?>, AttachmentChange> fabric_otherSynced = null;
+	private IdentityHashMap<AttachmentType<?>, AttachmentChange> fabric_maybeSentToNewcomers = null;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -120,43 +126,56 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 	@Override
 	public void fabric_acknowledgeSyncedEntry(AttachmentType<?> type, @Nullable Object value) {
-		if (value == null) {
-			if (((AttachmentTypeImpl<?>) type).syncType() == SyncType.ALL) {
-				if (fabric_globallySynced == null) {
+		SyncType syncType = ((AttachmentTypeImpl<?>) type).syncType();
+
+		if (syncType == SyncType.TARGET_ONLY) {
+			// the target can never be a newcomer (i.e. start tracking itself), so this never needs to be synced
+			return;
+		}
+
+		if (syncType == SyncType.CUSTOM) {
+			if (value == null) {
+				if (fabric_maybeSentToNewcomers == null) {
 					return;
 				}
 
-				fabric_globallySynced.remove(type);
+				fabric_maybeSentToNewcomers.remove(type);
 
-				if (fabric_globallySynced.isEmpty()) {
-					fabric_globallySynced = null;
+				if (fabric_maybeSentToNewcomers.isEmpty()) {
+					fabric_maybeSentToNewcomers = null;
 				}
 			} else {
-				if (fabric_otherSynced == null) {
-					return;
+				AttachmentChange change = new AttachmentChange(fabric_getSyncTargetInfo(), type, value);
+
+				if (fabric_maybeSentToNewcomers == null) {
+					fabric_maybeSentToNewcomers = new IdentityHashMap<>();
 				}
 
-				fabric_otherSynced.remove(type);
-
-				if (fabric_otherSynced.isEmpty()) {
-					fabric_otherSynced = null;
-				}
+				fabric_maybeSentToNewcomers.put(type, change);
 			}
 		} else {
-			AttachmentChange change = new AttachmentChange(fabric_getSyncTargetInfo(), type, value);
-
-			if (((AttachmentTypeImpl<?>) type).syncType() == SyncType.ALL) {
-				if (fabric_globallySynced == null) {
-					fabric_globallySynced = new IdentityHashMap<>();
+			/*
+			 * covers both ALL and ALL_BUT_TARGET: the target is never a newcomer,
+			 * so it *always* needs to be synced in the second case
+			 */
+			if (value == null) {
+				if (fabric_alwaysSentToNewcomers == null) {
+					return;
 				}
 
-				fabric_globallySynced.put(type, change);
+				fabric_alwaysSentToNewcomers.remove(type);
+
+				if (fabric_alwaysSentToNewcomers.isEmpty()) {
+					fabric_alwaysSentToNewcomers = null;
+				}
 			} else {
-				if (fabric_otherSynced == null) {
-					fabric_otherSynced = new IdentityHashMap<>();
+				AttachmentChange change = new AttachmentChange(fabric_getSyncTargetInfo(), type, value);
+
+				if (fabric_alwaysSentToNewcomers == null) {
+					fabric_alwaysSentToNewcomers = new IdentityHashMap<>();
 				}
 
-				fabric_otherSynced.put(type, change);
+				fabric_alwaysSentToNewcomers.put(type, change);
 			}
 		}
 	}
@@ -164,29 +183,20 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Override
 	@Nullable
 	public AttachmentSyncPayload fabric_getInitialSyncPayload(ServerPlayerEntity player) {
-		if (fabric_dataAttachments == null || fabric_globallySynced == null && fabric_otherSynced == null) {
+		if (fabric_dataAttachments == null || fabric_alwaysSentToNewcomers == null && fabric_maybeSentToNewcomers == null) {
 			return null;
 		}
 
 		List<AttachmentChange> list = new ArrayList<>();
 
-		if (fabric_globallySynced != null) {
-			list.addAll(fabric_globallySynced.values());
+		if (fabric_alwaysSentToNewcomers != null) {
+			list.addAll(fabric_alwaysSentToNewcomers.values());
 		}
 
-		if (fabric_otherSynced != null) {
-			for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : fabric_otherSynced.entrySet()) {
-				AttachmentType<?> type = entry.getKey();
-				boolean add;
-
-				switch (((AttachmentTypeImpl<?>) type).syncType()) {
-				case TARGET_ONLY -> add = (Object) this == player;
-				case ALL_BUT_TARGET -> add = (Object) this != player;
-				case CUSTOM -> add = ((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(this, player);
-				default -> throw new IllegalStateException();
-				}
-
-				if (add) {
+		if (fabric_maybeSentToNewcomers != null) {
+			for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : fabric_maybeSentToNewcomers.entrySet()) {
+				// sync type should always be CUSTOM here
+				if (((AttachmentTypeImpl<?>) entry.getKey()).customSyncTargetTest().test(this, player)) {
 					list.add(entry.getValue());
 				}
 			}

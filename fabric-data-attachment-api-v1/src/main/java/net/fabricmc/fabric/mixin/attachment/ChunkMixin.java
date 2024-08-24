@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.attachment.BlockEntityAttachmentReceiver;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 @Mixin(Chunk.class)
-public abstract class ChunkMixin implements AttachmentTargetImpl, BlockEntityAttachmentReceiver {
+abstract class ChunkMixin implements AttachmentTargetImpl, BlockEntityAttachmentReceiver {
 	@Shadow
 	@Final
 	protected ChunkPos pos;
