@@ -23,6 +23,6 @@ import net.fabricmc.fabric.api.entity.event.v1.FabricElytraItem;
 
 public class DiamondElytraItem extends ArmorItem implements FabricElytraItem {
 	public DiamondElytraItem() {
-		super(ArmorMaterials.DIAMOND, Type.CHESTPLATE, new Settings().maxCount(1));
+		super(ArmorMaterials.DIAMOND, Type.CHESTPLATE, new Settings().maxCount(1).maxDamage(100));
 	}
 }
