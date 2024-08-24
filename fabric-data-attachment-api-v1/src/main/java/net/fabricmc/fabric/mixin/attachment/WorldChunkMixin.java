@@ -17,6 +17,8 @@
 package net.fabricmc.fabric.mixin.attachment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,65 +26,93 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.ProtoChunk;
-import net.minecraft.world.chunk.UpgradeData;
 import net.minecraft.world.chunk.WorldChunk;
-import net.minecraft.world.gen.chunk.BlendingData;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
+import net.fabricmc.fabric.impl.attachment.BlockEntityAttachmentReceiver;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
+import net.fabricmc.fabric.impl.attachment.sync.SyncType;
 
 @Mixin(WorldChunk.class)
-abstract class WorldChunkMixin extends Chunk implements AttachmentTargetImpl {
+abstract class WorldChunkMixin extends AttachmentTargetsMixin implements AttachmentTargetImpl, BlockEntityAttachmentReceiver {
 	@Shadow
 	@Final
 	private World world;
+	@Unique
+	private Map<BlockPos, Map<AttachmentType<?>, AttachmentChange>> blockEntityGloballySynced = new HashMap<>();
+	@Unique
+	private Map<BlockPos, Map<AttachmentType<?>, AttachmentChange>> blockEntityOtherSynced = new HashMap<>();
 
-	WorldChunkMixin(ChunkPos pos, UpgradeData upgradeData, HeightLimitView heightLimitView, Registry<Biome> biomeRegistry, long inhabitedTime, @Nullable ChunkSection[] sectionArray, @Nullable BlendingData blendingData) {
-		super(pos, upgradeData, heightLimitView, biomeRegistry, inhabitedTime, sectionArray, blendingData);
-	}
-
-	@Shadow
-	public abstract Map<BlockPos, BlockEntity> getBlockEntities();
-
-	@Inject(
-			method = "<init>(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/ProtoChunk;Lnet/minecraft/world/chunk/WorldChunk$EntityLoader;)V",
-			at = @At("TAIL")
-	)
-	public void transferProtoChunkAttachement(ServerWorld world, ProtoChunk protoChunk, WorldChunk.EntityLoader entityLoader, CallbackInfo ci) {
+	@Inject(method = "<init>(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/ProtoChunk;Lnet/minecraft/world/chunk/WorldChunk$EntityLoader;)V", at = @At("TAIL"))
+	private void transferProtoChunkAttachement(ServerWorld world, ProtoChunk protoChunk, WorldChunk.EntityLoader entityLoader, CallbackInfo ci) {
 		AttachmentTargetImpl.transfer(protoChunk, this, false);
 	}
 
+	@Inject(method = "removeBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;markRemoved()V"))
+	private void removeBlockEntityAttachments(BlockPos pos, CallbackInfo ci) {
+		blockEntityGloballySynced.remove(pos);
+		blockEntityOtherSynced.remove(pos);
+	}
+
 	@Override
-	public @Nullable AttachmentSyncPayload fabric_getInitialSyncPayload(ServerPlayerEntity player) {
-		AttachmentSyncPayload chunkPayload = AttachmentTargetImpl.super.fabric_getInitialSyncPayload(player);
+	public void fabric_acknowledgeBlockEntityAttachment(BlockPos pos, AttachmentType<?> type, @Nullable Object value) {
+		Map<BlockPos, Map<AttachmentType<?>, AttachmentChange>> globalMap = ((AttachmentTypeImpl<?>) type).syncType() == SyncType.ALL
+				? blockEntityGloballySynced
+				: blockEntityOtherSynced;
+		var targetInfo = new AttachmentTargetInfo.BlockEntityTarget(pos);
+
+		if (value == null && globalMap.containsKey(pos)) {
+			Map<AttachmentType<?>, AttachmentChange> map = globalMap.get(pos);
+			map.remove(type);
+
+			if (map.isEmpty()) {
+				globalMap.remove(pos);
+			}
+		} else if (value != null) {
+			globalMap.computeIfAbsent(pos, k -> new IdentityHashMap<>())
+					.put(type, new AttachmentChange(targetInfo, type, value));
+		}
+	}
+
+	@Override
+	@Nullable
+	public AttachmentSyncPayload fabric_getInitialSyncPayload(ServerPlayerEntity player) {
+		AttachmentSyncPayload chunkPayload = super.fabric_getInitialSyncPayload(player);
 		List<AttachmentChange> changes = chunkPayload == null ? new ArrayList<>() : chunkPayload.attachments();
 
-		this.getBlockEntities().forEach((pos, blockEntity) -> {
-			AttachmentSyncPayload payload = ((AttachmentTargetImpl) blockEntity).fabric_getInitialSyncPayload(player);
+		this.blockEntityGloballySynced.values().forEach(m -> changes.addAll(m.values()));
+		this.blockEntityOtherSynced.forEach((blockPos, map) -> {
+			for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : map.entrySet()) {
+				AttachmentType<?> type = entry.getKey();
+				boolean add;
 
-			if (payload != null) {
-				changes.addAll(payload.attachments());
+				switch (((AttachmentTypeImpl<?>) type).syncType()) {
+				case TARGET_ONLY -> add = (Object) this == player;
+				case ALL_BUT_TARGET -> add = (Object) this != player;
+				case CUSTOM -> add = ((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(this, player);
+				default -> throw new IllegalStateException();
+				}
+
+				if (add) {
+					changes.add(entry.getValue());
+				}
 			}
 		});
 
@@ -92,7 +122,8 @@ abstract class WorldChunkMixin extends Chunk implements AttachmentTargetImpl {
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
 		if (this.world instanceof ServerWorld serverWorld) {
-			PlayerLookup.tracking(serverWorld, this.pos)
+			// Can't shadow the method or field as we are already extending a supermixin
+			PlayerLookup.tracking(serverWorld, ((Chunk) (Object) this).getPos())
 					.forEach(player -> AttachmentSync.syncIfPossible(payload, type, this, player));
 		}
 	}

@@ -60,7 +60,7 @@ public class AttachmentTestMod implements ModInitializer {
 	);
 	public static final AttachmentType<Boolean> SYNCED_ATTACHMENT = AttachmentRegistry.<Boolean>builder()
 			.initializer(() -> false)
-			.shouldSyncWith(PacketCodecs.BOOL.cast(), (target, player) -> target == player)
+			.syncWithCustom(PacketCodecs.BOOL.cast(), (target, player) -> target == player)
 			.buildAndRegister(Identifier.of(MOD_ID, "synced"));
 
 	public static final ChunkPos FAR_CHUNK_POS = new ChunkPos(300, 0);

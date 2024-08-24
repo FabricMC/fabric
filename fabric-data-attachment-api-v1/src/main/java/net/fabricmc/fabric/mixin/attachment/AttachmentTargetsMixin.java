@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiPredicate;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,21 +31,23 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
 
-import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
+import net.fabricmc.fabric.impl.attachment.sync.SyncType;
 
 @Mixin({BlockEntity.class, Entity.class, World.class, Chunk.class})
 abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, Object> fabric_dataAttachments = null;
+	@Nullable
+	private IdentityHashMap<AttachmentType<?>, AttachmentChange> fabric_globallySynced = null;
+	@Nullable
+	private IdentityHashMap<AttachmentType<?>, AttachmentChange> fabric_otherSynced = null;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -62,6 +63,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 		this.fabric_markChanged(type);
 
 		if (type.isSynced()) {
+			this.fabric_acknowledgeSyncedEntry(type, value);
 			var payload = new AttachmentSyncPayload(List.of(new AttachmentChange(
 					fabric_getSyncTargetInfo(),
 					type,
@@ -117,22 +119,76 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
+	public void fabric_acknowledgeSyncedEntry(AttachmentType<?> type, @Nullable Object value) {
+		if (value == null) {
+			if (((AttachmentTypeImpl<?>) type).syncType() == SyncType.ALL) {
+				if (fabric_globallySynced == null) {
+					return;
+				}
+
+				fabric_globallySynced.remove(type);
+
+				if (fabric_globallySynced.isEmpty()) {
+					fabric_globallySynced = null;
+				}
+			} else {
+				if (fabric_otherSynced == null) {
+					return;
+				}
+
+				fabric_otherSynced.remove(type);
+
+				if (fabric_otherSynced.isEmpty()) {
+					fabric_otherSynced = null;
+				}
+			}
+		} else {
+			AttachmentChange change = new AttachmentChange(fabric_getSyncTargetInfo(), type, value);
+
+			if (((AttachmentTypeImpl<?>) type).syncType() == SyncType.ALL) {
+				if (fabric_globallySynced == null) {
+					fabric_globallySynced = new IdentityHashMap<>();
+				}
+
+				fabric_globallySynced.put(type, change);
+			} else {
+				if (fabric_otherSynced == null) {
+					fabric_otherSynced = new IdentityHashMap<>();
+				}
+
+				fabric_otherSynced.put(type, change);
+			}
+		}
+	}
+
+	@Override
 	@Nullable
 	public AttachmentSyncPayload fabric_getInitialSyncPayload(ServerPlayerEntity player) {
-		// TODO optimize
-		if (fabric_dataAttachments == null) {
+		if (fabric_dataAttachments == null || fabric_globallySynced == null && fabric_otherSynced == null) {
 			return null;
 		}
 
 		List<AttachmentChange> list = new ArrayList<>();
-		AttachmentTargetInfo<?> targetInfo = fabric_getSyncTargetInfo();
 
-		for (Map.Entry<AttachmentType<?>, Object> entry : fabric_dataAttachments.entrySet()) {
-			AttachmentType<?> type = entry.getKey();
-			BiPredicate<AttachmentTarget, ServerPlayerEntity> syncTargetTest = type.syncTargetTest();
+		if (fabric_globallySynced != null) {
+			list.addAll(fabric_globallySynced.values());
+		}
 
-			if (syncTargetTest != null && syncTargetTest.test(this, player)) {
-				list.add(new AttachmentChange(targetInfo, type, entry.getValue()));
+		if (fabric_otherSynced != null) {
+			for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : fabric_otherSynced.entrySet()) {
+				AttachmentType<?> type = entry.getKey();
+				boolean add;
+
+				switch (((AttachmentTypeImpl<?>) type).syncType()) {
+				case TARGET_ONLY -> add = (Object) this == player;
+				case ALL_BUT_TARGET -> add = (Object) this != player;
+				case CUSTOM -> add = ((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(this, player);
+				default -> throw new IllegalStateException();
+				}
+
+				if (add) {
+					list.add(entry.getValue());
+				}
 			}
 		}
 

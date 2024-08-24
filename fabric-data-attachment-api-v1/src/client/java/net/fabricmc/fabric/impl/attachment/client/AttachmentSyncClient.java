@@ -32,8 +32,11 @@ public class AttachmentSyncClient implements ClientModInitializer {
 		});
 
 		// play
-		ClientPlayNetworking.registerGlobalReceiver(AttachmentSyncPayload.ID, (payload, context) -> {
-			payload.attachments().forEach(attachmentChange -> attachmentChange.apply(context.client().world));
-		});
+		ClientPlayNetworking.registerGlobalReceiver(AttachmentSyncPayload.ID, (payload, context) ->
+				context.client().submit(
+						() -> payload.attachments()
+								.forEach(attachmentChange -> attachmentChange.apply(context.client().world))
+				)
+		);
 	}
 }

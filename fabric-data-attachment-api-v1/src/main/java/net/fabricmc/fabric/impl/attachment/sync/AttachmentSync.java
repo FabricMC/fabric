@@ -36,15 +36,11 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 
 public class AttachmentSync implements ModInitializer {
 	public static final Identifier CONFIG_PACKET_ID = Identifier.of("fabric", "accepted_attachments_v1");
 	public static final Identifier PACKET_ID = Identifier.of("fabric", "attachment_sync_v1");
-	public static final Identifier CHUNK_INITIAL_PACKET_ID = Identifier.of("fabric", "attachment_initial_sync_chunk_v1");
-	public static final Identifier CHUNK_CHANGE_PACKET_ID = Identifier.of("fabric", "attachment_change_chunk_v1");
-	public static final Identifier ENTITY_PACKET_ID = Identifier.of("fabric", "attachment_change_entity_v1");
-	public static final Identifier BLOCK_ENTITY_PACKET_ID = Identifier.of("fabric", "attachment_change_block_entity_v1");
-	public static final Identifier WORLD_PACKET_ID = Identifier.of("fabric", "attachment_change_world_v1");
 	public static final ThreadLocal<Set<Identifier>> CLIENT_SUPPORTED_ATTACHMENTS = new ThreadLocal<>();
 
 	public static AcceptedAttachmentsPayloadC2S createResponsePayload() {
@@ -53,10 +49,22 @@ public class AttachmentSync implements ModInitializer {
 
 	// Assumes the type is already synchronizable
 	public static void syncIfPossible(CustomPayload payload, AttachmentType<?> type, AttachmentTarget target, ServerPlayerEntity player) {
-		if (ServerPlayNetworking.canSend(player, payload.getId())
-				&& CLIENT_SUPPORTED_ATTACHMENTS.get().contains(type.identifier())
-				&& type.syncTargetTest().test(target, player)) {
-			ServerPlayNetworking.send(player, payload);
+		if (ServerPlayNetworking.canSend(player, PACKET_ID)
+				&& CLIENT_SUPPORTED_ATTACHMENTS.get().contains(type.identifier())) {
+			boolean send = true;
+
+			switch (((AttachmentTypeImpl<?>) type).syncType()) {
+			case ALL -> {
+			}
+			case TARGET_ONLY -> send = target == player;
+			case ALL_BUT_TARGET -> send = target != player;
+			case CUSTOM -> send = ((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(target, player);
+			case NONE -> throw new IllegalStateException();
+			}
+
+			if (send) {
+				ServerPlayNetworking.send(player, payload);
+			}
 		}
 	}
 
@@ -64,9 +72,9 @@ public class AttachmentSync implements ModInitializer {
 	public void onInitialize() {
 		// Config
 		PayloadTypeRegistry.configurationC2S()
-						.register(AcceptedAttachmentsPayloadC2S.ID, AcceptedAttachmentsPayloadC2S.CODEC);
+				.register(AcceptedAttachmentsPayloadC2S.ID, AcceptedAttachmentsPayloadC2S.CODEC);
 		PayloadTypeRegistry.configurationS2C()
-						.register(AcceptedAttachmentsPayloadS2C.ID, AcceptedAttachmentsPayloadS2C.CODEC);
+				.register(AcceptedAttachmentsPayloadS2C.ID, AcceptedAttachmentsPayloadS2C.CODEC);
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
 			if (ServerConfigurationNetworking.canSend(handler, CONFIG_PACKET_ID)) {
@@ -75,18 +83,17 @@ public class AttachmentSync implements ModInitializer {
 		});
 
 		ServerConfigurationNetworking.registerGlobalReceiver(AcceptedAttachmentsPayloadC2S.ID, (payload, context) -> {
-			context.server().submit(() -> {
-				CLIENT_SUPPORTED_ATTACHMENTS.set(payload.acceptedAttachments());
-			});
+			context.server().submit(() -> CLIENT_SUPPORTED_ATTACHMENTS.set(payload.acceptedAttachments()));
 		});
 
 		// Play
 		PayloadTypeRegistry.playS2C().register(AttachmentSyncPayload.ID, AttachmentSyncPayload.CODEC);
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			if (ServerPlayNetworking.canSend(handler, WORLD_PACKET_ID)) {
+			if (ServerPlayNetworking.canSend(handler, PACKET_ID)) {
 				ServerPlayerEntity player = handler.player;
-				AttachmentSyncPayload payload = ((AttachmentTargetImpl) player.getServerWorld()).fabric_getInitialSyncPayload(player);
+				AttachmentSyncPayload payload =
+						((AttachmentTargetImpl) player.getServerWorld()).fabric_getInitialSyncPayload(player);
 
 				if (payload != null) {
 					ServerPlayNetworking.send(player, payload);

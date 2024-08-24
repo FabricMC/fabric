@@ -87,4 +87,8 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 	default void fabric_markChanged(AttachmentType<?> type) {
 		// default should be a no-op
 	}
+
+	default void fabric_acknowledgeSyncedEntry(AttachmentType<?> type, @Nullable Object value) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
 }

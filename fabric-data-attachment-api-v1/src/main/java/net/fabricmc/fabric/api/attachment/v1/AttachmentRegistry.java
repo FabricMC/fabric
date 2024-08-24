@@ -144,17 +144,39 @@ public final class AttachmentRegistry {
 		Builder<A> initializer(Supplier<A> initializer);
 
 		/**
-		 * Specifies which clients the attached data should be synchronized with. By default, no data is synced.
+		 * Indicates that the attached data should be synced with all possible clients.
 		 *
-		 * <p>In the case of player targets, it is desirable to only sync the data with the client of the targetInfo itself.
-		 * This can be achieved by passing {@code (targetInfo, player) -> targetInfo == player}.</p>
-		 *
-		 * @param syncTargetTest A predicate that determines whether this attachment should be synchronized with the given
-		 *                   {@link ServerPlayerEntity}'s client. The (serverside) {@link AttachmentTarget} is also provided
-		 *                   as an argument.
 		 * @return the builder
 		 */
-		Builder<A> shouldSyncWith(PacketCodec<PacketByteBuf, A> packetCodec, BiPredicate<AttachmentTarget, ServerPlayerEntity> syncTargetTest);
+		Builder<A> syncWithAll(PacketCodec<PacketByteBuf, A> packetCodec);
+
+		/**
+		 * Indicates that the data, when attached to a {@link ServerPlayerEntity player}, should only be synced with
+		 * that player's client. If the data is not attached to a player, it will not be synced with any clients.
+		 *
+		 * @return the builder
+		 */
+		Builder<A> syncWithTargetOnly(PacketCodec<PacketByteBuf, A> packetCodec);
+
+		/**
+		 * Indicates that the data, when attached to a {@link ServerPlayerEntity player}, should only be synced with
+		 * the client of all players that aren't the target. If the data is not attached to a player, it will be synced
+		 * with all clients.
+		 *
+		 * @return the builder
+		 */
+		Builder<A> syncWithAllButTarget(PacketCodec<PacketByteBuf, A> packetCodec);
+
+		/**
+		 * Specifies which clients the attached data should be synchronized with, in a way that is not covered by the
+		 * methods {@link #syncWithAll(PacketCodec)}, {@link #syncWithTargetOnly(PacketCodec)} or {@link #syncWithAllButTarget(PacketCodec)}.
+		 *
+		 * @param syncTargetTest A predicate that determines whether this attachment should be synchronized with the given
+		 *                       {@link ServerPlayerEntity}'s client. The (serverside) {@link AttachmentTarget} is also provided
+		 *                       as an argument.
+		 * @return the builder
+		 */
+		Builder<A> syncWithCustom(PacketCodec<PacketByteBuf, A> packetCodec, BiPredicate<AttachmentTarget, ServerPlayerEntity> syncTargetTest);
 
 		/**
 		 * Builds and registers the {@link AttachmentType}.

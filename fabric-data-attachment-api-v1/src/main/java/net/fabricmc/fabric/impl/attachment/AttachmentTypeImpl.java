@@ -29,12 +29,19 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.impl.attachment.sync.SyncType;
 
 public record AttachmentTypeImpl<A>(
 		Identifier identifier,
 		@Nullable Supplier<A> initializer,
 		@Nullable Codec<A> persistenceCodec,
 		@Nullable PacketCodec<PacketByteBuf, A> packetCodec,
-		@Nullable BiPredicate<AttachmentTarget, ServerPlayerEntity> syncTargetTest,
+		SyncType syncType,
+		@Nullable BiPredicate<AttachmentTarget, ServerPlayerEntity> customSyncTargetTest,
 		boolean copyOnDeath
-) implements AttachmentType<A> { }
+) implements AttachmentType<A> {
+	@Override
+	public boolean isSynced() {
+		return syncType != SyncType.NONE;
+	}
+}

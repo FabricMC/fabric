@@ -36,6 +36,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.impl.attachment.sync.SyncType;
 
 public final class AttachmentRegistryImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-data-attachment-api-v1");
@@ -45,7 +46,7 @@ public final class AttachmentRegistryImpl {
 		AttachmentType<?> existing = attachmentRegistry.put(id, attachmentType);
 
 		if (existing != null) {
-			LOGGER.warn("Encountered duplicate type registration for id " + id);
+			LOGGER.warn("Encountered duplicate type registration for id {}", id);
 		}
 	}
 
@@ -70,7 +71,8 @@ public final class AttachmentRegistryImpl {
 		@Nullable
 		private PacketCodec<PacketByteBuf, A> packetCodec = null;
 		@Nullable
-		private BiPredicate<AttachmentTarget, ServerPlayerEntity> syncTargetTest = null;
+		private BiPredicate<AttachmentTarget, ServerPlayerEntity> customSyncTargetTest = null;
+		private SyncType syncType = SyncType.NONE;
 		private boolean copyOnDeath = false;
 
 		@Override
@@ -95,14 +97,55 @@ public final class AttachmentRegistryImpl {
 			return this;
 		}
 
+		public AttachmentRegistry.Builder<A> syncWithAll(PacketCodec<PacketByteBuf, A> packetCodec) {
+			Objects.requireNonNull(packetCodec, "packet codec cannot be null");
+
+			if (syncType != SyncType.NONE) {
+				throw new UnsupportedOperationException("Syncing behavior has already been defined for this builder");
+			}
+
+			this.packetCodec = packetCodec;
+			this.syncType = SyncType.ALL;
+			return this;
+		}
+
+		public AttachmentRegistry.Builder<A> syncWithTargetOnly(PacketCodec<PacketByteBuf, A> packetCodec) {
+			Objects.requireNonNull(packetCodec, "packet codec cannot be null");
+
+			if (syncType != SyncType.NONE) {
+				throw new UnsupportedOperationException("Syncing behavior has already been defined for this builder");
+			}
+
+			this.packetCodec = packetCodec;
+			this.syncType = SyncType.TARGET_ONLY;
+			return this;
+		}
+
+		public AttachmentRegistry.Builder<A> syncWithAllButTarget(PacketCodec<PacketByteBuf, A> packetCodec) {
+			Objects.requireNonNull(packetCodec, "packet codec cannot be null");
+
+			if (syncType != SyncType.NONE) {
+				throw new UnsupportedOperationException("Syncing behavior has already been defined for this builder");
+			}
+
+			this.packetCodec = packetCodec;
+			this.syncType = SyncType.ALL_BUT_TARGET;
+			return this;
+		}
+
 		@Override
-		public AttachmentRegistry.Builder<A> shouldSyncWith(PacketCodec<PacketByteBuf, A> packetCodec,
+		public AttachmentRegistry.Builder<A> syncWithCustom(PacketCodec<PacketByteBuf, A> packetCodec,
 															BiPredicate<AttachmentTarget, ServerPlayerEntity> syncTargetTest) {
 			Objects.requireNonNull(packetCodec, "packet codec cannot be null");
 			Objects.requireNonNull(syncTargetTest, "predicate cannot be null");
 
+			if (syncType != SyncType.NONE) {
+				throw new UnsupportedOperationException("Syncing behavior has already been defined for this builder");
+			}
+
 			this.packetCodec = packetCodec;
-			this.syncTargetTest = syncTargetTest;
+			this.syncType = SyncType.CUSTOM;
+			this.customSyncTargetTest = syncTargetTest;
 			return this;
 		}
 
@@ -113,7 +156,8 @@ public final class AttachmentRegistryImpl {
 					defaultInitializer,
 					persistenceCodec,
 					packetCodec,
-					syncTargetTest,
+					syncType,
+					customSyncTargetTest,
 					copyOnDeath
 			);
 			register(id, attachment);

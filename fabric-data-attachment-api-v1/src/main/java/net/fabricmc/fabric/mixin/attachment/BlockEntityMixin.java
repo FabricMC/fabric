@@ -34,6 +34,7 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.BlockEntityAttachmentReceiver;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
@@ -72,6 +73,17 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	@Override
 	public void fabric_markChanged(AttachmentType<?> type) {
 		this.markDirty();
+	}
+
+	@Override
+	public void fabric_acknowledgeSyncedEntry(AttachmentType<?> type, @Nullable Object value) {
+		if (this.hasWorld() && !this.world.isClient) {
+			((BlockEntityAttachmentReceiver) this.world.getChunk(this.pos)).fabric_acknowledgeBlockEntityAttachment(
+					this.pos,
+					type,
+					value
+			);
+		}
 	}
 
 	@Override

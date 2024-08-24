@@ -32,6 +32,7 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
+import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 
 // empty optional for removal
 @SuppressWarnings("unchecked")
@@ -40,7 +41,8 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			AttachmentChange::writeToNetwork,
 			AttachmentChange::readFromNetwork
 	);
-	public static final PacketCodec<PacketByteBuf, List<AttachmentChange>> LIST_PACKET_CODEC = PACKET_CODEC.collect(PacketCodecs.toList());
+	public static final PacketCodec<PacketByteBuf, List<AttachmentChange>> LIST_PACKET_CODEC = PACKET_CODEC.collect(
+			PacketCodecs.toList());
 
 	private static void writeToNetwork(PacketByteBuf buf, AttachmentChange value) {
 		Identifier id = value.type.identifier();
@@ -53,7 +55,8 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			return;
 		}
 
-		PacketCodec<PacketByteBuf, Object> packetCodec = (PacketCodec<PacketByteBuf, Object>) value.type.packetCodec();
+		PacketCodec<PacketByteBuf, Object> packetCodec =
+				(PacketCodec<PacketByteBuf, Object>) ((AttachmentTypeImpl<?>) value.type).packetCodec();
 
 		if (packetCodec == null) {
 			AttachmentEntrypoint.LOGGER.warn("Attachment type '{}' has no packet codec, skipping", id.toString());
@@ -75,7 +78,8 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			throw new DecoderException("Unknown attachment type '" + id.toString() + "'");
 		}
 
-		PacketCodec<PacketByteBuf, Object> packetCodec = (PacketCodec<PacketByteBuf, Object>) type.packetCodec();
+		PacketCodec<PacketByteBuf, Object> packetCodec =
+				(PacketCodec<PacketByteBuf, Object>) ((AttachmentTypeImpl<?>) type).packetCodec();
 
 		if (packetCodec == null) {
 			throw new EncoderException("Attachment type '" + id.toString() + "' has no packet codec, skipping");

@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 @Mixin(WrapperProtoChunk.class)
-abstract class WrapperProtoChunkMixin implements AttachmentTargetImpl {
+abstract class WrapperProtoChunkMixin extends AttachmentTargetsMixin {
 	@Shadow
 	@Final
 	private WorldChunk wrapped;
