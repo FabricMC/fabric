@@ -62,7 +62,7 @@ public final class AttachmentRegistry {
 
 	/**
 	 * Creates <i>and registers</i> an attachment, that will be automatically initialized with a default value
-	 * when an attachment does not exist on a given target, using {@link AttachmentTarget#getAttachedOrCreate(AttachmentType)}.
+	 * when an attachment does not exist on a given targetInfo, using {@link AttachmentTarget#getAttachedOrCreate(AttachmentType)}.
 	 *
 	 * @param id          the identifier of this attachment
 	 * @param initializer the initializer used to provide a default value
@@ -146,8 +146,8 @@ public final class AttachmentRegistry {
 		/**
 		 * Specifies which clients the attached data should be synchronized with. By default, no data is synced.
 		 *
-		 * <p>In the case of player targets, it is desirable to only sync the data with the client of the target itself.
-		 * This can be achieved by passing {@code (target, player) -> target == player}.</p>
+		 * <p>In the case of player targets, it is desirable to only sync the data with the client of the targetInfo itself.
+		 * This can be achieved by passing {@code (targetInfo, player) -> targetInfo == player}.</p>
 		 *
 		 * @param syncTargetTest A predicate that determines whether this attachment should be synchronized with the given
 		 *                   {@link ServerPlayerEntity}'s client. The (serverside) {@link AttachmentTarget} is also provided

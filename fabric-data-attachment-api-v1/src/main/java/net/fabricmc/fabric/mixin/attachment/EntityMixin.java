@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
-import java.util.List;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,17 +30,17 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
-import net.fabricmc.fabric.impl.attachment.sync.EntityAttachmentChangePayloadS2C;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 @Mixin(Entity.class)
 abstract class EntityMixin implements AttachmentTargetImpl {
 	@Shadow
-	public abstract World getWorld();
+	private int id;
 
 	@Shadow
-	private int id;
+	public abstract World getWorld();
 
 	@Inject(
 			at = @At(value = "INVOKE", target = "net/minecraft/entity/Entity.readCustomDataFromNbt(Lnet/minecraft/nbt/NbtCompound;)V"),
@@ -61,13 +59,15 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public void fabric_syncChange(AttachmentType<?> type, Object change) {
-		var payload = new EntityAttachmentChangePayloadS2C(
-				this.id,
-				List.of(new AttachmentChange(type, change))
-		);
+	public AttachmentTargetInfo<?> fabric_getSyncTargetInfo() {
+		return new AttachmentTargetInfo.EntityTarget(this.id);
+	}
 
-		PlayerLookup.tracking((Entity) (Object) this)
-				.forEach(player -> AttachmentSync.syncIfPossible(payload, type, this, player));
+	@Override
+	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
+		if (!this.getWorld().isClient) {
+			PlayerLookup.tracking((Entity) (Object) this)
+					.forEach(player -> AttachmentSync.syncIfPossible(payload, type, this, player));
+		}
 	}
 }

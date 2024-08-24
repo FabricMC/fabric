@@ -40,6 +40,8 @@ import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 @Mixin({BlockEntity.class, Entity.class, World.class, Chunk.class})
 abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
@@ -74,7 +76,12 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 		}
 
 		if (type.isSynced()) {
-			this.fabric_syncChange(type, value);
+			var payload = new AttachmentSyncPayload(List.of(new AttachmentChange(
+					fabric_getSyncTargetInfo(),
+					type,
+					value
+			)));
+			this.fabric_syncChange(type, payload);
 		}
 
 		if (value == null) {
@@ -125,23 +132,24 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 	@Override
 	@Nullable
-	public List<AttachmentChange> fabric_getInitialAttachmentsFor(ServerPlayerEntity player) {
+	public AttachmentSyncPayload fabric_getInitialSyncPayload(ServerPlayerEntity player) {
 		// TODO optimize
 		if (fabric_dataAttachments == null) {
 			return null;
 		}
 
 		List<AttachmentChange> list = new ArrayList<>();
+		AttachmentTargetInfo<?> targetInfo = fabric_getSyncTargetInfo();
 
 		for (Map.Entry<AttachmentType<?>, Object> entry : fabric_dataAttachments.entrySet()) {
 			AttachmentType<?> type = entry.getKey();
 			BiPredicate<AttachmentTarget, ServerPlayerEntity> syncTargetTest = type.syncTargetTest();
 
 			if (syncTargetTest != null && syncTargetTest.test(this, player)) {
-				list.add(new AttachmentChange(type, entry.getValue()));
+				list.add(new AttachmentChange(targetInfo, type, entry.getValue()));
 			}
 		}
 
-		return list.isEmpty() ? null : list;
+		return new AttachmentSyncPayload(list);
 	}
 }

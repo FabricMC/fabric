@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.attachment.sync;
 
-import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -40,6 +39,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 public class AttachmentSync implements ModInitializer {
 	public static final Identifier CONFIG_PACKET_ID = Identifier.of("fabric", "accepted_attachments_v1");
+	public static final Identifier PACKET_ID = Identifier.of("fabric", "attachment_sync_v1");
 	public static final Identifier CHUNK_INITIAL_PACKET_ID = Identifier.of("fabric", "attachment_initial_sync_chunk_v1");
 	public static final Identifier CHUNK_CHANGE_PACKET_ID = Identifier.of("fabric", "attachment_change_chunk_v1");
 	public static final Identifier ENTITY_PACKET_ID = Identifier.of("fabric", "attachment_change_entity_v1");
@@ -81,27 +81,24 @@ public class AttachmentSync implements ModInitializer {
 		});
 
 		// Play
-		PayloadTypeRegistry.playS2C().register(BlockEntityAttachmentChangePayloadS2C.ID, BlockEntityAttachmentChangePayloadS2C.CODEC);
-		PayloadTypeRegistry.playS2C().register(EntityAttachmentChangePayloadS2C.ID, EntityAttachmentChangePayloadS2C.CODEC);
-		PayloadTypeRegistry.playS2C().register(ChunkAttachmentInitialSyncPayloadS2C.ID, ChunkAttachmentInitialSyncPayloadS2C.CODEC);
-		PayloadTypeRegistry.playS2C().register(WorldAttachmentChangePayloadS2C.ID, WorldAttachmentChangePayloadS2C.CODEC);
+		PayloadTypeRegistry.playS2C().register(AttachmentSyncPayload.ID, AttachmentSyncPayload.CODEC);
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			if (ServerPlayNetworking.canSend(handler, WORLD_PACKET_ID)) {
 				ServerPlayerEntity player = handler.player;
-				List<AttachmentChange> changes = ((AttachmentTargetImpl) player.getServerWorld()).fabric_getInitialAttachmentsFor(player);
+				AttachmentSyncPayload payload = ((AttachmentTargetImpl) player.getServerWorld()).fabric_getInitialSyncPayload(player);
 
-				if (changes != null) {
-					ServerPlayNetworking.send(player, new WorldAttachmentChangePayloadS2C(changes));
+				if (payload != null) {
+					ServerPlayNetworking.send(player, payload);
 				}
 			}
 		});
 
 		EntityTrackingEvents.START_TRACKING.register((trackedEntity, player) -> {
-			List<AttachmentChange> changes = ((AttachmentTargetImpl) trackedEntity).fabric_getInitialAttachmentsFor(player);
+			AttachmentSyncPayload payload = ((AttachmentTargetImpl) trackedEntity).fabric_getInitialSyncPayload(player);
 
-			if (changes != null) {
-				ServerPlayNetworking.send(player, new EntityAttachmentChangePayloadS2C(trackedEntity.getId(), changes));
+			if (payload != null) {
+				ServerPlayNetworking.send(player, payload);
 			}
 		});
 	}

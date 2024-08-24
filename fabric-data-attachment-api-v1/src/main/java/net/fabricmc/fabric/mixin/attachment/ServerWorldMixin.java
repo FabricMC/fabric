@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Final;
@@ -41,15 +40,18 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentPersistentState;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
-import net.fabricmc.fabric.impl.attachment.sync.WorldAttachmentChangePayloadS2C;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 @Mixin(ServerWorld.class)
 abstract class ServerWorldMixin extends World implements AttachmentTargetImpl {
 	@Shadow
 	@Final
 	private MinecraftServer server;
+
+	@Shadow
+	public abstract void resetIdleTimeout();
 
 	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, DynamicRegistryManager registryManager, RegistryEntry<DimensionType> dimensionEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long biomeAccess, int maxChainedNeighborUpdates) {
 		super(properties, registryRef, registryManager, dimensionEntry, profiler, isClient, debugWorld, biomeAccess, maxChainedNeighborUpdates);
@@ -68,9 +70,12 @@ abstract class ServerWorldMixin extends World implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public void fabric_syncChange(AttachmentType<?> type, Object change) {
-		var payload = new WorldAttachmentChangePayloadS2C(List.of(new AttachmentChange(type, change)));
+	public AttachmentTargetInfo<?> fabric_getSyncTargetInfo() {
+		return AttachmentTargetInfo.WorldTarget.INSTANCE;
+	}
 
+	@Override
+	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
 		PlayerLookup.world((ServerWorld) (Object) this)
 				.forEach(player -> AttachmentSync.syncIfPossible(payload, type, this, player));
 	}

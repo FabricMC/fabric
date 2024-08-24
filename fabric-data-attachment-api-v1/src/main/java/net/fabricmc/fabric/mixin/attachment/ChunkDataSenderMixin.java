@@ -28,7 +28,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.impl.attachment.ChunkInitialAttachmentDataImpl;
 
 @Mixin(ChunkDataSender.class)
 abstract class ChunkDataSenderMixin {
@@ -42,6 +41,6 @@ abstract class ChunkDataSenderMixin {
 	private void sendInitialAttachmentData(ServerPlayNetworkHandler handler, ServerWorld world, WorldChunk chunk, Operation<Void> original, ServerPlayerEntity player) {
 		original.call(handler, world, chunk);
 		// do a wrap operation so this packet is sent *after* the chunk ones
-		ServerPlayNetworking.send(player, ((ChunkInitialAttachmentDataImpl) chunk).fabric_createPayload(player));
+		ServerPlayNetworking.send(player, ((ChunkInitialPayloadGetter) chunk).fabric_createPayload(player));
 	}
 }

@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.attachment;
 
-import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
@@ -27,11 +26,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 public interface AttachmentTargetImpl extends AttachmentTarget {
 	/**
-	 * Copies attachments from the original to the target. This is used when a ProtoChunk is converted to a
+	 * Copies attachments from the original to the targetInfo. This is used when a ProtoChunk is converted to a
 	 * WorldChunk, and when an entity is respawned and a new instance is created. For entity respawns, it is
 	 * triggered on player respawn, entity conversion, return from the End, or cross-world entity teleportation.
 	 * In the first two cases, only the attachments with {@link AttachmentType#copyOnDeath()} will be transferred.
@@ -70,12 +70,17 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
+	default AttachmentTargetInfo<?> fabric_getSyncTargetInfo() {
+		// this only makes sense for server objects
+		throw new UnsupportedOperationException("Sync targetInfo info was not retrieved on server!");
+	}
+
 	@Nullable
-	default List<AttachmentChange> fabric_getInitialAttachmentsFor(ServerPlayerEntity player) {
+	default AttachmentSyncPayload fabric_getInitialSyncPayload(ServerPlayerEntity player) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default void fabric_syncChange(AttachmentType<?> type, Object change) {
+	default void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
 		// default can be reached and should be no-op, e.g. in ProtoChunk
 	}
 }

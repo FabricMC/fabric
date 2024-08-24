@@ -7,6 +7,7 @@
     "BannerBlockEntityMixin",
     "BlockEntityMixin",
     "ChunkDataSenderMixin",
+    "ChunkMixin",
     "ChunkSerializerMixin",
     "EntityMixin",
     "ServerWorldMixin",

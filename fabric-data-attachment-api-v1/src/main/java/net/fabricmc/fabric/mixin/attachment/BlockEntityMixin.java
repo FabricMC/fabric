@@ -34,9 +34,9 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
-import net.fabricmc.fabric.impl.attachment.sync.BlockEntityAttachmentChangePayloadS2C;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 @Mixin(BlockEntity.class)
 abstract class BlockEntityMixin implements AttachmentTargetImpl {
@@ -68,10 +68,13 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public void fabric_syncChange(AttachmentType<?> type, Object change) {
-		if (this.hasWorld() && !this.world.isClient) {
-			var payload = new BlockEntityAttachmentChangePayloadS2C(this.pos, new AttachmentChange(type, change));
+	public AttachmentTargetInfo<?> fabric_getSyncTargetInfo() {
+		return new AttachmentTargetInfo.BlockEntityTarget(this.pos);
+	}
 
+	@Override
+	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
+		if (this.hasWorld() && !this.world.isClient) {
 			PlayerLookup.tracking((BlockEntity) (Object) this)
 					.forEach(player -> AttachmentSync.syncIfPossible(payload, type, this, player));
 		}

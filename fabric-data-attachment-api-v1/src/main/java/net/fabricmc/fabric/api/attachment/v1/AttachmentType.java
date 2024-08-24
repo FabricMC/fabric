@@ -44,13 +44,13 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
  *
  * <p>While the API places no restrictions on the types of data that can be attached, it is generally encouraged to use
  * immutable types. More generally, different attachments <i>must not</i> share mutable state, and it is <i>strongly advised</i>
- * for attachments not to hold internal references to their target. See the following note on entity targets.</p>
+ * for attachments not to hold internal references to their targetInfo. See the following note on entity targets.</p>
  *
  * <p>Note on {@link Entity} and {@link Chunk} targets: in several instances, the game needs to copy data from one instance to another.
  * These are player respawning, mob conversion, return from the End, cross-world entity teleportation, and conversion of a {@link ProtoChunk} to
  * {@link WorldChunk}. By default, attachments are simply copied wholesale, up to {@link #copyOnDeath()}. Since one instance is discarded,
  * an attachment that keeps a reference to an {@link Entity} or {@link ProtoChunk} instance can and will break unexpectedly. If,
- * for whatever reason, keeping a reference to the target is absolutely necessary, be sure to implement custom copying logic.
+ * for whatever reason, keeping a reference to the targetInfo is absolutely necessary, be sure to implement custom copying logic.
  * For {@link Entity} targets, use {@link ServerPlayerEvents#COPY_FROM}, {@link ServerEntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD},
  * and {@link ServerLivingEntityEvents#MOB_CONVERSION}. For {@link Chunk} targets, mixin into
  * {@link WorldChunk#WorldChunk(ServerWorld, ProtoChunk, WorldChunk.EntityLoader)}.
