@@ -43,13 +43,15 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	@Shadow
 	@Final
 	protected BlockPos pos;
+	@Shadow
+	@Nullable
+	protected World world;
 
 	@Shadow
 	public abstract boolean hasWorld();
 
 	@Shadow
-	@Nullable
-	protected World world;
+	public abstract void markDirty();
 
 	@Inject(
 			method = "read",
@@ -65,6 +67,11 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	)
 	private void writeBlockEntityAttachments(RegistryWrapper.WrapperLookup wrapperLookup, CallbackInfoReturnable<NbtCompound> cir) {
 		this.fabric_writeAttachmentsToNbt(cir.getReturnValue(), wrapperLookup);
+	}
+
+	@Override
+	public void fabric_markChanged(AttachmentType<?> type) {
+		this.markDirty();
 	}
 
 	@Override

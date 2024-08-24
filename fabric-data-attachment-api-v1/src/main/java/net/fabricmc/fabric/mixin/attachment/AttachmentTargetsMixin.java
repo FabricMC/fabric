@@ -59,21 +59,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Override
 	@Nullable
 	public <T> T setAttached(AttachmentType<T> type, @Nullable T value) {
-		// Extremely inelegant, but the only alternative is separating out these two mixins and duplicating code
-		Object thisObject = this;
-
-		if (thisObject instanceof BlockEntity) {
-			((BlockEntity) thisObject).markDirty();
-		} else if (thisObject instanceof Chunk) {
-			((Chunk) thisObject).setNeedsSaving(true);
-
-			if (type.isPersistent() && ((Chunk) thisObject).getStatus().equals(ChunkStatus.EMPTY)) {
-				AttachmentEntrypoint.LOGGER.warn(
-						"Attaching persistent attachment {} to chunk with chunk status EMPTY. Attachment might be discarded.",
-						type.identifier()
-				);
-			}
-		}
+		this.fabric_markChanged(type);
 
 		if (type.isSynced()) {
 			var payload = new AttachmentSyncPayload(List.of(new AttachmentChange(

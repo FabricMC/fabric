@@ -83,4 +83,8 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 	default void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
 		// default can be reached and should be no-op, e.g. in ProtoChunk
 	}
+
+	default void fabric_markChanged(AttachmentType<?> type) {
+		// default should be a no-op
+	}
 }

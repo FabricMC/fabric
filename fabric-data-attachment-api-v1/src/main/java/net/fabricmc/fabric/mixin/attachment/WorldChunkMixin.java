@@ -74,19 +74,12 @@ abstract class WorldChunkMixin extends Chunk implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public @Nullable AttachmentSyncPayload fabric_getInitialSyncPayload(AttachmentTargetInfo<?> targetInfo, ServerPlayerEntity player) {
-		AttachmentSyncPayload chunkPayload = AttachmentTargetImpl.super.fabric_getInitialSyncPayload(
-				targetInfo,
-				player
-		);
+	public @Nullable AttachmentSyncPayload fabric_getInitialSyncPayload(ServerPlayerEntity player) {
+		AttachmentSyncPayload chunkPayload = AttachmentTargetImpl.super.fabric_getInitialSyncPayload(player);
 		List<AttachmentChange> changes = chunkPayload == null ? new ArrayList<>() : chunkPayload.attachments();
 
 		this.getBlockEntities().forEach((pos, blockEntity) -> {
-			AttachmentTargetInfo<BlockEntity> beTarget = new AttachmentTargetInfo.BlockEntityTarget(pos);
-			AttachmentSyncPayload payload = ((AttachmentTargetImpl) blockEntity).fabric_getInitialSyncPayload(
-					beTarget,
-					player
-			);
+			AttachmentSyncPayload payload = ((AttachmentTargetImpl) blockEntity).fabric_getInitialSyncPayload(player);
 
 			if (payload != null) {
 				changes.addAll(payload.attachments());
