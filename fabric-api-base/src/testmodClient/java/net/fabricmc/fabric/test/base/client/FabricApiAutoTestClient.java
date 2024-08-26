@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.base.client;
 
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.clickScreenButton;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.closeScreen;
+import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.connectToServer;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.enableDebugHud;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.openGameMenu;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.openInventory;
@@ -34,11 +35,15 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.mojang.authlib.GameProfile;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.AccessibilityOnboardingScreen;
 import net.minecraft.client.gui.screen.ConfirmScreen;
+import net.minecraft.client.gui.screen.ReconfiguringScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
 import net.minecraft.client.option.Perspective;
@@ -114,6 +119,7 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 			// See if the player render events are working.
 			setPerspective(Perspective.THIRD_PERSON_BACK);
 			takeScreenshot("in_game_overworld_third_person");
+			setPerspective(Perspective.FIRST_PERSON);
 		}
 
 		{
@@ -126,6 +132,34 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 			openGameMenu();
 			takeScreenshot("game_menu");
 			clickScreenButton("menu.returnToMenu");
+			waitForScreen(TitleScreen.class);
+		}
+
+		try (var server = new TestDedicatedServer()) {
+			connectToServer(server);
+			waitForWorldTicks(5);
+
+			final GameProfile profile = submitAndWait(MinecraftClient::getGameProfile);
+			server.runCommand("op " + profile.getName());
+			server.runCommand("gamemode creative " + profile.getName());
+
+			waitForWorldTicks(20);
+			takeScreenshot("server_in_game");
+
+			{ // Test that we can enter and exit configuration
+				server.runCommand("debugconfig config " + profile.getName());
+				waitForScreen(ReconfiguringScreen.class);
+				takeScreenshot("server_config");
+				server.runCommand("debugconfig unconfig " + profile.getId());
+				waitForWorldTicks(1);
+			}
+
+			openGameMenu();
+			takeScreenshot("server_game_menu");
+			clickScreenButton("menu.disconnect");
+
+			waitForScreen(MultiplayerScreen.class);
+			clickScreenButton("gui.back");
 		}
 
 		{
