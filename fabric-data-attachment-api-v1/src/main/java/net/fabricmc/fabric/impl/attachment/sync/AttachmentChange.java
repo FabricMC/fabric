@@ -41,17 +41,11 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			AttachmentChange::writeToNetwork,
 			AttachmentChange::readFromNetwork
 	);
-	public static final PacketCodec<PacketByteBuf, List<AttachmentChange>> LIST_PACKET_CODEC = PACKET_CODEC.collect(
-			PacketCodecs.toList());
 
 	private static void writeToNetwork(PacketByteBuf buf, AttachmentChange value) {
 		Identifier id = value.type.identifier();
 
 		if (!AttachmentSync.CLIENT_SUPPORTED_ATTACHMENTS.get().contains(id)) {
-			AttachmentEntrypoint.LOGGER.warn(
-					"Attachment type '{}' does not exist on client, skipping",
-					id.toString()
-			);
 			return;
 		}
 
@@ -82,7 +76,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 				(PacketCodec<PacketByteBuf, Object>) ((AttachmentTypeImpl<?>) type).packetCodec();
 
 		if (packetCodec == null) {
-			throw new EncoderException("Attachment type '" + id.toString() + "' has no packet codec, skipping");
+			throw new DecoderException("Attachment type '" + id.toString() + "' has no packet codec, skipping");
 		}
 
 		return new AttachmentChange(target, type, buf.readOptional(packetCodec).orElse(null));

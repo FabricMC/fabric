@@ -9,6 +9,7 @@
     "ChunkDataSenderMixin",
     "ChunkMixin",
     "ChunkSerializerMixin",
+    "ClientConnectionAccessor",
     "EntityMixin",
     "ServerWorldMixin",
     "WorldChunkMixin",

@@ -19,15 +19,14 @@ package net.fabricmc.fabric.impl.attachment.sync;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import net.minecraft.network.packet.CustomPayload;
+import io.netty.channel.ChannelHandler;
+
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
@@ -36,12 +35,13 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
-import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
+import net.fabricmc.fabric.mixin.attachment.ClientConnectionAccessor;
+import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
 public class AttachmentSync implements ModInitializer {
 	public static final Identifier CONFIG_PACKET_ID = Identifier.of("fabric", "accepted_attachments_v1");
 	public static final Identifier PACKET_ID = Identifier.of("fabric", "attachment_sync_v1");
-	public static final ThreadLocal<Set<Identifier>> CLIENT_SUPPORTED_ATTACHMENTS = new ThreadLocal<>();
+	public static final ThreadLocal<Set<Identifier>> CLIENT_SUPPORTED_ATTACHMENTS = ThreadLocal.withInitial(Set::of);
 
 	public static AcceptedAttachmentsPayloadC2S createResponsePayload() {
 		return new AcceptedAttachmentsPayloadC2S(AttachmentRegistryImpl.getRegisteredAttachments());
@@ -74,7 +74,17 @@ public class AttachmentSync implements ModInitializer {
 		});
 
 		ServerConfigurationNetworking.registerGlobalReceiver(AcceptedAttachmentsPayloadC2S.ID, (payload, context) -> {
-			context.server().submit(() -> CLIENT_SUPPORTED_ATTACHMENTS.set(payload.acceptedAttachments()));
+			Set<Identifier> supportedAttachments = decodeResponsePayload(payload);
+			ChannelHandler packetEncoder = ((ClientConnectionAccessor) ((ServerCommonNetworkHandlerAccessor) context.networkHandler()).getConnection())
+					.getChannel()
+					.pipeline()
+					.get("encoder");
+
+			if (packetEncoder != null) { // Null in singleplayer
+				((SupportedAttachmentsPacketEncoder) packetEncoder).fabric_setSupportedAttachments(supportedAttachments);
+			}
+
+			context.networkHandler().completeTask(AttachmentSyncTask.KEY);
 		});
 
 		// Play
