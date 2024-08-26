@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiPredicate;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -39,6 +40,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.WorldChunk;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
@@ -106,8 +108,11 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 		this.alwaysSentToNewcomersBE.values().forEach(m -> changes.addAll(m.values()));
 		this.maybeSentToNewcomersBE.forEach((blockPos, map) -> {
 			for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : map.entrySet()) {
-				// sync type should always be CUSTOM here
-				if (((AttachmentTypeImpl<?>) entry.getKey()).customSyncTargetTest().test(this, player)) {
+				BiPredicate<AttachmentTarget, ServerPlayerEntity> pred = ((AttachmentTypeImpl<?>) entry.getKey()).customSyncTargetTest();
+				// trySync type should always be CUSTOM here
+				assert pred != null;
+
+				if (pred.test(this, player)) {
 					changes.add(entry.getValue());
 				}
 			}
@@ -119,9 +124,22 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
 		if (this.world instanceof ServerWorld serverWorld) {
-			// Can't shadow the method or field as we are already extending a supermixin
-			PlayerLookup.tracking(serverWorld, ((Chunk) (Object) this).getPos())
-					.forEach(player -> AttachmentSync.syncIfPossible(payload, type, this, player));
+			switch (((AttachmentTypeImpl<?>) type).syncType()) {
+			case ALL, ALL_BUT_TARGET -> PlayerLookup
+					// Can't shadow the method or field as we are already extending a supermixin
+					.tracking(serverWorld, ((Chunk) (Object) this).getPos())
+					.forEach(player -> AttachmentSync.trySync(payload, player));
+			case CUSTOM -> PlayerLookup
+					.tracking(serverWorld, ((Chunk) (Object) this).getPos())
+					.forEach(player -> {
+						if (((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(this, player)) {
+							AttachmentSync.trySync(payload, player);
+						}
+					});
+			case TARGET_ONLY -> {
+			}
+			case NONE -> throw new IllegalStateException();
+			}
 		}
 	}
 }

@@ -34,6 +34,7 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.BlockEntityAttachmentReceiver;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
@@ -94,8 +95,21 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
 		if (this.hasWorld() && !this.world.isClient) {
-			PlayerLookup.tracking((BlockEntity) (Object) this)
-					.forEach(player -> AttachmentSync.syncIfPossible(payload, type, this, player));
+			switch (((AttachmentTypeImpl<?>) type).syncType()) {
+			case ALL, ALL_BUT_TARGET -> PlayerLookup
+					.tracking((BlockEntity) (Object) this)
+					.forEach(player -> AttachmentSync.trySync(payload, player));
+			case CUSTOM -> PlayerLookup
+					.tracking((BlockEntity) (Object) this)
+					.forEach(player -> {
+						if (((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(this, player)) {
+							AttachmentSync.trySync(payload, player);
+						}
+					});
+			case TARGET_ONLY -> {
+			}
+			case NONE -> throw new IllegalStateException();
+			}
 		}
 	}
 }

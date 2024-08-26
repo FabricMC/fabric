@@ -47,25 +47,16 @@ public class AttachmentSync implements ModInitializer {
 		return new AcceptedAttachmentsPayloadC2S(AttachmentRegistryImpl.getRegisteredAttachments());
 	}
 
-	// Assumes the type is already synchronizable
-	public static void syncIfPossible(CustomPayload payload, AttachmentType<?> type, AttachmentTarget target, ServerPlayerEntity player) {
-		if (ServerPlayNetworking.canSend(player, PACKET_ID)
-				&& CLIENT_SUPPORTED_ATTACHMENTS.get().contains(type.identifier())) {
-			boolean send = true;
-
-			switch (((AttachmentTypeImpl<?>) type).syncType()) {
-			case ALL -> {
-			}
-			case TARGET_ONLY -> send = target == player;
-			case ALL_BUT_TARGET -> send = target != player;
-			case CUSTOM -> send = ((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(target, player);
-			case NONE -> throw new IllegalStateException();
-			}
-
-			if (send) {
-				ServerPlayNetworking.send(player, payload);
-			}
+	public static void trySync(AttachmentSyncPayload payload, ServerPlayerEntity player) {
+		if (ServerPlayNetworking.canSend(player, PACKET_ID)) {
+			ServerPlayNetworking.send(player, payload);
 		}
+	}
+
+	private static Set<Identifier> decodeResponsePayload(AcceptedAttachmentsPayloadC2S payload) {
+		Set<Identifier> atts = payload.acceptedAttachments();
+		atts.retainAll(AttachmentRegistryImpl.getRegisteredAttachments());
+		return atts;
 	}
 
 	@Override

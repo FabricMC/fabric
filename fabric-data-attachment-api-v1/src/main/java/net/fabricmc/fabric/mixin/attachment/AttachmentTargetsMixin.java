@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiPredicate;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,6 +33,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
@@ -195,8 +197,11 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 		if (fabric_maybeSentToNewcomers != null) {
 			for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : fabric_maybeSentToNewcomers.entrySet()) {
-				// sync type should always be CUSTOM here
-				if (((AttachmentTypeImpl<?>) entry.getKey()).customSyncTargetTest().test(this, player)) {
+				BiPredicate<AttachmentTarget, ServerPlayerEntity> pred = ((AttachmentTypeImpl<?>) entry.getKey()).customSyncTargetTest();
+				// trySync type should always be CUSTOM here
+				assert pred != null;
+
+				if (pred.test(this, player)) {
 					list.add(entry.getValue());
 				}
 			}

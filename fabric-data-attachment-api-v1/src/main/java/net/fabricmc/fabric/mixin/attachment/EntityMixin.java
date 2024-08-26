@@ -25,11 +25,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
@@ -66,8 +68,31 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
 		if (!this.getWorld().isClient) {
-			PlayerLookup.tracking((Entity) (Object) this)
-					.forEach(player -> AttachmentSync.syncIfPossible(payload, type, this, player));
+			switch (((AttachmentTypeImpl<?>) type).syncType()) {
+			case ALL -> PlayerLookup
+					.tracking((Entity) (Object) this)
+					.forEach(player -> AttachmentSync.trySync(payload, player));
+			case ALL_BUT_TARGET -> PlayerLookup
+					.tracking((Entity) (Object) this)
+					.forEach(player -> {
+						if (player != (Object) this) {
+							AttachmentSync.trySync(payload, player);
+						}
+					});
+			case TARGET_ONLY -> {
+				if ((Object) this instanceof ServerPlayerEntity player) {
+					AttachmentSync.trySync(payload, player);
+				}
+			}
+			case CUSTOM -> PlayerLookup
+					.tracking((Entity) (Object) this)
+					.forEach(player -> {
+						if (((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(this, player)) {
+							AttachmentSync.trySync(payload, player);
+						}
+					});
+			case NONE -> throw new IllegalStateException();
+			}
 		}
 	}
 }
