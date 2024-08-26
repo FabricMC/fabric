@@ -13,6 +13,7 @@
     "ServerPlayerEntityMixin",
     "TadpoleEntityMixin",
     "VillagerEntityMixin",
+    "elytra.ElytraFlightControllerMixin",
     "elytra.LivingEntityMixin",
     "elytra.PlayerEntityMixin"
   ],

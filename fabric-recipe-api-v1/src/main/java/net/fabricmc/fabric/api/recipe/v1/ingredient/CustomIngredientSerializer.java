@@ -61,7 +61,7 @@ public interface CustomIngredientSerializer<T extends CustomIngredient> {
 	 *
 	 * <p>Codecs are used to read the ingredient from the recipe JSON files.
 	 *
-	 * @see Ingredient#ALLOW_EMPTY_CODEC
+	 * @see Ingredient#CODEC
 	 */
 	MapCodec<T> getCodec();
 

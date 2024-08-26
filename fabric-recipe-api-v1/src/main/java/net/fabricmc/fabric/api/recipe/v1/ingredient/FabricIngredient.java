@@ -41,7 +41,7 @@ public interface FabricIngredient {
 	 *
 	 * <p>If {@code false}, {@linkplain Ingredient#test testing this ingredient} with an item stack must be equivalent to checking whether
 	 * the item stack's item is included in the ingredient's {@linkplain Ingredient#getMatchingStacks() list of matching stacks}.
-	 * In that case, optimized matching logic can be used, for example using {@link Ingredient#getMatchingItemIds()}.
+	 * In that case, optimized matching logic can be used.
 	 *
 	 * <p>If {@code true}, the ingredient must always be tested using {@link Ingredient#test(ItemStack)}.
 	 * Note that Fabric patches some vanilla systems such as shapeless recipes to account for this.

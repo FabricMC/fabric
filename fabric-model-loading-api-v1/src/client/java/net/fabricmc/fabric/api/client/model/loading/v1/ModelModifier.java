@@ -159,8 +159,8 @@ public final class ModelModifier {
 
 			/**
 			 * The baker being used to bake this model.
-			 * It can be used to {@linkplain Baker#getOrLoadModel load unbaked models} and
-			 * {@linkplain Baker#bake load baked models}.
+			 * It can be used to {@linkplain Baker#getModel get unbaked models} and
+			 * {@linkplain Baker#bake bake models}.
 			 */
 			Baker baker();
 		}
@@ -227,8 +227,8 @@ public final class ModelModifier {
 
 			/**
 			 * The baker being used to bake this model.
-			 * It can be used to {@linkplain Baker#getOrLoadModel load unbaked models} and
-			 * {@linkplain Baker#bake load baked models}.
+			 * It can be used to {@linkplain Baker#getModel get unbaked models} and
+			 * {@linkplain Baker#bake bake models}.
 			 */
 			Baker baker();
 		}
