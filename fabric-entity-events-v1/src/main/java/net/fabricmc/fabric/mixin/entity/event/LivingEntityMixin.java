@@ -30,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.BedBlock;
 import net.minecraft.block.BlockState;
@@ -80,6 +81,13 @@ abstract class LivingEntityMixin {
 	private void beforeDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
 		if (!ServerLivingEntityEvents.ALLOW_DAMAGE.invoker().allowDamage((LivingEntity) (Object) this, source, amount)) {
 			cir.setReturnValue(false);
+		}
+	}
+
+	@Inject(method = "damage", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void afterDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir, float dealt, boolean blocked) {
+		if (!isDead()) {
+			ServerLivingEntityEvents.AFTER_DAMAGE.invoker().afterDamage((LivingEntity) (Object) this, source, dealt, amount, blocked);
 		}
 	}
 
