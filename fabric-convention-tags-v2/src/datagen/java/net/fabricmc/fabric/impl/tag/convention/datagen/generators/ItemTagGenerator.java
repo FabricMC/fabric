@@ -597,7 +597,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ItemTags.CROSSBOW_ENCHANTABLE)
 				.addOptionalTag(ItemTags.MACE_ENCHANTABLE)
 				.addOptionalTag(ItemTags.FIRE_ASPECT_ENCHANTABLE)
-				.addOptionalTag(ItemTags.DURABILITY_ENCHANTABLE);
+				.addOptionalTag(ItemTags.DURABILITY_ENCHANTABLE)
+				.addOptionalTag(ItemTags.VANISHING_ENCHANTABLE);
 
 		// Deprecated tags below
 
