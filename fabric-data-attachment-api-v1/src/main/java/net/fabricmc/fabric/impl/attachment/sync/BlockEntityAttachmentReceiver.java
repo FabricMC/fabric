@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.attachment;
+package net.fabricmc.fabric.impl.attachment.sync;
 
 import org.jetbrains.annotations.Nullable;
 

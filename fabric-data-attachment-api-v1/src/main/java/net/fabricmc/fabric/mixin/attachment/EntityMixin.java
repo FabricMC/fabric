@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
@@ -71,24 +71,24 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 			switch (((AttachmentTypeImpl<?>) type).syncType()) {
 			case ALL -> PlayerLookup
 					.tracking((Entity) (Object) this)
-					.forEach(player -> AttachmentSync.trySync(payload, player));
+					.forEach(player -> AttachmentSyncImpl.trySync(payload, player));
 			case ALL_BUT_TARGET -> PlayerLookup
 					.tracking((Entity) (Object) this)
 					.forEach(player -> {
 						if (player != (Object) this) {
-							AttachmentSync.trySync(payload, player);
+							AttachmentSyncImpl.trySync(payload, player);
 						}
 					});
 			case TARGET_ONLY -> {
 				if ((Object) this instanceof ServerPlayerEntity player) {
-					AttachmentSync.trySync(payload, player);
+					AttachmentSyncImpl.trySync(payload, player);
 				}
 			}
 			case CUSTOM -> PlayerLookup
 					.tracking((Entity) (Object) this)
 					.forEach(player -> {
 						if (((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(this, player)) {
-							AttachmentSync.trySync(payload, player);
+							AttachmentSyncImpl.trySync(payload, player);
 						}
 					});
 			case NONE -> throw new IllegalStateException();

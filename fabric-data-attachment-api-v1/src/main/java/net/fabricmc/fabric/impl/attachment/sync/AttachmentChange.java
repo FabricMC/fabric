@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import io.netty.handler.codec.DecoderException;
-import io.netty.handler.codec.EncoderException;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -41,11 +40,12 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			AttachmentChange::writeToNetwork,
 			AttachmentChange::readFromNetwork
 	);
+	public static final PacketCodec<PacketByteBuf, List<AttachmentChange>> LIST_PACKET_CODEC = PACKET_CODEC.collect(PacketCodecs.toList());
 
 	private static void writeToNetwork(PacketByteBuf buf, AttachmentChange value) {
 		Identifier id = value.type.identifier();
 
-		if (!AttachmentSync.CLIENT_SUPPORTED_ATTACHMENTS.get().contains(id)) {
+		if (!AttachmentSyncImpl.CLIENT_SUPPORTED_ATTACHMENTS.get().contains(id)) {
 			return;
 		}
 

@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.impl.attachment.sync;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -27,6 +31,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
@@ -35,12 +41,14 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.mixin.attachment.ClientConnectionAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
-public class AttachmentSync implements ModInitializer {
+public class AttachmentSyncImpl implements ModInitializer {
 	public static final Identifier CONFIG_PACKET_ID = Identifier.of("fabric", "accepted_attachments_v1");
 	public static final Identifier PACKET_ID = Identifier.of("fabric", "attachment_sync_v1");
+	public static final Identifier REFRESH_PACKET_ID = Identifier.of("fabric", "attachment_refresh_v1");
 	public static final ThreadLocal<Set<Identifier>> CLIENT_SUPPORTED_ATTACHMENTS = ThreadLocal.withInitial(Set::of);
 
 	public static AcceptedAttachmentsPayloadC2S createResponsePayload() {
@@ -59,6 +67,12 @@ public class AttachmentSync implements ModInitializer {
 		return atts;
 	}
 
+	public static void refreshAttachments(ServerPlayerEntity player) {
+		if (ServerPlayNetworking.canSend(player, REFRESH_PACKET_ID)) {
+			ServerPlayNetworking.send(player, new AttachmentRefreshPayloadS2C(Optional.empty()));
+		}
+	}
+
 	@Override
 	public void onInitialize() {
 		// Config
@@ -74,6 +88,7 @@ public class AttachmentSync implements ModInitializer {
 		});
 
 		ServerConfigurationNetworking.registerGlobalReceiver(AcceptedAttachmentsPayloadC2S.ID, (payload, context) -> {
+			// copied over from custom ingredient sync
 			Set<Identifier> supportedAttachments = decodeResponsePayload(payload);
 			ChannelHandler packetEncoder = ((ClientConnectionAccessor) ((ServerCommonNetworkHandlerAccessor) context.networkHandler()).getConnection())
 					.getChannel()
@@ -89,6 +104,33 @@ public class AttachmentSync implements ModInitializer {
 
 		// Play
 		PayloadTypeRegistry.playS2C().register(AttachmentSyncPayload.ID, AttachmentSyncPayload.CODEC);
+
+		PayloadTypeRegistry.playS2C().register(AttachmentRefreshPayloadS2C.ID, AttachmentRefreshPayloadS2C.CODEC);
+		PayloadTypeRegistry.playC2S().register(AttachmentRefreshPayloadC2S.ID, AttachmentRefreshPayloadC2S.CODEC);
+
+		ServerPlayNetworking.registerGlobalReceiver(AttachmentRefreshPayloadC2S.ID, (payload, context) -> {
+			List<AttachmentChange> refreshed = new ArrayList<>();
+
+			for (Map.Entry<AttachmentType<?>, AttachmentTargetInfo<?>> attachment : payload.attachments()) {
+				AttachmentTypeImpl<?> type = (AttachmentTypeImpl<?>) attachment.getKey();
+				AttachmentTarget target = attachment.getValue().getTarget(context.player().getServerWorld());
+
+				if (type.syncType() == SyncType.CUSTOM) {
+					if (!type.customSyncTargetTest().test(target, context.player())) {
+						continue;
+					}
+				}
+
+				// unnecessary in theory, but might as well send back the correct value while we're at it
+				refreshed.add(new AttachmentChange(
+						attachment.getValue(),
+						attachment.getKey(),
+						target.getAttached(type)
+				));
+			}
+
+			context.responseSender().sendPacket(new AttachmentRefreshPayloadS2C(Optional.of(refreshed)));
+		});
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			if (ServerPlayNetworking.canSend(handler, PACKET_ID)) {

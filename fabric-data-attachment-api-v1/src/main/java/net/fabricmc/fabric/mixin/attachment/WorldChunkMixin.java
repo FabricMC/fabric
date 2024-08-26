@@ -45,11 +45,11 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
-import net.fabricmc.fabric.impl.attachment.BlockEntityAttachmentReceiver;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
+import net.fabricmc.fabric.impl.attachment.sync.BlockEntityAttachmentReceiver;
 import net.fabricmc.fabric.impl.attachment.sync.SyncType;
 
 @Mixin(WorldChunk.class)
@@ -128,12 +128,12 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 			case ALL, ALL_BUT_TARGET -> PlayerLookup
 					// Can't shadow the method or field as we are already extending a supermixin
 					.tracking(serverWorld, ((Chunk) (Object) this).getPos())
-					.forEach(player -> AttachmentSync.trySync(payload, player));
+					.forEach(player -> AttachmentSyncImpl.trySync(payload, player));
 			case CUSTOM -> PlayerLookup
 					.tracking(serverWorld, ((Chunk) (Object) this).getPos())
 					.forEach(player -> {
 						if (((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(this, player)) {
-							AttachmentSync.trySync(payload, player);
+							AttachmentSyncImpl.trySync(payload, player);
 						}
 					});
 			case TARGET_ONLY -> {
