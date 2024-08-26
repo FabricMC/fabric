@@ -26,14 +26,25 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Events related to a tracking entities within a player's view distance.
  */
 public final class EntityTrackingEvents {
+
 	/**
 	 * An event that is called before player starts tracking an entity.
 	 * Typically, this occurs when an entity enters a client's view distance.
-	 * This event is called before the player's client is sent the entity's {@link Entity#createSpawnPacket() spawn packet}.
+	 * This event is called <strong>before</strong> the player's client is sent the entity's {@link Entity#createSpawnPacket() spawn packet}.
 	 */
-	public static final Event<StartTracking> START_TRACKING = EventFactory.createArrayBacked(StartTracking.class, callbacks -> (trackedEntity, player) -> {
-		for (StartTracking callback : callbacks) {
-			callback.onStartTracking(trackedEntity, player);
+	public static final Event<BeforeStartTracking> BEFORE_START_TRACKING = EventFactory.createArrayBacked(BeforeStartTracking.class, callbacks -> (trackedEntity, player) -> {
+		for (BeforeStartTracking callback : callbacks) {
+			callback.beforeStartTracking(trackedEntity, player);
+		}
+	});
+
+	/**
+	 * An event that is called after player starts tracking an entity.
+	 * This event is called <strong>after</strong> the player's client is sent the entity's {@link Entity#createSpawnPacket() spawn packet}.
+	 */
+	public static final Event<AfterStartTracking> AFTER_START_TRACKING = EventFactory.createArrayBacked(AfterStartTracking.class, callbacks -> (trackedEntity, player) -> {
+		for (AfterStartTracking callback : callbacks) {
+			callback.afterStartTracking(trackedEntity, player);
 		}
 	});
 
@@ -49,14 +60,24 @@ public final class EntityTrackingEvents {
 	});
 
 	@FunctionalInterface
-	public interface StartTracking {
+	public interface BeforeStartTracking {
 		/**
 		 * Called before an entity starts getting tracked by a player.
 		 *
 		 * @param trackedEntity the entity that will be tracked
 		 * @param player the player that will track the entity
 		 */
-		void onStartTracking(Entity trackedEntity, ServerPlayerEntity player);
+		void beforeStartTracking(Entity trackedEntity, ServerPlayerEntity player);
+	}
+
+	public interface AfterStartTracking {
+		/**
+		 * Called after an entity starts getting tracked by a player.
+		 *
+		 * @param trackedEntity the entity that will be tracked
+		 * @param player the player that will track the entity
+		 */
+		void afterStartTracking(Entity trackedEntity, ServerPlayerEntity player);
 	}
 
 	@FunctionalInterface
@@ -71,5 +92,23 @@ public final class EntityTrackingEvents {
 	}
 
 	private EntityTrackingEvents() {
+	}
+
+	//--
+
+	/**
+	 * @deprecated Use {#BEFORE_START_TRACKING} or {@link #AFTER_START_TRACKING} instead
+	 */
+	@Deprecated()
+	public static final Event<StartTracking> START_TRACKING = EventFactory.createArrayBacked(StartTracking.class, callbacks -> (trackedEntity, player) -> {
+		for (StartTracking callback : callbacks) {
+			callback.onStartTracking(trackedEntity, player);
+		}
+	});
+
+	@Deprecated()
+	@FunctionalInterface
+	public interface StartTracking {
+		void onStartTracking(Entity trackedEntity, ServerPlayerEntity player);
 	}
 }
