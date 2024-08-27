@@ -32,7 +32,7 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint",
-      "net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncImpl"
+      "net.fabricmc.fabric.impl.attachment.sync.AttachmentSync"
     ],
     "client": [
       "net.fabricmc.fabric.impl.attachment.client.AttachmentSyncClient"

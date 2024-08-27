@@ -16,72 +16,27 @@
 
 package net.fabricmc.fabric.impl.attachment.client;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
-import net.minecraft.client.world.ClientWorld;
-
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.sync.AcceptedAttachmentsPayloadS2C;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentRefreshPayloadC2S;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentRefreshPayloadS2C;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncImpl;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 public class AttachmentSyncClient implements ClientModInitializer {
-	private Multimap<AttachmentType<?>, AttachmentTargetInfo<?>> localAttachments = HashMultimap.create();
-
 	@Override
 	public void onInitializeClient() {
 		// config
 		ClientConfigurationNetworking.registerGlobalReceiver(AcceptedAttachmentsPayloadS2C.ID, (payload, context) -> {
-			context.responseSender().sendPacket(AttachmentSyncImpl.createResponsePayload());
+			context.responseSender().sendPacket(AttachmentSync.createResponsePayload());
 		});
 
 		// play
 		ClientPlayNetworking.registerGlobalReceiver(AttachmentSyncPayload.ID, (payload, context) ->
 				context.client().submit(
-						() -> payload.attachments().forEach(attachmentChange -> {
-							attachmentChange.apply(context.client().world);
-
-							if (attachmentChange.data() != null) {
-								localAttachments.put(attachmentChange.type(), attachmentChange.targetInfo());
-							} else {
-								localAttachments.remove(attachmentChange.type(), attachmentChange.targetInfo());
-							}
-						})
+						() -> payload.attachments()
+								.forEach(attachmentChange -> attachmentChange.apply(context.client().world))
 				)
 		);
-
-		ClientPlayNetworking.registerGlobalReceiver(AttachmentRefreshPayloadS2C.ID, (payload, context) -> {
-			payload.attachments().ifPresentOrElse(
-					attachments -> {
-						// server response, apply changes
-						context.client().submit(
-								() -> {
-									ClientWorld world = context.client().world;
-									localAttachments.forEach(
-											(type, targetInfo) -> targetInfo.getTarget(world).removeAttached(type)
-									);
-
-									for (AttachmentChange attachment : attachments) {
-										attachment.apply(world);
-									}
-								}
-						);
-					},
-					() -> {
-						// first server packet, reply with local attachment data
-						context.responseSender().sendPacket(
-								new AttachmentRefreshPayloadC2S(localAttachments.entries().stream().toList())
-						);
-					}
-			);
-		});
 	}
 }

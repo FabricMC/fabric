@@ -47,12 +47,12 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, Object> fabric_dataAttachments = null;
 	/*
-	 * All of the attachment attachments that should always be sent to newcomers, players that begin to track this target
+	 * All of the attachment changes that should always be sent to newcomers, players that begin to track this target
 	 */
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, AttachmentChange> fabric_alwaysSentToNewcomers = null;
 	/*
-	 * Same as above, except that the attachments might not be sent to any newcomer, needs to be checked before sending
+	 * Same as above, except that the changes might not be sent to any newcomer, needs to be checked before sending
 	 */
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, AttachmentChange> fabric_maybeSentToNewcomers = null;

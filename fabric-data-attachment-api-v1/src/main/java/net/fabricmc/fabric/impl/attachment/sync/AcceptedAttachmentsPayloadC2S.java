@@ -27,10 +27,10 @@ import net.minecraft.util.Identifier;
 
 public record AcceptedAttachmentsPayloadC2S(Set<Identifier> acceptedAttachments) implements CustomPayload {
 	public static final PacketCodec<PacketByteBuf, AcceptedAttachmentsPayloadC2S> CODEC = PacketCodec.tuple(
-			Identifier.PACKET_CODEC.collect(PacketCodecs.toCollection(HashSet::new)), AcceptedAttachmentsPayloadC2S::acceptedAttachments,
+			PacketCodecs.collection(HashSet::new, Identifier.PACKET_CODEC), AcceptedAttachmentsPayloadC2S::acceptedAttachments,
 			AcceptedAttachmentsPayloadC2S::new
 	);
-	public static final Id<AcceptedAttachmentsPayloadC2S> ID = new Id<>(AttachmentSyncImpl.CONFIG_PACKET_ID);
+	public static final Id<AcceptedAttachmentsPayloadC2S> ID = new Id<>(AttachmentSync.CONFIG_PACKET_ID);
 
 	@Override
 	public Id<? extends CustomPayload> getId() {

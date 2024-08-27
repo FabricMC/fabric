@@ -35,10 +35,10 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncImpl;
+import net.fabricmc.fabric.impl.attachment.BlockEntityAttachmentReceiver;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
-import net.fabricmc.fabric.impl.attachment.sync.BlockEntityAttachmentReceiver;
 
 @Mixin(BlockEntity.class)
 abstract class BlockEntityMixin implements AttachmentTargetImpl {
@@ -98,12 +98,12 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 			switch (((AttachmentTypeImpl<?>) type).syncType()) {
 			case ALL, ALL_BUT_TARGET -> PlayerLookup
 					.tracking((BlockEntity) (Object) this)
-					.forEach(player -> AttachmentSyncImpl.trySync(payload, player));
+					.forEach(player -> AttachmentSync.trySync(payload, player));
 			case CUSTOM -> PlayerLookup
 					.tracking((BlockEntity) (Object) this)
 					.forEach(player -> {
 						if (((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(this, player)) {
-							AttachmentSyncImpl.trySync(payload, player);
+							AttachmentSync.trySync(payload, player);
 						}
 					});
 			case TARGET_ONLY -> {

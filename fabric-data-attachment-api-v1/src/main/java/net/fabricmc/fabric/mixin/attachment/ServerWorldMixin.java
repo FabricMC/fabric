@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentPersistentState;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncImpl;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
@@ -78,12 +78,12 @@ abstract class ServerWorldMixin extends World implements AttachmentTargetImpl {
 		case ALL, ALL_BUT_TARGET -> PlayerLookup
 				// Can't shadow the method or field as we are already extending a supermixin
 				.world((ServerWorld) (Object) this)
-				.forEach(player -> AttachmentSyncImpl.trySync(payload, player));
+				.forEach(player -> AttachmentSync.trySync(payload, player));
 		case CUSTOM -> PlayerLookup
 				.world((ServerWorld) (Object) this)
 				.forEach(player -> {
 					if (((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(this, player)) {
-						AttachmentSyncImpl.trySync(payload, player);
+						AttachmentSync.trySync(payload, player);
 					}
 				});
 		case TARGET_ONLY -> {

@@ -30,7 +30,7 @@ import net.minecraft.network.handler.EncoderHandler;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncImpl;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.SupportedAttachmentsPacketEncoder;
 
 @Mixin(EncoderHandler.class)
@@ -51,7 +51,7 @@ public class EncoderHandlerMixin implements SupportedAttachmentsPacketEncoder {
 			method = "encode(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;Lio/netty/buffer/ByteBuf;)V"
 	)
 	private void capturePacketEncoder(ChannelHandlerContext channelHandlerContext, Packet<?> packet, ByteBuf byteBuf, CallbackInfo ci) {
-		AttachmentSyncImpl.CLIENT_SUPPORTED_ATTACHMENTS.set(fabric_supportedAttachments);
+		AttachmentSync.CLIENT_SUPPORTED_ATTACHMENTS.set(fabric_supportedAttachments);
 	}
 
 	@Inject(
@@ -72,6 +72,6 @@ public class EncoderHandlerMixin implements SupportedAttachmentsPacketEncoder {
 			method = "encode(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;Lio/netty/buffer/ByteBuf;)V"
 	)
 	private void releasePacketEncoder(ChannelHandlerContext channelHandlerContext, Packet<?> packet, ByteBuf byteBuf, CallbackInfo ci) {
-		AttachmentSyncImpl.CLIENT_SUPPORTED_ATTACHMENTS.set(Set.of());
+		AttachmentSync.CLIENT_SUPPORTED_ATTACHMENTS.set(Set.of());
 	}
 }
