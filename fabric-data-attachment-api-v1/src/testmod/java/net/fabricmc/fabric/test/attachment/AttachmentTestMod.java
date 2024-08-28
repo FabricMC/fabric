@@ -48,6 +48,7 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
@@ -67,19 +68,19 @@ public class AttachmentTestMod implements ModInitializer {
 	);
 	public static final AttachmentType<Boolean> SYNCED_WITH_ALL = AttachmentRegistry.<Boolean>builder()
 			.initializer(() -> false)
-			.syncWithAll(PacketCodecs.BOOL.cast())
+			.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.all())
 			.buildAndRegister(Identifier.of(MOD_ID, "synced_all"));
 	public static final AttachmentType<Boolean> SYNCED_WITH_TARGET = AttachmentRegistry.<Boolean>builder()
 			.initializer(() -> false)
-			.syncWithTargetOnly(PacketCodecs.BOOL.cast())
+			.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.targetOnly())
 			.buildAndRegister(Identifier.of(MOD_ID, "synced_target"));
 	public static final AttachmentType<Boolean> SYNCED_EXCEPT_TARGET = AttachmentRegistry.<Boolean>builder()
 			.initializer(() -> false)
-			.syncWithAllButTarget(PacketCodecs.BOOL.cast())
+			.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.allButTarget())
 			.buildAndRegister(Identifier.of(MOD_ID, "synced_expect_target"));
 	public static final AttachmentType<Boolean> SYNCED_CUSTOM_RULE = AttachmentRegistry.<Boolean>builder()
 			.initializer(() -> false)
-			.syncWithCustom(PacketCodecs.BOOL.cast(), (target, player) -> player.isCreative())
+			.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.custom((target, player) -> player.isCreative()))
 			.buildAndRegister(Identifier.of(MOD_ID, "synced_custom"));
 	private static final SimpleCommandExceptionType BAD_GAMEMODE = new SimpleCommandExceptionType(() -> "You must be in creative mode");
 

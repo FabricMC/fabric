@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.attachment;
 
+import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
@@ -26,8 +27,9 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
 public interface AttachmentTargetImpl extends AttachmentTarget {
 	/**
@@ -76,7 +78,7 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 	}
 
 	@Nullable
-	default AttachmentSyncPayload fabric_getInitialSyncPayload(ServerPlayerEntity player) {
+	default List<AttachmentChange> fabric_getInitialSyncChanges(ServerPlayerEntity player) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 

@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.attachment.sync;
+package net.fabricmc.fabric.impl.attachment.sync.s2c;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
+
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 
 public class AcceptedAttachmentsPayloadS2C implements CustomPayload {
 	public static final AcceptedAttachmentsPayloadS2C INSTANCE = new AcceptedAttachmentsPayloadS2C();

@@ -39,8 +39,8 @@ public class EncoderHandlerMixin implements SupportedAttachmentsPacketEncoder {
 	private Set<Identifier> fabric_supportedAttachments = Set.of();
 
 	@Override
-	public void fabric_setSupportedAttachments(Set<Identifier> supportedCustomIngredients) {
-		fabric_supportedAttachments = supportedCustomIngredients;
+	public void fabric_setSupportedAttachments(Set<Identifier> supportedAttachments) {
+		fabric_supportedAttachments = supportedAttachments;
 	}
 
 	@Inject(

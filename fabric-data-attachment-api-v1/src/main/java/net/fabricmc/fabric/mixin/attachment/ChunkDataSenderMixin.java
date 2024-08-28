@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
+import java.util.List;
+
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,6 +31,7 @@ import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 
 @Mixin(ChunkDataSender.class)
 abstract class ChunkDataSenderMixin {
@@ -42,6 +45,10 @@ abstract class ChunkDataSenderMixin {
 	private void sendInitialAttachmentData(ServerPlayNetworkHandler handler, ServerWorld world, WorldChunk chunk, Operation<Void> original, ServerPlayerEntity player) {
 		original.call(handler, world, chunk);
 		// do a wrap operation so this packet is sent *after* the chunk ones
-		ServerPlayNetworking.send(player, ((AttachmentTargetImpl) chunk).fabric_getInitialSyncPayload(player));
+		List<AttachmentChange> changes = ((AttachmentTargetImpl) player.getServerWorld()).fabric_getInitialSyncChanges(player);
+
+		if (changes != null) {
+			AttachmentChange.partitionForPackets(changes, p -> ServerPlayNetworking.send(player, p));
+		}
 	}
 }

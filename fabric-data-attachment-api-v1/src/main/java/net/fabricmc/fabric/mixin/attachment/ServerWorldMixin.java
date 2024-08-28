@@ -42,8 +42,9 @@ import net.fabricmc.fabric.impl.attachment.AttachmentPersistentState;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPredicateImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
 @Mixin(ServerWorld.class)
 abstract class ServerWorldMixin extends World implements AttachmentTargetImpl {
@@ -52,7 +53,17 @@ abstract class ServerWorldMixin extends World implements AttachmentTargetImpl {
 	private MinecraftServer server;
 
 	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, DynamicRegistryManager registryManager, RegistryEntry<DimensionType> dimensionEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long biomeAccess, int maxChainedNeighborUpdates) {
-		super(properties, registryRef, registryManager, dimensionEntry, profiler, isClient, debugWorld, biomeAccess, maxChainedNeighborUpdates);
+		super(
+				properties,
+				registryRef,
+				registryManager,
+				dimensionEntry,
+				profiler,
+				isClient,
+				debugWorld,
+				biomeAccess,
+				maxChainedNeighborUpdates
+		);
 	}
 
 	@Inject(at = @At("TAIL"), method = "<init>")
@@ -74,7 +85,10 @@ abstract class ServerWorldMixin extends World implements AttachmentTargetImpl {
 
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
-		switch (((AttachmentTypeImpl<?>) type).syncType()) {
+		AttachmentSyncPredicateImpl pred = ((AttachmentTypeImpl<?>) type).syncPredicate();
+		assert pred != null;
+
+		switch (pred.type()) {
 		case ALL, ALL_BUT_TARGET -> PlayerLookup
 				// Can't shadow the method or field as we are already extending a supermixin
 				.world((ServerWorld) (Object) this)
@@ -82,13 +96,12 @@ abstract class ServerWorldMixin extends World implements AttachmentTargetImpl {
 		case CUSTOM -> PlayerLookup
 				.world((ServerWorld) (Object) this)
 				.forEach(player -> {
-					if (((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(this, player)) {
+					if (pred.customTest().test(this, player)) {
 						AttachmentSync.trySync(payload, player);
 					}
 				});
 		case TARGET_ONLY -> {
 		}
-		case NONE -> throw new IllegalStateException();
 		}
 	}
 }

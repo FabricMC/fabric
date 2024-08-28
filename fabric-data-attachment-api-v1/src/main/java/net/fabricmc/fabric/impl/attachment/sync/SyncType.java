@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.attachment.sync;
 
 public enum SyncType {
-	NONE,
 	ALL,
 	TARGET_ONLY,
 	ALL_BUT_TARGET,

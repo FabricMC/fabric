@@ -37,8 +37,9 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.BlockEntityAttachmentReceiver;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPredicateImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
 @Mixin(BlockEntity.class)
 abstract class BlockEntityMixin implements AttachmentTargetImpl {
@@ -95,20 +96,22 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
 		if (this.hasWorld() && !this.world.isClient) {
-			switch (((AttachmentTypeImpl<?>) type).syncType()) {
+			AttachmentSyncPredicateImpl pred = ((AttachmentTypeImpl<?>) type).syncPredicate();
+			assert pred != null;
+
+			switch (pred.type()) {
 			case ALL, ALL_BUT_TARGET -> PlayerLookup
 					.tracking((BlockEntity) (Object) this)
 					.forEach(player -> AttachmentSync.trySync(payload, player));
 			case CUSTOM -> PlayerLookup
 					.tracking((BlockEntity) (Object) this)
 					.forEach(player -> {
-						if (((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(this, player)) {
+						if (pred.customTest().test(this, player)) {
 							AttachmentSync.trySync(payload, player);
 						}
 					});
 			case TARGET_ONLY -> {
 			}
-			case NONE -> throw new IllegalStateException();
 			}
 		}
 	}

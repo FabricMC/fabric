@@ -48,15 +48,16 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.BlockEntityAttachmentReceiver;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPredicateImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 import net.fabricmc.fabric.impl.attachment.sync.SyncType;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
 @Mixin(WorldChunk.class)
 abstract class WorldChunkMixin extends AttachmentTargetsMixin implements AttachmentTargetImpl, BlockEntityAttachmentReceiver {
 	@Shadow
 	@Final
-	private World world;
+	World world;
 	@Unique
 	private Map<BlockPos, Map<AttachmentType<?>, AttachmentChange>> alwaysSentToNewcomersBE = new HashMap<>();
 	@Unique
@@ -75,7 +76,7 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 
 	@Override
 	public void fabric_acknowledgeBlockEntityAttachment(BlockPos pos, AttachmentType<?> type, @Nullable Object value) {
-		SyncType syncType = ((AttachmentTypeImpl<?>) type).syncType();
+		SyncType syncType = ((AttachmentTypeImpl<?>) type).syncPredicate().type();
 
 		if (syncType == SyncType.TARGET_ONLY) {
 			return;
@@ -95,20 +96,21 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 			}
 		} else if (value != null) {
 			globalMap.computeIfAbsent(pos, k -> new IdentityHashMap<>())
-					.put(type, new AttachmentChange(targetInfo, type, value));
+					.put(type, AttachmentChange.create(targetInfo, type, value));
 		}
 	}
 
 	@Override
 	@Nullable
-	public AttachmentSyncPayload fabric_getInitialSyncPayload(ServerPlayerEntity player) {
-		AttachmentSyncPayload chunkPayload = super.fabric_getInitialSyncPayload(player);
-		List<AttachmentChange> changes = chunkPayload == null ? new ArrayList<>() : chunkPayload.attachments();
+	public List<AttachmentChange> fabric_getInitialSyncChanges(ServerPlayerEntity player) {
+		List<AttachmentChange> chunkChanges = super.fabric_getInitialSyncChanges(player);
+		List<AttachmentChange> changes = chunkChanges == null ? new ArrayList<>() : chunkChanges;
 
 		this.alwaysSentToNewcomersBE.values().forEach(m -> changes.addAll(m.values()));
 		this.maybeSentToNewcomersBE.forEach((blockPos, map) -> {
 			for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : map.entrySet()) {
-				BiPredicate<AttachmentTarget, ServerPlayerEntity> pred = ((AttachmentTypeImpl<?>) entry.getKey()).customSyncTargetTest();
+				BiPredicate<AttachmentTarget, ServerPlayerEntity> pred = ((AttachmentTypeImpl<?>) entry.getKey()).syncPredicate()
+						.customTest();
 				// trySync type should always be CUSTOM here
 				assert pred != null;
 
@@ -118,13 +120,16 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 			}
 		});
 
-		return new AttachmentSyncPayload(changes);
+		return changes.isEmpty() ? null : changes;
 	}
 
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
 		if (this.world instanceof ServerWorld serverWorld) {
-			switch (((AttachmentTypeImpl<?>) type).syncType()) {
+			AttachmentSyncPredicateImpl pred = ((AttachmentTypeImpl<?>) type).syncPredicate();
+			assert pred != null;
+
+			switch (pred.type()) {
 			case ALL, ALL_BUT_TARGET -> PlayerLookup
 					// Can't shadow the method or field as we are already extending a supermixin
 					.tracking(serverWorld, ((Chunk) (Object) this).getPos())
@@ -132,13 +137,12 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 			case CUSTOM -> PlayerLookup
 					.tracking(serverWorld, ((Chunk) (Object) this).getPos())
 					.forEach(player -> {
-						if (((AttachmentTypeImpl<?>) type).customSyncTargetTest().test(this, player)) {
+						if (pred.customTest().test(this, player)) {
 							AttachmentSync.trySync(payload, player);
 						}
 					});
 			case TARGET_ONLY -> {
 			}
-			case NONE -> throw new IllegalStateException();
 			}
 		}
 	}

@@ -39,8 +39,8 @@ import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPayload;
 import net.fabricmc.fabric.impl.attachment.sync.SyncType;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
 @Mixin({BlockEntity.class, Entity.class, World.class, Chunk.class})
 abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
@@ -72,7 +72,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 		if (type.isSynced()) {
 			this.fabric_acknowledgeSyncedEntry(type, value);
-			var payload = new AttachmentSyncPayload(List.of(new AttachmentChange(
+			var payload = new AttachmentSyncPayload(List.of(AttachmentChange.create(
 					fabric_getSyncTargetInfo(),
 					type,
 					value
@@ -128,7 +128,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 	@Override
 	public void fabric_acknowledgeSyncedEntry(AttachmentType<?> type, @Nullable Object value) {
-		SyncType syncType = ((AttachmentTypeImpl<?>) type).syncType();
+		SyncType syncType = ((AttachmentTypeImpl<?>) type).syncPredicate().type();
 
 		if (syncType == SyncType.TARGET_ONLY) {
 			// the target can never be a newcomer (i.e. start tracking itself), so this never needs to be synced
@@ -147,7 +147,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 					fabric_maybeSentToNewcomers = null;
 				}
 			} else {
-				AttachmentChange change = new AttachmentChange(fabric_getSyncTargetInfo(), type, value);
+				AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value);
 
 				if (fabric_maybeSentToNewcomers == null) {
 					fabric_maybeSentToNewcomers = new IdentityHashMap<>();
@@ -171,7 +171,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 					fabric_alwaysSentToNewcomers = null;
 				}
 			} else {
-				AttachmentChange change = new AttachmentChange(fabric_getSyncTargetInfo(), type, value);
+				AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value);
 
 				if (fabric_alwaysSentToNewcomers == null) {
 					fabric_alwaysSentToNewcomers = new IdentityHashMap<>();
@@ -184,7 +184,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 	@Override
 	@Nullable
-	public AttachmentSyncPayload fabric_getInitialSyncPayload(ServerPlayerEntity player) {
+	public List<AttachmentChange> fabric_getInitialSyncChanges(ServerPlayerEntity player) {
 		if (fabric_dataAttachments == null || fabric_alwaysSentToNewcomers == null && fabric_maybeSentToNewcomers == null) {
 			return null;
 		}
@@ -197,7 +197,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 		if (fabric_maybeSentToNewcomers != null) {
 			for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : fabric_maybeSentToNewcomers.entrySet()) {
-				BiPredicate<AttachmentTarget, ServerPlayerEntity> pred = ((AttachmentTypeImpl<?>) entry.getKey()).customSyncTargetTest();
+				BiPredicate<AttachmentTarget, ServerPlayerEntity> pred = ((AttachmentTypeImpl<?>) entry.getKey()).syncPredicate().customTest();
 				// trySync type should always be CUSTOM here
 				assert pred != null;
 
@@ -207,6 +207,6 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			}
 		}
 
-		return new AttachmentSyncPayload(list);
+		return list;
 	}
 }

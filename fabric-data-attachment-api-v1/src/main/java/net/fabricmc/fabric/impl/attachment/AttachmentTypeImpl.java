@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.attachment;
 
-import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
@@ -24,24 +23,21 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.impl.attachment.sync.SyncType;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPredicateImpl;
 
 public record AttachmentTypeImpl<A>(
 		Identifier identifier,
 		@Nullable Supplier<A> initializer,
 		@Nullable Codec<A> persistenceCodec,
 		@Nullable PacketCodec<PacketByteBuf, A> packetCodec,
-		SyncType syncType,
-		@Nullable BiPredicate<AttachmentTarget, ServerPlayerEntity> customSyncTargetTest,
+		@Nullable AttachmentSyncPredicateImpl syncPredicate,
 		boolean copyOnDeath
 ) implements AttachmentType<A> {
 	@Override
 	public boolean isSynced() {
-		return syncType != SyncType.NONE;
+		return syncPredicate != null;
 	}
 }

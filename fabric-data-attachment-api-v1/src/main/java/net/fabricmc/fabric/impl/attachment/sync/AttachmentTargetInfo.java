@@ -32,6 +32,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 
 public sealed interface AttachmentTargetInfo<T> {
+	int MAX_SIZE_IN_BYTES = Byte.BYTES + Long.BYTES;
 	PacketCodec<ByteBuf, AttachmentTargetInfo<?>> PACKET_CODEC = PacketCodecs.BYTE.dispatch(
 			AttachmentTargetInfo::getId, Type::packetCodecFromId
 	);
@@ -96,10 +97,9 @@ public sealed interface AttachmentTargetInfo<T> {
 	}
 
 	record ChunkTarget(ChunkPos pos) implements AttachmentTargetInfo<Chunk> {
-		static final PacketCodec<ByteBuf, ChunkTarget> PACKET_CODEC = PacketCodec.tuple(
-				PacketCodecs.VAR_LONG.xmap(ChunkPos::new, ChunkPos::toLong), ChunkTarget::pos,
-				ChunkTarget::new
-		);
+		static final PacketCodec<ByteBuf, ChunkTarget> PACKET_CODEC = PacketCodecs.VAR_LONG
+				.xmap(ChunkPos::new, ChunkPos::toLong)
+				.xmap(ChunkTarget::new, ChunkTarget::pos);
 
 		@Override
 		public Type<Chunk> getType() {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.attachment.sync;
+package net.fabricmc.fabric.impl.attachment.sync.c2s;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +24,8 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 
 public record AcceptedAttachmentsPayloadC2S(Set<Identifier> acceptedAttachments) implements CustomPayload {
 	public static final PacketCodec<PacketByteBuf, AcceptedAttachmentsPayloadC2S> CODEC = PacketCodec.tuple(

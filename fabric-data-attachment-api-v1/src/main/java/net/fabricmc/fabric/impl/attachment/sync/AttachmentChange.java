@@ -16,11 +16,13 @@
 
 package net.fabricmc.fabric.impl.attachment.sync;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 
-import io.netty.handler.codec.DecoderException;
-import io.netty.handler.codec.EncoderException;
+import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -30,59 +32,79 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
 // empty optional for removal
-@SuppressWarnings("unchecked")
-public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object data) {
-	public static final PacketCodec<PacketByteBuf, AttachmentChange> PACKET_CODEC = PacketCodec.ofStatic(
-			AttachmentChange::writeToNetwork,
-			AttachmentChange::readFromNetwork
+public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, byte[] data) {
+	public static final PacketCodec<PacketByteBuf, AttachmentChange> PACKET_CODEC = PacketCodec.tuple(
+			AttachmentTargetInfo.PACKET_CODEC, AttachmentChange::targetInfo,
+			Identifier.PACKET_CODEC.xmap(
+					id -> Objects.requireNonNull(AttachmentRegistryImpl.get(id)),
+					AttachmentType::identifier
+			), AttachmentChange::type,
+			PacketCodecs.BYTE_ARRAY, AttachmentChange::data,
+			AttachmentChange::new
 	);
+	private static final int MAX_PADDING_SIZE_IN_BYTES = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + AttachmentSync.MAX_IDENTIFIER_SIZE_IN_BYTES;
+	// add a parameter?
+	private static final int MAX_DATA_SIZE_IN_BYTES = 0x10000 - MAX_PADDING_SIZE_IN_BYTES;
 
-	private static void writeToNetwork(PacketByteBuf buf, AttachmentChange value) {
-		Identifier id = value.type.identifier();
+	@SuppressWarnings("unchecked")
+	public static AttachmentChange create(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value) {
+		PacketCodec<PacketByteBuf, Object> codec = (PacketCodec<PacketByteBuf, Object>) ((AttachmentTypeImpl<?>) type).packetCodec();
+		assert codec != null;
 
-		if (!AttachmentSync.CLIENT_SUPPORTED_ATTACHMENTS.get().contains(id)) {
-			return;
+		PacketByteBuf buf = PacketByteBufs.create();
+		buf.writeOptional(Optional.ofNullable(value), codec);
+		byte[] encoded = buf.array();
+
+		if (encoded.length >= MAX_DATA_SIZE_IN_BYTES) {
+			throw new IllegalArgumentException("Data for attachment '%s' was too big (%d bytes, over maximum %d)".formatted(
+					type.identifier(),
+					encoded.length,
+					MAX_DATA_SIZE_IN_BYTES
+			));
 		}
 
-		PacketCodec<PacketByteBuf, Object> packetCodec =
-				(PacketCodec<PacketByteBuf, Object>) ((AttachmentTypeImpl<?>) value.type).packetCodec();
-
-		if (packetCodec == null) {
-			AttachmentEntrypoint.LOGGER.warn("Attachment type '{}' has no packet codec, skipping", id.toString());
-			return;
-		}
-
-		AttachmentTargetInfo.PACKET_CODEC.encode(buf, value.targetInfo);
-		buf.writeIdentifier(id);
-		buf.writeOptional(Optional.ofNullable(value.data), packetCodec);
+		return new AttachmentChange(targetInfo, type, encoded);
 	}
 
-	private static AttachmentChange readFromNetwork(PacketByteBuf buf) {
-		AttachmentTargetInfo<?> target = AttachmentTargetInfo.PACKET_CODEC.decode(buf);
-		Identifier id = buf.readIdentifier();
-		AttachmentType<?> type = AttachmentRegistryImpl.get(id);
+	public static void partitionForPackets(List<AttachmentChange> changes, Consumer<AttachmentSyncPayload> sender) {
+		List<AttachmentChange> packetChanges = new ArrayList<>();
+		int byteSize = Integer.BYTES; // conservative estimate for collection size
 
-		if (type == null) {
-			// Can't skip as we don't know the size of the data
-			throw new DecoderException("Unknown attachment type '" + id.toString() + "'");
+		for (AttachmentChange change : changes) {
+			int size = MAX_PADDING_SIZE_IN_BYTES + change.data.length;
+
+			if (byteSize + size >= MAX_DATA_SIZE_IN_BYTES) {
+				sender.accept(new AttachmentSyncPayload(packetChanges));
+				packetChanges = new ArrayList<>();
+				byteSize = Integer.BYTES;
+			}
+
+			packetChanges.add(change);
+			byteSize += size;
 		}
 
-		PacketCodec<PacketByteBuf, Object> packetCodec =
-				(PacketCodec<PacketByteBuf, Object>) ((AttachmentTypeImpl<?>) type).packetCodec();
-
-		if (packetCodec == null) {
-			throw new DecoderException("Attachment type '" + id.toString() + "' has no packet codec, skipping");
+		if (!packetChanges.isEmpty()) {
+			sender.accept(new AttachmentSyncPayload(packetChanges));
 		}
+	}
 
-		return new AttachmentChange(target, type, buf.readOptional(packetCodec).orElse(null));
+	@SuppressWarnings("unchecked")
+	@Nullable
+	public Object decodeValue() {
+		PacketCodec<PacketByteBuf, Object> codec = (PacketCodec<PacketByteBuf, Object>) ((AttachmentTypeImpl<?>) type).packetCodec();
+		assert codec != null;
+
+		PacketByteBuf buf = new PacketByteBuf(Unpooled.copiedBuffer(data));
+		return codec.decode(buf);
 	}
 
 	public void apply(World world) {
-		targetInfo.getTarget(world).setAttached((AttachmentType<Object>) type, data);
+		targetInfo.getTarget(world).setAttached((AttachmentType<Object>) type, decodeValue());
 	}
 }
