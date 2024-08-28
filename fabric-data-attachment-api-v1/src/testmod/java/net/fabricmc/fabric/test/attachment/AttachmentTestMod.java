@@ -16,9 +16,12 @@
 
 package net.fabricmc.fabric.test.attachment;
 
+import static net.minecraft.server.command.CommandManager.literal;
+
 import java.io.File;
 import java.io.IOException;
 
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.serialization.Codec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +31,10 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.ChunkPos;
@@ -45,6 +51,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
@@ -58,10 +65,23 @@ public class AttachmentTestMod implements ModInitializer {
 	public static final AttachmentType<String> FEATURE_ATTACHMENT = AttachmentRegistry.create(
 			Identifier.of(MOD_ID, "feature")
 	);
-	public static final AttachmentType<Boolean> SYNCED_ATTACHMENT = AttachmentRegistry.<Boolean>builder()
+	public static final AttachmentType<Boolean> SYNCED_WITH_ALL = AttachmentRegistry.<Boolean>builder()
 			.initializer(() -> false)
-			.syncWithCustom(PacketCodecs.BOOL.cast(), (target, player) -> target == player)
-			.buildAndRegister(Identifier.of(MOD_ID, "synced"));
+			.syncWithAll(PacketCodecs.BOOL.cast())
+			.buildAndRegister(Identifier.of(MOD_ID, "synced_all"));
+	public static final AttachmentType<Boolean> SYNCED_WITH_TARGET = AttachmentRegistry.<Boolean>builder()
+			.initializer(() -> false)
+			.syncWithTargetOnly(PacketCodecs.BOOL.cast())
+			.buildAndRegister(Identifier.of(MOD_ID, "synced_target"));
+	public static final AttachmentType<Boolean> SYNCED_EXCEPT_TARGET = AttachmentRegistry.<Boolean>builder()
+			.initializer(() -> false)
+			.syncWithAllButTarget(PacketCodecs.BOOL.cast())
+			.buildAndRegister(Identifier.of(MOD_ID, "synced_expect_target"));
+	public static final AttachmentType<Boolean> SYNCED_CUSTOM_RULE = AttachmentRegistry.<Boolean>builder()
+			.initializer(() -> false)
+			.syncWithCustom(PacketCodecs.BOOL.cast(), (target, player) -> player.isCreative())
+			.buildAndRegister(Identifier.of(MOD_ID, "synced_custom"));
+	private static final SimpleCommandExceptionType BAD_GAMEMODE = new SimpleCommandExceptionType(() -> "You must be in creative mode");
 
 	public static final ChunkPos FAR_CHUNK_POS = new ChunkPos(300, 0);
 
@@ -145,5 +165,60 @@ public class AttachmentTestMod implements ModInitializer {
 
 			if (!"protochunk_data".equals(chunk.getAttached(PERSISTENT))) throw new AssertionError("ProtoChunk attachment was not transfered to WorldChunk");
 		}));
+
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			dispatcher.register(
+					literal("attachment").requires(ServerCommandSource::isExecutedByPlayer)
+							.then(literal("all").executes(context -> {
+								ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
+								boolean current = player.getAttachedOrElse(SYNCED_WITH_ALL, false);
+								player.setAttached(SYNCED_WITH_ALL, !current);
+								context.getSource()
+										.sendFeedback(
+												() -> Text.literal("Set flag (synced with all) to " + !current),
+												false
+										);
+								return 1;
+							}))
+							.then(literal("self_only").executes(context -> {
+								ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
+								boolean current = player.getAttachedOrElse(SYNCED_WITH_TARGET, false);
+								player.setAttached(SYNCED_WITH_ALL, !current);
+								context.getSource()
+										.sendFeedback(
+												() -> Text.literal("Set flag (synced with only self) to " + !current),
+												false
+										);
+								return 1;
+							}))
+							.then(literal("others_only").executes(context -> {
+								ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
+								boolean current = player.getAttachedOrElse(SYNCED_EXCEPT_TARGET, false);
+								player.setAttached(SYNCED_WITH_ALL, !current);
+								context.getSource()
+										.sendFeedback(
+												() -> Text.literal("Set flag (synced with all but self) to " + !current),
+												false
+										);
+								return 1;
+							}))
+							.then(literal("custom").executes(context -> {
+								ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
+
+								if (!player.isCreative()) {
+									throw BAD_GAMEMODE.create();
+								}
+
+								boolean current = player.getAttachedOrElse(SYNCED_CUSTOM_RULE, false);
+								player.setAttached(SYNCED_CUSTOM_RULE, !current);
+								context.getSource()
+										.sendFeedback(
+												() -> Text.literal("Set flag (synced with creative only) to " + !current),
+												false
+										);
+								return 1;
+							}))
+			);
+		});
 	}
 }

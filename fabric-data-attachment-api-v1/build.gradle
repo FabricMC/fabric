@@ -9,5 +9,7 @@ moduleDependencies(project, [
 
 testDependencies(project, [
 	':fabric-lifecycle-events-v1',
-	':fabric-biome-api-v1'
+	':fabric-biome-api-v1',
+	':fabric-command-api-v2',
+	':fabric-rendering-v1'
 ])
