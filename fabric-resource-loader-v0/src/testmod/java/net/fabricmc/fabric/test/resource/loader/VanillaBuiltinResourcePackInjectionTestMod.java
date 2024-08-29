@@ -23,20 +23,21 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 
 public class VanillaBuiltinResourcePackInjectionTestMod implements ModInitializer {
 	public static final String MODID = "fabric-resource-loader-v0-testmod";
+	public static final RegistryKey<Block> KEY = RegistryKey.of(RegistryKeys.BLOCK, Identifier.of(MODID, "testblock"));
 
-	public static final Block TEST_BLOCK = new Block(AbstractBlock.Settings.copy(Blocks.STONE));
+	public static final Block TEST_BLOCK = new Block(AbstractBlock.Settings.copy(Blocks.STONE).registryKey(KEY));
 
 	@Override
 	public void onInitialize() {
-		Identifier id = Identifier.of(MODID, "testblock");
-
-		Registry.register(Registries.BLOCK, id, TEST_BLOCK);
-		Registry.register(Registries.ITEM, id, new BlockItem(TEST_BLOCK, new Item.Settings()));
+		Registry.register(Registries.BLOCK, KEY, TEST_BLOCK);
+		Registry.register(Registries.ITEM, KEY.getValue(), new BlockItem(TEST_BLOCK, new Item.Settings()));
 	}
 }

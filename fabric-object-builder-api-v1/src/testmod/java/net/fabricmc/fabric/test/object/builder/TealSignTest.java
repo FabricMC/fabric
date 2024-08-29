@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.object.builder;
 
 import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockSetType;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.HangingSignBlock;
@@ -30,6 +31,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.SignItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
@@ -40,10 +42,14 @@ public class TealSignTest implements ModInitializer {
 	public static final Identifier TEAL_TYPE_ID = ObjectBuilderTestConstants.id("teal");
 	public static final BlockSetType TEAL_BLOCK_SET_TYPE = BlockSetTypeBuilder.copyOf(BlockSetType.OAK).build(TEAL_TYPE_ID);
 	public static final WoodType TEAL_WOOD_TYPE = WoodTypeBuilder.copyOf(WoodType.OAK).build(TEAL_TYPE_ID, TEAL_BLOCK_SET_TYPE);
-	public static final SignBlock TEAL_SIGN = new SignBlock(TEAL_WOOD_TYPE, AbstractBlock.Settings.copy(Blocks.OAK_SIGN));
-	public static final WallSignBlock TEAL_WALL_SIGN = new WallSignBlock(TEAL_WOOD_TYPE, AbstractBlock.Settings.copy(Blocks.OAK_SIGN));
-	public static final HangingSignBlock TEAL_HANGING_SIGN = new HangingSignBlock(TEAL_WOOD_TYPE, AbstractBlock.Settings.copy(Blocks.OAK_HANGING_SIGN));
-	public static final WallHangingSignBlock TEAL_WALL_HANGING_SIGN = new WallHangingSignBlock(TEAL_WOOD_TYPE, AbstractBlock.Settings.copy(Blocks.OAK_HANGING_SIGN));
+	public static final RegistryKey<Block> TEAL_SIGN_KEY = ObjectBuilderTestConstants.block("teal_sign");
+	public static final SignBlock TEAL_SIGN = new SignBlock(TEAL_WOOD_TYPE, AbstractBlock.Settings.copy(Blocks.OAK_SIGN).registryKey(TEAL_SIGN_KEY));
+	public static final RegistryKey<Block> TEAL_WALL_SIGN_KEY = ObjectBuilderTestConstants.block("teal_wall_sign");
+	public static final WallSignBlock TEAL_WALL_SIGN = new WallSignBlock(TEAL_WOOD_TYPE, AbstractBlock.Settings.copy(Blocks.OAK_SIGN).registryKey(TEAL_WALL_SIGN_KEY));
+	public static final RegistryKey<Block> TEAL_HANGING_SIGN_KEY = ObjectBuilderTestConstants.block("teal_hanging_sign");
+	public static final HangingSignBlock TEAL_HANGING_SIGN = new HangingSignBlock(TEAL_WOOD_TYPE, AbstractBlock.Settings.copy(Blocks.OAK_HANGING_SIGN).registryKey(TEAL_HANGING_SIGN_KEY));
+	public static final RegistryKey<Block> TEAL_WALL_HANGING_SIGN_KEY = ObjectBuilderTestConstants.block("teal_wall_hanging_sign");
+	public static final WallHangingSignBlock TEAL_WALL_HANGING_SIGN = new WallHangingSignBlock(TEAL_WOOD_TYPE, AbstractBlock.Settings.copy(Blocks.OAK_HANGING_SIGN).registryKey(TEAL_WALL_HANGING_SIGN_KEY));
 	public static final SignItem TEAL_SIGN_ITEM = new SignItem(new Item.Settings(), TEAL_SIGN, TEAL_WALL_SIGN);
 	public static final HangingSignItem TEAL_HANGING_SIGN_ITEM = new HangingSignItem(TEAL_HANGING_SIGN, TEAL_WALL_HANGING_SIGN, new Item.Settings());
 
@@ -51,13 +57,13 @@ public class TealSignTest implements ModInitializer {
 	public void onInitialize() {
 		WoodType.register(TEAL_WOOD_TYPE);
 
-		Registry.register(Registries.BLOCK, ObjectBuilderTestConstants.id("teal_sign"), TEAL_SIGN);
-		Registry.register(Registries.BLOCK, ObjectBuilderTestConstants.id("teal_wall_sign"), TEAL_WALL_SIGN);
-		Registry.register(Registries.BLOCK, ObjectBuilderTestConstants.id("teal_hanging_sign"), TEAL_HANGING_SIGN);
-		Registry.register(Registries.BLOCK, ObjectBuilderTestConstants.id("teal_wall_hanging_sign"), TEAL_WALL_HANGING_SIGN);
+		Registry.register(Registries.BLOCK, TEAL_SIGN_KEY, TEAL_SIGN);
+		Registry.register(Registries.BLOCK, TEAL_WALL_SIGN_KEY, TEAL_WALL_SIGN);
+		Registry.register(Registries.BLOCK, TEAL_HANGING_SIGN_KEY, TEAL_HANGING_SIGN);
+		Registry.register(Registries.BLOCK, TEAL_WALL_HANGING_SIGN_KEY, TEAL_WALL_HANGING_SIGN);
 
-		Registry.register(Registries.ITEM, ObjectBuilderTestConstants.id("teal_sign"), TEAL_SIGN_ITEM);
-		Registry.register(Registries.ITEM, ObjectBuilderTestConstants.id("teal_hanging_sign"), TEAL_HANGING_SIGN_ITEM);
+		Registry.register(Registries.ITEM, TEAL_SIGN_KEY.getValue(), TEAL_SIGN_ITEM);
+		Registry.register(Registries.ITEM, TEAL_HANGING_SIGN_KEY.getValue(), TEAL_HANGING_SIGN_ITEM);
 
 		BlockEntityType.SIGN.addSupportedBlock(TEAL_SIGN);
 		BlockEntityType.HANGING_SIGN.addSupportedBlock(TEAL_HANGING_SIGN);

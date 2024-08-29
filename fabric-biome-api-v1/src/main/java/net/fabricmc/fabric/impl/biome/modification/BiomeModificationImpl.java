@@ -114,13 +114,13 @@ public class BiomeModificationImpl {
 		BiomeModificationMarker modificationTracker = (BiomeModificationMarker) impl;
 		modificationTracker.fabric_markModified();
 
-		Registry<Biome> biomes = impl.get(RegistryKeys.BIOME);
+		Registry<Biome> biomes = impl.getOrThrow(RegistryKeys.BIOME);
 
 		// Build a list of all biome keys in ascending order of their raw-id to get a consistent result in case
 		// someone does something stupid.
 		List<RegistryKey<Biome>> keys = biomes.getEntrySet().stream()
 				.map(Map.Entry::getKey)
-				.sorted(Comparator.comparingInt(key -> biomes.getRawId(biomes.getOrThrow(key))))
+				.sorted(Comparator.comparingInt(key -> biomes.getRawId(biomes.getValueOrThrow(key))))
 				.toList();
 
 		List<ModifierRecord> sortedModifiers = getSortedModifiers();
@@ -130,7 +130,7 @@ public class BiomeModificationImpl {
 		int modifiersApplied = 0;
 
 		for (RegistryKey<Biome> key : keys) {
-			Biome biome = biomes.getOrThrow(key);
+			Biome biome = biomes.getValueOrThrow(key);
 
 			biomesProcessed++;
 
@@ -159,7 +159,7 @@ public class BiomeModificationImpl {
 				modificationContext.freeze();
 
 				if (modificationContext.shouldRebuildFeatures()) {
-					impl.get(RegistryKeys.DIMENSION).stream().forEach(dimensionOptions -> {
+					impl.getOrThrow(RegistryKeys.DIMENSION).stream().forEach(dimensionOptions -> {
 						dimensionOptions.chunkGenerator().indexedFeaturesListSupplier = Suppliers.memoize(
 							() -> PlacedFeatureIndexer.collectIndexedFeatures(
 									List.copyOf(dimensionOptions.chunkGenerator().getBiomeSource().getBiomes()),

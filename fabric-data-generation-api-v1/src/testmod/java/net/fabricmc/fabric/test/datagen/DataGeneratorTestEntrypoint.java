@@ -444,7 +444,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup registries, Entries entries) {
 			entries.add(
-					registries.getWrapperOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_ITEM_KEY,
+					registries.getOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_ITEM_KEY,
 					ResourceConditions.allModsLoaded(MOD_ID)
 			);
 		}
@@ -465,7 +465,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup registries, Entries entries) {
-			entries.add(registries.getWrapperOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY);
+			entries.add(registries.getOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY);
 		}
 
 		@Override
@@ -481,7 +481,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(BiConsumer<Identifier, LootCondition> provider, RegistryWrapper.WrapperLookup lookup) {
-			RegistryEntryLookup<Block> blocks = lookup.createRegistryLookup().getOrThrow(RegistryKeys.BLOCK);
+			RegistryEntryLookup<Block> blocks = lookup.getOrThrow(RegistryKeys.BLOCK);
 			provider.accept(Identifier.of(MOD_ID, "predicate_test"), BlockStatePropertyLootCondition.builder(
 					blocks.getOrThrow(BlockKeys.MELON).value()).build()); // Pretend this actually does something and we cannot access the blocks directly
 		}
@@ -499,7 +499,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(BiConsumer<Identifier, Entry> provider, RegistryWrapper.WrapperLookup lookup) {
-			RegistryEntryLookup<Biome> biomes = lookup.createRegistryLookup().getOrThrow(RegistryKeys.BIOME);
+			RegistryEntryLookup<Biome> biomes = lookup.getOrThrow(RegistryKeys.BIOME);
 			provider.accept(Identifier.of(MOD_ID, "custom_codec_test"), new Entry(biomes.getOrThrow(BiomeKeys.PLAINS)));
 		}
 

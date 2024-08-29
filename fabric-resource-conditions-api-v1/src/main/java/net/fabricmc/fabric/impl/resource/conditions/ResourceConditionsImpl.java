@@ -108,8 +108,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 	}
 
 	/**
-	 * Stores the tags deserialized by {@link TagManagerLoader} before they are bound, to use them in the tags_populated conditions.
-	 * The tags are set at the end of the "apply" phase in {@link TagManagerLoader}, and cleared in {@link net.minecraft.server.DataPackContents#refresh}.
+	 * Stores the tags deserialized before they are bound, to use them in the tags_populated conditions.
 	 * If the resource reload fails, the thread local is not cleared and:
 	 * - the map will remain in memory until the next reload;
 	 * - any call to {@link #tagsPopulated} will check the tags from the failed reload instead of failing directly.

@@ -38,7 +38,7 @@ public class FabricCreativeGuiComponents {
 	private static final Identifier BUTTON_TEX = Identifier.of("fabric", "textures/gui/creative_buttons.png");
 	private static final double TABS_PER_PAGE = FabricItemGroupImpl.TABS_PER_PAGE;
 	public static final Set<ItemGroup> COMMON_GROUPS = Set.of(ItemGroups.SEARCH, ItemGroups.INVENTORY, ItemGroups.HOTBAR).stream()
-			.map(Registries.ITEM_GROUP::getOrThrow)
+			.map(Registries.ITEM_GROUP::getValueOrThrow)
 			.collect(Collectors.toSet());
 
 	public static int getPageCount() {

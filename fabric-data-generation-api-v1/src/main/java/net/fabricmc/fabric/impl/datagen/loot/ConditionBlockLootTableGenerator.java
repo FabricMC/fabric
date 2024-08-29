@@ -32,7 +32,7 @@ public class ConditionBlockLootTableGenerator extends BlockLootTableGenerator {
 	private final ResourceCondition[] conditions;
 
 	public ConditionBlockLootTableGenerator(BlockLootTableGenerator parent, ResourceCondition[] conditions) {
-		super(Collections.emptySet(), FeatureFlags.FEATURE_MANAGER.getFeatureSet(), ((BlockLootTableGeneratorAccessor) parent).getRegistryLookup());
+		super(Collections.emptySet(), FeatureFlags.FEATURE_MANAGER.getFeatureSet(), ((BlockLootTableGeneratorAccessor) parent).getRegistries());
 
 		this.parent = parent;
 		this.conditions = conditions;

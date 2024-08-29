@@ -85,7 +85,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 			this.registries = registries;
 			this.queuedEntries = DynamicRegistries.getDynamicRegistries().stream()
 					// Some modded dynamic registries might not be in the wrapper lookup, filter them out
-					.filter(e -> registries.getOptionalWrapper(e.key()).isPresent())
+					.filter(e -> registries.getOptional(e.key()).isPresent())
 					.collect(Collectors.toMap(
 							e -> e.key().getValue(),
 							e -> RegistryEntries.create(registries, e)
@@ -104,7 +104,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		 * Gets a lookup for entries from the given registry.
 		 */
 		public <T> RegistryEntryLookup<T> getLookup(RegistryKey<? extends Registry<T>> registryKey) {
-			return registries.getWrapperOrThrow(registryKey);
+			return registries.getOrThrow(registryKey);
 		}
 
 		/**
@@ -232,7 +232,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		}
 
 		static <T> RegistryEntries<T> create(RegistryWrapper.WrapperLookup lookups, RegistryLoader.Entry<T> loaderEntry) {
-			RegistryWrapper.Impl<T> lookup = lookups.getWrapperOrThrow(loaderEntry.key());
+			RegistryWrapper.Impl<T> lookup = lookups.getOrThrow(loaderEntry.key());
 			return new RegistryEntries<>(lookup, loaderEntry.key(), loaderEntry.elementCodec());
 		}
 

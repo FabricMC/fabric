@@ -25,5 +25,5 @@ import net.minecraft.registry.RegistryWrapper;
 @Mixin(BlockLootTableGenerator.class)
 public interface BlockLootTableGeneratorAccessor {
 	@Accessor()
-	RegistryWrapper.WrapperLookup getRegistryLookup();
+	RegistryWrapper.WrapperLookup getRegistries();
 }

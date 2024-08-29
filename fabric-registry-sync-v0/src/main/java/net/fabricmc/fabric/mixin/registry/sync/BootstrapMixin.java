@@ -32,7 +32,6 @@ import net.minecraft.registry.Registries;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.trackers.StateIdTracker;
-import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockInitTracker;
 import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockItemTracker;
 
 @Mixin(Bootstrap.class)
@@ -53,9 +52,6 @@ public class BootstrapMixin {
 
 		// map tracking
 		BlockItemTracker.register(Registries.ITEM);
-
-		// block initialization, like Blocks
-		BlockInitTracker.register(Registries.BLOCK);
 
 		RegistrySyncManager.bootstrapRegistries();
 	}

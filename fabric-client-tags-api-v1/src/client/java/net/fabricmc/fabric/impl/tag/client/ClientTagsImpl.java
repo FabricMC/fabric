@@ -50,7 +50,7 @@ public class ClientTagsImpl {
 
 		if (maybeRegistry.isPresent()) {
 			// Check the synced tag exists and use that
-			if (maybeRegistry.get().getEntryList(tagKey).isPresent()) {
+			if (maybeRegistry.get().getOptional(tagKey).isPresent()) {
 				return registryEntry.isIn(tagKey);
 			}
 		}
@@ -93,7 +93,7 @@ public class ClientTagsImpl {
 			}
 		}
 
-		return (Optional<? extends Registry<T>>) Registries.REGISTRIES.getOrEmpty(tagKey.registry().getValue());
+		return (Optional<? extends Registry<T>>) Registries.REGISTRIES.getOptionalValue(tagKey.registry().getValue());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -108,7 +108,7 @@ public class ClientTagsImpl {
 
 		Optional<RegistryKey<T>> maybeKey = registry.getKey(entry);
 
-		return maybeKey.map(registry::entryOf);
+		return maybeKey.map(registry::getOrThrow);
 	}
 
 	public static ClientTagsLoader.LoadedTag getOrCreatePartiallySyncedTag(TagKey<?> tagKey) {

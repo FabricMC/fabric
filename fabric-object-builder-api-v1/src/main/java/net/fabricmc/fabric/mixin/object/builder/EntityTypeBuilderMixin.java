@@ -34,6 +34,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityType;
 import net.fabricmc.fabric.impl.object.builder.FabricEntityTypeImpl;
@@ -41,7 +42,7 @@ import net.fabricmc.fabric.impl.object.builder.FabricEntityTypeImpl;
 @Mixin(EntityType.Builder.class)
 public abstract class EntityTypeBuilderMixin<T extends Entity> implements FabricEntityType.Builder<T>, FabricEntityTypeImpl.Builder {
 	@Shadow
-	public abstract EntityType<T> build(String id);
+	public abstract EntityType<T> build(RegistryKey<EntityType<?>> registryKey);
 
 	@Unique
 	private Boolean alwaysUpdateVelocity = null;
@@ -57,13 +58,8 @@ public abstract class EntityTypeBuilderMixin<T extends Entity> implements Fabric
 		return (EntityType.Builder<T>) (Object) this;
 	}
 
-	@Override
-	public EntityType<T> build() {
-		return build(null);
-	}
-
 	@Inject(method = "build", at = @At("RETURN"))
-	private void applyChildBuilders(String id, CallbackInfoReturnable<EntityType<T>> cir) {
+	private void applyChildBuilders(RegistryKey<EntityType<?>> registryKey, CallbackInfoReturnable<EntityType<T>> cir) {
 		if (!(cir.getReturnValue() instanceof FabricEntityTypeImpl entityType)) {
 			throw new IllegalStateException();
 		}

@@ -50,7 +50,7 @@ public abstract class ArmorFeatureRendererMixin<S extends BipedEntityRenderState
 	}
 
 	@Inject(method = "renderArmor", at = @At("HEAD"), cancellable = true)
-	private void renderArmor(MatrixStack matrices, VertexConsumerProvider vertexConsumers, ItemStack stack, EquipmentSlot armorSlot, int light, A model, CallbackInfo ci) {
+	private void renderArmor(MatrixStack matrices, VertexConsumerProvider vertexConsumers, S state, ItemStack stack, EquipmentSlot armorSlot, int light, A armorModel, CallbackInfo ci) {
 		ArmorRenderer renderer = ArmorRendererRegistryImpl.get(stack.getItem());
 
 		if (renderer != null) {

@@ -33,6 +33,7 @@ import net.minecraft.entity.SpawnLocation;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
@@ -306,10 +307,10 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * Creates the entity type.
 	 *
 	 * @return a new {@link EntityType}
-	 * @deprecated use {@link EntityType.Builder#build()}
+	 * @deprecated use {@link EntityType.Builder#build(net.minecraft.registry.RegistryKey)}
 	 */
 	@Deprecated
-	public EntityType<T> build() {
+	public EntityType<T> build(RegistryKey<EntityType<?>> key) {
 		EntityType.Builder<T> builder = EntityType.Builder.create(this.factory, this.spawnGroup)
 				.allowSpawningInside(specificSpawnBlocks.toArray(Block[]::new))
 				.maxTrackingRange(this.trackRange)
@@ -340,7 +341,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			builder = builder.alwaysUpdateVelocity(this.forceTrackedVelocityUpdates);
 		}
 
-		return builder.build(null);
+		return builder.build(key);
 	}
 
 	/**
@@ -476,8 +477,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 
 		@Deprecated
 		@Override
-		public EntityType<T> build() {
-			final EntityType<T> type = super.build();
+		public EntityType<T> build(RegistryKey<EntityType<?>> key) {
+			final EntityType<T> type = super.build(key);
 
 			if (this.defaultAttributeBuilder != null) {
 				FabricDefaultAttributeRegistry.register(type, this.defaultAttributeBuilder.get());
@@ -617,8 +618,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		@Override
-		public EntityType<T> build() {
-			EntityType<T> type = super.build();
+		public EntityType<T> build(RegistryKey<EntityType<?>> key) {
+			EntityType<T> type = super.build(key);
 
 			if (this.spawnPredicate != null) {
 				SpawnRestriction.register(type, this.spawnLocation, this.restrictionHeightmap, this.spawnPredicate);

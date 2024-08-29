@@ -19,6 +19,9 @@ package net.fabricmc.fabric.test.object.builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.block.Block;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
 public final class ObjectBuilderTestConstants {
@@ -27,5 +30,9 @@ public final class ObjectBuilderTestConstants {
 
 	public static Identifier id(String name) {
 		return Identifier.of(MOD_ID, name);
+	}
+
+	public static RegistryKey<Block> block(String name) {
+		return RegistryKey.of(RegistryKeys.BLOCK, id(name));
 	}
 }

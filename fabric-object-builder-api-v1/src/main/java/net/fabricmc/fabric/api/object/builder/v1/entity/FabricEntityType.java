@@ -52,15 +52,6 @@ public interface FabricEntityType {
 		}
 
 		/**
-		 * Build the entity type from the builder. Same as {@link EntityType.Builder#build(String)} but without an id.
-		 *
-		 * @return the entity type instance
-		 */
-		default EntityType<T> build() {
-			throw new AssertionError("Implemented in Mixin");
-		}
-
-		/**
 		 * Creates an entity type builder for a living entity.
 		 *
 		 * <p>This entity's spawn group will automatically be set to {@link SpawnGroup#MISC}.
