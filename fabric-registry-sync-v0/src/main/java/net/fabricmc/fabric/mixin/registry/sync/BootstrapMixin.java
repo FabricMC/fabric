@@ -32,7 +32,6 @@ import net.minecraft.registry.Registries;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.trackers.StateIdTracker;
-import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockInitTracker;
 import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockItemTracker;
 
 @Mixin(Bootstrap.class)
