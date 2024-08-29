@@ -54,9 +54,6 @@ public class BootstrapMixin {
 		// map tracking
 		BlockItemTracker.register(Registries.ITEM);
 
-		// block initialization, like Blocks
-		BlockInitTracker.register(Registries.BLOCK);
-
 		RegistrySyncManager.bootstrapRegistries();
 	}
 

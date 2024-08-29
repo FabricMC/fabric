@@ -41,8 +41,8 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 
 public class FluidChuteBlock extends Block implements BlockEntityProvider {
-	public FluidChuteBlock() {
-		super(Settings.create());
+	public FluidChuteBlock(Settings settings) {
+		super(settings);
 	}
 
 	private static final VoxelShape SHAPE = VoxelShapes.cuboid(

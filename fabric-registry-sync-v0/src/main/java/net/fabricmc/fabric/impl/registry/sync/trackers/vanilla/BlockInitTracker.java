@@ -28,26 +28,7 @@ import net.minecraft.util.math.MathHelper;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.mixin.registry.sync.DebugChunkGeneratorAccessor;
 
-public final class BlockInitTracker implements RegistryEntryAddedCallback<Block> {
-	private final Registry<Block> registry;
-
-	private BlockInitTracker(Registry<Block> registry) {
-		this.registry = registry;
-	}
-
-	public static void register(Registry<Block> registry) {
-		BlockInitTracker tracker = new BlockInitTracker(registry);
-		RegistryEntryAddedCallback.event(registry).register(tracker);
-	}
-
-	@Override
-	public void onEntryAdded(int rawId, Identifier id, Block object) {
-		// if false, getLootTableKey() will generate an invalid loot table key
-		assert id.equals(registry.getId(object));
-
-		object.getLootTableKey();
-	}
-
+public final class BlockInitTracker {
 	public static void postFreeze() {
 		final List<BlockState> blockStateList = Registries.BLOCK.stream()
 				.flatMap((block) -> block.getStateManager().getStates().stream())

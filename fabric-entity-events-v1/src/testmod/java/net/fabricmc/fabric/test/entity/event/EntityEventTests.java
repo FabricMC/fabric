@@ -32,6 +32,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -51,13 +53,17 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 public final class EntityEventTests implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EntityEventTests.class);
-	public static final Block TEST_BED = new TestBedBlock(AbstractBlock.Settings.create().strength(1, 1));
+	public static final RegistryKey<Block> TEST_BED_KEY = RegistryKey.of(
+			RegistryKeys.BLOCK,
+			Identifier.of("fabric-entity-events-v1-testmod", "test_bed")
+	);
+	public static final Block TEST_BED = new TestBedBlock(AbstractBlock.Settings.create().strength(1, 1).registryKey(TEST_BED_KEY));
 	public static final Item DIAMOND_ELYTRA = new DiamondElytraItem();
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.BLOCK, Identifier.of("fabric-entity-events-v1-testmod", "test_bed"), TEST_BED);
-		Registry.register(Registries.ITEM, Identifier.of("fabric-entity-events-v1-testmod", "test_bed"), new BlockItem(TEST_BED, new Item.Settings()));
+		Registry.register(Registries.BLOCK, TEST_BED_KEY, TEST_BED);
+		Registry.register(Registries.ITEM, TEST_BED_KEY.getValue(), new BlockItem(TEST_BED, new Item.Settings()));
 		Registry.register(Registries.ITEM, Identifier.of("fabric-entity-events-v1-testmod", "diamond_elytra"), DIAMOND_ELYTRA);
 
 		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {

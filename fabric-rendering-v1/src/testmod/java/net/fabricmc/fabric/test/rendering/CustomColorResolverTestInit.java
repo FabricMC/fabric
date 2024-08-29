@@ -22,17 +22,20 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 
 public class CustomColorResolverTestInit implements ModInitializer {
-	public static final Block CUSTOM_COLOR_BLOCK = new Block(AbstractBlock.Settings.create());
+	public static final RegistryKey<Block> KEY = RegistryKey.of(RegistryKeys.BLOCK, Identifier.of("fabric-rendering-v1-testmod", "custom_color_block"));
+	public static final Block CUSTOM_COLOR_BLOCK = new Block(AbstractBlock.Settings.create().registryKey(KEY));
 	public static final Item CUSTOM_COLOR_BLOCK_ITEM = new BlockItem(CUSTOM_COLOR_BLOCK, new Item.Settings());
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.BLOCK, Identifier.of("fabric-rendering-v1-testmod", "custom_color_block"), CUSTOM_COLOR_BLOCK);
-		Registry.register(Registries.ITEM, Identifier.of("fabric-rendering-v1-testmod", "custom_color_block"), CUSTOM_COLOR_BLOCK_ITEM);
+		Registry.register(Registries.BLOCK, KEY, CUSTOM_COLOR_BLOCK);
+		Registry.register(Registries.ITEM, KEY.getValue(), CUSTOM_COLOR_BLOCK_ITEM);
 	}
 }

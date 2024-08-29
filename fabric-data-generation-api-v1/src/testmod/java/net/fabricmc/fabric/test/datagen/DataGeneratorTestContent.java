@@ -69,7 +69,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 		SIMPLE_BLOCK = createBlock("simple_block", true, AbstractBlock.Settings.create());
 		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false, AbstractBlock.Settings.create());
 		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false, AbstractBlock.Settings.create());
-		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, AbstractBlock.Settings.create().dropsLike(Blocks.STONE));
+		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, AbstractBlock.Settings.create().lootTable(Blocks.STONE.getLootTableKey()));
 		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, AbstractBlock.Settings.create().dropsNothing());
 
 		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.add(SIMPLE_BLOCK));
@@ -85,7 +85,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 
 	private static Block createBlock(String name, boolean hasItem, AbstractBlock.Settings settings) {
 		Identifier identifier = Identifier.of(MOD_ID, name);
-		Block block = Registry.register(Registries.BLOCK, identifier, new Block(settings));
+		Block block = Registry.register(Registries.BLOCK, identifier, new Block(settings.registryKey(RegistryKey.of(RegistryKeys.BLOCK, identifier))));
 
 		if (hasItem) {
 			Registry.register(Registries.ITEM, identifier, new BlockItem(block, new Item.Settings()));

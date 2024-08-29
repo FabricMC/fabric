@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.datagen.v1.provider;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
@@ -29,7 +30,6 @@ import net.minecraft.block.Block;
 import net.minecraft.data.DataWriter;
 import net.minecraft.data.server.loottable.BlockLootTableGenerator;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
@@ -79,10 +79,6 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 		for (Map.Entry<RegistryKey<LootTable>, LootTable.Builder> entry : lootTables.entrySet()) {
 			RegistryKey<LootTable> registryKey = entry.getKey();
 
-			if (registryKey == LootTables.EMPTY) {
-				continue;
-			}
-
 			biConsumer.accept(registryKey, entry.getValue());
 		}
 
@@ -91,10 +87,10 @@ public abstract class FabricBlockLootTableProvider extends BlockLootTableGenerat
 
 			for (Identifier blockId : Registries.BLOCK.getIds()) {
 				if (blockId.getNamespace().equals(output.getModId())) {
-					RegistryKey<LootTable> blockLootTableId = Registries.BLOCK.get(blockId).getLootTableKey();
+					Optional<RegistryKey<LootTable>> blockLootTableId = Registries.BLOCK.get(blockId).getLootTableKey();
 
-					if (blockLootTableId.getValue().getNamespace().equals(output.getModId())) {
-						if (!lootTables.containsKey(blockLootTableId)) {
+					if (blockLootTableId.isPresent() && blockLootTableId.get().getValue().getNamespace().equals(output.getModId())) {
+						if (!lootTables.containsKey(blockLootTableId.get())) {
 							missing.add(blockId);
 						}
 					}
