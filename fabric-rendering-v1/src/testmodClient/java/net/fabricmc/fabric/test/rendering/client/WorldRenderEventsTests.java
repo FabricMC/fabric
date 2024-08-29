@@ -19,15 +19,15 @@ package net.fabricmc.fabric.test.rendering.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.class_10142;
-import net.minecraft.class_9974;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.VertexRendering;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -70,12 +70,12 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 		matrices.push();
 		matrices.translate(-camera.x, -camera.y, -camera.z);
 
-		RenderSystem.setShader(class_10142.POSITION_COLOR);
+		RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 
-		class_9974.method_62300(matrices, buffer, 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
+		VertexRendering.drawBox(matrices, buffer, 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
 		BufferRenderer.drawWithGlobalProgram(buffer.end());
 
 		matrices.pop();

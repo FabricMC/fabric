@@ -21,9 +21,9 @@ import java.util.List;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.joml.Matrix4f;
 
-import net.minecraft.class_10142;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
@@ -93,7 +93,7 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 		float b = (color & 255) / 255f;
 		RenderSystem.disableDepthTest();
 
-		RenderSystem.setShader(class_10142.POSITION_TEX_COLOR);
+		RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
 		BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 		float x0 = (float) i;
 		float y0 = (float) j;
