@@ -89,11 +89,6 @@ abstract class ReloadableRegistriesMixin {
 	private static <T> T modifyLootTable(T value, Identifier id, RegistryOps<JsonElement> ops) {
 		if (!(value instanceof LootTable table)) return value;
 
-		if (table == LootTable.EMPTY) {
-			// This is a special table and cannot be modified.
-			return value;
-		}
-
 		RegistryKey<LootTable> key = RegistryKey.of(RegistryKeys.LOOT_TABLE, id);
 		// Populated above.
 		RegistryWrapper.WrapperLookup registries = WRAPPERS.get(ops);

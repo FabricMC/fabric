@@ -67,9 +67,8 @@ public final class CustomDynamicRegistryTest implements ModInitializer {
 
 		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
 			// Check that the tag has applied
-			RegistryEntry.Reference<TestDynamicObject> entry = registries.get(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY)
-					.getEntry(SYNCED_ENTRY_KEY)
-					.orElseThrow();
+			RegistryEntry.Reference<TestDynamicObject> entry = registries.getOrThrow(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY)
+					.getOrThrow(SYNCED_ENTRY_KEY);
 
 			if (!entry.isIn(TEST_DYNAMIC_OBJECT_TAG)) {
 				LOGGER.error("Required dynamic registry entry is not in the expected tag! client: " + client);

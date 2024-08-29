@@ -194,8 +194,8 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	}
 
 	private class GenerationSettingsContextImpl implements GenerationSettingsContext {
-		private final Registry<ConfiguredCarver<?>> carvers = registries.get(RegistryKeys.CONFIGURED_CARVER);
-		private final Registry<PlacedFeature> features = registries.get(RegistryKeys.PLACED_FEATURE);
+		private final Registry<ConfiguredCarver<?>> carvers = registries.getOrThrow(RegistryKeys.CONFIGURED_CARVER);
+		private final Registry<PlacedFeature> features = registries.getOrThrow(RegistryKeys.PLACED_FEATURE);
 		private final GenerationSettings generationSettings = biome.getGenerationSettings();
 
 		boolean rebuildFeatures;
@@ -316,7 +316,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	 * forgot to data-gen the JSONs corresponding to their built-in objects.
 	 */
 	private static <T> RegistryEntry.Reference<T> getEntry(Registry<T> registry, RegistryKey<T> key) {
-		RegistryEntry.Reference<T> entry = registry.getEntry(key).orElse(null);
+		RegistryEntry.Reference<T> entry = registry.getOptional(key).orElse(null);
 
 		if (entry == null) {
 			// The key doesn't exist in the data packs

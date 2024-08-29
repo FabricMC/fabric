@@ -43,13 +43,13 @@ public final class DynamicRegistryClientTest implements ClientModInitializer {
 			LOGGER.info("Starting dynamic registry sync tests...");
 
 			TestDynamicObject synced1 = handler.getRegistryManager()
-					.get(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY)
+					.getOrThrow(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY)
 					.get(SYNCED_ID);
 			TestDynamicObject synced2 = handler.getRegistryManager()
-					.get(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY)
+					.getOrThrow(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY)
 					.get(SYNCED_ID);
 			TestNestedDynamicObject simpleNested = handler.getRegistryManager()
-					.get(TEST_NESTED_DYNAMIC_REGISTRY_KEY)
+					.getOrThrow(TEST_NESTED_DYNAMIC_REGISTRY_KEY)
 					.get(SYNCED_ID);
 
 			LOGGER.info("Synced - simple: {}", synced1);

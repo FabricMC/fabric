@@ -42,7 +42,7 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 		this.dynamicRegistries = dynamicRegistries;
 		this.key = key;
 		this.biome = biome;
-		this.entry = dynamicRegistries.get(RegistryKeys.BIOME).getEntry(this.key).orElseThrow();
+		this.entry = dynamicRegistries.getOrThrow(RegistryKeys.BIOME).getOrThrow(this.key);
 	}
 
 	@Override
@@ -62,19 +62,19 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 
 	@Override
 	public Optional<RegistryKey<ConfiguredFeature<?, ?>>> getFeatureKey(ConfiguredFeature<?, ?> configuredFeature) {
-		Registry<ConfiguredFeature<?, ?>> registry = dynamicRegistries.get(RegistryKeys.CONFIGURED_FEATURE);
+		Registry<ConfiguredFeature<?, ?>> registry = dynamicRegistries.getOrThrow(RegistryKeys.CONFIGURED_FEATURE);
 		return registry.getKey(configuredFeature);
 	}
 
 	@Override
 	public Optional<RegistryKey<PlacedFeature>> getPlacedFeatureKey(PlacedFeature placedFeature) {
-		Registry<PlacedFeature> registry = dynamicRegistries.get(RegistryKeys.PLACED_FEATURE);
+		Registry<PlacedFeature> registry = dynamicRegistries.getOrThrow(RegistryKeys.PLACED_FEATURE);
 		return registry.getKey(placedFeature);
 	}
 
 	@Override
 	public boolean validForStructure(RegistryKey<Structure> key) {
-		Structure instance = dynamicRegistries.get(RegistryKeys.STRUCTURE).get(key);
+		Structure instance = dynamicRegistries.getOrThrow(RegistryKeys.STRUCTURE).get(key);
 
 		if (instance == null) {
 			return false;
@@ -85,13 +85,13 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 
 	@Override
 	public Optional<RegistryKey<Structure>> getStructureKey(Structure structure) {
-		Registry<Structure> registry = dynamicRegistries.get(RegistryKeys.STRUCTURE);
+		Registry<Structure> registry = dynamicRegistries.getOrThrow(RegistryKeys.STRUCTURE);
 		return registry.getKey(structure);
 	}
 
 	@Override
 	public boolean canGenerateIn(RegistryKey<DimensionOptions> dimensionKey) {
-		DimensionOptions dimension = dynamicRegistries.get(RegistryKeys.DIMENSION).get(dimensionKey);
+		DimensionOptions dimension = dynamicRegistries.getOrThrow(RegistryKeys.DIMENSION).get(dimensionKey);
 
 		if (dimension == null) {
 			return false;
@@ -102,7 +102,7 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 
 	@Override
 	public boolean hasTag(TagKey<Biome> tag) {
-		Registry<Biome> biomeRegistry = dynamicRegistries.get(RegistryKeys.BIOME);
-		return biomeRegistry.entryOf(getBiomeKey()).isIn(tag);
+		Registry<Biome> biomeRegistry = dynamicRegistries.getOrThrow(RegistryKeys.BIOME);
+		return biomeRegistry.getOrThrow(getBiomeKey()).isIn(tag);
 	}
 }

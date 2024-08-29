@@ -23,6 +23,8 @@ import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -33,6 +35,7 @@ import net.fabricmc.fabric.test.lookup.FabricApiLookupTest;
 import net.fabricmc.fabric.test.lookup.api.Inspectable;
 
 public class FabricEntityApiLookupTest {
+	public static final RegistryKey<EntityType<?>> INSPECTABLE_PIG_KEY = RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(FabricApiLookupTest.MOD_ID, "inspectable_pig"));
 	public static final EntityApiLookup<Inspectable, Void> INSPECTABLE =
 			EntityApiLookup.get(Identifier.of(FabricApiLookupTest.MOD_ID, "inspectable"), Inspectable.class, Void.class);
 
@@ -41,10 +44,10 @@ public class FabricEntityApiLookupTest {
 			.entityFactory(InspectablePigEntity::new)
 			.dimensions(EntityDimensions.changing(0.9F, 0.9F))
 			.trackRangeChunks(10)
-			.build();
+			.build(INSPECTABLE_PIG_KEY);
 
 	public static void onInitialize() {
-		Registry.register(Registries.ENTITY_TYPE, Identifier.of(FabricApiLookupTest.MOD_ID, "inspectable_pig"), INSPECTABLE_PIG);
+		Registry.register(Registries.ENTITY_TYPE, INSPECTABLE_PIG_KEY, INSPECTABLE_PIG);
 		FabricDefaultAttributeRegistry.register(INSPECTABLE_PIG, PigEntity.createPigAttributes());
 
 		INSPECTABLE.registerSelf(INSPECTABLE_PIG);

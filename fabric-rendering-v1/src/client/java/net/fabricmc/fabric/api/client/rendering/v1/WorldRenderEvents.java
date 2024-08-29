@@ -171,7 +171,7 @@ public final class WorldRenderEvents {
 	 * outline render for <em>all</em> blocks because all event subscribers will
 	 * always render - only the default outline render can be cancelled.  That should
 	 * be accomplished by mixin to the block outline render routine itself, typically
-	 * by targeting {@link WorldRenderer#drawShapeOutline}.
+	 * by targeting {@link net.minecraft.client.render.VertexRendering#drawOutline}.
 	 */
 	public static final Event<BlockOutline> BLOCK_OUTLINE = EventFactory.createArrayBacked(BlockOutline.class, (worldRenderContext, blockOutlineContext) -> true, callbacks -> (worldRenderContext, blockOutlineContext) -> {
 		boolean shouldRender = true;
