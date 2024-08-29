@@ -242,7 +242,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 
 		for (ResourceReloader resourceReloader : listeners) {
 			if (resourceReloader instanceof RecipeManager recipeManager) {
-				return recipeManager.registryLookup;
+				return recipeManager.registries;
 			}
 		}
 

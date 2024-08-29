@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.renderer;
 
+import java.util.function.Function;
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -24,14 +26,11 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
-import java.util.function.Function;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
 public final class Registration {
 	public static final FrameBlock FRAME_BLOCK = register("frame", FrameBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque());

@@ -16,19 +16,17 @@
 
 package net.fabricmc.fabric.test.lookup;
 
-import net.minecraft.block.Block;
-import net.minecraft.registry.RegistryKey;
-
-import net.minecraft.registry.RegistryKeys;
-
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 

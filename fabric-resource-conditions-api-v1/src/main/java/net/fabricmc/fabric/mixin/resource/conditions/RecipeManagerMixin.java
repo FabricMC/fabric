@@ -29,10 +29,10 @@ import net.minecraft.registry.RegistryWrapper;
 public class RecipeManagerMixin extends SinglePreparationResourceReloaderMixin {
 	@Shadow
 	@Final
-	private RegistryWrapper.WrapperLookup registryLookup;
+	private RegistryWrapper.WrapperLookup registries;
 
 	@Override
 	protected @Nullable RegistryOps.RegistryInfoGetter fabric_getRegistryLookup() {
-		return new RegistryOps.CachedRegistryInfoGetter(registryLookup);
+		return new RegistryOps.CachedRegistryInfoGetter(registries);
 	}
 }

@@ -16,14 +16,12 @@
 
 package net.fabricmc.fabric.test.object.builder;
 
-import net.minecraft.block.Block;
-import net.minecraft.registry.RegistryKey;
-
-import net.minecraft.registry.RegistryKeys;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.block.Block;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
 public final class ObjectBuilderTestConstants {

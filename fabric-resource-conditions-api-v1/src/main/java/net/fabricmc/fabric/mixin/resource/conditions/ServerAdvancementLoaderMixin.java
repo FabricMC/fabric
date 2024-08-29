@@ -29,10 +29,10 @@ import net.minecraft.server.ServerAdvancementLoader;
 public class ServerAdvancementLoaderMixin extends SinglePreparationResourceReloaderMixin {
 	@Shadow
 	@Final
-	private RegistryWrapper.WrapperLookup registryLookup;
+	private RegistryWrapper.WrapperLookup registries;
 
 	@Override
 	protected @Nullable RegistryOps.RegistryInfoGetter fabric_getRegistryLookup() {
-		return new RegistryOps.CachedRegistryInfoGetter(this.registryLookup);
+		return new RegistryOps.CachedRegistryInfoGetter(this.registries);
 	}
 }
