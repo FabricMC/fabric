@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.2",
+    "fabricloader": ">=0.16.3",
     "fabric-key-binding-api-v1": "*"
   },
   "description": "Keybinding registry API.",

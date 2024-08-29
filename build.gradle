@@ -549,8 +549,6 @@ tasks.register('serverPropertiesJar', Jar) {
 }
 
 tasks.register('runProductionAutoTestServer', JavaExec) {
-	// TODO re-enable with https://github.com/FabricMC/fabric-loader/pull/967
-	enabled = false
 	dependsOn remapJar, remapTestmodJar, serverPropertiesJar
 	classpath.from configurations.productionRuntimeServer, serverPropertiesJar
 	mainClass = "net.fabricmc.installer.ServerLauncher"
