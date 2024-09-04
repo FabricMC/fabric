@@ -68,6 +68,7 @@ public class AttachmentTestMod implements ModInitializer {
 	);
 	public static final AttachmentType<Boolean> SYNCED_WITH_ALL = AttachmentRegistry.<Boolean>builder()
 			.initializer(() -> false)
+			.persistent(Codec.BOOL)
 			.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.all())
 			.buildAndRegister(Identifier.of(MOD_ID, "synced_all"));
 	public static final AttachmentType<Boolean> SYNCED_WITH_TARGET = AttachmentRegistry.<Boolean>builder()

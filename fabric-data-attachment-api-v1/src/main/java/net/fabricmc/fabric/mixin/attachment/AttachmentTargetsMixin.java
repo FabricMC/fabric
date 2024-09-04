@@ -114,6 +114,14 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Override
 	public void fabric_readAttachmentsFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
 		fabric_dataAttachments = AttachmentSerializingImpl.deserializeAttachmentData(nbt, wrapperLookup);
+
+		if (fabric_dataAttachments != null) {
+			fabric_dataAttachments.forEach((type, v) -> {
+				if (type.isSynced()) {
+					AttachmentTargetsMixin.this.fabric_acknowledgeSyncedEntry(type, v);
+				}
+			});
+		}
 	}
 
 	@Override
