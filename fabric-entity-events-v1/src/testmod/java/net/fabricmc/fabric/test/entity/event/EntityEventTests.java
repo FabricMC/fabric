@@ -68,7 +68,7 @@ public final class EntityEventTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.BLOCK, TEST_BED_KEY, TEST_BED);
-		Registry.register(Registries.ITEM, TEST_BED_KEY.getValue(), new BlockItem(TEST_BED, new Item.Settings()));
+		Registry.register(Registries.ITEM, TEST_BED_KEY.getValue(), new BlockItem(TEST_BED, new Item.Settings().method_63686(RegistryKey.of(RegistryKeys.ITEM, TEST_BED_KEY.getValue()))));
 		Registry.register(Registries.ITEM, DIAMOND_ELYTRA_KEY, DIAMOND_ELYTRA);
 
 		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {

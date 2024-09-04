@@ -19,7 +19,6 @@ package net.fabricmc.fabric.test.renderer.client;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
@@ -69,7 +68,7 @@ public class RandomSupplierTest implements ClientModInitializer {
 		weightedAgain.emitBlockQuads(null, Blocks.STONE.getDefaultState(), BlockPos.ORIGIN, randomSupplier, null);
 	}
 
-	private static @NotNull WeightedBakedModel createWeightedBakedModel() {
+	private static WeightedBakedModel createWeightedBakedModel() {
 		var checkingModel = new RandomCheckingBakedModel();
 
 		DataPool.Builder<BakedModel> weightedBuilder = DataPool.builder();

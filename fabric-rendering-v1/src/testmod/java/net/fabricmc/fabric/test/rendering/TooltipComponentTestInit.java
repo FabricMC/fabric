@@ -73,7 +73,7 @@ public class TooltipComponentTestInit implements ModInitializer {
 						Type.HELMET, 1,
 						Type.BODY, 3
 				),
-				0,
+				1,
 				SoundEvents.ITEM_ARMOR_EQUIP_LEATHER,
 				0,
 				0.5F,
