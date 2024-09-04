@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.Set;
 
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.Nullable;
@@ -28,14 +28,17 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
+import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
 // empty optional for removal
 public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, byte[] data) {
@@ -72,17 +75,23 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		return new AttachmentChange(targetInfo, type, encoded);
 	}
 
-	public static void partitionForPackets(List<AttachmentChange> changes, Consumer<AttachmentSyncPayload> sender) {
+	public static void partitionForPackets(List<AttachmentChange> changes, ServerPlayerEntity player) {
+		Set<Identifier> supported = ((SupportedAttachmentsClientConnection) ((ServerCommonNetworkHandlerAccessor) player.networkHandler).getConnection())
+				.fabric_getSupportedAttachments();
 		List<AttachmentChange> packetChanges = new ArrayList<>();
-		int byteSize = Integer.BYTES; // conservative estimate for collection size
+		int byteSize = Integer.BYTES + 1; // VarInts.MAX_BYTES
 
 		for (AttachmentChange change : changes) {
+			if (!supported.contains(change.type.identifier())) {
+				continue;
+			}
+
 			int size = MAX_PADDING_SIZE_IN_BYTES + change.data.length;
 
 			if (byteSize + size >= MAX_DATA_SIZE_IN_BYTES) {
-				sender.accept(new AttachmentSyncPayload(packetChanges));
+				ServerPlayNetworking.send(player, new AttachmentSyncPayload(packetChanges));
 				packetChanges = new ArrayList<>();
-				byteSize = Integer.BYTES;
+				byteSize = Integer.BYTES + 1;
 			}
 
 			packetChanges.add(change);
@@ -90,7 +99,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		}
 
 		if (!packetChanges.isEmpty()) {
-			sender.accept(new AttachmentSyncPayload(packetChanges));
+			ServerPlayNetworking.send(player, new AttachmentSyncPayload(packetChanges));
 		}
 	}
 

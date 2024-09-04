@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.attachment.v1;
 
 import java.util.Objects;
-import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
@@ -25,7 +24,6 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;

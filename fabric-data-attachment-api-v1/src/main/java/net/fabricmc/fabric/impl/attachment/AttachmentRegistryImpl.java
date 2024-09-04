@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.attachment;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -39,12 +40,17 @@ import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPredicateImpl;
 public final class AttachmentRegistryImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-data-attachment-api-v1");
 	private static final Map<Identifier, AttachmentType<?>> attachmentRegistry = new HashMap<>();
+	private static final Set<Identifier> syncableAttachments = new HashSet<>();
 
 	public static <A> void register(Identifier id, AttachmentType<A> attachmentType) {
 		AttachmentType<?> existing = attachmentRegistry.put(id, attachmentType);
 
 		if (existing != null) {
 			LOGGER.warn("Encountered duplicate type registration for id {}", id);
+		}
+
+		if (attachmentType.isSynced()) {
+			syncableAttachments.add(id);
 		}
 	}
 
@@ -53,8 +59,8 @@ public final class AttachmentRegistryImpl {
 		return attachmentRegistry.get(id);
 	}
 
-	public static Set<Identifier> getRegisteredAttachments() {
-		return attachmentRegistry.keySet();
+	public static Set<Identifier> getSyncableAttachments() {
+		return syncableAttachments;
 	}
 
 	public static <A> AttachmentRegistry.Builder<A> builder() {
@@ -98,6 +104,7 @@ public final class AttachmentRegistryImpl {
 			Objects.requireNonNull(packetCodec, "packet codec cannot be null");
 			Objects.requireNonNull(syncPredicate, "sync predicate cannot be null");
 
+			this.packetCodec = packetCodec;
 			this.syncPredicate = (AttachmentSyncPredicateImpl) syncPredicate;
 			return this;
 		}

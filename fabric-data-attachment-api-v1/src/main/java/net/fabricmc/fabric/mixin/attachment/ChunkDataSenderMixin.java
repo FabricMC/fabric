@@ -29,7 +29,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.chunk.WorldChunk;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 
@@ -48,7 +47,7 @@ abstract class ChunkDataSenderMixin {
 		List<AttachmentChange> changes = ((AttachmentTargetImpl) player.getServerWorld()).fabric_getInitialSyncChanges(player);
 
 		if (changes != null) {
-			AttachmentChange.partitionForPackets(changes, p -> ServerPlayNetworking.send(player, p));
+			AttachmentChange.partitionForPackets(changes, player);
 		}
 	}
 }

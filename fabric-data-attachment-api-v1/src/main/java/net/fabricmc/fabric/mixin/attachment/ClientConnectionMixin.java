@@ -16,14 +16,27 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
-import io.netty.channel.Channel;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.network.ClientConnection;
+import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.impl.attachment.sync.SupportedAttachmentsClientConnection;
 
 @Mixin(ClientConnection.class)
-public interface ClientConnectionAccessor {
-	@Accessor
-	Channel getChannel();
+public class ClientConnectionMixin implements SupportedAttachmentsClientConnection {
+	private Set<Identifier> fabric_supportedAttachments = new HashSet<>();
+
+	@Override
+	public void fabric_setSupportedAttachments(Set<Identifier> supportedAttachments) {
+		fabric_supportedAttachments = supportedAttachments;
+	}
+
+	@Override
+	public Set<Identifier> fabric_getSupportedAttachments() {
+		return fabric_supportedAttachments;
+	}
 }

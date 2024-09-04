@@ -19,9 +19,9 @@ package net.fabricmc.fabric.impl.attachment.sync;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-import io.netty.channel.ChannelHandler;
-
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -34,21 +34,20 @@ import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.c2s.AcceptedAttachmentsPayloadC2S;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AcceptedAttachmentsPayloadS2C;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
-import net.fabricmc.fabric.mixin.attachment.ClientConnectionAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
 public class AttachmentSync implements ModInitializer {
 	public static final int MAX_IDENTIFIER_SIZE_IN_BYTES = 256;
 	public static final Identifier CONFIG_PACKET_ID = Identifier.of("fabric", "accepted_attachments_v1");
-	public static final ThreadLocal<Set<Identifier>> CLIENT_SUPPORTED_ATTACHMENTS = ThreadLocal.withInitial(Set::of);
 
 	public static AcceptedAttachmentsPayloadC2S createResponsePayload() {
-		return new AcceptedAttachmentsPayloadC2S(AttachmentRegistryImpl.getRegisteredAttachments());
+		return new AcceptedAttachmentsPayloadC2S(AttachmentRegistryImpl.getSyncableAttachments());
 	}
 
 	public static void trySync(AttachmentSyncPayload payload, ServerPlayerEntity player) {
@@ -59,7 +58,17 @@ public class AttachmentSync implements ModInitializer {
 
 	private static Set<Identifier> decodeResponsePayload(AcceptedAttachmentsPayloadC2S payload) {
 		Set<Identifier> atts = payload.acceptedAttachments();
-		atts.retainAll(AttachmentRegistryImpl.getRegisteredAttachments());
+		Set<Identifier> syncable = AttachmentRegistryImpl.getSyncableAttachments();
+		atts.retainAll(syncable);
+
+		if (atts.size() < syncable.size()) {
+			// Client doesn't support all
+			AttachmentEntrypoint.LOGGER.warn(
+					"Client does not support the syncable attachments {}",
+					syncable.stream().filter(id -> !atts.contains(id)).map(Identifier::toString).collect(Collectors.joining(", "))
+			);
+		}
+
 		return atts;
 	}
 
@@ -79,14 +88,8 @@ public class AttachmentSync implements ModInitializer {
 
 		ServerConfigurationNetworking.registerGlobalReceiver(AcceptedAttachmentsPayloadC2S.ID, (payload, context) -> {
 			Set<Identifier> supportedAttachments = decodeResponsePayload(payload);
-			ChannelHandler packetEncoder = ((ClientConnectionAccessor) ((ServerCommonNetworkHandlerAccessor) context.networkHandler()).getConnection())
-					.getChannel()
-					.pipeline()
-					.get("encoder");
-
-			if (packetEncoder != null) { // Null in singleplayer
-				((SupportedAttachmentsPacketEncoder) packetEncoder).fabric_setSupportedAttachments(supportedAttachments);
-			}
+			ClientConnection connection = ((ServerCommonNetworkHandlerAccessor) context.networkHandler()).getConnection();
+			((SupportedAttachmentsClientConnection) connection).fabric_setSupportedAttachments(supportedAttachments);
 
 			context.networkHandler().completeTask(AttachmentSyncTask.KEY);
 		});
@@ -101,7 +104,7 @@ public class AttachmentSync implements ModInitializer {
 						((AttachmentTargetImpl) player.getServerWorld()).fabric_getInitialSyncChanges(player);
 
 				if (changes != null) {
-					AttachmentChange.partitionForPackets(changes, p -> ServerPlayNetworking.send(player, p));
+					AttachmentChange.partitionForPackets(changes, player);
 				}
 			}
 		});
@@ -111,7 +114,7 @@ public class AttachmentSync implements ModInitializer {
 					((AttachmentTargetImpl) player.getServerWorld()).fabric_getInitialSyncChanges(player);
 
 			if (changes != null) {
-				AttachmentChange.partitionForPackets(changes, p -> ServerPlayNetworking.send(player, p));
+				AttachmentChange.partitionForPackets(changes, player);
 			}
 		});
 	}
