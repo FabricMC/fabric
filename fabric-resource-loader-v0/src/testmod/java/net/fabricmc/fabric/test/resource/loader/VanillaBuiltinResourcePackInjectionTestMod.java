@@ -38,6 +38,6 @@ public class VanillaBuiltinResourcePackInjectionTestMod implements ModInitialize
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.BLOCK, KEY, TEST_BLOCK);
-		Registry.register(Registries.ITEM, KEY.getValue(), new BlockItem(TEST_BLOCK, new Item.Settings()));
+		Registry.register(Registries.ITEM, KEY.getValue(), new BlockItem(TEST_BLOCK, new Item.Settings().method_63686(RegistryKey.of(RegistryKeys.ITEM, KEY.getValue()))));
 	}
 }

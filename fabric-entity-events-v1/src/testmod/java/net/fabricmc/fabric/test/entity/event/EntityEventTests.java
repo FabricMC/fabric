@@ -22,7 +22,9 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.class_10191;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -35,10 +37,12 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Unit;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
@@ -58,13 +62,14 @@ public final class EntityEventTests implements ModInitializer {
 			Identifier.of("fabric-entity-events-v1-testmod", "test_bed")
 	);
 	public static final Block TEST_BED = new TestBedBlock(AbstractBlock.Settings.create().strength(1, 1).registryKey(TEST_BED_KEY));
-	public static final Item DIAMOND_ELYTRA = new DiamondElytraItem();
+	public static final RegistryKey<Item> DIAMOND_ELYTRA_KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of("fabric-entity-events-v1-testmod", "diamond_elytra"));
+	public static final Item DIAMOND_ELYTRA = new Item(new Item.Settings().component(DataComponentTypes.GLIDER, Unit.INSTANCE).method_63683(EquipmentSlot.CHEST, SoundEvents.ITEM_ARMOR_EQUIP_ELYTRA, class_10191.field_54142).method_63686(DIAMOND_ELYTRA_KEY));
 
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.BLOCK, TEST_BED_KEY, TEST_BED);
 		Registry.register(Registries.ITEM, TEST_BED_KEY.getValue(), new BlockItem(TEST_BED, new Item.Settings()));
-		Registry.register(Registries.ITEM, Identifier.of("fabric-entity-events-v1-testmod", "diamond_elytra"), DIAMOND_ELYTRA);
+		Registry.register(Registries.ITEM, DIAMOND_ELYTRA_KEY, DIAMOND_ELYTRA);
 
 		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {
 			LOGGER.info("Entity {} Killed: {}", entity, killed);

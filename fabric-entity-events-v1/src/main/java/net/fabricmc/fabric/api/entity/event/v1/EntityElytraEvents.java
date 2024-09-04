@@ -16,9 +16,8 @@
 
 package net.fabricmc.fabric.api.entity.event.v1;
 
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -45,7 +44,7 @@ public final class EntityElytraEvents {
 	 * An event to grant elytra flight to living entities when some condition is met.
 	 * Will be called when players try to start elytra flight by pressing space in mid-air, and every tick for all flying living entities to check if elytra flight is still allowed.
 	 *
-	 * <p>Items that wish to enable custom elytra flight when worn in the chest equipment slot can simply implement {@link FabricElytraItem} instead of registering a listener.
+	 * <p>Items that wish to enable custom elytra flight when worn in the chest equipment slot can add the {@link DataComponentTypes#GLIDER} component to an item.
 	 */
 	public static final Event<Custom> CUSTOM = EventFactory.createArrayBacked(Custom.class, listeners -> (entity, tickElytra) -> {
 		for (Custom listener : listeners) {
@@ -56,18 +55,6 @@ public final class EntityElytraEvents {
 
 		return false;
 	});
-
-	static {
-		CUSTOM.register((entity, tickElytra) -> {
-			ItemStack chestStack = entity.getEquippedStack(EquipmentSlot.CHEST);
-
-			if (chestStack.getItem() instanceof FabricElytraItem fabricElytraItem) {
-				return fabricElytraItem.useCustomElytra(entity, chestStack, tickElytra);
-			}
-
-			return false;
-		});
-	}
 
 	@FunctionalInterface
 	public interface Allow {

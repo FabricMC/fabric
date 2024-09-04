@@ -159,7 +159,7 @@ public class RegistrySyncTest implements ModInitializer {
 			Registry.register(Registries.BLOCK, id, block);
 
 			if (REGISTER_ITEMS) {
-				BlockItem blockItem = new BlockItem(block, new Item.Settings());
+				BlockItem blockItem = new BlockItem(block, new Item.Settings().method_63686(RegistryKey.of(RegistryKeys.ITEM, id)));
 				Registry.register(Registries.ITEM, id, blockItem);
 			}
 		}

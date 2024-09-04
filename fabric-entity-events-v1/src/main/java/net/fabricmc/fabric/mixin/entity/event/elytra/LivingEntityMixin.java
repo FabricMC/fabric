@@ -20,10 +20,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents;
@@ -56,6 +58,21 @@ abstract class LivingEntityMixin extends Entity {
 		if (EntityElytraEvents.CUSTOM.invoker().useCustomElytra(self, true)) {
 			// The entity is already fall flying by now, so all we need to do is an early return to bypass vanilla's own elytra check.
 			info.cancel();
+		}
+	}
+
+	@SuppressWarnings("ConstantConditions")
+	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EquipmentSlot;field_54086:Ljava/util/List;"), method = "method_63628", allow = 1, cancellable = true)
+	void injectElytraCheck(CallbackInfoReturnable<Boolean> cir) {
+		PlayerEntity self = (PlayerEntity) (Object) this;
+
+		if (!EntityElytraEvents.ALLOW.invoker().allowElytraFlight(self)) {
+			cir.setReturnValue(false);
+			return; // Return to prevent the rest of this injector from running.
+		}
+
+		if (EntityElytraEvents.CUSTOM.invoker().useCustomElytra(self, false)) {
+			cir.setReturnValue(true);
 		}
 	}
 }
