@@ -6,12 +6,10 @@
     "DataPackContentsMixin",
     "DataProviderMixin",
     "JsonDataLoaderMixin",
-    "RecipeManagerMixin",
     "RegistryLoaderMixin",
+    "RegistryOpsAccessor",
     "ReloadableRegistriesMixin",
-    "ResourcePackProfileMixin",
-    "ServerAdvancementLoaderMixin",
-    "SinglePreparationResourceReloaderMixin"
+    "ResourcePackProfileMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -239,12 +239,11 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 			return null;
 		}
 
-		// TODO 1.21.2
-//		for (ResourceReloader resourceReloader : listeners) {
-//			if (resourceReloader instanceof RecipeManager recipeManager) {
-//				return recipeManager.registries;
-//			}
-//		}
+		for (ResourceReloader resourceReloader : listeners) {
+			if (resourceReloader instanceof FabricRecipeManager recipeManager) {
+				return recipeManager.fabric_getRegistries();
+			}
+		}
 
 		throw new IllegalStateException("No RecipeManager found in listeners!");
 	}
