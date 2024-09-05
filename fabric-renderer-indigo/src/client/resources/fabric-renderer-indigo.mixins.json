@@ -1,11 +1,12 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.client.indigo.renderer",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_17",
   "plugin": "net.fabricmc.fabric.impl.client.indigo.IndigoMixinConfigPlugin",
   "mixins": [
   ],
   "client": [
+    "BakedModelMixin",
     "BlockModelRendererMixin",
     "ChunkRendererRegionMixin",
     "ItemRendererAccessor",

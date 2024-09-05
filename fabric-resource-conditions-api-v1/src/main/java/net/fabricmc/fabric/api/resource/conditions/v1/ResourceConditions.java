@@ -48,11 +48,6 @@ public final class ResourceConditions {
 	 */
 	public static final String CONDITIONS_KEY = "fabric:load_conditions";
 
-	/**
-	 * The JSON key for conditional overlays in pack.mcmeta files.
-	 */
-	public static final String OVERLAYS_KEY = "fabric:overlays";
-
 	private ResourceConditions() {
 	}
 

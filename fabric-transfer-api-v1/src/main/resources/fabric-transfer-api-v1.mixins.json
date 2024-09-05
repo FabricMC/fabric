@@ -7,7 +7,6 @@
     "BucketItemAccessor",
     "BucketItemMixin",
     "ChiseledBookshelfBlockEntityMixin",
-    "CrafterBlockMixin",
     "DoubleInventoryAccessor",
     "DropperBlockMixin",
     "FluidMixin",

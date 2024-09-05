@@ -22,7 +22,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
@@ -38,9 +37,9 @@ public final class DoubleRuleWidget extends EditGameRulesScreen.NamedRuleWidget 
 
 		this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 10, 5, 42, 20,
 				name.copy()
-				.append(ScreenTexts.LINE_BREAK)
+				.append("\n")
 				.append(ruleName)
-				.append(ScreenTexts.LINE_BREAK)
+				.append("\n")
 		);
 
 		this.textFieldWidget.setText(Double.toString(rule.get()));

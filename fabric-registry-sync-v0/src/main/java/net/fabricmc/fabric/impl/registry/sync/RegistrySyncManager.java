@@ -41,11 +41,11 @@ import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.screen.ScreenTexts;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
@@ -147,9 +147,9 @@ public final class RegistrySyncManager {
 	}
 
 	/**
-	 * Creates a {@link Map} used to sync the registry ids.
+	 * Creates a {@link NbtCompound} used to sync the registry ids.
 	 *
-	 * @return a {@link Map} to sync, null when empty
+	 * @return a {@link NbtCompound} to sync, null when empty
 	 */
 	@Nullable
 	public static Map<Identifier, Object2IntMap<Identifier>> createAndPopulateRegistryMap() {
@@ -325,7 +325,7 @@ public final class RegistrySyncManager {
 		}
 
 		// Create a nice user friendly error message.
-		MutableText text = Text.empty();
+		MutableText text = Text.literal("");
 
 		final int count = missingEntries.values().stream().mapToInt(List::size).sum();
 
@@ -349,7 +349,7 @@ public final class RegistrySyncManager {
 
 		for (int i = 0; i < Math.min(namespaces.size(), toDisplay); i++) {
 			text = text.append(Text.literal(namespaces.get(i)).formatted(Formatting.YELLOW));
-			text = text.append(ScreenTexts.LINE_BREAK);
+			text = text.append("\n");
 		}
 
 		if (namespaces.size() > toDisplay) {

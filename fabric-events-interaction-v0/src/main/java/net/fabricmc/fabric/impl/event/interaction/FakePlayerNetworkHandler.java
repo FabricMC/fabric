@@ -26,9 +26,7 @@ import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import net.fabricmc.fabric.impl.networking.UntrackedNetworkHandler;
-
-public final class FakePlayerNetworkHandler extends ServerPlayNetworkHandler implements UntrackedNetworkHandler {
+public class FakePlayerNetworkHandler extends ServerPlayNetworkHandler {
 	private static final ClientConnection FAKE_CONNECTION = new FakeClientConnection();
 
 	public FakePlayerNetworkHandler(ServerPlayerEntity player) {

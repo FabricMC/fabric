@@ -11,12 +11,11 @@
     "MainMixin",
     "RegistriesAccessor",
     "RegistriesMixin",
-    "RegistryKeysMixin",
     "RegistryLoaderMixin",
     "SaveLoadingMixin",
     "SerializableRegistriesMixin",
-    "SimpleRegistryAccessor",
-    "SimpleRegistryMixin"
+    "SimpleRegistryMixin",
+    "TagManagerLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

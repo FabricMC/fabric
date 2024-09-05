@@ -54,13 +54,4 @@ public interface MaterialView {
 	 * @see MaterialFinder#glint(TriState)
 	 */
 	TriState glint();
-
-	/**
-	 * @see MaterialFinder#shadeMode(ShadeMode)
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
-	 */
-	default ShadeMode shadeMode() {
-		return ShadeMode.ENHANCED;
-	}
 }

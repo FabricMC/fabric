@@ -38,7 +38,6 @@ import org.junit.jupiter.api.Test;
 
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BellBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -217,14 +216,14 @@ public class CommonAttachmentTests {
 
 	@Test
 	void testBlockEntityPersistence() {
-		BlockEntity blockEntity = new BellBlockEntity(BlockPos.ORIGIN, Blocks.BELL.getDefaultState());
+		BlockEntity blockEntity = new BellBlockEntity(BlockPos.ORIGIN, mock());
 		assertFalse(blockEntity.hasAttached(PERSISTENT));
 
 		int expected = 1;
 		blockEntity.setAttached(PERSISTENT, expected);
 		NbtCompound fakeSave = blockEntity.createNbtWithId(mockDRM());
 
-		blockEntity = BlockEntity.createFromNbt(BlockPos.ORIGIN, Blocks.BELL.getDefaultState(), fakeSave, mockDRM());
+		blockEntity = BlockEntity.createFromNbt(BlockPos.ORIGIN, mock(), fakeSave, mockDRM());
 		assertNotNull(blockEntity);
 		assertTrue(blockEntity.hasAttached(PERSISTENT));
 		assertEquals(expected, blockEntity.getAttached(PERSISTENT));

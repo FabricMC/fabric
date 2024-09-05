@@ -21,7 +21,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -36,8 +35,6 @@ import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.registry.entry.RegistryEntryInfo;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.util.PlacedFeatureIndexer;
@@ -168,12 +165,6 @@ public class BiomeModificationImpl {
 							)
 						);
 					});
-				}
-
-				if (biomes instanceof SimpleRegistry<Biome> registry) {
-					RegistryEntryInfo info = registry.keyToEntryInfo.get(key);
-					RegistryEntryInfo newInfo = new RegistryEntryInfo(Optional.empty(), info.lifecycle());
-					registry.keyToEntryInfo.put(key, newInfo);
 				}
 			}
 		}

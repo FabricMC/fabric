@@ -68,7 +68,7 @@ public abstract class OverlayFluid extends FlowableFluid {
 	}
 
 	@Override
-	public int getMaxFlowDistance(WorldView world) {
+	public int getFlowSpeed(WorldView world) {
 		return 4;
 	}
 

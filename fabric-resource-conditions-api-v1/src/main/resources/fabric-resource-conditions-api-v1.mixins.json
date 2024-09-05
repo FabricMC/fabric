@@ -9,7 +9,6 @@
     "RecipeManagerMixin",
     "RegistryLoaderMixin",
     "ReloadableRegistriesMixin",
-    "ResourcePackProfileMixin",
     "ServerAdvancementLoaderMixin",
     "SinglePreparationResourceReloaderMixin",
     "TagManagerLoaderMixin"

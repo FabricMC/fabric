@@ -44,7 +44,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		generateFoodTags();
 		generateDyeTags();
 		generateDyedTags();
-		generateCropTags();
 		generateVillagerJobSites();
 		generateOtherTags();
 		copyItemTags();
@@ -60,11 +59,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.CHESTS, ConventionalItemTags.CHESTS);
 		copy(ConventionalBlockTags.WOODEN_CHESTS, ConventionalItemTags.WOODEN_CHESTS);
 		copy(ConventionalBlockTags.GLASS_BLOCKS, ConventionalItemTags.GLASS_BLOCKS);
-		copy(ConventionalBlockTags.GLASS_BLOCKS_COLORLESS, ConventionalItemTags.GLASS_BLOCKS_COLORLESS);
-		copy(ConventionalBlockTags.GLASS_BLOCKS_TINTED, ConventionalItemTags.GLASS_BLOCKS_TINTED);
-		copy(ConventionalBlockTags.GLASS_BLOCKS_CHEAP, ConventionalItemTags.GLASS_BLOCKS_CHEAP);
 		copy(ConventionalBlockTags.GLASS_PANES, ConventionalItemTags.GLASS_PANES);
-		copy(ConventionalBlockTags.GLASS_PANES_COLORLESS, ConventionalItemTags.GLASS_PANES_COLORLESS);
 		getOrCreateTagBuilder(ConventionalItemTags.SHULKER_BOXES)
 				.add(Items.SHULKER_BOX)
 				.add(Items.WHITE_SHULKER_BOX)
@@ -215,119 +210,16 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateFoodTags() {
-		getOrCreateTagBuilder(ConventionalItemTags.FRUIT_FOODS)
-				.add(Items.APPLE)
-				.add(Items.GOLDEN_APPLE)
-				.add(Items.ENCHANTED_GOLDEN_APPLE)
-				.add(Items.CHORUS_FRUIT)
-				.add(Items.MELON_SLICE)
-				.addOptionalTag(ConventionalItemTags.FRUITS_FOODS);
-
-		getOrCreateTagBuilder(ConventionalItemTags.VEGETABLE_FOODS)
-				.add(Items.CARROT)
-				.add(Items.GOLDEN_CARROT)
-				.add(Items.POTATO)
-				.add(Items.BEETROOT)
-				.addOptionalTag(ConventionalItemTags.VEGETABLES_FOODS);
-
-		getOrCreateTagBuilder(ConventionalItemTags.BERRY_FOODS)
-				.add(Items.SWEET_BERRIES)
-				.add(Items.GLOW_BERRIES)
-				.addOptionalTag(ConventionalItemTags.BERRIES_FOODS);
-
-		getOrCreateTagBuilder(ConventionalItemTags.BREAD_FOODS)
-				.add(Items.BREAD)
-				.addOptionalTag(ConventionalItemTags.BREADS_FOODS);
-
-		getOrCreateTagBuilder(ConventionalItemTags.COOKIE_FOODS)
-				.add(Items.COOKIE)
-				.addOptionalTag(ConventionalItemTags.COOKIES_FOODS);
-
-		getOrCreateTagBuilder(ConventionalItemTags.RAW_MEAT_FOODS)
-				.add(Items.BEEF)
-				.add(Items.PORKCHOP)
-				.add(Items.CHICKEN)
-				.add(Items.RABBIT)
-				.add(Items.MUTTON)
-				.addOptionalTag(ConventionalItemTags.RAW_MEATS_FOODS);
-
-		getOrCreateTagBuilder(ConventionalItemTags.RAW_FISH_FOODS)
-				.add(Items.COD)
-				.add(Items.SALMON)
-				.add(Items.TROPICAL_FISH)
-				.add(Items.PUFFERFISH)
-				.addOptionalTag(ConventionalItemTags.RAW_FISHES_FOODS);
-
-		getOrCreateTagBuilder(ConventionalItemTags.COOKED_MEAT_FOODS)
-				.add(Items.COOKED_BEEF)
-				.add(Items.COOKED_PORKCHOP)
-				.add(Items.COOKED_CHICKEN)
-				.add(Items.COOKED_RABBIT)
-				.add(Items.COOKED_MUTTON)
-				.addOptionalTag(ConventionalItemTags.COOKED_MEATS_FOODS);
-
-		getOrCreateTagBuilder(ConventionalItemTags.COOKED_FISH_FOODS)
-				.add(Items.COOKED_COD)
-				.add(Items.COOKED_SALMON)
-				.addOptionalTag(ConventionalItemTags.COOKED_FISHES_FOODS);
-
-		getOrCreateTagBuilder(ConventionalItemTags.SOUP_FOODS)
-				.add(Items.BEETROOT_SOUP)
-				.add(Items.MUSHROOM_STEW)
-				.add(Items.RABBIT_STEW)
-				.add(Items.SUSPICIOUS_STEW)
-				.addOptionalTag(ConventionalItemTags.SOUPS_FOODS);
-
-		getOrCreateTagBuilder(ConventionalItemTags.CANDY_FOODS)
-				.addOptionalTag(ConventionalItemTags.CANDIES_FOODS);
-
-		getOrCreateTagBuilder(ConventionalItemTags.GOLDEN_FOODS)
-				.add(Items.GOLDEN_APPLE)
-				.add(Items.ENCHANTED_GOLDEN_APPLE)
-				.add(Items.GOLDEN_CARROT);
-
-		getOrCreateTagBuilder(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
-				.add(Items.CAKE);
-
-		getOrCreateTagBuilder(ConventionalItemTags.FOOD_POISONING_FOODS)
-				.add(Items.POISONOUS_POTATO)
-				.add(Items.PUFFERFISH)
-				.add(Items.SPIDER_EYE)
-				.add(Items.CHICKEN)
-				.add(Items.ROTTEN_FLESH);
-
-		getOrCreateTagBuilder(ConventionalItemTags.FOODS)
-				.add(Items.BAKED_POTATO)
-				.add(Items.PUMPKIN_PIE)
-				.add(Items.HONEY_BOTTLE)
-				.add(Items.OMINOUS_BOTTLE)
-				.add(Items.DRIED_KELP)
-				.addOptionalTag(ConventionalItemTags.FRUIT_FOODS)
-				.addOptionalTag(ConventionalItemTags.VEGETABLE_FOODS)
-				.addOptionalTag(ConventionalItemTags.BERRY_FOODS)
-				.addOptionalTag(ConventionalItemTags.BREAD_FOODS)
-				.addOptionalTag(ConventionalItemTags.COOKIE_FOODS)
-				.addOptionalTag(ConventionalItemTags.RAW_MEAT_FOODS)
-				.addOptionalTag(ConventionalItemTags.RAW_FISH_FOODS)
-				.addOptionalTag(ConventionalItemTags.COOKED_MEAT_FOODS)
-				.addOptionalTag(ConventionalItemTags.COOKED_FISH_FOODS)
-				.addOptionalTag(ConventionalItemTags.SOUP_FOODS)
-				.addOptionalTag(ConventionalItemTags.CANDY_FOODS)
-				.addOptionalTag(ConventionalItemTags.GOLDEN_FOODS)
-				.addOptionalTag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
-				.addOptionalTag(ConventionalItemTags.FOOD_POISONING_FOODS);
-
-		// Deprecated tags below
 		getOrCreateTagBuilder(ConventionalItemTags.FRUITS_FOODS)
 				.add(Items.APPLE)
 				.add(Items.GOLDEN_APPLE)
-				.add(Items.ENCHANTED_GOLDEN_APPLE)
-				.add(Items.MELON_SLICE);
+				.add(Items.ENCHANTED_GOLDEN_APPLE);
 
 		getOrCreateTagBuilder(ConventionalItemTags.VEGETABLES_FOODS)
 				.add(Items.CARROT)
 				.add(Items.GOLDEN_CARROT)
 				.add(Items.POTATO)
+				.add(Items.MELON_SLICE)
 				.add(Items.BEETROOT);
 
 		getOrCreateTagBuilder(ConventionalItemTags.BERRIES_FOODS)
@@ -371,6 +263,36 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.SUSPICIOUS_STEW);
 
 		getOrCreateTagBuilder(ConventionalItemTags.CANDIES_FOODS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
+				.add(Items.CAKE);
+
+		getOrCreateTagBuilder(ConventionalItemTags.FOOD_POISONING_FOODS)
+				.add(Items.POISONOUS_POTATO)
+				.add(Items.PUFFERFISH)
+				.add(Items.SPIDER_EYE)
+				.add(Items.CHICKEN)
+				.add(Items.ROTTEN_FLESH);
+
+		getOrCreateTagBuilder(ConventionalItemTags.FOODS)
+				.add(Items.BAKED_POTATO)
+				.add(Items.PUMPKIN_PIE)
+				.add(Items.HONEY_BOTTLE)
+				.add(Items.OMINOUS_BOTTLE)
+				.add(Items.DRIED_KELP)
+				.addOptionalTag(ConventionalItemTags.FRUITS_FOODS)
+				.addOptionalTag(ConventionalItemTags.VEGETABLES_FOODS)
+				.addOptionalTag(ConventionalItemTags.BERRIES_FOODS)
+				.addOptionalTag(ConventionalItemTags.BREADS_FOODS)
+				.addOptionalTag(ConventionalItemTags.COOKIES_FOODS)
+				.addOptionalTag(ConventionalItemTags.RAW_MEATS_FOODS)
+				.addOptionalTag(ConventionalItemTags.RAW_FISHES_FOODS)
+				.addOptionalTag(ConventionalItemTags.COOKED_MEATS_FOODS)
+				.addOptionalTag(ConventionalItemTags.COOKED_FISHES_FOODS)
+				.addOptionalTag(ConventionalItemTags.SOUPS_FOODS)
+				.addOptionalTag(ConventionalItemTags.CANDIES_FOODS)
+				.addOptionalTag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
+				.addOptionalTag(ConventionalItemTags.FOOD_POISONING_FOODS);
 	}
 
 	private void generateBucketTags() {
@@ -421,8 +343,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.GOLD_INGOTS)
 				.addOptionalTag(ConventionalItemTags.NETHERITE_INGOTS);
 		getOrCreateTagBuilder(ConventionalItemTags.NUGGETS)
-				.addOptionalTag(ConventionalItemTags.IRON_NUGGETS)
-				.addOptionalTag(ConventionalItemTags.GOLD_NUGGETS);
+				.add(Items.GOLD_NUGGET, Items.IRON_NUGGET);
 		copy(ConventionalBlockTags.ORES, ConventionalItemTags.ORES);
 		getOrCreateTagBuilder(ConventionalItemTags.ORES)
 				.addOptionalTag(ConventionalItemTags.NETHERITE_SCRAP_ORES)
@@ -494,11 +415,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.AMETHYST_SHARD);
 		getOrCreateTagBuilder(ConventionalItemTags.PRISMARINE_GEMS)
 				.add(Items.PRISMARINE_CRYSTALS);
-
-		getOrCreateTagBuilder(ConventionalItemTags.IRON_NUGGETS)
-				.add(Items.IRON_NUGGET);
-		getOrCreateTagBuilder(ConventionalItemTags.GOLD_NUGGETS)
-				.add(Items.GOLD_NUGGET);
 	}
 
 	private void generateToolTags() {
@@ -512,7 +428,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.BRUSH_TOOLS)
 				.addOptionalTag(ConventionalItemTags.CROSSBOW_TOOLS)
 				.addOptionalTag(ConventionalItemTags.FISHING_ROD_TOOLS)
-				.addOptionalTag(ConventionalItemTags.IGNITER_TOOLS)
 				.addOptionalTag(ConventionalItemTags.SHEAR_TOOLS)
 				.addOptionalTag(ConventionalItemTags.SHIELD_TOOLS)
 				.addOptionalTag(ConventionalItemTags.SPEAR_TOOLS)
@@ -541,10 +456,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.BRUSH_TOOLS)
 				.add(Items.BRUSH)
 				.addOptionalTag(ConventionalItemTags.BRUSHES_TOOLS);
-		getOrCreateTagBuilder(ConventionalItemTags.IGNITER_TOOLS)
-				.add(Items.FLINT_AND_STEEL);
-		getOrCreateTagBuilder(ConventionalItemTags.MACE_TOOLS)
-				.add(Items.MACE);
 
 		getOrCreateTagBuilder(ConventionalItemTags.MINING_TOOL_TOOLS)
 				.add(Items.WOODEN_PICKAXE)
@@ -556,8 +467,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.MINING_TOOLS);
 
 		getOrCreateTagBuilder(ConventionalItemTags.MELEE_WEAPON_TOOLS)
-				.add(Items.MACE)
-				.add(Items.TRIDENT)
 				.add(Items.WOODEN_SWORD)
 				.add(Items.STONE_SWORD)
 				.add(Items.GOLDEN_SWORD)
@@ -598,8 +507,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ItemTags.MACE_ENCHANTABLE)
 				.addOptionalTag(ItemTags.FIRE_ASPECT_ENCHANTABLE)
 				.addOptionalTag(ItemTags.DURABILITY_ENCHANTABLE);
-
-		// Deprecated tags below
 
 		getOrCreateTagBuilder(ConventionalItemTags.BOWS_TOOLS)
 				.add(Items.BOW);
@@ -651,41 +558,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.forEach(getOrCreateTagBuilder(ConventionalItemTags.VILLAGER_JOB_SITES)::add);
 	}
 
-	private void generateCropTags() {
-		getOrCreateTagBuilder(ConventionalItemTags.CROPS)
-				.addOptionalTag(ConventionalItemTags.BEETROOT_CROPS)
-				.addOptionalTag(ConventionalItemTags.CACTUS_CROPS)
-				.addOptionalTag(ConventionalItemTags.CARROT_CROPS)
-				.addOptionalTag(ConventionalItemTags.COCOA_BEAN_CROPS)
-				.addOptionalTag(ConventionalItemTags.MELON_CROPS)
-				.addOptionalTag(ConventionalItemTags.NETHER_WART_CROPS)
-				.addOptionalTag(ConventionalItemTags.POTATO_CROPS)
-				.addOptionalTag(ConventionalItemTags.PUMPKIN_CROPS)
-				.addOptionalTag(ConventionalItemTags.SUGAR_CANE_CROPS)
-				.addOptionalTag(ConventionalItemTags.WHEAT_CROPS);
-
-		getOrCreateTagBuilder(ConventionalItemTags.BEETROOT_CROPS)
-				.add(Items.BEETROOT);
-		getOrCreateTagBuilder(ConventionalItemTags.CACTUS_CROPS)
-				.add(Items.CACTUS);
-		getOrCreateTagBuilder(ConventionalItemTags.CARROT_CROPS)
-				.add(Items.CARROT);
-		getOrCreateTagBuilder(ConventionalItemTags.COCOA_BEAN_CROPS)
-				.add(Items.COCOA_BEANS);
-		getOrCreateTagBuilder(ConventionalItemTags.MELON_CROPS)
-				.add(Items.MELON);
-		getOrCreateTagBuilder(ConventionalItemTags.NETHER_WART_CROPS)
-				.add(Items.NETHER_WART);
-		getOrCreateTagBuilder(ConventionalItemTags.POTATO_CROPS)
-				.add(Items.POTATO);
-		getOrCreateTagBuilder(ConventionalItemTags.PUMPKIN_CROPS)
-				.add(Items.PUMPKIN);
-		getOrCreateTagBuilder(ConventionalItemTags.SUGAR_CANE_CROPS)
-				.add(Items.SUGAR_CANE);
-		getOrCreateTagBuilder(ConventionalItemTags.WHEAT_CROPS)
-				.add(Items.WHEAT);
-	}
-
 	private void generateOtherTags() {
 		getOrCreateTagBuilder(ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES)
 				.add(Items.CRAFTING_TABLE);
@@ -723,15 +595,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 		getOrCreateTagBuilder(ConventionalItemTags.CHAINS)
 				.add(Items.CHAIN);
-
-		getOrCreateTagBuilder(ConventionalItemTags.ENDER_PEARLS)
-				.add(Items.ENDER_PEARL);
-
-		getOrCreateTagBuilder(ConventionalItemTags.SLIME_BALLS)
-				.add(Items.SLIME_BALL);
-
-		getOrCreateTagBuilder(ConventionalItemTags.FERTILIZERS)
-				.add(Items.BONE_MEAL);
 
 		getOrCreateTagBuilder(ConventionalItemTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
 	}

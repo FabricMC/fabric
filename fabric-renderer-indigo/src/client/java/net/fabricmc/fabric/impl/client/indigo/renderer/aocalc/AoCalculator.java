@@ -45,6 +45,7 @@ import net.minecraft.world.LightType;
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoFace.WeightFunction;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
+import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.QuadViewImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderInfo;
 
@@ -104,23 +105,41 @@ public abstract class AoCalculator {
 		completionFlags = 0;
 	}
 
-	public void compute(QuadViewImpl quad, boolean vanillaShade) {
+	public void compute(MutableQuadViewImpl quad, boolean isVanilla) {
 		final AoConfig config = Indigo.AMBIENT_OCCLUSION_MODE;
+		final boolean shouldCompare;
 
 		switch (config) {
-		case VANILLA -> calcVanilla(quad);
-		case EMULATE -> calcFastVanilla(quad);
-		case HYBRID -> {
-			if (vanillaShade) {
+		case VANILLA:
+			calcVanilla(quad);
+
+			// no point in comparing vanilla with itself
+			shouldCompare = false;
+			break;
+
+		case EMULATE:
+			calcFastVanilla(quad);
+			shouldCompare = Indigo.DEBUG_COMPARE_LIGHTING && isVanilla;
+			break;
+
+		case HYBRID:
+		default:
+			if (isVanilla) {
+				shouldCompare = Indigo.DEBUG_COMPARE_LIGHTING;
 				calcFastVanilla(quad);
 			} else {
+				shouldCompare = false;
 				calcEnhanced(quad);
 			}
-		}
-		case ENHANCED -> calcEnhanced(quad);
+
+			break;
+
+		case ENHANCED:
+			shouldCompare = false;
+			calcEnhanced(quad);
 		}
 
-		if (Indigo.DEBUG_COMPARE_LIGHTING && vanillaShade && (config == AoConfig.EMULATE || config == AoConfig.HYBRID)) {
+		if (shouldCompare) {
 			float[] vanillaAo = new float[4];
 			int[] vanillaLight = new int[4];
 			calcVanilla(quad, vanillaAo, vanillaLight);
@@ -139,7 +158,7 @@ public abstract class AoCalculator {
 		}
 	}
 
-	private void calcVanilla(QuadViewImpl quad) {
+	private void calcVanilla(MutableQuadViewImpl quad) {
 		calcVanilla(quad, ao, light);
 	}
 
@@ -150,7 +169,7 @@ public abstract class AoCalculator {
 	private final BitSet vanillaAoControlBits = new BitSet(3);
 	private final int[] vertexData = new int[EncodingFormat.QUAD_STRIDE];
 
-	private void calcVanilla(QuadViewImpl quad, float[] aoDest, int[] lightDest) {
+	private void calcVanilla(MutableQuadViewImpl quad, float[] aoDest, int[] lightDest) {
 		vanillaAoControlBits.clear();
 		final Direction lightFace = quad.lightFace();
 		quad.toVanilla(vertexData, 0);
@@ -162,7 +181,7 @@ public abstract class AoCalculator {
 		System.arraycopy(vanillaCalc.light, 0, lightDest, 0, 4);
 	}
 
-	private void calcFastVanilla(QuadViewImpl quad) {
+	private void calcFastVanilla(MutableQuadViewImpl quad) {
 		int flags = quad.geometryFlags();
 
 		// force to block face if shape is full cube - matches vanilla logic
@@ -177,7 +196,7 @@ public abstract class AoCalculator {
 		}
 	}
 
-	private void calcEnhanced(QuadViewImpl quad) {
+	private void calcEnhanced(MutableQuadViewImpl quad) {
 		switch (quad.geometryFlags()) {
 		case AXIS_ALIGNED_FLAG | CUBIC_FLAG | LIGHT_FACE_FLAG:
 		case AXIS_ALIGNED_FLAG | LIGHT_FACE_FLAG:
@@ -252,7 +271,7 @@ public abstract class AoCalculator {
 	/** used exclusively in irregular face to avoid new heap allocations each call. */
 	private final Vector3f vertexNormal = new Vector3f();
 
-	private void irregularFace(QuadViewImpl quad, boolean shade) {
+	private void irregularFace(MutableQuadViewImpl quad, boolean shade) {
 		final Vector3f faceNorm = quad.faceNormal();
 		Vector3f normal;
 		final float[] w = this.w;
