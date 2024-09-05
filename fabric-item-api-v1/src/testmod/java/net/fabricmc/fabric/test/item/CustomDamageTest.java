@@ -75,7 +75,7 @@ public class CustomDamageTest implements ModInitializer {
 
 	public static class WeirdPick extends PickaxeItem {
 		protected WeirdPick(RegistryKey<Item> registryKey) {
-			super(ToolMaterial.GOLD, 3f, 5f, new Item.Settings().customDamage(WEIRD_DAMAGE_HANDLER).method_63686(registryKey));
+			super(ToolMaterial.GOLD, 3f, 5f, new Item.Settings().customDamage(WEIRD_DAMAGE_HANDLER).registryKey(registryKey));
 		}
 
 		@Override

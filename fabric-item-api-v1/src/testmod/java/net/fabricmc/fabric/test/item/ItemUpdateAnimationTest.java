@@ -37,7 +37,7 @@ public class ItemUpdateAnimationTest implements ModInitializer {
 		RegistryKey<Item> updatingAllowedKey = RegistryKey.of(RegistryKeys.ITEM, Identifier.of("fabric-item-api-v1-testmod", "updating_allowed"));
 		RegistryKey<Item> updatingDisallowedKey = RegistryKey.of(RegistryKeys.ITEM, Identifier.of("fabric-item-api-v1-testmod", "updating_disallowed"));
 
-		Registry.register(Registries.ITEM, updatingAllowedKey, new UpdatingItem(true, new Item.Settings().method_63686(updatingAllowedKey)));
-		Registry.register(Registries.ITEM, updatingDisallowedKey, new UpdatingItem(false, new Item.Settings().method_63686(updatingDisallowedKey)));
+		Registry.register(Registries.ITEM, updatingAllowedKey, new UpdatingItem(true, new Item.Settings().registryKey(updatingAllowedKey)));
+		Registry.register(Registries.ITEM, updatingDisallowedKey, new UpdatingItem(false, new Item.Settings().registryKey(updatingDisallowedKey)));
 	}
 }

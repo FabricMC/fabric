@@ -42,14 +42,14 @@ abstract class LivingEntityMixin extends Entity {
 	 * Handle ALLOW and CUSTOM {@link EntityElytraEvents} when an entity is fall flying.
 	 */
 	@SuppressWarnings("ConstantConditions")
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getEquippedStack(Lnet/minecraft/entity/EquipmentSlot;)Lnet/minecraft/item/ItemStack;"), method = "tickFallFlying()V", allow = 1, cancellable = true)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getEquippedStack(Lnet/minecraft/entity/EquipmentSlot;)Lnet/minecraft/item/ItemStack;"), method = "tickGliding()V", allow = 1, cancellable = true)
 	void injectElytraTick(CallbackInfo info) {
 		LivingEntity self = (LivingEntity) (Object) this;
 
 		if (!EntityElytraEvents.ALLOW.invoker().allowElytraFlight(self)) {
 			// The entity is already fall flying by now, we just need to stop it.
 			if (!getWorld().isClient) {
-				setFlag(Entity.FALL_FLYING_FLAG_INDEX, false);
+				setFlag(Entity.GLIDING_FLAG_INDEX, false);
 			}
 
 			info.cancel();
@@ -62,7 +62,7 @@ abstract class LivingEntityMixin extends Entity {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EquipmentSlot;field_54086:Ljava/util/List;"), method = "method_63628", allow = 1, cancellable = true)
+	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EquipmentSlot;VALUES:Ljava/util/List;"), method = "canGlide", allow = 1, cancellable = true)
 	void injectElytraCheck(CallbackInfoReturnable<Boolean> cir) {
 		PlayerEntity self = (PlayerEntity) (Object) this;
 

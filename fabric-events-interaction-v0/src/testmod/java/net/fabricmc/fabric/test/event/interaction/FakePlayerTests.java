@@ -51,7 +51,7 @@ public class FakePlayerTests {
 
 		BlockPos fakePlayerPos = context.getAbsolutePos(signPos.add(2, 0, 2));
 		fakePlayer.setPosition(fakePlayerPos.getX(), fakePlayerPos.getY(), fakePlayerPos.getZ());
-		ItemStack signStack = Items.field_8788.getDefaultStack();
+		ItemStack signStack = Items.OAK_SIGN.getDefaultStack();
 		fakePlayer.setStackInHand(Hand.MAIN_HAND, signStack);
 
 		Vec3d hitPos = context.getAbsolutePos(basePos).toCenterPos().add(0, 0.5, 0);

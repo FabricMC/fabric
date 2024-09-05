@@ -21,17 +21,17 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import net.minecraft.class_10179;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.conversion.EntityConversionContext;
 import net.minecraft.entity.mob.MobEntity;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 
 @Mixin(MobEntity.class)
 public class MobEntityMixin {
-	@ModifyArg(method = "method_63631", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;spawnEntityAndPassengers(Lnet/minecraft/entity/Entity;)V"))
-	private Entity afterEntityConverted(Entity converted, @Local(argsOnly = true) class_10179 conversionOptions) {
-		ServerLivingEntityEvents.MOB_CONVERSION.invoker().onConversion((MobEntity) (Object) this, (MobEntity) converted, conversionOptions);
+	@ModifyArg(method = "convertTo", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;spawnEntityAndPassengers(Lnet/minecraft/entity/Entity;)V"))
+	private Entity afterEntityConverted(Entity converted, @Local(argsOnly = true) EntityConversionContext conversionContext) {
+		ServerLivingEntityEvents.MOB_CONVERSION.invoker().onConversion((MobEntity) (Object) this, (MobEntity) converted, conversionContext);
 		return converted;
 	}
 }

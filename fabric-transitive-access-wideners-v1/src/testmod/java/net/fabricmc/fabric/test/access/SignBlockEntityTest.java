@@ -54,7 +54,7 @@ public final class SignBlockEntityTest implements ModInitializer {
 			return new TestSign(pos, state);
 		}
 	};
-	public static final SignItem TEST_SIGN_ITEM = new SignItem(TEST_SIGN, TEST_WALL_SIGN, new Item.Settings().method_63686(itemKey(TEST_SIGN_KEY)));
+	public static final SignItem TEST_SIGN_ITEM = new SignItem(TEST_SIGN, TEST_WALL_SIGN, new Item.Settings().registryKey(itemKey(TEST_SIGN_KEY)));
 	public static final BlockEntityType<TestSign> TEST_SIGN_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(TestSign::new, TEST_SIGN, TEST_WALL_SIGN).build();
 
 	private static RegistryKey<Block> keyOf(String id) {

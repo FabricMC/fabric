@@ -63,7 +63,7 @@ public final class Registration {
 
 	private static <T extends Item> T registerItem(String path, Function<Item.Settings, T> itemFunction) {
 		RegistryKey<Item> registryKey = RegistryKey.of(RegistryKeys.ITEM, RendererTest.id(path));
-		return Registry.register(Registries.ITEM, registryKey, itemFunction.apply(new Item.Settings().method_63686(registryKey)));
+		return Registry.register(Registries.ITEM, registryKey, itemFunction.apply(new Item.Settings().registryKey(registryKey)));
 	}
 
 	private static <T extends BlockEntityType<?>> T register(String path, T blockEntityType) {

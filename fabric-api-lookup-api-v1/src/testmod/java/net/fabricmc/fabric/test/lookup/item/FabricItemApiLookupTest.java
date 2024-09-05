@@ -37,7 +37,7 @@ public class FabricItemApiLookupTest {
 			ItemApiLookup.get(Identifier.of("testmod", "inspectable"), Inspectable.class, Void.class);
 
 	public static final RegistryKey<Item> HELLO_ITEM_KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(FabricApiLookupTest.MOD_ID, "hello"));
-	public static final InspectableItem HELLO_ITEM = new InspectableItem("Hello Fabric API tester!", new Item.Settings().method_63686(HELLO_ITEM_KEY));
+	public static final InspectableItem HELLO_ITEM = new InspectableItem("Hello Fabric API tester!", new Item.Settings().registryKey(HELLO_ITEM_KEY));
 
 	public static void onInitialize() {
 		Registry.register(Registries.ITEM, HELLO_ITEM_KEY, HELLO_ITEM);

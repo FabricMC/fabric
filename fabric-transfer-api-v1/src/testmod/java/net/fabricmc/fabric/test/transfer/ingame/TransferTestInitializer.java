@@ -43,7 +43,7 @@ public class TransferTestInitializer implements ModInitializer {
 	private static final RegistryKey<Block> FLUID_CHUTE_KEY = block("fluid_chute");
 	private static final Block FLUID_CHUTE = new FluidChuteBlock(AbstractBlock.Settings.create().registryKey(FLUID_CHUTE_KEY));
 	private static final RegistryKey<Item> EXTRACT_STICK_KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(MOD_ID, "extract_stick"));
-	private static final Item EXTRACT_STICK = new ExtractStickItem(new Item.Settings().method_63686(EXTRACT_STICK_KEY));
+	private static final Item EXTRACT_STICK = new ExtractStickItem(new Item.Settings().registryKey(EXTRACT_STICK_KEY));
 	public static BlockEntityType<FluidChuteBlockEntity> FLUID_CHUTE_TYPE;
 
 	@Override
@@ -71,6 +71,6 @@ public class TransferTestInitializer implements ModInitializer {
 
 	private static void registerBlock(RegistryKey<Block> key, Block block) {
 		Registry.register(Registries.BLOCK, key, block);
-		Registry.register(Registries.ITEM, key.getValue(), new BlockItem(block, new Item.Settings().method_63686(RegistryKey.of(RegistryKeys.ITEM, key.getValue()))));
+		Registry.register(Registries.ITEM, key.getValue(), new BlockItem(block, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, key.getValue()))));
 	}
 }

@@ -27,7 +27,7 @@ import net.fabricmc.api.ModInitializer;
 
 public class CustomAtlasSourcesTestInit implements ModInitializer {
 	public static final RegistryKey<Item> DOUBLE_IRON_INGOT_KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of("fabric-rendering-v1-testmod", "double_iron_ingot"));
-	public static final Item DOUBLE_IRON_INGOT = new Item(new Item.Settings().method_63686(DOUBLE_IRON_INGOT_KEY));
+	public static final Item DOUBLE_IRON_INGOT = new Item(new Item.Settings().registryKey(DOUBLE_IRON_INGOT_KEY));
 
 	@Override
 	public void onInitialize() {
