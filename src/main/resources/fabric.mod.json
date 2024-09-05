@@ -19,7 +19,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.3",
+    "fabricloader": ">=0.16.4",
     "java": ">=21",
     "minecraft": ">=1.21.2- <1.21.3-"
   },

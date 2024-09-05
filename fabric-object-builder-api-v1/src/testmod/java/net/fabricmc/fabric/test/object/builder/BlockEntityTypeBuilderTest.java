@@ -30,6 +30,7 @@ import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
@@ -73,7 +74,7 @@ public class BlockEntityTypeBuilderTest implements ModInitializer {
 	private static void register(RegistryKey<Block> id, Block block) {
 		Registry.register(Registries.BLOCK, id, block);
 
-		Item item = new BlockItem(block, new Item.Settings());
+		Item item = new BlockItem(block, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id.getValue())));
 		Registry.register(Registries.ITEM, id.getValue(), item);
 	}
 

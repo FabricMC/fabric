@@ -46,7 +46,7 @@ public final class DelegatingUnbakedModel implements UnbakedModel {
 	}
 
 	@Override
-	public void resolve(Resolver resolver, ModelType modelType) {
+	public void resolve(Resolver resolver) {
 		resolver.resolve(delegate);
 	}
 

@@ -46,12 +46,12 @@ public final class Registration {
 			FRAME_VARIANT_BLOCK,
 	};
 
-	public static final Item FRAME_ITEM = register("frame", new BlockItem(FRAME_BLOCK, new Item.Settings()));
-	public static final Item FRAME_MULTIPART_ITEM = register("frame_multipart", new BlockItem(FRAME_MULTIPART_BLOCK, new Item.Settings()));
-	public static final Item FRAME_VARIANT_ITEM = register("frame_variant", new BlockItem(FRAME_VARIANT_BLOCK, new Item.Settings()));
-	public static final Item PILLAR_ITEM = register("pillar", new BlockItem(PILLAR_BLOCK, new Item.Settings()));
-	public static final Item OCTAGONAL_COLUMN_ITEM = register("octagonal_column", new BlockItem(OCTAGONAL_COLUMN_BLOCK, new Item.Settings()));
-	public static final Item RIVERSTONE_ITEM = register("riverstone", new BlockItem(RIVERSTONE_BLOCK, new Item.Settings()));
+	public static final Item FRAME_ITEM = registerItem("frame", (settings) -> new BlockItem(FRAME_BLOCK, settings));
+	public static final Item FRAME_MULTIPART_ITEM = registerItem("frame_multipart", (settings) -> new BlockItem(FRAME_MULTIPART_BLOCK, settings));
+	public static final Item FRAME_VARIANT_ITEM = registerItem("frame_variant", (settings) -> new BlockItem(FRAME_VARIANT_BLOCK, settings));
+	public static final Item PILLAR_ITEM = registerItem("pillar", (settings) -> new BlockItem(PILLAR_BLOCK, settings));
+	public static final Item OCTAGONAL_COLUMN_ITEM = registerItem("octagonal_column", (settings) -> new BlockItem(OCTAGONAL_COLUMN_BLOCK, settings));
+	public static final Item RIVERSTONE_ITEM = registerItem("riverstone", (settings) -> new BlockItem(RIVERSTONE_BLOCK, settings));
 
 	public static final BlockEntityType<FrameBlockEntity> FRAME_BLOCK_ENTITY_TYPE = register("frame", FabricBlockEntityTypeBuilder.create(FrameBlockEntity::new, FRAME_BLOCKS).build());
 
@@ -61,8 +61,9 @@ public final class Registration {
 		return Registry.register(Registries.BLOCK, id, constructor.apply(settings.registryKey(RegistryKey.of(RegistryKeys.BLOCK, id))));
 	}
 
-	private static <T extends Item> T register(String path, T item) {
-		return Registry.register(Registries.ITEM, RendererTest.id(path), item);
+	private static <T extends Item> T registerItem(String path, Function<Item.Settings, T> itemFunction) {
+		RegistryKey<Item> registryKey = RegistryKey.of(RegistryKeys.ITEM, RendererTest.id(path));
+		return Registry.register(Registries.ITEM, registryKey, itemFunction.apply(new Item.Settings().registryKey(registryKey)));
 	}
 
 	private static <T extends BlockEntityType<?>> T register(String path, T blockEntityType) {

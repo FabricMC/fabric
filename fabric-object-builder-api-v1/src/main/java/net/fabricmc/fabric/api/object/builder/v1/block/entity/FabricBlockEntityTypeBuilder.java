@@ -32,8 +32,6 @@ import net.minecraft.util.math.BlockPos;
 /**
  * Fabric's version of BlockEntityType.Builder with additional convenience methods.
  *
- * <p>Alternatively, use the access widener for {@link BlockEntityType.BlockEntityFactory}
- * in Fabric Transitive Access Wideners (v1).
  */
 public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 	private final Factory<? extends T> factory;

@@ -19,10 +19,8 @@ package net.fabricmc.fabric.mixin.renderer.client;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,7 +30,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.MultipartBakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -46,7 +43,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 public class MultipartBakedModelMixin implements FabricBakedModel {
 	@Shadow
 	@Final
-	private List<Pair<Predicate<BlockState>, BakedModel>> components;
+	private List<MultipartBakedModel.class_10204> components;
 
 	@Shadow
 	@Final
@@ -61,9 +58,9 @@ public class MultipartBakedModelMixin implements FabricBakedModel {
 	}
 
 	@Inject(at = @At("RETURN"), method = "<init>")
-	private void onInit(List<Pair<Predicate<BlockState>, BakedModel>> components, CallbackInfo cb) {
-		for (Pair<Predicate<BlockState>, BakedModel> component : components) {
-			if (!component.getRight().isVanillaAdapter()) {
+	private void onInit(List<MultipartBakedModel.class_10204> components, CallbackInfo cb) {
+		for (MultipartBakedModel.class_10204 component : components) {
+			if (!component.model().isVanillaAdapter()) {
 				isVanilla = false;
 				break;
 			}
@@ -78,9 +75,9 @@ public class MultipartBakedModelMixin implements FabricBakedModel {
 			bitSet = new BitSet();
 
 			for (int i = 0; i < this.components.size(); i++) {
-				Pair<Predicate<BlockState>, BakedModel> pair = components.get(i);
+				MultipartBakedModel.class_10204 component = components.get(i);
 
-				if (pair.getLeft().test(state)) {
+				if (component.condition().test(state)) {
 					bitSet.set(i);
 				}
 			}
@@ -98,7 +95,7 @@ public class MultipartBakedModelMixin implements FabricBakedModel {
 
 		for (int i = 0; i < this.components.size(); i++) {
 			if (bitSet.get(i)) {
-				components.get(i).getRight().emitBlockQuads(blockView, state, pos, subModelRandomSupplier, context);
+				components.get(i).model().emitBlockQuads(blockView, state, pos, subModelRandomSupplier, context);
 			}
 		}
 	}

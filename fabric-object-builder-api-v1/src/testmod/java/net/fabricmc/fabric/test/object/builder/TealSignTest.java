@@ -32,6 +32,7 @@ import net.minecraft.item.SignItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
@@ -50,8 +51,8 @@ public class TealSignTest implements ModInitializer {
 	public static final HangingSignBlock TEAL_HANGING_SIGN = new HangingSignBlock(TEAL_WOOD_TYPE, AbstractBlock.Settings.copy(Blocks.OAK_HANGING_SIGN).registryKey(TEAL_HANGING_SIGN_KEY));
 	public static final RegistryKey<Block> TEAL_WALL_HANGING_SIGN_KEY = ObjectBuilderTestConstants.block("teal_wall_hanging_sign");
 	public static final WallHangingSignBlock TEAL_WALL_HANGING_SIGN = new WallHangingSignBlock(TEAL_WOOD_TYPE, AbstractBlock.Settings.copy(Blocks.OAK_HANGING_SIGN).registryKey(TEAL_WALL_HANGING_SIGN_KEY));
-	public static final SignItem TEAL_SIGN_ITEM = new SignItem(new Item.Settings(), TEAL_SIGN, TEAL_WALL_SIGN);
-	public static final HangingSignItem TEAL_HANGING_SIGN_ITEM = new HangingSignItem(TEAL_HANGING_SIGN, TEAL_WALL_HANGING_SIGN, new Item.Settings());
+	public static final SignItem TEAL_SIGN_ITEM = new SignItem(TEAL_SIGN, TEAL_WALL_SIGN, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, TEAL_SIGN_KEY.getValue())));
+	public static final HangingSignItem TEAL_HANGING_SIGN_ITEM = new HangingSignItem(TEAL_HANGING_SIGN, TEAL_WALL_HANGING_SIGN, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, TEAL_HANGING_SIGN_KEY.getValue())));
 
 	@Override
 	public void onInitialize() {

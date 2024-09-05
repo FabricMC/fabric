@@ -55,7 +55,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 	}
 
 	@Override
-	public void resolve(Resolver resolver, ModelType currentlyResolvingType) {
+	public void resolve(Resolver resolver) {
 	}
 
 	@Override

@@ -16,45 +16,47 @@
 
 package net.fabricmc.fabric.test.item;
 
-import java.util.EnumMap;
-import java.util.List;
+import java.util.Map;
 
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.item.equipment.ArmorMaterial;
+import net.minecraft.item.equipment.EquipmentType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 
 import net.fabricmc.api.ModInitializer;
 
 public class ArmorKnockbackResistanceTest implements ModInitializer {
-	private static final RegistryEntry<ArmorMaterial> WOOD_ARMOR = Registry.registerReference(Registries.ARMOR_MATERIAL, Identifier.of("fabric-item-api-v1-testmod", "wood"), createTestArmorMaterial());
+	private static final ArmorMaterial WOOD_ARMOR = createTestArmorMaterial();
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.ITEM, Identifier.of("fabric-item-api-v1-testmod",
-				"wooden_boots"), new ArmorItem(WOOD_ARMOR, ArmorItem.Type.BOOTS, new Item.Settings()));
+		RegistryKey<Item> registryKey = RegistryKey.of(RegistryKeys.ITEM, Identifier.of("fabric-item-api-v1-testmod", "wooden_boots"));
+		Registry.register(Registries.ITEM, registryKey, new ArmorItem(WOOD_ARMOR, EquipmentType.BOOTS, new Item.Settings().registryKey(registryKey)));
 	}
 
 	private static ArmorMaterial createTestArmorMaterial() {
 		return new ArmorMaterial(
-			Util.make(new EnumMap<>(ArmorItem.Type.class), (map) -> {
-				map.put(ArmorItem.Type.BOOTS, 1);
-				map.put(ArmorItem.Type.LEGGINGS, 2);
-				map.put(ArmorItem.Type.CHESTPLATE, 3);
-				map.put(ArmorItem.Type.HELMET, 1);
-				map.put(ArmorItem.Type.BODY, 3);
-			}),
-			SoundEvents.ITEM_ARMOR_EQUIP_LEATHER,
-				(stack) -> stack.getItem() == Items.LEATHER,
-			List.of(new ArmorMaterial.Layer(Identifier.of("fabric-item-api-v1-testmod", "wood"))),
 			0,
-			0.5F
+			Map.of(
+				EquipmentType.BOOTS, 1,
+				EquipmentType.LEGGINGS, 2,
+				EquipmentType.CHESTPLATE, 3,
+				EquipmentType.HELMET, 1,
+				EquipmentType.BODY, 3
+			),
+			1,
+			SoundEvents.ITEM_ARMOR_EQUIP_LEATHER,
+			0,
+			0.5F,
+			ItemTags.REPAIRS_LEATHER_ARMOR,
+			Identifier.of("fabric-item-api-v1-testmod", "wood")
 		);
 	}
 }

@@ -31,7 +31,7 @@ import net.fabricmc.api.ModInitializer;
 public class CustomColorResolverTestInit implements ModInitializer {
 	public static final RegistryKey<Block> KEY = RegistryKey.of(RegistryKeys.BLOCK, Identifier.of("fabric-rendering-v1-testmod", "custom_color_block"));
 	public static final Block CUSTOM_COLOR_BLOCK = new Block(AbstractBlock.Settings.create().registryKey(KEY));
-	public static final Item CUSTOM_COLOR_BLOCK_ITEM = new BlockItem(CUSTOM_COLOR_BLOCK, new Item.Settings());
+	public static final Item CUSTOM_COLOR_BLOCK_ITEM = new BlockItem(CUSTOM_COLOR_BLOCK, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, KEY.getValue())));
 
 	@Override
 	public void onInitialize() {

@@ -40,7 +40,7 @@ public class FrameUnbakedModel implements UnbakedModel {
 	private static final SpriteIdentifier OBSIDIAN_SPRITE_ID = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, Identifier.ofVanilla("block/obsidian"));
 
 	@Override
-	public void resolve(Resolver resolver, ModelType currentlyResolvingType) {
+	public void resolve(Resolver resolver) {
 	}
 
 	/*

@@ -46,19 +46,19 @@ public class FabricApiLookupTest implements ModInitializer {
 	// It's meant to work with unsided containers: chests, dispensers, droppers and hoppers.
 	public static final RegistryKey<Block> CHUTE_BLOCK_KEY = keyOf("chute");
 	public static final ChuteBlock CHUTE_BLOCK = new ChuteBlock(AbstractBlock.Settings.create().registryKey(CHUTE_BLOCK_KEY));
-	public static final BlockItem CHUTE_ITEM = new BlockItem(CHUTE_BLOCK, new Item.Settings());
+	public static final BlockItem CHUTE_ITEM = new BlockItem(CHUTE_BLOCK, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, CHUTE_BLOCK_KEY.getValue())));
 	public static BlockEntityType<ChuteBlockEntity> CHUTE_BLOCK_ENTITY_TYPE;
 	// Cobble gen - Block without model that can generate infinite cobblestone when placed above a chute.
 	// It's meant to test BlockApiLookup#registerSelf.
 	public static final RegistryKey<Block> COBBLE_GEN_BLOCK_KEY = keyOf("cobble_gen");
 	public static final CobbleGenBlock COBBLE_GEN_BLOCK = new CobbleGenBlock(AbstractBlock.Settings.create().registryKey(COBBLE_GEN_BLOCK_KEY));
-	public static final BlockItem COBBLE_GEN_ITEM = new BlockItem(COBBLE_GEN_BLOCK, new Item.Settings());
+	public static final BlockItem COBBLE_GEN_ITEM = new BlockItem(COBBLE_GEN_BLOCK, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, COBBLE_GEN_BLOCK_KEY.getValue())));
 	public static BlockEntityType<CobbleGenBlockEntity> COBBLE_GEN_BLOCK_ENTITY_TYPE;
 	// Testing for item api lookups is done in the `item` package.
 
 	public static final RegistryKey<Block> INSPECTOR_BLOCK_KEY = keyOf("inspector");
 	public static final InspectorBlock INSPECTOR_BLOCK = new InspectorBlock(AbstractBlock.Settings.create().registryKey(INSPECTOR_BLOCK_KEY));
-	public static final BlockItem INSPECTOR_ITEM = new BlockItem(INSPECTOR_BLOCK, new Item.Settings());
+	public static final BlockItem INSPECTOR_ITEM = new BlockItem(INSPECTOR_BLOCK, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, INSPECTOR_BLOCK_KEY.getValue())));
 
 	private static RegistryKey<Block> keyOf(String id) {
 		return RegistryKey.of(RegistryKeys.BLOCK, Identifier.of(MOD_ID, id));

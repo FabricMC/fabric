@@ -14,25 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.resource.conditions;
+package net.fabricmc.fabric.impl.resource.loader;
 
-import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-
-import net.minecraft.recipe.RecipeManager;
-import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 
-@Mixin(RecipeManager.class)
-public class RecipeManagerMixin extends SinglePreparationResourceReloaderMixin {
-	@Shadow
-	@Final
-	private RegistryWrapper.WrapperLookup registries;
-
-	@Override
-	protected @Nullable RegistryOps.RegistryInfoGetter fabric_getRegistryLookup() {
-		return new RegistryOps.CachedRegistryInfoGetter(registries);
-	}
+public interface FabricRecipeManager {
+	RegistryWrapper.WrapperLookup fabric_getRegistries();
 }

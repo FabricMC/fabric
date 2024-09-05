@@ -19,7 +19,6 @@ package net.fabricmc.fabric.test.renderer.client;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
@@ -31,7 +30,7 @@ import net.minecraft.client.render.model.WeightedBakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.collection.Weighted;
+import net.minecraft.util.collection.DataPool;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -51,16 +50,7 @@ public class RandomSupplierTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		var checkingModel = new RandomCheckingBakedModel();
-		var weighted = new WeightedBakedModel(List.of(
-				Weighted.of(checkingModel, 1),
-				Weighted.of(checkingModel, 2)));
-		var multipart = new MultipartBakedModel(List.of(
-				Pair.of(state -> true, weighted),
-				Pair.of(state -> true, weighted)));
-		var weightedAgain = new WeightedBakedModel(List.of(
-				Weighted.of(multipart, 1),
-				Weighted.of(multipart, 2)));
+		WeightedBakedModel weightedAgain = createWeightedBakedModel();
 
 		long startingSeed = 42;
 		Random random = Random.create();
@@ -76,6 +66,25 @@ public class RandomSupplierTest implements ClientModInitializer {
 			return random;
 		};
 		weightedAgain.emitBlockQuads(null, Blocks.STONE.getDefaultState(), BlockPos.ORIGIN, randomSupplier, null);
+	}
+
+	private static WeightedBakedModel createWeightedBakedModel() {
+		var checkingModel = new RandomCheckingBakedModel();
+
+		DataPool.Builder<BakedModel> weightedBuilder = DataPool.builder();
+		weightedBuilder.add(checkingModel, 1);
+		weightedBuilder.add(checkingModel, 2);
+
+		var weighted = new WeightedBakedModel(weightedBuilder.build());
+		var multipart = new MultipartBakedModel(List.of(
+				new MultipartBakedModel.class_10204(state -> true, weighted),
+				new MultipartBakedModel.class_10204(state -> true, weighted)));
+
+		DataPool.Builder<BakedModel> weightedAgainBuilder = DataPool.builder();
+		weightedAgainBuilder.add(multipart, 1);
+		weightedAgainBuilder.add(multipart, 2);
+
+		return new WeightedBakedModel(weightedAgainBuilder.build());
 	}
 
 	private static class RandomCheckingBakedModel implements BakedModel {

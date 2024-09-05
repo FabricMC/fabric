@@ -16,53 +16,62 @@
 
 package net.fabricmc.fabric.mixin.resource.conditions;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.resource.JsonDataLoader;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
-/**
- * Using {@link SinglePreparationResourceReloaderMixin}, apply resource conditions at the very beginning of the "apply" phase.
- */
 @Mixin(JsonDataLoader.class)
-public class JsonDataLoaderMixin extends SinglePreparationResourceReloaderMixin {
-	@Shadow
-	@Final
-	private String dataType;
+public class JsonDataLoaderMixin {
+	@Unique
+	private static final Object SKIP_DATA_MARKER = new Object();
 
-	@Override
-	@SuppressWarnings("unchecked")
-	protected void fabric_applyResourceConditions(ResourceManager resourceManager, Profiler profiler, Object object, @Nullable RegistryOps.RegistryInfoGetter registryInfo) {
-		profiler.push("Fabric resource conditions: %s".formatted(dataType));
+	@WrapOperation(method = "load", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Codec;parse(Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;)Lcom/mojang/serialization/DataResult;", remap = false))
+	private static DataResult<?> applyResourceConditions(Codec<?> instance, DynamicOps<JsonElement> dynamicOps, Object object, Operation<DataResult<?>> original,
+														@Local(argsOnly = true) String dataType,
+														@Local Map.Entry<Identifier, Resource> entry) {
+		final JsonElement resourceData = (JsonElement) object;
+		@Nullable RegistryOps.RegistryInfoGetter registryInfo = null;
 
-		Iterator<Map.Entry<Identifier, JsonElement>> it = ((Map<Identifier, JsonElement>) object).entrySet().iterator();
+		if (dynamicOps instanceof RegistryOpsAccessor registryOps) {
+			registryInfo = registryOps.getRegistryInfoGetter();
+		}
 
-		while (it.hasNext()) {
-			Map.Entry<Identifier, JsonElement> entry = it.next();
-			JsonElement resourceData = entry.getValue();
+		if (resourceData.isJsonObject()) {
+			JsonObject obj = resourceData.getAsJsonObject();
 
-			if (resourceData.isJsonObject()) {
-				JsonObject obj = resourceData.getAsJsonObject();
-
-				if (!ResourceConditionsImpl.applyResourceConditions(obj, dataType, entry.getKey(), fabric_getRegistryLookup())) {
-					it.remove();
-				}
+			if (!ResourceConditionsImpl.applyResourceConditions(obj, dataType, entry.getKey(), registryInfo)) {
+				return DataResult.success(SKIP_DATA_MARKER);
 			}
 		}
 
-		profiler.pop();
+		return original.call(instance, dynamicOps, object);
+	}
+
+	// parse.ifSuccess
+	@Inject(method = "method_63568", at = @At("HEAD"), cancellable = true)
+	private static void skipData(Map<?, ?> map, Identifier identifier, Object object, CallbackInfo ci) {
+		if (object == SKIP_DATA_MARKER) {
+			ci.cancel();
+		}
 	}
 }

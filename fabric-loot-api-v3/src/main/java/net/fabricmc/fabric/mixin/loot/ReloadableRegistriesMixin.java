@@ -17,11 +17,10 @@
 package net.fabricmc.fabric.mixin.loot;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.google.gson.JsonElement;
@@ -80,9 +79,9 @@ abstract class ReloadableRegistriesMixin {
 		}), fn, executor);
 	}
 
-	@WrapOperation(method = "method_61239", at = @At(value = "INVOKE", target = "Ljava/util/Optional;ifPresent(Ljava/util/function/Consumer;)V"))
-	private static <T> void modifyLootTable(Optional<T> optionalTable, Consumer<? super T> action, Operation<Void> original, @Local(argsOnly = true) Identifier id, @Local(argsOnly = true) RegistryOps<JsonElement> ops) {
-		original.call(optionalTable.map(table -> modifyLootTable(table, id, ops)), action);
+	@Inject(method = "method_61240", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V"))
+	private static <T> void modifyLootTable(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<MutableRegistry<?>> cir, @Local Map<Identifier, T> map) {
+		map.replaceAll((identifier, t) -> modifyLootTable(t, identifier, registryOps));
 	}
 
 	@Unique

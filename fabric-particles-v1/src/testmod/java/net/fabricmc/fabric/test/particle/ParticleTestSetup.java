@@ -68,6 +68,6 @@ public final class ParticleTestSetup implements ModInitializer {
 
 	private static void registerBlock(RegistryKey<Block> key, Block block) {
 		Registry.register(Registries.BLOCK, key, block);
-		Registry.register(Registries.ITEM, key.getValue(), new BlockItem(block, new Item.Settings()));
+		Registry.register(Registries.ITEM, key.getValue(), new BlockItem(block, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, key.getValue()))));
 	}
 }

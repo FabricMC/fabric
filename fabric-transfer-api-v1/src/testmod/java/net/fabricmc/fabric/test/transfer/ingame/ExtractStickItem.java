@@ -30,8 +30,8 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class ExtractStickItem extends Item {
-	public ExtractStickItem() {
-		super(new Settings());
+	public ExtractStickItem(Settings settings) {
+		super(settings);
 	}
 
 	@Override

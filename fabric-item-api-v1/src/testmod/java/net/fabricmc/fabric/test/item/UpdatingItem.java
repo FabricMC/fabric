@@ -37,8 +37,8 @@ public class UpdatingItem extends Item {
 
 	private final boolean allowUpdateAnimation;
 
-	public UpdatingItem(boolean allowUpdateAnimation) {
-		super(new Settings()
+	public UpdatingItem(boolean allowUpdateAnimation, Item.Settings settings) {
+		super(settings
 					.component(DataComponentTypes.ATTRIBUTE_MODIFIERS, AttributeModifiersComponent.builder()
 						.add(EntityAttributes.ATTACK_DAMAGE, PLUS_FIVE, AttributeModifierSlot.MAINHAND)
 						.build()

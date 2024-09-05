@@ -88,7 +88,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 		Block block = Registry.register(Registries.BLOCK, identifier, new Block(settings.registryKey(RegistryKey.of(RegistryKeys.BLOCK, identifier))));
 
 		if (hasItem) {
-			Registry.register(Registries.ITEM, identifier, new BlockItem(block, new Item.Settings()));
+			Registry.register(Registries.ITEM, identifier, new BlockItem(block, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, identifier))));
 		}
 
 		return block;

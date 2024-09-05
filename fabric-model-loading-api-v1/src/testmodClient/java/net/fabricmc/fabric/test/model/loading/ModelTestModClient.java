@@ -98,7 +98,7 @@ public class ModelTestModClient implements ClientModInitializer {
 				Identifier id = context.resourceId();
 
 				if (id != null && id.equals(BROWN_GLAZED_TERRACOTTA_MODEL_ID)) {
-					return context.baker().getModel(MissingModel.ID);
+					return MissingModel.create();
 				}
 
 				return model;

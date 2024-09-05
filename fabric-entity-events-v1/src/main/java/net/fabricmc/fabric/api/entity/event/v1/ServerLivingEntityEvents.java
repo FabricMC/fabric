@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.entity.event.v1;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.conversion.EntityConversionContext;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 
@@ -166,9 +167,9 @@ public final class ServerLivingEntityEvents {
 		 *
 		 * @param previous the previous entity instance
 		 * @param converted the new instance for the converted entity
-		 * @param keepEquipment whether the converted entity should keep the previous one's equipment, like armor
+		 * @param conversionContext the context used for the conversion
 		 */
-		void onConversion(MobEntity previous, MobEntity converted, boolean keepEquipment);
+		void onConversion(MobEntity previous, MobEntity converted, EntityConversionContext conversionContext);
 	}
 
 	private ServerLivingEntityEvents() {

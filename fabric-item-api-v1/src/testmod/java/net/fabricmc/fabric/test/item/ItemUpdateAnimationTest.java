@@ -17,9 +17,12 @@
 package net.fabricmc.fabric.test.item;
 
 import net.minecraft.component.ComponentType;
+import net.minecraft.item.Item;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 
@@ -31,7 +34,10 @@ public class ItemUpdateAnimationTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.ITEM, Identifier.of("fabric-item-api-v1-testmod", "updating_allowed"), new UpdatingItem(true));
-		Registry.register(Registries.ITEM, Identifier.of("fabric-item-api-v1-testmod", "updating_disallowed"), new UpdatingItem(false));
+		RegistryKey<Item> updatingAllowedKey = RegistryKey.of(RegistryKeys.ITEM, Identifier.of("fabric-item-api-v1-testmod", "updating_allowed"));
+		RegistryKey<Item> updatingDisallowedKey = RegistryKey.of(RegistryKeys.ITEM, Identifier.of("fabric-item-api-v1-testmod", "updating_disallowed"));
+
+		Registry.register(Registries.ITEM, updatingAllowedKey, new UpdatingItem(true, new Item.Settings().registryKey(updatingAllowedKey)));
+		Registry.register(Registries.ITEM, updatingDisallowedKey, new UpdatingItem(false, new Item.Settings().registryKey(updatingDisallowedKey)));
 	}
 }

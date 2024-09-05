@@ -35,7 +35,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.recipe.RecipeManager;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.OverlayResourcePack;
 import net.minecraft.resource.ResourcePack;
@@ -241,8 +240,8 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		}
 
 		for (ResourceReloader resourceReloader : listeners) {
-			if (resourceReloader instanceof RecipeManager recipeManager) {
-				return recipeManager.registries;
+			if (resourceReloader instanceof FabricRecipeManager recipeManager) {
+				return recipeManager.fabric_getRegistries();
 			}
 		}
 
