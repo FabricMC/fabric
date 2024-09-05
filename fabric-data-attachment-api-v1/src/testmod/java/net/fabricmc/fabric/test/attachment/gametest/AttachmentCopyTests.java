@@ -31,6 +31,7 @@ import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
@@ -77,12 +78,12 @@ public class AttachmentCopyTests implements FabricGameTest {
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testMobConversion(TestContext context) {
-		ZombieEntity mob = Objects.requireNonNull(EntityType.ZOMBIE.create(context.getWorld(), SpawnReason.SPAWN_EGG));
+		ZombieEntity mob = context.spawnEntity(EntityType.ZOMBIE, BlockPos.ORIGIN);
 		mob.setAttached(DUMMY, () -> 42);
 		mob.setAttached(COPY_ON_DEATH, () -> 42);
 
 		ZombieEntityAccessor zombieEntityAccessor = (ZombieEntityAccessor) mob;
-		zombieEntityAccessor.convertTo(EntityType.DROWNED);
+		zombieEntityAccessor.invokeConvertTo(EntityType.DROWNED);
 		List<DrownedEntity> drowned = context.getEntities(EntityType.DROWNED);
 
 		if (drowned.size() != 1) {

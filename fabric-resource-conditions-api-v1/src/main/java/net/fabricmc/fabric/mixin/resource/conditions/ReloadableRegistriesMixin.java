@@ -61,11 +61,4 @@ public class ReloadableRegistriesMixin {
 	private static void storeWrapperLookup(CombinedDynamicRegistries<ServerDynamicRegistryType> dynamicRegistries, List<Registry.PendingTagLoad<?>> pendingTagLoads, ResourceManager resourceManager, Executor prepareExecutor, CallbackInfoReturnable<CompletableFuture<ReloadableRegistries.ReloadResult>> cir, @Local RegistryOps ops, @Share("wrapper") LocalRef<RegistryWrapper.WrapperLookup> share) {
 		REGISTRY_LOOKUPS.put(ops, share.get());
 	}
-
-//	@Inject(method = "method_61239", at = @At("HEAD"), cancellable = true)
-//	private static void applyConditions(LootDataType lootDataType, RegistryOps ops, MutableRegistry mutableRegistry, Identifier id, JsonElement json, CallbackInfo ci) {
-//		if (json.isJsonObject() && !ResourceConditionsImpl.applyResourceConditions(json.getAsJsonObject(), lootDataType.registryKey().getValue().getPath(), id, new RegistryOps.CachedRegistryInfoGetter(REGISTRY_LOOKUPS.get(ops)))) {
-//			ci.cancel();
-//		}
-//	}
 }

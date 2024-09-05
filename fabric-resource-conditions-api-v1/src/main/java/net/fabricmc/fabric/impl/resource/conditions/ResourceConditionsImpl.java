@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import com.google.gson.JsonObject;
@@ -114,7 +115,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 	 * - any call to {@link #tagsPopulated} will check the tags from the failed reload instead of failing directly.
 	 * This is probably acceptable.
 	 */
-	public static final ThreadLocal<Map<RegistryKey<?>, Set<Identifier>>> LOADED_TAGS = new ThreadLocal<>();
+	public static final AtomicReference<Map<RegistryKey<?>, Set<Identifier>>> LOADED_TAGS = new AtomicReference<>();
 
 	public static void setTags(List<Registry.PendingTagLoad<?>> tags) {
 		Map<RegistryKey<?>, Set<Identifier>> tagMap = new IdentityHashMap<>();
@@ -123,7 +124,9 @@ public final class ResourceConditionsImpl implements ModInitializer {
 			tagMap.put(registryTags.getKey(), registryTags.getLookup().streamTagKeys().map(TagKey::id).collect(Collectors.toSet()));
 		}
 
-		LOADED_TAGS.set(tagMap);
+		if (LOADED_TAGS.getAndSet(tagMap) != null) {
+			throw new IllegalStateException("Tags already captured, this should not happen");
+		}
 	}
 
 	// Cannot use registry because tags are not loaded to the registry at this stage yet.

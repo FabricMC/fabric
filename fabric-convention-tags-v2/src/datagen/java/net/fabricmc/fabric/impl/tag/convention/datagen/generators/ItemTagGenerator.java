@@ -745,7 +745,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.BLACK_TERRACOTTA).add(Items.BLACK_WOOL);
 
 		getOrCreateTagBuilder(ConventionalItemTags.BLUE_DYED)
-				.add(Items.field_8379).add(Items.BLUE_BED).add(Items.BLUE_CANDLE).add(Items.BLUE_CARPET)
+				.add(Items.field_8128).add(Items.BLUE_BED).add(Items.BLUE_CANDLE).add(Items.BLUE_CARPET)
 				.add(Items.BLUE_CONCRETE).add(Items.BLUE_CONCRETE_POWDER).add(Items.BLUE_GLAZED_TERRACOTTA)
 				.add(Items.BLUE_SHULKER_BOX).add(Items.BLUE_STAINED_GLASS).add(Items.BLUE_STAINED_GLASS_PANE)
 				.add(Items.BLUE_TERRACOTTA).add(Items.BLUE_WOOL);
