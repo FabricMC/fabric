@@ -47,7 +47,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, Object> fabric_dataAttachments = null;
 	/*
-	 * All of the attachment changes that should always be sent to newcomers, players that begin to track this target
+	 * All the attachment changes that should always be sent to newcomers, players that begin to track this target
 	 */
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, AttachmentChange> fabric_alwaysSentToNewcomers = null;
@@ -111,16 +111,17 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 		AttachmentSerializingImpl.serializeAttachmentData(nbt, wrapperLookup, fabric_dataAttachments);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void fabric_readAttachmentsFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
-		fabric_dataAttachments = AttachmentSerializingImpl.deserializeAttachmentData(nbt, wrapperLookup);
+		Map<AttachmentType<?>, Object> deserialized = AttachmentSerializingImpl.deserializeAttachmentData(nbt, wrapperLookup);
 
-		if (fabric_dataAttachments != null) {
-			fabric_dataAttachments.forEach((type, v) -> {
-				if (type.isSynced()) {
-					AttachmentTargetsMixin.this.fabric_acknowledgeSyncedEntry(type, v);
-				}
-			});
+		if (deserialized != null) {
+			// calling setAttached so that sync logic runs properly
+			// takes care of the case of targetOnly() attachments that would have no opportunity to sync
+			for (Map.Entry<AttachmentType<?>, Object> entry : deserialized.entrySet()) {
+				setAttached((AttachmentType<Object>) entry.getKey(), entry.getValue());
+			}
 		}
 	}
 
@@ -205,7 +206,8 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 		if (fabric_maybeSentToNewcomers != null) {
 			for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : fabric_maybeSentToNewcomers.entrySet()) {
-				BiPredicate<AttachmentTarget, ServerPlayerEntity> pred = ((AttachmentTypeImpl<?>) entry.getKey()).syncPredicate().customTest();
+				BiPredicate<AttachmentTarget, ServerPlayerEntity> pred = ((AttachmentTypeImpl<?>) entry.getKey()).syncPredicate()
+						.customTest();
 				// trySync type should always be CUSTOM here
 				assert pred != null;
 

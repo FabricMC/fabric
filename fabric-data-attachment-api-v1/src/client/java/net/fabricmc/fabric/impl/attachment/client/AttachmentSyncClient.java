@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.attachment.client;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AcceptedAttachmentsPayloadS2C;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
@@ -32,11 +33,8 @@ public class AttachmentSyncClient implements ClientModInitializer {
 		});
 
 		// play
-		ClientPlayNetworking.registerGlobalReceiver(AttachmentSyncPayload.ID, (payload, context) ->
-				context.client().submit(
-						() -> payload.attachments()
-								.forEach(attachmentChange -> attachmentChange.apply(context.client().world))
-				)
-		);
+		ClientPlayNetworking.registerGlobalReceiver(AttachmentSyncPayload.ID, (payload, context) -> {
+			payload.attachments().forEach(attachmentChange -> attachmentChange.apply(context.client().world));
+		});
 	}
 }
