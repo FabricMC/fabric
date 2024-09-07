@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.ComponentMap;
-import net.minecraft.component.ComponentMapImpl;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -49,7 +48,6 @@ public class ItemVariantImpl implements ItemVariant {
 
 	private final Item item;
 	private final ComponentChanges components;
-	private final ComponentMap componentMap;
 	private final int hashCode;
 	/**
 	 * Lazily computed, equivalent to calling toStack(1). <b>MAKE SURE IT IS NEVER MODIFIED!</b>
@@ -59,7 +57,6 @@ public class ItemVariantImpl implements ItemVariant {
 	public ItemVariantImpl(Item item, ComponentChanges components) {
 		this.item = item;
 		this.components = components;
-		this.componentMap = ComponentMapImpl.create(item.getComponents(), components);
 		hashCode = Objects.hash(item, components);
 	}
 
@@ -76,7 +73,7 @@ public class ItemVariantImpl implements ItemVariant {
 
 	@Override
 	public ComponentMap getComponentMap() {
-		return componentMap;
+		return getCachedStack().getComponents();
 	}
 
 	@Override
