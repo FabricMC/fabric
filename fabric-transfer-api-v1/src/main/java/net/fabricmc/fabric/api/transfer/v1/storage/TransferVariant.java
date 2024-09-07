@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 import java.util.Objects;
 
 import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.ComponentMap;
 
 /**
  * An immutable association of an immutable object instance (for example {@code Item} or {@code Fluid}) and data components.
@@ -46,6 +47,11 @@ public interface TransferVariant<O> {
 	 * @return The {@link ComponentChanges} of this variant.
 	 */
 	ComponentChanges getComponents();
+
+	/**
+	 * @return The {@link ComponentMap} of this variant.
+	 */
+	ComponentMap getComponentMap();
 
 	/**
 	 * Return true if this variant has a component changes.
