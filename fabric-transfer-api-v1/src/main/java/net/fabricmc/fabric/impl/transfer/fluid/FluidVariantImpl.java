@@ -71,7 +71,7 @@ public class FluidVariantImpl implements FluidVariant {
 	public FluidVariantImpl(Fluid fluid, ComponentChanges components) {
 		this.fluid = fluid;
 		this.components = components;
-		this.componentMap = ComponentMapImpl.create(ComponentMap.EMPTY, components);
+		this.componentMap = components == ComponentChanges.EMPTY ? ComponentMap.EMPTY : ComponentMapImpl.create(ComponentMap.EMPTY, components);
 		this.hashCode = Objects.hash(fluid, components);
 	}
 
