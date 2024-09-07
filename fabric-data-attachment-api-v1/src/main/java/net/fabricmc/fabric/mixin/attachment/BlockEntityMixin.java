@@ -79,7 +79,7 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 
 	@Override
 	public void fabric_acknowledgeSyncedEntry(AttachmentType<?> type, @Nullable Object value) {
-		if (this.hasWorld() && !this.world.isClient) {
+		if (this.hasWorld() && !this.world.isClient()) {
 			((BlockEntityAttachmentReceiver) this.world.getChunk(this.pos)).fabric_acknowledgeBlockEntityAttachment(
 					this.pos,
 					type,
@@ -95,7 +95,7 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
-		if (this.hasWorld() && !this.world.isClient) {
+		if (this.hasWorld() && !this.world.isClient()) {
 			AttachmentSyncPredicateImpl pred = ((AttachmentTypeImpl<?>) type).syncPredicate();
 			assert pred != null;
 

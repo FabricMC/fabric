@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
 public interface AttachmentTargetImpl extends AttachmentTarget {
 	/**
-	 * Copies attachments from the original to the targetInfo. This is used when a ProtoChunk is converted to a
+	 * Copies attachments from the original to the target. This is used when a ProtoChunk is converted to a
 	 * WorldChunk, and when an entity is respawned and a new instance is created. For entity respawns, it is
 	 * triggered on player respawn, entity conversion, return from the End, or cross-world entity teleportation.
 	 * In the first two cases, only the attachments with {@link AttachmentType#copyOnDeath()} will be transferred.
@@ -74,10 +74,13 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 
 	default AttachmentTargetInfo<?> fabric_getSyncTargetInfo() {
 		// this only makes sense for server objects
-		throw new UnsupportedOperationException("Sync targetInfo info was not retrieved on server!");
+		throw new UnsupportedOperationException("Sync target info was not retrieved on server!");
 	}
 
-	@Nullable
+	/*
+	 * Returns a list of changes that should be communicated to newcomers (i.e. clients that start tracking this target)
+	 * Most of it is computed in advance through acknowledgeSyncedEntry
+	 */
 	default List<AttachmentChange> fabric_getInitialSyncChanges(ServerPlayerEntity player) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
@@ -90,6 +93,9 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 		// default should be a no-op
 	}
 
+	/*
+	 * Called every time the value for a synced attachment is modified. Used for the logic needed for getInitialSyncChanges
+	 */
 	default void fabric_acknowledgeSyncedEntry(AttachmentType<?> type, @Nullable Object value) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}

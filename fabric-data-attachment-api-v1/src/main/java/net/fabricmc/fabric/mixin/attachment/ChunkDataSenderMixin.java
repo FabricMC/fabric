@@ -47,7 +47,7 @@ abstract class ChunkDataSenderMixin {
 		List<AttachmentChange> changes = ((AttachmentTargetImpl) player.getServerWorld()).fabric_getInitialSyncChanges(player);
 
 		if (changes != null) {
-			AttachmentChange.partitionForPackets(changes, player);
+			AttachmentChange.partitionAndSendPackets(changes, player);
 		}
 	}
 }

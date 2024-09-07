@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.attachment;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,13 +86,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 				return null;
 			}
 
-			T removed = (T) fabric_dataAttachments.remove(type);
-
-			if (fabric_dataAttachments.isEmpty()) {
-				fabric_dataAttachments = null;
-			}
-
-			return removed;
+			return (T) fabric_dataAttachments.remove(type);
 		} else {
 			if (fabric_dataAttachments == null) {
 				fabric_dataAttachments = new IdentityHashMap<>();
@@ -137,6 +132,18 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 	@Override
 	public void fabric_acknowledgeSyncedEntry(AttachmentType<?> type, @Nullable Object value) {
+		/*
+		 * The SyncType is used here to not have to unnecessarily run predicates on every AttachmentChange every single time
+		 * fabric_getInitialSyncChanges is called. Instead, we modify two maps:
+		 *   - fabric_alwaysSentToNewcomers keeps track of the changes that will always be synced with new players.
+		 *   - fabric_maybeSentToNewcomers keeps track of the changes for which the predicate must be checked every single time
+		 * The first includes all() and allButTarget() predicates, because we already know that their predicates will always
+		 * return true in the context they're called in, so it's wasteful to call them every time.
+		 * Likewise, in context, targetOnly() predicates would always fail, so it's wasteful to keep track of them.
+		 * On the other hand, custom() predicates need to be rechecked every time, so get sent to the second map.
+		 *
+		 * As such, there is no re-computation for all non-custom() attachments, which could prove significant for larger servers.
+		 */
 		SyncType syncType = ((AttachmentTypeImpl<?>) type).syncPredicate().type();
 
 		if (syncType == SyncType.TARGET_ONLY) {
@@ -151,10 +158,6 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 				}
 
 				fabric_maybeSentToNewcomers.remove(type);
-
-				if (fabric_maybeSentToNewcomers.isEmpty()) {
-					fabric_maybeSentToNewcomers = null;
-				}
 			} else {
 				AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value);
 
@@ -175,10 +178,6 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 				}
 
 				fabric_alwaysSentToNewcomers.remove(type);
-
-				if (fabric_alwaysSentToNewcomers.isEmpty()) {
-					fabric_alwaysSentToNewcomers = null;
-				}
 			} else {
 				AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value);
 
@@ -192,10 +191,9 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	@Nullable
 	public List<AttachmentChange> fabric_getInitialSyncChanges(ServerPlayerEntity player) {
 		if (fabric_dataAttachments == null || fabric_alwaysSentToNewcomers == null && fabric_maybeSentToNewcomers == null) {
-			return null;
+			return List.of();
 		}
 
 		List<AttachmentChange> list = new ArrayList<>();
@@ -208,8 +206,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : fabric_maybeSentToNewcomers.entrySet()) {
 				BiPredicate<AttachmentTarget, ServerPlayerEntity> pred =
 						((AttachmentTypeImpl<?>) entry.getKey()).syncPredicate().customTest();
-				// trySync type should always be CUSTOM here
-				assert pred != null;
+				// trySync type should always be CUSTOM here, hence pred != null
 
 				if (pred.test(this, player)) {
 					list.add(entry.getValue());
@@ -217,6 +214,8 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			}
 		}
 
+		// sort by size to better partition packets
+		list.sort(Comparator.comparingInt(c -> c.data().length));
 		return list;
 	}
 }

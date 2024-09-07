@@ -60,7 +60,7 @@ public final class AttachmentRegistry {
 
 	/**
 	 * Creates <i>and registers</i> an attachment, that will be automatically initialized with a default value
-	 * when an attachment does not exist on a given targetInfo, using {@link AttachmentTarget#getAttachedOrCreate(AttachmentType)}.
+	 * when an attachment does not exist on a given target, using {@link AttachmentTarget#getAttachedOrCreate(AttachmentType)}.
 	 *
 	 * @param id          the identifier of this attachment
 	 * @param initializer the initializer used to provide a default value
@@ -142,8 +142,10 @@ public final class AttachmentRegistry {
 		Builder<A> initializer(Supplier<A> initializer);
 
 		/**
-		 * TODO.
+		 * Declares that this attachment type may be automatically synchronized with some clients, as determined by {@code syncPredicate}.
 		 *
+		 * @param packetCodec the codec used to serialize the attachment data over the network
+		 * @param syncPredicate an {@link AttachmentSyncPredicate} determining with which clients to synchronize data
 		 * @return the builder
 		 */
 		AttachmentRegistry.Builder<A> syncWith(PacketCodec<PacketByteBuf, A> packetCodec, AttachmentSyncPredicate syncPredicate);

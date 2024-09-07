@@ -43,8 +43,7 @@ import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
 public class AttachmentSync implements ModInitializer {
-	public static final int MAX_IDENTIFIER_SIZE_IN_BYTES = 256;
-	public static final Identifier CONFIG_PACKET_ID = Identifier.of("fabric", "accepted_attachments_v1");
+	public static final int MAX_IDENTIFIER_SIZE = 256;
 
 	public static AcceptedAttachmentsPayloadC2S createResponsePayload() {
 		return new AcceptedAttachmentsPayloadC2S(AttachmentRegistryImpl.getSyncableAttachments());
@@ -81,8 +80,10 @@ public class AttachmentSync implements ModInitializer {
 				.register(AcceptedAttachmentsPayloadS2C.ID, AcceptedAttachmentsPayloadS2C.CODEC);
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
-			if (ServerConfigurationNetworking.canSend(handler, CONFIG_PACKET_ID)) {
+			if (ServerConfigurationNetworking.canSend(handler, AcceptedAttachmentsPayloadS2C.PACKET_ID)) {
 				handler.addTask(new AttachmentSyncTask());
+			} else {
+				AttachmentEntrypoint.LOGGER.debug("Couldn't send attachment configuration packet to client");
 			}
 		});
 
@@ -98,34 +99,29 @@ public class AttachmentSync implements ModInitializer {
 		PayloadTypeRegistry.playS2C().register(AttachmentSyncPayload.ID, AttachmentSyncPayload.CODEC);
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			if (ServerPlayNetworking.canSend(handler, AttachmentSyncPayload.PACKET_ID)) {
-				ServerPlayerEntity player = handler.player;
-				List<AttachmentChange> changes =
-						((AttachmentTargetImpl) player.getServerWorld()).fabric_getInitialSyncChanges(player);
-
-				if (changes != null) {
-					AttachmentChange.partitionForPackets(changes, player);
-				}
-			}
-		});
-
-		EntityTrackingEvents.START_TRACKING.register((trackedEntity, player) -> {
+			ServerPlayerEntity player = handler.player;
 			List<AttachmentChange> changes =
 					((AttachmentTargetImpl) player.getServerWorld()).fabric_getInitialSyncChanges(player);
 
 			if (changes != null) {
-				AttachmentChange.partitionForPackets(changes, player);
+				AttachmentChange.partitionAndSendPackets(changes, player);
+			}
+		});
+
+		EntityTrackingEvents.START_TRACKING.register((trackedEntity, player) -> {
+			List<AttachmentChange> changes = ((AttachmentTargetImpl) trackedEntity).fabric_getInitialSyncChanges(player);
+
+			if (changes != null) {
+				AttachmentChange.partitionAndSendPackets(changes, player);
 			}
 		});
 	}
 
 	private record AttachmentSyncTask() implements ServerPlayerConfigurationTask {
-		public static final Key KEY = new Key(CONFIG_PACKET_ID.toString());
+		public static final Key KEY = new Key(AcceptedAttachmentsPayloadS2C.PACKET_ID.toString());
 
 		@Override
 		public void sendPacket(Consumer<Packet<?>> sender) {
-			// Send packet with 1 so the client can send us back the list of supported tags.
-			// 1 is sent in case we need a different protocol later for some reason.
 			sender.accept(ServerConfigurationNetworking.createS2CPacket(AcceptedAttachmentsPayloadS2C.INSTANCE));
 		}
 

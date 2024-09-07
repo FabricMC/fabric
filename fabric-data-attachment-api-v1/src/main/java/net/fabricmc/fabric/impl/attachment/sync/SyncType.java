@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.impl.attachment.sync;
 
+/*
+ * Enum to keep track of the type of an AttachmentSyncPredicate
+ * see the comment in AttachmentTargetsMixin#fabric_acknowledgeSyncedEntry
+ */
 public enum SyncType {
 	ALL,
 	TARGET_ONLY,

@@ -51,7 +51,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			PacketCodecs.BYTE_ARRAY, AttachmentChange::data,
 			AttachmentChange::new
 	);
-	private static final int MAX_PADDING_SIZE_IN_BYTES = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + AttachmentSync.MAX_IDENTIFIER_SIZE_IN_BYTES;
+	private static final int MAX_PADDING_SIZE_IN_BYTES = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + AttachmentSync.MAX_IDENTIFIER_SIZE;
 	// add a parameter?
 	private static final int MAX_DATA_SIZE_IN_BYTES = 0x10000 - MAX_PADDING_SIZE_IN_BYTES;
 
@@ -75,7 +75,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		return new AttachmentChange(targetInfo, type, encoded);
 	}
 
-	public static void partitionForPackets(List<AttachmentChange> changes, ServerPlayerEntity player) {
+	public static void partitionAndSendPackets(List<AttachmentChange> changes, ServerPlayerEntity player) {
 		Set<Identifier> supported = ((SupportedAttachmentsClientConnection) ((ServerCommonNetworkHandlerAccessor) player.networkHandler).getConnection())
 				.fabric_getSupportedAttachments();
 		List<AttachmentChange> packetChanges = new ArrayList<>();
@@ -90,7 +90,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 
 			if (byteSize + size >= MAX_DATA_SIZE_IN_BYTES) {
 				ServerPlayNetworking.send(player, new AttachmentSyncPayload(packetChanges));
-				packetChanges = new ArrayList<>();
+				packetChanges.clear();
 				byteSize = Integer.BYTES + 1;
 			}
 

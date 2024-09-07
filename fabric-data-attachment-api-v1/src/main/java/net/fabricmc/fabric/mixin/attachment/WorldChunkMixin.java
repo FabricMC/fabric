@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -101,18 +101,15 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 	}
 
 	@Override
-	@Nullable
 	public List<AttachmentChange> fabric_getInitialSyncChanges(ServerPlayerEntity player) {
-		List<AttachmentChange> chunkChanges = super.fabric_getInitialSyncChanges(player);
-		List<AttachmentChange> changes = chunkChanges == null ? new ArrayList<>() : chunkChanges;
+		List<AttachmentChange> changes = super.fabric_getInitialSyncChanges(player);
 
 		this.alwaysSentToNewcomersBE.values().forEach(m -> changes.addAll(m.values()));
 		this.maybeSentToNewcomersBE.forEach((blockPos, map) -> {
 			for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : map.entrySet()) {
-				BiPredicate<AttachmentTarget, ServerPlayerEntity> pred = ((AttachmentTypeImpl<?>) entry.getKey()).syncPredicate()
-						.customTest();
-				// trySync type should always be CUSTOM here
-				assert pred != null;
+				BiPredicate<AttachmentTarget, ServerPlayerEntity> pred =
+						((AttachmentTypeImpl<?>) entry.getKey()).syncPredicate().customTest();
+				// trySync type should always be CUSTOM here, hence pred != null
 
 				if (pred.test(this, player)) {
 					changes.add(entry.getValue());
@@ -120,14 +117,15 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 			}
 		});
 
-		return changes.isEmpty() ? null : changes;
+		// sort by size to better partition packets
+		changes.sort(Comparator.comparingInt(c -> c.data().length));
+		return changes;
 	}
 
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
 		if (this.world instanceof ServerWorld serverWorld) {
 			AttachmentSyncPredicateImpl pred = ((AttachmentTypeImpl<?>) type).syncPredicate();
-			assert pred != null;
 
 			switch (pred.type()) {
 			case ALL, ALL_BUT_TARGET -> PlayerLookup

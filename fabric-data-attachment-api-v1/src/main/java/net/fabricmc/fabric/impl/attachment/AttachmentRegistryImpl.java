@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.attachment;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -35,18 +36,25 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPredicateImpl;
 
 public final class AttachmentRegistryImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-data-attachment-api-v1");
 	private static final Map<Identifier, AttachmentType<?>> attachmentRegistry = new HashMap<>();
 	private static final Set<Identifier> syncableAttachments = new HashSet<>();
+	private static final Set<Identifier> syncableView = Collections.unmodifiableSet(syncableAttachments);
 
 	public static <A> void register(Identifier id, AttachmentType<A> attachmentType) {
 		AttachmentType<?> existing = attachmentRegistry.put(id, attachmentType);
 
 		if (existing != null) {
 			LOGGER.warn("Encountered duplicate type registration for id {}", id);
+
+			// Prevent duplicate registration from incorrectly overriding a synced type with a non-synced one
+			if (existing.isSynced()) {
+				syncableAttachments.remove(id);
+			}
 		}
 
 		if (attachmentType.isSynced()) {
@@ -60,7 +68,7 @@ public final class AttachmentRegistryImpl {
 	}
 
 	public static Set<Identifier> getSyncableAttachments() {
-		return syncableAttachments;
+		return syncableView;
 	}
 
 	public static <A> AttachmentRegistry.Builder<A> builder() {
@@ -111,6 +119,14 @@ public final class AttachmentRegistryImpl {
 
 		@Override
 		public AttachmentType<A> buildAndRegister(Identifier id) {
+			if (syncPredicate != null && id.toString().length() >= AttachmentSync.MAX_IDENTIFIER_SIZE) {
+				throw new IllegalArgumentException(
+						"Identifier length is too long for a synced attachment type (max "
+						+ AttachmentSync.MAX_IDENTIFIER_SIZE
+						+ ")"
+				);
+			}
+
 			var attachment = new AttachmentTypeImpl<>(
 					id,
 					defaultInitializer,

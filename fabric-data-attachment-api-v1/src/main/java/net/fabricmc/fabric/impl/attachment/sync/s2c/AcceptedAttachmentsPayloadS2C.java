@@ -19,12 +19,12 @@ package net.fabricmc.fabric.impl.attachment.sync.s2c;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
-
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
+import net.minecraft.util.Identifier;
 
 public class AcceptedAttachmentsPayloadS2C implements CustomPayload {
 	public static final AcceptedAttachmentsPayloadS2C INSTANCE = new AcceptedAttachmentsPayloadS2C();
-	public static final Id<AcceptedAttachmentsPayloadS2C> ID = new Id<>(AttachmentSync.CONFIG_PACKET_ID);
+	public static final Identifier PACKET_ID = Identifier.of("fabric", "accepted_attachments_v1");
+	public static final Id<AcceptedAttachmentsPayloadS2C> ID = new Id<>(PACKET_ID);
 	public static final PacketCodec<PacketByteBuf, AcceptedAttachmentsPayloadS2C> CODEC = PacketCodec.unit(INSTANCE);
 
 	private AcceptedAttachmentsPayloadS2C() {
