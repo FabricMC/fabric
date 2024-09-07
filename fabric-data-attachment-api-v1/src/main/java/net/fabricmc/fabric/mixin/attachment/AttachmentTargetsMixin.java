@@ -206,8 +206,8 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 		if (fabric_maybeSentToNewcomers != null) {
 			for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : fabric_maybeSentToNewcomers.entrySet()) {
-				BiPredicate<AttachmentTarget, ServerPlayerEntity> pred = ((AttachmentTypeImpl<?>) entry.getKey()).syncPredicate()
-						.customTest();
+				BiPredicate<AttachmentTarget, ServerPlayerEntity> pred =
+						((AttachmentTypeImpl<?>) entry.getKey()).syncPredicate().customTest();
 				// trySync type should always be CUSTOM here
 				assert pred != null;
 
