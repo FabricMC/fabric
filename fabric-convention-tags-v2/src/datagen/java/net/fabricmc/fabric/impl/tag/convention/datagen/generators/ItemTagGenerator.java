@@ -321,8 +321,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ItemTags.STRIDER_FOOD)
 				.addOptionalTag(ItemTags.TURTLE_FOOD)
 				.addOptionalTag(ItemTags.WOLF_FOOD);
-
-
+		
 		getOrCreateTagBuilder(ConventionalItemTags.FOODS)
 				.add(Items.BAKED_POTATO)
 				.add(Items.PUMPKIN_PIE)
