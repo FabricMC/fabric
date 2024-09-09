@@ -1,0 +1,4 @@
+{
+  "block": "minecraft:melon",
+  "condition": "minecraft:block_state_property"
+}

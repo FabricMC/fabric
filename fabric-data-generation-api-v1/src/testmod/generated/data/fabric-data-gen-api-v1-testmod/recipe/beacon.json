@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "fabric:type": "fabric:difference",
+      "base": {
+        "fabric:type": "fabric:any",
+        "ingredients": [
+          "#minecraft:beacon_payment_items",
+          "minecraft:copper_ingot"
+        ]
+      },
+      "subtracted": [
+        "minecraft:iron_ingot",
+        "minecraft:gold_ingot",
+        "minecraft:diamond"
+      ]
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:beacon"
+  }
+}
