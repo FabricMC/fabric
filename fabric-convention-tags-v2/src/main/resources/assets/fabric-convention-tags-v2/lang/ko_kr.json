@@ -178,5 +178,20 @@
   "tag.item.c.gems.emerald": "에메랄드",
   "tag.item.c.gems.lapis": "청금석",
   "tag.item.c.nuggets.gold": "금 조각",
-  "tag.item.c.nuggets.iron": "철 조각"
+  "tag.item.c.nuggets.iron": "철 조각",
+  "tag.worldgen.biome.c.is_desert": "사막",
+  "tag.worldgen.biome.c.is_jungle": "정글",
+  "tag.worldgen.biome.c.is_mountain": "산",
+  "tag.worldgen.biome.c.is_mushroom": "버섯",
+  "tag.worldgen.biome.c.is_nether": "네더",
+  "tag.worldgen.biome.c.is_ocean": "바다",
+  "tag.worldgen.biome.c.is_overworld": "오버월드",
+  "tag.worldgen.biome.c.is_plains": "평원",
+  "tag.worldgen.biome.c.is_river": "강",
+  "tag.worldgen.biome.c.is_savanna": "사바나",
+  "tag.worldgen.biome.c.is_snowy": "눈 덮인",
+  "tag.worldgen.biome.c.is_snowy_plains": "눈 덮인 평원",
+  "tag.worldgen.biome.c.is_swamp": "늪",
+  "tag.worldgen.biome.c.is_taiga": "타이가",
+  "tag.worldgen.biome.c.is_void": "공허"
 }
