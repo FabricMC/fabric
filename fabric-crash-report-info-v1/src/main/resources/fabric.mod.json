@@ -19,8 +19,17 @@
     "fabricloader": ">=0.16.4"
   },
   "description": "Adds Fabric-related debug info to crash reports.",
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.impl.client.crash.report.info.ClientWatchdog"
+    ]
+  },
   "mixins": [
-    "fabric-crash-report-info-v1.mixins.json"
+    "fabric-crash-report-info-v1.mixins.json",
+    {
+      "config": "fabric-crash-report-info-v1.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"
