@@ -18,11 +18,15 @@ package net.fabricmc.fabric.test.transfer.unittests;
 
 import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.util.Unit;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
@@ -38,6 +42,28 @@ class FluidVariantTests extends AbstractTransferApiTest {
 		assertFluidEquals(Fluids.LAVA, FluidVariant.of(Fluids.LAVA), FluidVariant.of(Fluids.FLOWING_LAVA));
 		assertEquals(FluidVariant.of(Fluids.WATER), FluidVariant.of(Fluids.FLOWING_WATER));
 		assertEquals(FluidVariant.of(Fluids.LAVA), FluidVariant.of(Fluids.FLOWING_LAVA));
+	}
+
+	@Test
+	public void testWithChanges() {
+		FluidVariant variant = FluidVariant.of(Fluids.WATER, ComponentChanges.builder()
+				.add(DataComponentTypes.FIRE_RESISTANT, Unit.INSTANCE)
+				.build());
+
+		FluidVariant newVariant = variant.withChanges(ComponentChanges.builder()
+				.remove(DataComponentTypes.FIRE_RESISTANT)
+				.add(DataComponentTypes.GLIDER, Unit.INSTANCE)
+				.build());
+
+		Assertions.assertFalse(
+				newVariant.getComponentMap().contains(DataComponentTypes.FIRE_RESISTANT),
+				"New variant's FIRE_RESISTANT component was removed, but is still present"
+		);
+
+		Assertions.assertTrue(
+				newVariant.getComponentMap().contains(DataComponentTypes.GLIDER),
+				"New variant's GLIDER component was added, but is not present"
+		);
 	}
 
 	private static void assertFluidEquals(Fluid fluid, FluidVariant... variants) {
