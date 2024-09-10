@@ -66,10 +66,10 @@ public final class EnchantmentEvents {
 			}
 	);
 
-	public static final Event<Modify> MODIFY_EFFECTS = EventFactory.createArrayBacked(
-			Modify.class,
+	public static final Event<ModifyEffects> MODIFY_EFFECTS = EventFactory.createArrayBacked(
+			ModifyEffects.class,
 			callbacks -> (key, builder) -> {
-				for (Modify callback : callbacks) {
+				for (ModifyEffects callback : callbacks) {
 					callback.modifyEnchantmentEffects(key, builder);
 				}
 			}
@@ -95,7 +95,7 @@ public final class EnchantmentEvents {
 	}
 
 	@FunctionalInterface
-	public interface Modify {
+	public interface ModifyEffects {
 		void modifyEnchantmentEffects(
 				RegistryKey<Enchantment> key,
 				ComponentMap.Builder effectsMap
