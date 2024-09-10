@@ -2,23 +2,21 @@ package net.fabricmc.fabric.mixin.item;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
-import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.component.ComponentMap;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.registry.MutableRegistry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryLoader;
-
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryInfo;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
+import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 
 @Mixin(RegistryLoader.class)
-public class RegistryLoaderMixin {
+class RegistryLoaderMixin {
 
 	@WrapOperation(
 			method = "parseAndAdd",

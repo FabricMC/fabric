@@ -6,6 +6,7 @@
     "AbstractFurnaceBlockEntityMixin",
     "AnvilScreenHandlerMixin",
     "BrewingStandBlockEntityMixin",
+    "ComponentMapBuilderMixin",
     "EnchantCommandMixin",
     "EnchantmentHelperMixin",
     "EnchantRandomlyLootFunctionMixin",
