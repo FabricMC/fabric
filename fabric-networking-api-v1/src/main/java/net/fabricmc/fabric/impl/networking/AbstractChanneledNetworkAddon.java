@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.PacketCallbacks;
+import net.minecraft.network.packet.BrandCustomPayload;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.text.Text;
@@ -52,6 +53,8 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	protected final Set<Identifier> sendableChannels;
 
 	protected int commonVersion = -1;
+	@Nullable
+	protected String brand = null;
 
 	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, String description) {
 		super(receiver, description);
@@ -85,6 +88,10 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 				this.receiveRegistration(false, registrationPayload);
 				return true;
 			}
+		}
+
+		if (payload instanceof BrandCustomPayload brand) {
+			this.brand = brand.brand();
 		}
 
 		@Nullable H handler = this.getHandler(channelName);
@@ -216,6 +223,15 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	@Override
 	public CommonRegisterPayload createRegisterPayload() {
 		return new CommonRegisterPayload(getNegotiatedVersion(), getPhase(), this.getReceivableChannels());
+	}
+
+	@Nullable
+	public String getBrand() {
+		return this.brand;
+	}
+
+	public void setBrand(String brand) {
+		this.brand = brand;
 	}
 
 	@Override

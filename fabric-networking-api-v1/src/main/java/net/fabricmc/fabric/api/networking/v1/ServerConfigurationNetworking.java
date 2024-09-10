@@ -225,6 +225,19 @@ public final class ServerConfigurationNetworking {
 	// Helper methods
 
 	/**
+	 * Gets the brand of the client the player connected with.
+	 *
+	 * @param handler the network handler, representing the connection to the player/client
+	 * @return client's brand, or {@code null} if not sent
+	 */
+	@Nullable
+	public static String getBrand(ServerConfigurationNetworkHandler handler) {
+		Objects.requireNonNull(handler, "Server configuration network handler cannot be null");
+
+		return ServerNetworkingImpl.getAddon(handler).getBrand();
+	}
+
+	/**
 	 * Returns the <i>Minecraft</i> Server of a server configuration network handler.
 	 *
 	 * @param handler the server configuration network handler

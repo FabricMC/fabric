@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -44,8 +45,12 @@ abstract class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkHandler 
 	}
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void initAddon(CallbackInfo ci) {
+	private void initAddon(CallbackInfo ci, @Local(argsOnly = true) ClientConnection connection) {
 		this.addon = new ServerPlayNetworkAddon((ServerPlayNetworkHandler) (Object) this, connection, server);
+
+		if (connection.getPacketListener() instanceof NetworkHandlerExtensions extension) {
+			this.addon.setBrand(extension.getAddon().getBrand());
+		}
 
 		if (!(this instanceof UntrackedNetworkHandler)) {
 			// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
