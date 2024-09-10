@@ -98,7 +98,7 @@ public abstract class FabricRecipeProvider extends RecipeGenerator.RecipeProvide
 		return registriesFuture.thenCompose((wrapperLookup -> {
 			Set<Identifier> generatedRecipes = Sets.newHashSet();
 			List<CompletableFuture<?>> list = new ArrayList<>();
-			getRecipeGenerator(wrapperLookup, new RecipeExporter() {
+			RecipeGenerator recipeGenerator = getRecipeGenerator(wrapperLookup, new RecipeExporter() {
 				@Override
 				public void accept(Identifier recipeId, Recipe<?> recipe, @Nullable AdvancementEntry advancement) {
 					Identifier identifier = getRecipeIdentifier(recipeId);
@@ -134,6 +134,7 @@ public abstract class FabricRecipeProvider extends RecipeGenerator.RecipeProvide
 				public void addRootAdvancement() {
 				}
 			});
+			recipeGenerator.generate();
 			return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));
 		}));
 	}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_charcoal": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:charcoal"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "minecraft:torch"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_charcoal"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:torch"
+    ]
+  }
+}
