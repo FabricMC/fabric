@@ -15,7 +15,8 @@
     "ItemStackMixin",
     "LivingEntityMixin",
     "RecipeMixin",
-    "RegistriesMixin"
+    "RegistriesMixin",
+    "RegistryLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

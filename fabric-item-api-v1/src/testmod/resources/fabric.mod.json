@@ -13,7 +13,8 @@
       "net.fabricmc.fabric.test.item.CustomDamageTest",
       "net.fabricmc.fabric.test.item.DefaultItemComponentTest",
       "net.fabricmc.fabric.test.item.ItemUpdateAnimationTest",
-      "net.fabricmc.fabric.test.item.ArmorKnockbackResistanceTest"
+      "net.fabricmc.fabric.test.item.ArmorKnockbackResistanceTest",
+      "net.fabricmc.fabric.test.item.CustomEnchantmentEffectsTest"
     ],
     "client": [
       "net.fabricmc.fabric.test.item.client.TooltipTests"
