@@ -51,6 +51,10 @@
     {
       "id": "#minecraft:enchantable/durability",
       "required": false
+    },
+    {
+      "id": "#minecraft:enchantable/vanishing",
+      "required": false
     }
   ]
 }
