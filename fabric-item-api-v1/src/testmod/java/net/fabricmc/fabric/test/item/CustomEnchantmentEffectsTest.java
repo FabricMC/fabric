@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.test.item;
 
 import java.util.Optional;
@@ -5,7 +21,6 @@ import java.util.Optional;
 import net.minecraft.component.EnchantmentEffectComponentTypes;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentLevelBasedValue;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.enchantment.effect.EnchantmentEffectEntry;
 import net.minecraft.enchantment.effect.EnchantmentEffectTarget;
 import net.minecraft.enchantment.effect.TargetedEnchantmentEffect;
@@ -14,22 +29,18 @@ import net.minecraft.enchantment.effect.value.AddEnchantmentEffect;
 import net.minecraft.entity.EntityType;
 import net.minecraft.loot.condition.DamageSourcePropertiesLootCondition;
 import net.minecraft.loot.condition.EntityPropertiesLootCondition;
-import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.predicate.entity.DamageSourcePredicate;
-
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
-
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.EntityTypePredicate;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.util.Identifier;
 
-public class CustomEnchantmentEffectsTest implements ModInitializer {
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 
+public class CustomEnchantmentEffectsTest implements ModInitializer {
 	// weird impaling is a copy of impaling used for testing (just in case minecraft changes impaling for some reason)
 	public static final RegistryKey<Enchantment> WEIRD_IMPALING = RegistryKey.of(
 			RegistryKeys.ENCHANTMENT,
@@ -41,7 +52,6 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 		EnchantmentEvents.MODIFY_EFFECTS.register(
 				(key, builder) -> {
 					if (key == WEIRD_IMPALING) {
-
 						// make impaling set things on fire
 						builder.getOrEmpty(EnchantmentEffectComponentTypes.POST_ATTACK)
 								.add(
