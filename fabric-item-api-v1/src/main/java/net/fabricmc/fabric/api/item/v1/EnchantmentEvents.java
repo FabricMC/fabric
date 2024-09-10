@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
+import net.minecraft.component.ComponentMap;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -64,6 +66,15 @@ public final class EnchantmentEvents {
 			}
 	);
 
+	public static final Event<Modify> MODIFY_EFFECTS = EventFactory.createArrayBacked(
+			Modify.class,
+			callbacks -> (key, builder) -> {
+				for (Modify callback : callbacks) {
+					callback.modifyEnchantmentEffects(key, builder);
+				}
+			}
+	);
+
 	@FunctionalInterface
 	public interface AllowEnchanting {
 		/**
@@ -80,6 +91,14 @@ public final class EnchantmentEvents {
 				RegistryEntry<Enchantment> enchantment,
 				ItemStack target,
 				EnchantingContext enchantingContext
+		);
+	}
+
+	@FunctionalInterface
+	public interface Modify {
+		void modifyEnchantmentEffects(
+				RegistryKey<Enchantment> key,
+				ComponentMap.Builder effectsMap
 		);
 	}
 }
