@@ -31,13 +31,11 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.equipment.EquipmentModels;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -63,7 +61,7 @@ public final class EntityEventTests implements ModInitializer {
 	);
 	public static final Block TEST_BED = new TestBedBlock(AbstractBlock.Settings.create().strength(1, 1).registryKey(TEST_BED_KEY));
 	public static final RegistryKey<Item> DIAMOND_ELYTRA_KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of("fabric-entity-events-v1-testmod", "diamond_elytra"));
-	public static final Item DIAMOND_ELYTRA = new Item(new Item.Settings().component(DataComponentTypes.GLIDER, Unit.INSTANCE).equippable(EquipmentSlot.CHEST, SoundEvents.ITEM_ARMOR_EQUIP_ELYTRA, EquipmentModels.ELYTRA).registryKey(DIAMOND_ELYTRA_KEY));
+	public static final Item DIAMOND_ELYTRA = new Item(new Item.Settings().component(DataComponentTypes.GLIDER, Unit.INSTANCE).equippable(EquipmentSlot.CHEST).registryKey(DIAMOND_ELYTRA_KEY));
 
 	@Override
 	public void onInitialize() {

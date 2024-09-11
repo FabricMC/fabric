@@ -67,7 +67,7 @@ public abstract class WorldRendererMixin {
 
 	@Inject(method = "render", at = @At("HEAD"))
 	private void beforeRender(ObjectAllocator objectAllocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
-		context.prepare((WorldRenderer) (Object) this, tickCounter, renderBlockOutline, camera, gameRenderer, lightmapTextureManager, projectionMatrix, positionMatrix, bufferBuilders.getEntityVertexConsumers(), world.getProfiler(), MinecraftClient.isFabulousGraphicsOrBetter(), world);
+		context.prepare((WorldRenderer) (Object) this, tickCounter, renderBlockOutline, camera, gameRenderer, lightmapTextureManager, projectionMatrix, positionMatrix, bufferBuilders.getEntityVertexConsumers(), MinecraftClient.isFabulousGraphicsOrBetter(), world);
 		WorldRenderEvents.START.invoker().onStart(context);
 	}
 

@@ -8,6 +8,7 @@
     "PathContextMixin",
     "FarmerWorkTaskAccessor",
     "GiveGiftsToHeroTaskAccessor",
+    "GiveGiftsToHeroTaskMixin",
     "HoeItemAccessor",
     "HoneycombItemMixin",
     "LandPathNodeMakerMixin",

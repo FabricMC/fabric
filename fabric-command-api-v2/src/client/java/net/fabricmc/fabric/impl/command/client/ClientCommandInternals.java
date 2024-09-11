@@ -40,6 +40,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.class_10209;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
@@ -76,7 +77,7 @@ public final class ClientCommandInternals {
 		// noinspection ConstantConditions
 		FabricClientCommandSource commandSource = (FabricClientCommandSource) client.getNetworkHandler().getCommandSource();
 
-		client.getProfiler().push(command);
+		class_10209.method_64146().push(command);
 
 		try {
 			// TODO: Check for server commands before executing.
@@ -100,7 +101,7 @@ public final class ClientCommandInternals {
 			commandSource.sendError(Text.of(e.getMessage()));
 			return true;
 		} finally {
-			client.getProfiler().pop();
+			class_10209.method_64146().pop();
 		}
 	}
 
