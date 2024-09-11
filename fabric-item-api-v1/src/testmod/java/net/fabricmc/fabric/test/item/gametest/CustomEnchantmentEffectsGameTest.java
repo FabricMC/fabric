@@ -43,7 +43,7 @@ import net.minecraft.world.GameMode;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.fabric.test.item.CustomEnchantmentEffectsTest;
 
-public class CustomEnchantmentEffectGameTest implements FabricGameTest {
+public class CustomEnchantmentEffectsGameTest implements FabricGameTest {
 	@GameTest(templateName = "fabric-item-api-v1-testmod:bedrock_platform")
 	public void weirdImpalingSetsFireToTargets(TestContext context) {
 		BlockPos pos = new BlockPos(3, 3, 3);

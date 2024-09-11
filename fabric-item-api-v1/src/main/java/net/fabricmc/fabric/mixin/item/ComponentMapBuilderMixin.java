@@ -19,9 +19,12 @@ package net.fabricmc.fabric.mixin.item;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -43,9 +46,11 @@ abstract class ComponentMapBuilderMixin implements FabricComponentMapBuilder {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T getOrCreate(ComponentType<T> type, Supplier<T> defaultCreator) {
+	public <T> T getOrCreate(ComponentType<T> type, Supplier<@NotNull T> fallback) {
 		if (!this.components.containsKey(type)) {
-			this.add(type, defaultCreator.get());
+			T defaultValue = fallback.get();
+			Objects.requireNonNull(defaultValue, "Cannot insert null values to component map builder");
+			this.add(type, defaultValue);
 		}
 
 		return (T) this.components.get(type);
@@ -53,8 +58,9 @@ abstract class ComponentMapBuilderMixin implements FabricComponentMapBuilder {
 
 	@Override
 	public <T> List<T> getOrEmpty(ComponentType<List<T>> type) {
+		// creating a new array list guarantees that the list in the map is mutable
 		List<T> existing = new ArrayList<>(this.getOrCreate(type, Collections::emptyList));
-		this.add(type, existing); // guarantees that the list in the map is mutable
+		this.add(type, existing);
 		return existing;
 	}
 }
