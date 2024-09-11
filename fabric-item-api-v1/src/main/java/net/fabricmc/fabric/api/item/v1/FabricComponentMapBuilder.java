@@ -16,16 +16,12 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import net.minecraft.component.ComponentMap;
-
-import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.ComponentType;
 
@@ -34,6 +30,7 @@ import net.minecraft.component.ComponentType;
  *
  * <p>Note: This interface is automatically implemented on all component map builders via Mixin and interface injection.
  */
+@ApiStatus.NonExtendable
 public interface FabricComponentMapBuilder {
 	/**
 	 * Gets the current value for the component type in the builder, or creates and adds a new value if it is not present

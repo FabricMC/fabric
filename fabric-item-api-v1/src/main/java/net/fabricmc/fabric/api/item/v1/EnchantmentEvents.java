@@ -66,6 +66,17 @@ public final class EnchantmentEvents {
 			}
 	);
 
+	/**
+	 * An event that allows the effects of an {@link Enchantment} to be modified without needing to fully override an
+	 * enchantment.
+	 *
+	 * <p>This should only be used to modify the behavior of <em>external</em> enchantments, where 'external' means
+	 * either vanilla or from another mod. For instance, a mod might add a bleed effect to Sharpness (and only Sharpness).
+	 *
+	 * <p>To add effects to your own enchantments, simply define the effects field for the enchantment in your mod's datapack.
+	 * See the <a href="https://minecraft.wiki/w/Enchantment_definition">Enchantment Definition page</a> on the Minecraft Wiki
+	 * for more information.
+	 */
 	public static final Event<ModifyEffects> MODIFY_EFFECTS = EventFactory.createArrayBacked(
 			ModifyEffects.class,
 			callbacks -> (key, builder) -> {
@@ -96,9 +107,16 @@ public final class EnchantmentEvents {
 
 	@FunctionalInterface
 	public interface ModifyEffects {
+		/**
+		 * Modifies the effects of an {@link Enchantment}.
+		 *
+		 * @param key The ID of the enchantment
+		 * @param builder The component map builder for the enchantment
+		 * @see FabricComponentMapBuilder
+		 */
 		void modifyEnchantmentEffects(
 				RegistryKey<Enchantment> key,
-				ComponentMap.Builder effectsMap
+				ComponentMap.Builder builder
 		);
 	}
 }
