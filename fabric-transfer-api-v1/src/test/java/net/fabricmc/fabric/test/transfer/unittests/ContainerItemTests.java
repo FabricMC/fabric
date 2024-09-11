@@ -29,6 +29,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 class ContainerItemTests extends AbstractTransferApiTest {
@@ -74,6 +75,48 @@ class ContainerItemTests extends AbstractTransferApiTest {
 		try (var tx = Transaction.openOuter()) {
 			Assertions.assertEquals(20, storage.extract(ItemVariant.of(Items.NETHER_STAR), 64, tx));
 			tx.commit();
+		}
+	}
+
+	@Test
+	public void bundle() {
+		var sourceStorage = new SingleStackStorage() {
+			public ItemStack stack = new ItemStack(Items.BUNDLE);
+
+			@Override
+			protected ItemStack getStack() {
+				return stack;
+			}
+
+			@Override
+			public void setStack(ItemStack stack) {
+				this.stack = stack;
+			}
+		};
+
+		Storage<ItemVariant> storage = ItemStorage.ITEM.find(sourceStorage.stack, ContainerItemContext.ofSingleSlot(sourceStorage));
+
+		Assertions.assertNotNull(storage, "Bundle didn't have a Storage<ItemVariant>");
+
+		try (Transaction tx = Transaction.openOuter()) {
+			long inserted1 = storage.insert(ItemVariant.of(Items.NETHER_STAR), 200, tx);
+			Assertions.assertEquals(64, inserted1);
+
+			long inserted2 = storage.insert(ItemVariant.of(Items.STONE), 40, tx);
+			Assertions.assertEquals(0, inserted2);
+
+			tx.commit();
+		}
+
+		try (Transaction tx = Transaction.openOuter()) {
+			long extracted1 = storage.extract(ItemVariant.of(Items.STONE), 60, tx);
+			Assertions.assertEquals(0, extracted1);
+
+			long extracted2 = storage.extract(ItemVariant.of(Items.NETHER_STAR), 35, tx);
+			Assertions.assertEquals(35, extracted2);
+
+			StorageView<ItemVariant> view = storage.nonEmptyIterator().next();
+			Assertions.assertEquals(29, view.getAmount());
 		}
 	}
 }
