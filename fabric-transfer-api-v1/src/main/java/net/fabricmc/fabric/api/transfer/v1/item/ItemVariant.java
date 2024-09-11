@@ -114,5 +114,5 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 *
 	 * @see ItemStack#applyUnvalidatedChanges(ComponentChanges)
 	 */
-	ItemVariant withChanges(ComponentChanges changes);
+	ItemVariant withComponentChanges(ComponentChanges changes);
 }
