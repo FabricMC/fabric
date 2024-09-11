@@ -40,6 +40,7 @@ public interface FabricComponentMapBuilder {
 	 *                 may not be null.
 	 * @param <T>      The type of the component data
 	 * @return Returns the current value in the map builder, or the default value provided by the fallback if not present
+	 * @see #getOrEmpty(ComponentType)
 	 */
 	default <T> T getOrCreate(ComponentType<T> type, Supplier<@NotNull T> fallback) {
 		throw new AssertionError("Implemented in Mixin");

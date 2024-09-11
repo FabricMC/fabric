@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.item.v1;
 
 import net.minecraft.component.ComponentMap;
+import net.minecraft.component.ComponentType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.RegistryKey;
@@ -76,6 +77,10 @@ public final class EnchantmentEvents {
 	 * <p>To add effects to your own enchantments, simply define the effects field for the enchantment in your mod's datapack.
 	 * See the <a href="https://minecraft.wiki/w/Enchantment_definition">Enchantment Definition page</a> on the Minecraft Wiki
 	 * for more information.
+	 *
+	 * <p>When adding effects to the builder, prefer to use {@link FabricComponentMapBuilder#getOrEmpty(ComponentType)}
+	 * where possible, as the {@linkplain ComponentMap.Builder#add normal add method} will overwrite existing effects for
+	 * that type.
 	 */
 	public static final Event<ModifyEffects> MODIFY_EFFECTS = EventFactory.createArrayBacked(
 			ModifyEffects.class,
