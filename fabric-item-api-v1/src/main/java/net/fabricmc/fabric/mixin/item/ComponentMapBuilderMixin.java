@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;

@@ -33,7 +33,7 @@ import net.minecraft.component.ComponentType;
 @ApiStatus.NonExtendable
 public interface FabricComponentMapBuilder {
 	/**
-	 * Gets the current value for the component type in the builder, or creates and adds a new value if it is not present
+	 * Gets the current value for the component type in the builder, or creates and adds a new value if it is not present.
 	 *
 	 * @param type     The component type
 	 * @param fallback The supplier for the default data value if the type is not in this map yet. The value given by this supplier
@@ -46,7 +46,7 @@ public interface FabricComponentMapBuilder {
 	}
 
 	/**
-	 * Gets the current value for the component type in the builder, or creates and adds a new value if it is not present
+	 * Gets the current value for the component type in the builder, or creates and adds a new value if it is not present.
 	 *
 	 * @param type         The component type
 	 * @param defaultValue The default data value if the type is not in this map yet
