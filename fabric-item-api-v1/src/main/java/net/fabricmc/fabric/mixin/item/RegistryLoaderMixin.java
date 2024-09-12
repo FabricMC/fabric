@@ -29,6 +29,9 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.resource.Resource;
 
+import net.minecraft.text.Text;
+import net.minecraft.util.Util;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -89,21 +92,8 @@ abstract class RegistryLoaderMixin {
 			Operation<RegistryEntry.Reference<T>> original
 	) {
 		if (object instanceof Enchantment enchantment) {
-			ComponentMap.Builder builder = ComponentMap.builder();
-			builder.addAll(enchantment.effects());
-			EnchantmentEvents.MODIFY_EFFECTS.invoker().modifyEnchantmentEffects(
-					(RegistryKey<Enchantment>) registryKey,
-					builder,
-					FABRIC_API$SOURCE.get()
-			);
-			FABRIC_API$SOURCE.set(EnchantmentSource.DATA_PACK);
-
-			object = new Enchantment(
-					enchantment.description(),
-					enchantment.definition(),
-					enchantment.exclusiveSet(),
-					builder.build()
-			);
+			object = EnchantmentUtil.modify((RegistryKey<Enchantment>)registryKey, enchantment, FABRIC_API$SOURCE.get());
+			FABRIC_API$SOURCE.remove();
 		}
 
 		return original.call(instance, registryKey, object, registryEntryInfo);

@@ -49,40 +49,30 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		EnchantmentEvents.MODIFY_EFFECTS.register(
+		EnchantmentEvents.MODIFY.register(
 				(key, builder, source) -> {
 					if (source.isBuiltin() && key == WEIRD_IMPALING) {
 						// make impaling set things on fire
-						builder.getOrEmpty(EnchantmentEffectComponentTypes.POST_ATTACK)
-								.add(
-										new TargetedEnchantmentEffect<>(
-												EnchantmentEffectTarget.ATTACKER,
-												EnchantmentEffectTarget.VICTIM,
-												new IgniteEnchantmentEffect(EnchantmentLevelBasedValue.linear(4.0f)),
-												Optional.of(DamageSourcePropertiesLootCondition
-														.builder(DamageSourcePredicate.Builder.create().isDirect(true))
-														.build())
-										)
-								);
+						builder.addEffect(
+								EnchantmentEffectComponentTypes.POST_ATTACK,
+								EnchantmentEffectTarget.ATTACKER,
+								EnchantmentEffectTarget.VICTIM,
+								new IgniteEnchantmentEffect(EnchantmentLevelBasedValue.linear(4.0f)),
+								DamageSourcePropertiesLootCondition.builder(
+										DamageSourcePredicate.Builder.create().isDirect(true)
+								)
+						);
 
 						// add bonus impaling damage to zombie
-						builder.getOrEmpty(EnchantmentEffectComponentTypes.DAMAGE)
-								.add(
-										new EnchantmentEffectEntry<>(
-												new AddEnchantmentEffect(
-														EnchantmentLevelBasedValue.linear(2.5f)
-												),
-												Optional.of(
-														EntityPropertiesLootCondition.builder(
-																LootContext.EntityTarget.THIS,
-																EntityPredicate.Builder.create()
-																		.type(
-																				EntityTypePredicate.create(EntityType.ZOMBIE)
-																		)
-														).build()
-												)
-										)
-								);
+						builder.addEffect(
+								EnchantmentEffectComponentTypes.DAMAGE,
+								new AddEnchantmentEffect(EnchantmentLevelBasedValue.linear(2.5f)),
+								EntityPropertiesLootCondition.builder(
+										LootContext.EntityTarget.THIS,
+										EntityPredicate.Builder.create()
+												.type(EntityTypePredicate.create(EntityType.ZOMBIE))
+								)
+						);
 					}
 				}
 		);

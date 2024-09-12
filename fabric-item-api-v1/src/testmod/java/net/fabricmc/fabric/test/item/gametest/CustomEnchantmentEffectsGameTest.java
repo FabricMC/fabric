@@ -77,7 +77,10 @@ public class CustomEnchantmentEffectsGameTest implements FabricGameTest {
 		List<EnchantmentEffectEntry<EnchantmentValueEffect>> damageEffects = impaling
 				.getEffect(EnchantmentEffectComponentTypes.DAMAGE);
 
-		context.assertTrue(damageEffects.size() == 2, "Weird Impaling does not have two damage effects");
+		context.assertTrue(
+				damageEffects.size() == 2,
+				String.format("Weird Impaling has %d damage effect(s), not the expected 2", damageEffects.size())
+		);
 		context.complete();
 	}
 

@@ -68,25 +68,20 @@ public final class EnchantmentEvents {
 	);
 
 	/**
-	 * An event that allows the effects of an {@link Enchantment} to be modified without needing to fully override an
-	 * enchantment.
+	 * An event that an {@link Enchantment} to be modified without needing to fully override an enchantment.
 	 *
 	 * <p>This should only be used to modify the behavior of <em>external</em> enchantments, where 'external' means
 	 * either vanilla or from another mod. For instance, a mod might add a bleed effect to Sharpness (and only Sharpness).
 	 *
-	 * <p>To add effects to your own enchantments, simply define the effects field for the enchantment in your mod's datapack.
-	 * See the <a href="https://minecraft.wiki/w/Enchantment_definition">Enchantment Definition page</a> on the Minecraft Wiki
+	 * <p>For your own enchantments, you should simply define them for the enchantment in your mod's datapack. See the
+	 * <a href="https://minecraft.wiki/w/Enchantment_definition">Enchantment Definition page</a> on the Minecraft Wiki
 	 * for more information.
-	 *
-	 * <p>When adding effects to the builder, prefer to use {@link FabricComponentMapBuilder#getOrEmpty(ComponentType)}
-	 * where possible, as the {@linkplain ComponentMap.Builder#add normal add method} will overwrite existing effects for
-	 * that type.
 	 */
-	public static final Event<ModifyEffects> MODIFY_EFFECTS = EventFactory.createArrayBacked(
-			ModifyEffects.class,
+	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(
+			Modify.class,
 			callbacks -> (key, builder, source) -> {
-				for (ModifyEffects callback : callbacks) {
-					callback.modifyEnchantmentEffects(key, builder, source);
+				for (Modify callback : callbacks) {
+					callback.modify(key, builder, source);
 				}
 			}
 	);
@@ -111,18 +106,17 @@ public final class EnchantmentEvents {
 	}
 
 	@FunctionalInterface
-	public interface ModifyEffects {
+	public interface Modify {
 		/**
 		 * Modifies the effects of an {@link Enchantment}.
 		 *
 		 * @param key The ID of the enchantment
-		 * @param builder The component map builder for the enchantment
+		 * @param builder The enchantment builder
 		 * @param source The source of the enchantment
-		 * @see FabricComponentMapBuilder
 		 */
-		void modifyEnchantmentEffects(
+		void modify(
 				RegistryKey<Enchantment> key,
-				ComponentMap.Builder builder,
+				Enchantment.Builder builder,
 				EnchantmentSource source
 		);
 	}
