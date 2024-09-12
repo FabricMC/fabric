@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin;
+package net.fabricmc.fabric.mixin.dev;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import net.minecraft.world.chunk.Chunk;
 
 import net.fabricmc.fabric.FabricDev;
 
-@Mixin({Block.class, Item.class})
-public class BlockAndItemMixin {
-	@Dynamic("@ModifyExpressionValue's the FIELD GET of SharedConstants.isDevelopment to add a OR condition for FabricDev.LOG_CONVENTION_ISSUES")
-	@ModifyExpressionValue(method = {
-			"<init>(Lnet/minecraft/block/AbstractBlock$Settings;)V",
-			"<init>(Lnet/minecraft/item/Item$Settings;)V"
-	}, at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-	private boolean fabric$mevIsDevelopmentForDevModule(boolean original) {
-		return original || FabricDev.LOG_CONVENTION_ISSUES;
+@Mixin(Chunk.class)
+public class ChunkMixin {
+	@Dynamic("@ModifyExpressionValue's the FIELD GET of SharedConstants.isDevelopment to add a OR condition for FabricDev.ENABLE_UNPRIMED_HEIGHTMAP_LOGGING")
+	@ModifyExpressionValue(method = "sampleHeightmap", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
+	private static boolean fabric$mevIsDevelopmentForDevModule(boolean original) {
+		return original || FabricDev.ENABLE_UNPRIMED_HEIGHTMAP_LOGGING;
 	}
 }

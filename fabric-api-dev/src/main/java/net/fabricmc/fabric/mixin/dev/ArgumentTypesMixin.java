@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin;
+package net.fabricmc.fabric.mixin.dev;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.server.dedicated.EulaReader;
+import net.minecraft.command.argument.ArgumentTypes;
 
 import net.fabricmc.fabric.FabricDev;
 
-@Mixin(EulaReader.class)
-public class EulaReaderMixin {
-	@Dynamic("@ModifyExpressionValue's the FIELD GET of SharedConstants.isDevelopment to add a OR condition for FabricDev.ALWAYS_AGREE_TO_EULA")
-	@ModifyExpressionValue(method = {"<init>", "createEulaFile"}, at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-	private boolean fabric$mevIsDevelopmentForDevModule(boolean original) {
-		return original || FabricDev.ALWAYS_AGREE_TO_EULA;
+@Mixin(ArgumentTypes.class)
+public class ArgumentTypesMixin {
+	@Dynamic("@ModifyExpressionValue's the FIELD GET of SharedConstants.isDevelopment to add a OR condition for FabricDev.REGISTER_TEST_ARGUMENTS")
+	@ModifyExpressionValue(method = "register(Lnet/minecraft/registry/Registry;)Lnet/minecraft/command/argument/serialize/ArgumentSerializer;", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
+	private static boolean fabric$mevIsDevelopmentForDevModule(boolean original) {
+		return original || FabricDev.REGISTER_TEST_ARGUMENTS;
 	}
 }

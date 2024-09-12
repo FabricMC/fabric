@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin;
+package net.fabricmc.fabric.mixin.dev;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.util.math.BlockBox;
+import net.minecraft.util.collection.Weight;
 
 import net.fabricmc.fabric.FabricDev;
 
-@Mixin(BlockBox.class)
-public class BlockBoxMixin {
-	@Dynamic("@ModifyExpressionValue's the FIELD GET of SharedConstants.isDevelopment to add a OR condition for FabricDev.THROW_ON_INVALID_BLOCK_BOXES")
-	@ModifyExpressionValue(method = "<init>(IIIIII)V", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
+@Mixin(Weight.class)
+public class WeightMixin {
+	@Dynamic("@ModifyExpressionValue's the FIELD GET of SharedConstants.isDevelopment to add a OR condition for FabricDev.ZERO_WEIGHT_WARNING")
+	@ModifyExpressionValue(method = "validate", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
 	private static boolean fabric$mevIsDevelopmentForDevModule(boolean original) {
-		return original || FabricDev.THROW_ON_INVALID_BLOCK_BOXES;
+		return original || FabricDev.ZERO_WEIGHT_WARNING;
 	}
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin;
+package net.fabricmc.fabric.mixin.dev;
 
 import java.util.Set;
 import java.util.function.Consumer;
