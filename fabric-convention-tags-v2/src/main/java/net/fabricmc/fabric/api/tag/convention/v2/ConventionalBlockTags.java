@@ -35,6 +35,7 @@ public final class ConventionalBlockTags {
 	 */
 	public static final TagKey<Block> STONES = register("stones");
 	public static final TagKey<Block> COBBLESTONES = register("cobblestones");
+	public static final TagKey<Block> OBSIDIANS = register("obsidians");
 
 	// Ores - broad categories
 	public static final TagKey<Block> ORES = register("ores");

@@ -36,6 +36,7 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> STONES = register("stones");
 	public static final TagKey<Item> COBBLESTONES = register("cobblestones");
+	public static final TagKey<Item> OBSIDIANS = register("obsidians");
 
 	// Tool tags
 	public static final TagKey<Item> TOOLS = register("tools");

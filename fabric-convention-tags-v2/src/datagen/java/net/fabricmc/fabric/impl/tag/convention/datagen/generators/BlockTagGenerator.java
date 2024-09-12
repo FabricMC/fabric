@@ -68,6 +68,9 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.MOSSY_COBBLESTONE)
 				.add(Blocks.COBBLED_DEEPSLATE)
 				.add(Blocks.INFESTED_COBBLESTONE);
+		getOrCreateTagBuilder(ConventionalBlockTags.OBSIDIANS)
+				.add(Blocks.OBSIDIAN)
+				.add(Blocks.CRYING_OBSIDIAN);
 
 		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES)
 				.add(Blocks.NETHER_QUARTZ_ORE);
