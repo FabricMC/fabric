@@ -24,6 +24,7 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.FireworkExplosionComponent;
 import net.minecraft.component.type.FireworksComponent;
 import net.minecraft.item.Items;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -50,6 +51,16 @@ public class DefaultItemComponentTest implements ModInitializer {
 			context.modify(Items.BEEF, builder -> {
 				// Remove the food component from beef
 				builder.add(DataComponentTypes.FOOD, null);
+			});
+			// add a word to the start of diamond pickaxe name
+			context.modify(Items.DIAMOND_PICKAXE, builder -> {
+				Text baseName = builder.getOrCreate(
+						DataComponentTypes.ITEM_NAME,
+						Items.DIAMOND_PICKAXE::getName
+				);
+				MutableText modifiedName = Text.literal("Modified ")
+						.append(baseName);
+				builder.add(DataComponentTypes.ITEM_NAME, modifiedName);
 			});
 		});
 
