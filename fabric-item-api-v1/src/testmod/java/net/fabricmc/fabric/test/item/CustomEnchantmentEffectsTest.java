@@ -50,8 +50,8 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		EnchantmentEvents.MODIFY_EFFECTS.register(
-				(key, builder) -> {
-					if (key == WEIRD_IMPALING) {
+				(key, builder, source) -> {
+					if (source.isBuiltin() && key == WEIRD_IMPALING) {
 						// make impaling set things on fire
 						builder.getOrEmpty(EnchantmentEffectComponentTypes.POST_ATTACK)
 								.add(

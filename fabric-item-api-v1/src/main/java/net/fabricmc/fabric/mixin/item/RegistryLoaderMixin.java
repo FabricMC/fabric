@@ -16,9 +16,21 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import com.google.gson.JsonElement;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.mojang.serialization.Decoder;
+
+import net.fabricmc.fabric.api.item.v1.EnchantmentSource;
+import net.fabricmc.fabric.impl.item.EnchantmentUtil;
+
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.resource.Resource;
+
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.component.ComponentMap;
@@ -31,8 +43,36 @@ import net.minecraft.registry.entry.RegistryEntryInfo;
 
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 @Mixin(RegistryLoader.class)
-class RegistryLoaderMixin {
+abstract class RegistryLoaderMixin {
+	@Unique
+	private static final ThreadLocal<EnchantmentSource> FABRIC_API$SOURCE = ThreadLocal.withInitial(() -> EnchantmentSource.DATA_PACK);
+
+	@Inject(
+			method = "parseAndAdd",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/registry/MutableRegistry;add(Lnet/minecraft/registry/RegistryKey;Ljava/lang/Object;Lnet/minecraft/registry/entry/RegistryEntryInfo;)Lnet/minecraft/registry/entry/RegistryEntry$Reference;",
+					shift = At.Shift.BEFORE
+			)
+	)
+	private static <E> void determineSource(
+			MutableRegistry<E> registry,
+			Decoder<E> decoder,
+			RegistryOps<JsonElement> ops,
+			RegistryKey<E> key,
+			Resource resource,
+			RegistryEntryInfo entryInfo,
+			CallbackInfo ci
+	) {
+		if (key.isOf(RegistryKeys.ENCHANTMENT)) {
+			FABRIC_API$SOURCE.set(EnchantmentUtil.determineSource(resource));
+		}
+	}
+
 	@WrapOperation(
 			method = "parseAndAdd",
 			at = @At(
@@ -53,8 +93,10 @@ class RegistryLoaderMixin {
 			builder.addAll(enchantment.effects());
 			EnchantmentEvents.MODIFY_EFFECTS.invoker().modifyEnchantmentEffects(
 					(RegistryKey<Enchantment>) registryKey,
-					builder
+					builder,
+					FABRIC_API$SOURCE.get()
 			);
+			FABRIC_API$SOURCE.set(EnchantmentSource.DATA_PACK);
 
 			object = new Enchantment(
 					enchantment.description(),

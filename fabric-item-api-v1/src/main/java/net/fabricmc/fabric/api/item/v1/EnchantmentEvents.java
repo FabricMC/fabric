@@ -84,9 +84,9 @@ public final class EnchantmentEvents {
 	 */
 	public static final Event<ModifyEffects> MODIFY_EFFECTS = EventFactory.createArrayBacked(
 			ModifyEffects.class,
-			callbacks -> (key, builder) -> {
+			callbacks -> (key, builder, source) -> {
 				for (ModifyEffects callback : callbacks) {
-					callback.modifyEnchantmentEffects(key, builder);
+					callback.modifyEnchantmentEffects(key, builder, source);
 				}
 			}
 	);
@@ -117,11 +117,13 @@ public final class EnchantmentEvents {
 		 *
 		 * @param key The ID of the enchantment
 		 * @param builder The component map builder for the enchantment
+		 * @param source The source of the enchantment
 		 * @see FabricComponentMapBuilder
 		 */
 		void modifyEnchantmentEffects(
 				RegistryKey<Enchantment> key,
-				ComponentMap.Builder builder
+				ComponentMap.Builder builder,
+				EnchantmentSource source
 		);
 	}
 }
