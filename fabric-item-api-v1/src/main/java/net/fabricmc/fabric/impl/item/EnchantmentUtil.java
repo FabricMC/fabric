@@ -11,18 +11,32 @@ import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 import net.fabricmc.fabric.mixin.item.EnchantmentBuilderAccessor;
 
 import net.minecraft.component.ComponentMap;
+import net.minecraft.component.ComponentType;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourcePackSource;
 
+import java.util.List;
+
 public class EnchantmentUtil {
+	@SuppressWarnings("unchecked")
 	public static Enchantment modify(RegistryKey<Enchantment> key, Enchantment originalEnchantment, EnchantmentSource source) {
 		Enchantment.Builder builder = Enchantment.builder(originalEnchantment.definition());
 		EnchantmentBuilderAccessor accessor = (EnchantmentBuilderAccessor) builder;
 
 		builder.exclusiveSet(originalEnchantment.exclusiveSet());
 		accessor.fabric_api$getEffectMap().addAll(originalEnchantment.effects());
+
+		originalEnchantment.effects().stream()
+				.forEach(component -> {
+					if (component.value() instanceof List<?> valueList) {
+						// component type cast is checked by the value
+						accessor.fabric_api$getEffectsList((ComponentType<List<Object>>) component.type())
+								.addAll(valueList);
+					}
+				});
 
 		EnchantmentEvents.MODIFY.invoker().modify(key, builder, source);
 

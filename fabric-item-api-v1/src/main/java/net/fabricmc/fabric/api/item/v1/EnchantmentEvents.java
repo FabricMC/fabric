@@ -73,7 +73,7 @@ public final class EnchantmentEvents {
 	 * <p>This should only be used to modify the behavior of <em>external</em> enchantments, where 'external' means
 	 * either vanilla or from another mod. For instance, a mod might add a bleed effect to Sharpness (and only Sharpness).
 	 *
-	 * <p>For your own enchantments, you should simply define them for the enchantment in your mod's datapack. See the
+	 * <p>For your own enchantments, you should simply define them in your mod's datapack. See the
 	 * <a href="https://minecraft.wiki/w/Enchantment_definition">Enchantment Definition page</a> on the Minecraft Wiki
 	 * for more information.
 	 */
