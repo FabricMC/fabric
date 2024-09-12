@@ -16,14 +16,10 @@
 
 package net.fabricmc.fabric.test.item;
 
-import java.util.Optional;
-
 import net.minecraft.component.EnchantmentEffectComponentTypes;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentLevelBasedValue;
-import net.minecraft.enchantment.effect.EnchantmentEffectEntry;
 import net.minecraft.enchantment.effect.EnchantmentEffectTarget;
-import net.minecraft.enchantment.effect.TargetedEnchantmentEffect;
 import net.minecraft.enchantment.effect.entity.IgniteEnchantmentEffect;
 import net.minecraft.enchantment.effect.value.AddEnchantmentEffect;
 import net.minecraft.entity.EntityType;

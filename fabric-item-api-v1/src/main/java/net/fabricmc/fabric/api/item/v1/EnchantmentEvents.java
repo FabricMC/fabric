@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import net.minecraft.component.ComponentMap;
-import net.minecraft.component.ComponentType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.RegistryKey;

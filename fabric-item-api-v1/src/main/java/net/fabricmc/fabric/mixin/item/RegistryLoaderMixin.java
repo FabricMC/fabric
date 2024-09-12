@@ -20,34 +20,24 @@ import com.google.gson.JsonElement;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.serialization.Decoder;
-
-import net.fabricmc.fabric.api.item.v1.EnchantmentSource;
-import net.fabricmc.fabric.impl.item.EnchantmentUtil;
-
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.resource.Resource;
-
-import net.minecraft.text.Text;
-import net.minecraft.util.Util;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.component.ComponentMap;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.registry.MutableRegistry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryLoader;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryInfo;
+import net.minecraft.resource.Resource;
 
-import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
-
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import net.fabricmc.fabric.api.item.v1.EnchantmentSource;
+import net.fabricmc.fabric.impl.item.EnchantmentUtil;
 
 @Mixin(RegistryLoader.class)
 abstract class RegistryLoaderMixin {
@@ -92,7 +82,7 @@ abstract class RegistryLoaderMixin {
 			Operation<RegistryEntry.Reference<T>> original
 	) {
 		if (object instanceof Enchantment enchantment) {
-			object = EnchantmentUtil.modify((RegistryKey<Enchantment>)registryKey, enchantment, FABRIC_API$SOURCE.get());
+			object = EnchantmentUtil.modify((RegistryKey<Enchantment>) registryKey, enchantment, FABRIC_API$SOURCE.get());
 			FABRIC_API$SOURCE.remove();
 		}
 
