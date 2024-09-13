@@ -18,7 +18,7 @@ package net.fabricmc.fabric.mixin.dev;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 
-import net.fabricmc.fabric.FabricDevProperties;
+import net.fabricmc.fabric.impl.FabricDevProperties;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -35,7 +35,7 @@ public class UtilMixin {
 		return original || FabricDevProperties.ENABLE_SUPPLIER_AND_RUNNABLE_DEBUGGING;
 	}
 	
-	@ModifyExpressionValue(method = {"error", "throwOrPause"}, at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
+	@ModifyExpressionValue(method = {"error(Ljava/lang/String;)V", "error(Ljava/lang/String;Ljava/lang/Throwable;)V", "throwOrPause"}, at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
 	private static boolean mevIsDevelopmentForDevModule3(boolean original) {
 		return original || FabricDevProperties.ENABLE_EXCEPTION_IDE_PAUSING;
 	}

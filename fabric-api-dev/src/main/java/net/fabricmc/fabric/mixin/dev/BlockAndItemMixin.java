@@ -18,7 +18,7 @@ package net.fabricmc.fabric.mixin.dev;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 
-import net.fabricmc.fabric.FabricDevProperties;
+import net.fabricmc.fabric.impl.FabricDevProperties;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

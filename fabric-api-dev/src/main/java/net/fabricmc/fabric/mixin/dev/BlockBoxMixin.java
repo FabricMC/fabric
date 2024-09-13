@@ -18,7 +18,7 @@ package net.fabricmc.fabric.mixin.dev;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 
-import net.fabricmc.fabric.FabricDevProperties;
+import net.fabricmc.fabric.impl.FabricDevProperties;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +28,7 @@ import net.minecraft.util.math.BlockBox;
 @Mixin(BlockBox.class)
 public class BlockBoxMixin {
 	@ModifyExpressionValue(method = "<init>(IIIIII)V", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-	private static boolean mevIsDevelopmentForDevModule(boolean original) {
+	private boolean mevIsDevelopmentForDevModule(boolean original) {
 		return original || FabricDevProperties.THROW_ON_INVALID_BLOCK_BOXES;
 	}
 }

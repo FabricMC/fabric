@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.util.collection.Weight;
 
-import net.fabricmc.fabric.FabricDevProperties;
+import net.fabricmc.fabric.impl.FabricDevProperties;
 
 @Mixin(Weight.class)
 public class WeightMixin {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric;
+package net.fabricmc.fabric.impl;
 
 import com.mojang.brigadier.ParseResults;
 
