@@ -23,7 +23,6 @@ import java.util.function.BiConsumer;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 
@@ -32,8 +31,8 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 
 	@Override
 	public void putBlock(Block block, RenderLayer renderLayer) {
-		if (block == null) throw new IllegalArgumentException("Request to map null block to BlockRenderLayer");
-		if (renderLayer == null) throw new IllegalArgumentException("Request to map block " + block.toString() + " to null BlockRenderLayer");
+		if (block == null) throw new IllegalArgumentException("Request to map null block to RenderLayer");
+		if (renderLayer == null) throw new IllegalArgumentException("Request to map block " + block.toString() + " to null RenderLayer");
 
 		blockHandler.accept(block, renderLayer);
 	}
@@ -46,24 +45,9 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	}
 
 	@Override
-	public void putItem(Item item, RenderLayer renderLayer) {
-		if (item == null) throw new IllegalArgumentException("Request to map null item to BlockRenderLayer");
-		if (renderLayer == null) throw new IllegalArgumentException("Request to map item " + item.toString() + " to null BlockRenderLayer");
-
-		itemHandler.accept(item, renderLayer);
-	}
-
-	@Override
-	public void putItems(RenderLayer renderLayer, Item... items) {
-		for (Item item : items) {
-			putItem(item, renderLayer);
-		}
-	}
-
-	@Override
 	public void putFluid(Fluid fluid, RenderLayer renderLayer) {
-		if (fluid == null) throw new IllegalArgumentException("Request to map null fluid to BlockRenderLayer");
-		if (renderLayer == null) throw new IllegalArgumentException("Request to map fluid " + fluid.toString() + " to null BlockRenderLayer");
+		if (fluid == null) throw new IllegalArgumentException("Request to map null fluid to RenderLayer");
+		if (renderLayer == null) throw new IllegalArgumentException("Request to map fluid " + fluid.toString() + " to null RenderLayer");
 
 		fluidHandler.accept(fluid, renderLayer);
 	}
@@ -75,27 +59,20 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 		}
 	}
 
-	private static Map<Block, RenderLayer> blockRenderLayerMap = new HashMap<>();
-	private static Map<Item, RenderLayer> itemRenderLayerMap = new HashMap<>();
-	private static Map<Fluid, RenderLayer> fluidRenderLayerMap = new HashMap<>();
+	private static final Map<Block, RenderLayer> BLOCK_RENDER_LAYER_MAP = new HashMap<>();
+	private static final Map<Fluid, RenderLayer> FLUID_RENDER_LAYER_MAP = new HashMap<>();
 
-	//This consumers initially add to the maps above, and then are later set (when initialize is called) to insert straight into the target map.
-	private static BiConsumer<Block, RenderLayer> blockHandler = (b, l) -> blockRenderLayerMap.put(b, l);
-	private static BiConsumer<Item, RenderLayer> itemHandler = (i, l) -> itemRenderLayerMap.put(i, l);
-	private static BiConsumer<Fluid, RenderLayer> fluidHandler = (f, b) -> fluidRenderLayerMap.put(f, b);
+	// These consumers initially add to the maps above, and then are later set (when initialize is called) to insert straight into the target map.
+	private static BiConsumer<Block, RenderLayer> blockHandler = BLOCK_RENDER_LAYER_MAP::put;
+	private static BiConsumer<Fluid, RenderLayer> fluidHandler = FLUID_RENDER_LAYER_MAP::put;
 
 	public static void initialize(BiConsumer<Block, RenderLayer> blockHandlerIn, BiConsumer<Fluid, RenderLayer> fluidHandlerIn) {
-		//Done to handle backwards compat, in previous snapshots Items had their own map for render layers, now the BlockItem is used.
-		BiConsumer<Item, RenderLayer> itemHandlerIn = (item, renderLayer) -> blockHandlerIn.accept(Block.getBlockFromItem(item), renderLayer);
+		// Add all the preexisting render layers
+		BLOCK_RENDER_LAYER_MAP.forEach(blockHandlerIn);
+		FLUID_RENDER_LAYER_MAP.forEach(fluidHandlerIn);
 
-		//Add all the pre existing render layers
-		blockRenderLayerMap.forEach(blockHandlerIn);
-		itemRenderLayerMap.forEach(itemHandlerIn);
-		fluidRenderLayerMap.forEach(fluidHandlerIn);
-
-		//Set the handlers to directly accept later additions
+		// Set the handlers to directly accept later additions
 		blockHandler = blockHandlerIn;
-		itemHandler = itemHandlerIn;
 		fluidHandler = fluidHandlerIn;
 	}
 }
