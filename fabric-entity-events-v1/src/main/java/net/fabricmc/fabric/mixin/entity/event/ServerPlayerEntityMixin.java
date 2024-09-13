@@ -100,7 +100,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
         ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
         boolean allowed = ServerPlayerEvents.ALLOW_TELEPORT.invoker().allowTeleport(player, new Vec3d(destX, destY, destZ));
         if (!allowed) {
-            throw new CommandSyntaxException(null, new LiteralMessage("You are not allowed to teleport from this location."));
+            throw new CommandSyntaxException(null, new LiteralMessage(""));
         }
     }
 
