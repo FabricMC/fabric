@@ -28,11 +28,25 @@ import net.minecraft.client.render.VertexConsumer;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
 abstract class AbstractRenderContext implements RenderContext {
 	private static final QuadTransform NO_TRANSFORM = q -> true;
+
+	private final MutableQuadViewImpl editorQuad = new MutableQuadViewImpl() {
+		{
+			data = new int[EncodingFormat.TOTAL_STRIDE];
+			clear();
+		}
+
+		@Override
+		public void emitDirectly() {
+			renderQuad(this);
+		}
+	};
 
 	private QuadTransform activeTransform = NO_TRANSFORM;
 	private final ObjectArrayList<QuadTransform> transformStack = new ObjectArrayList<>();
@@ -56,6 +70,14 @@ abstract class AbstractRenderContext implements RenderContext {
 	protected int overlay;
 	private final Vector4f posVec = new Vector4f();
 	private final Vector3f normalVec = new Vector3f();
+
+	@Override
+	public QuadEmitter getEmitter() {
+		editorQuad.clear();
+		return editorQuad;
+	}
+
+	protected abstract void renderQuad(MutableQuadViewImpl quadView);
 
 	protected final boolean transform(MutableQuadView q) {
 		return activeTransform.transform(q);

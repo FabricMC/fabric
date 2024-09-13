@@ -20,7 +20,6 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
@@ -39,12 +38,9 @@ import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
-import net.fabricmc.fabric.impl.renderer.VanillaModelEncoder;
 import net.fabricmc.fabric.mixin.client.indigo.renderer.ItemRendererAccessor;
 
 /**
@@ -60,20 +56,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 		random.setSeed(ITEM_RANDOM_SEED);
 		return random;
 	};
-
-	private final MutableQuadViewImpl editorQuad = new MutableQuadViewImpl() {
-		{
-			data = new int[EncodingFormat.TOTAL_STRIDE];
-			clear();
-		}
-
-		@Override
-		public void emitDirectly() {
-			renderQuad(this);
-		}
-	};
-
-	private final BakedModelConsumerImpl vanillaModelConsumer = new BakedModelConsumerImpl();
 
 	private ItemStack itemStack;
 	private ModelTransformationMode transformMode;
@@ -96,12 +78,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 	}
 
 	@Override
-	public QuadEmitter getEmitter() {
-		editorQuad.clear();
-		return editorQuad;
-	}
-
-	@Override
 	public boolean isFaceCulled(@Nullable Direction face) {
 		throw new IllegalStateException("isFaceCulled can only be called on a block render context.");
 	}
@@ -109,11 +85,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 	@Override
 	public ModelTransformationMode itemTransformationMode() {
 		return transformMode;
-	}
-
-	@Override
-	public BakedModelConsumer bakedModelConsumer() {
-		return vanillaModelConsumer;
 	}
 
 	public void renderModel(ItemStack itemStack, ModelTransformationMode transformMode, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int lightmap, int overlay, BakedModel model) {
@@ -147,7 +118,8 @@ public class ItemRenderContext extends AbstractRenderContext {
 		isGlintDynamicDisplay = ItemRendererAccessor.fabric_callUsesDynamicDisplay(itemStack);
 	}
 
-	private void renderQuad(MutableQuadViewImpl quad) {
+	@Override
+	protected void renderQuad(MutableQuadViewImpl quad) {
 		if (!transform(quad)) {
 			return;
 		}
@@ -254,17 +226,5 @@ public class ItemRenderContext extends AbstractRenderContext {
 		}
 
 		return ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, layer, true, glint);
-	}
-
-	private class BakedModelConsumerImpl implements BakedModelConsumer {
-		@Override
-		public void accept(BakedModel model) {
-			accept(model, null);
-		}
-
-		@Override
-		public void accept(BakedModel model, @Nullable BlockState state) {
-			VanillaModelEncoder.emitItemQuads(model, state, randomSupplier, ItemRenderContext.this);
-		}
 	}
 }
