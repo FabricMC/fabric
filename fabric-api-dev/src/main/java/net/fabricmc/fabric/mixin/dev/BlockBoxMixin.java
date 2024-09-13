@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,12 @@
 package net.fabricmc.fabric.mixin.dev;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-
-import net.fabricmc.fabric.impl.FabricDevProperties;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.util.math.BlockBox;
+
+import net.fabricmc.fabric.impl.FabricDevProperties;
 
 @Mixin(BlockBox.class)
 public class BlockBoxMixin {

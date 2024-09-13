@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,12 @@ import java.util.function.Consumer;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-
-import net.fabricmc.fabric.impl.FabricDevProperties;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.Bootstrap;
+
+import net.fabricmc.fabric.impl.FabricDevProperties;
 
 @Mixin(Bootstrap.class)
 public class BootstrapMixin {
@@ -35,12 +34,12 @@ public class BootstrapMixin {
 	private static boolean mevIsDevelopmentForDevModule(boolean original) {
 		return original || FabricDevProperties.LOG_MISSING_TRANSLATIONS || FabricDevProperties.ENABLE_COMMAND_ARGUMENT_LOGGING;
 	}
-	
+
 	@WrapWithCondition(method = "logMissing", at = @At(value = "INVOKE", target = "Ljava/util/Set;forEach(Ljava/util/function/Consumer;)V"))
 	private static boolean wrapWithConditionTranslationWarnings(Set<String> instance, Consumer<String> consumer) {
 		return FabricDevProperties.LOG_MISSING_TRANSLATIONS;
 	}
-	
+
 	@WrapWithCondition(method = "logMissing", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/command/CommandManager;checkMissing()V"))
 	private static boolean wrapWithConditionCommandArgumentWarnings() {
 		return FabricDevProperties.ENABLE_COMMAND_ARGUMENT_LOGGING;
