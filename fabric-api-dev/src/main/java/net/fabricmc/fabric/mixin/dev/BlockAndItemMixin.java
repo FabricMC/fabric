@@ -17,13 +17,14 @@
 package net.fabricmc.fabric.mixin.dev;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+
+import net.fabricmc.fabric.FabricDevProperties;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-
-import net.fabricmc.fabric.FabricDev;
 
 @Mixin({Block.class, Item.class})
 public class BlockAndItemMixin {
@@ -32,6 +33,6 @@ public class BlockAndItemMixin {
 			"<init>(Lnet/minecraft/item/Item$Settings;)V"
 	}, at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
 	private boolean mevIsDevelopmentForDevModule(boolean original) {
-		return original || FabricDev.LOG_CONVENTION_ISSUES;
+		return original || FabricDevProperties.LOG_CONVENTION_ISSUES;
 	}
 }

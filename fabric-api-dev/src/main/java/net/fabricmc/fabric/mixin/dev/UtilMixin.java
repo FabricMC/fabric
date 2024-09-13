@@ -17,12 +17,13 @@
 package net.fabricmc.fabric.mixin.dev;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+
+import net.fabricmc.fabric.FabricDevProperties;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.util.Util;
-
-import net.fabricmc.fabric.FabricDev;
 
 @Mixin(Util.class)
 public class UtilMixin {
@@ -31,11 +32,11 @@ public class UtilMixin {
 			"debugSupplier(Ljava/lang/String;Ljava/util/function/Supplier;)Ljava/util/function/Supplier;"
 	}, at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
 	private static boolean mevIsDevelopmentForDevModule2(boolean original) {
-		return original || FabricDev.ENABLE_SUPPLIER_AND_RUNNABLE_DEBUGGING;
+		return original || FabricDevProperties.ENABLE_SUPPLIER_AND_RUNNABLE_DEBUGGING;
 	}
 	
 	@ModifyExpressionValue(method = {"error", "throwOrPause"}, at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
 	private static boolean mevIsDevelopmentForDevModule3(boolean original) {
-		return original || FabricDev.ENABLE_EXCEPTION_IDE_PAUSING;
+		return original || FabricDevProperties.ENABLE_EXCEPTION_IDE_PAUSING;
 	}
 }

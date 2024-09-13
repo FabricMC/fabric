@@ -21,27 +21,28 @@ import java.util.function.Consumer;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+
+import net.fabricmc.fabric.FabricDevProperties;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.Bootstrap;
 
-import net.fabricmc.fabric.FabricDev;
-
 @Mixin(Bootstrap.class)
 public class BootstrapMixin {
 	@ModifyExpressionValue(method = "logMissing", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
 	private static boolean mevIsDevelopmentForDevModule(boolean original) {
-		return original || FabricDev.LOG_MISSING_TRANSLATIONS || FabricDev.ENABLE_COMMAND_ARGUMENT_LOGGING;
+		return original || FabricDevProperties.LOG_MISSING_TRANSLATIONS || FabricDevProperties.ENABLE_COMMAND_ARGUMENT_LOGGING;
 	}
 	
 	@WrapWithCondition(method = "logMissing", at = @At(value = "INVOKE", target = "Ljava/util/Set;forEach(Ljava/util/function/Consumer;)V"))
 	private static boolean wrapWithConditionTranslationWarnings(Set<String> instance, Consumer<String> consumer) {
-		return FabricDev.LOG_MISSING_TRANSLATIONS;
+		return FabricDevProperties.LOG_MISSING_TRANSLATIONS;
 	}
 	
 	@WrapWithCondition(method = "logMissing", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/command/CommandManager;checkMissing()V"))
 	private static boolean wrapWithConditionCommandArgumentWarnings() {
-		return FabricDev.ENABLE_COMMAND_ARGUMENT_LOGGING;
+		return FabricDevProperties.ENABLE_COMMAND_ARGUMENT_LOGGING;
 	}
 }

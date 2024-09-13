@@ -17,17 +17,18 @@
 package net.fabricmc.fabric.mixin.dev;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+
+import net.fabricmc.fabric.FabricDevProperties;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.server.dedicated.EulaReader;
 
-import net.fabricmc.fabric.FabricDev;
-
 @Mixin(EulaReader.class)
 public class EulaReaderMixin {
 	@ModifyExpressionValue(method = {"<init>", "createEulaFile"}, at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
 	private boolean mevIsDevelopmentForDevModule(boolean original) {
-		return original || FabricDev.ALWAYS_AGREE_TO_EULA;
+		return original || FabricDevProperties.ALWAYS_AGREE_TO_EULA;
 	}
 }
