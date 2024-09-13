@@ -27,7 +27,7 @@
 `CommandManager#<init>`:
 - Argument: `fabric.dev.registerDebugCommands`
 - Default: true
-- Register's Minecraft's debug commands (TestCommand, RaidCommand, DebugPathCommand, DebugMobSpawningCommand, WardenSpawnTrackerCommand, SpawnArmorTrimsCommand, ServerPackCommand) and if on the server DebugConfigCommand
+- Registers Minecraft's debug commands (TestCommand, RaidCommand, DebugPathCommand, DebugMobSpawningCommand, WardenSpawnTrackerCommand, SpawnArmorTrimsCommand, ServerPackCommand) and if on the server DebugConfigCommand
 
 `CommandManager#execute`:
 - Argument: `fabric.dev.enableCommandExceptionLogging`
