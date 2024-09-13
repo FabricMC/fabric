@@ -80,6 +80,20 @@ public final class EntityEventTests implements ModInitializer {
 			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().getName(), oldPlayer.getWorld().getRegistryKey().getValue(), newPlayer.getWorld().getRegistryKey().getValue());
 		});
 
+        ServerPlayerEvents.ALLOW_TELEPORT.register((player, pos) -> {
+            if(pos.getY() < -256)
+            {
+                LOGGER.info("Player {} is trying to teleport to a negative Y position", player.getGameProfile().getName());
+                return false;
+            }
+            LOGGER.info("Player {} is teleporting to {}", player.getGameProfile().getName(), pos);
+            return true;
+        });
+
+        ServerPlayerEvents.AFTER_TELEPORT.register((player) -> {
+            LOGGER.info("Player {} is teleported", player.getGameProfile().getName());
+        });
+    
 		// No fall damage if holding a feather in the main hand
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
 			if (source.getTypeRegistryEntry().matchesKey(DamageTypes.FALL) && entity.getStackInHand(Hand.MAIN_HAND).isOf(Items.FEATHER)) {

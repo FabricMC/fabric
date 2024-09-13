@@ -19,6 +19,8 @@ package net.fabricmc.fabric.api.entity.event.v1;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 
+import net.minecraft.util.math.Vec3d;
+
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -61,6 +63,28 @@ public final class ServerPlayerEvents {
 
 		return true;
 	});
+    
+    /**
+     * Called when a player is about to be teleported.
+     */
+    public static final Event<AllowTeleport> ALLOW_TELEPORT = EventFactory.createArrayBacked(AllowTeleport.class, callbacks -> (player, pos) -> {
+		for (AllowTeleport callback : callbacks) {
+			if (!callback.allowTeleport(player, pos)) {
+				return false;
+			}
+		}
+
+		return true;
+	});
+
+    /**
+     * Called when a player has been teleported.
+     */
+    public static final Event<AfterTeleport> AFTER_TELEPORT = EventFactory.createArrayBacked(AfterTeleport.class, callbacks -> (player) -> {
+		for (AfterTeleport callback : callbacks) {
+			callback.afterTeleport(player);
+		}
+	});
 
 	@FunctionalInterface
 	public interface CopyFrom {
@@ -84,6 +108,28 @@ public final class ServerPlayerEvents {
 		 * @param alive whether the old player is still alive
 		 */
 		void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive);
+	}
+
+    @FunctionalInterface
+	public interface AllowTeleport {
+		/**
+		 * Called when a player is about to be teleported.
+         * 
+         * @param player the teleporting player
+         * @param pos the new position to teleport to
+         * @return true if the teleport should go ahead, false otherwise.
+		 */
+		boolean allowTeleport(ServerPlayerEntity player, Vec3d pos);
+	}
+
+    @FunctionalInterface
+	public interface AfterTeleport {
+		/**
+		 * Called when a player has been teleported.
+         * 
+         * @param player the teleported player
+		 */
+		void afterTeleport(ServerPlayerEntity player);
 	}
 
 	/**
