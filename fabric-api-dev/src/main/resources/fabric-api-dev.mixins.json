@@ -1,19 +1,16 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin",
+  "package": "net.fabricmc.fabric.mixin.dev",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "dev.ArgumentTypesMixin",
-    "dev.BlockAndItemMixin",
-    "dev.BlockBoxMixin",
-    "dev.BootstrapMixin",
-    "dev.ChunkMixin",
-    "dev.CommandManagerMixin",
-    "dev.EulaReaderMixin",
-    "dev.MinecraftServerMixin",
-    "dev.StructureTemplateManagerMixin",
-    "dev.UtilMixin",
-    "dev.WeightMixin"
+    "BlockAndItemMixin",
+    "BlockBoxMixin",
+    "BootstrapMixin",
+    "ChunkMixin",
+    "CommandManagerMixin",
+    "EulaReaderMixin",
+    "UtilMixin",
+    "WeightMixin"
   ],
   "injectors": {
     "defaultRequire": 1

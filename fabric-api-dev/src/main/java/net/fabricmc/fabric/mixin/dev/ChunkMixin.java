@@ -27,9 +27,8 @@ import net.fabricmc.fabric.FabricDev;
 
 @Mixin(Chunk.class)
 public class ChunkMixin {
-	@Dynamic("@ModifyExpressionValue's the FIELD GET of SharedConstants.isDevelopment to add a OR condition for FabricDev.ENABLE_UNPRIMED_HEIGHTMAP_LOGGING")
 	@ModifyExpressionValue(method = "sampleHeightmap", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-	private static boolean fabric$mevIsDevelopmentForDevModule(boolean original) {
+	private static boolean mevIsDevelopmentForDevModule(boolean original) {
 		return original || FabricDev.ENABLE_UNPRIMED_HEIGHTMAP_LOGGING;
 	}
 }

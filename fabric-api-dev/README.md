@@ -24,11 +24,6 @@
 - Note: By enabling this, you declare that you have agreed to the EULA.
 - Skips creating the eula.txt file and always agrees to the EULA
 
-`MinecraftServer#tickWorlds`:
-- Argument: `fabric.dev.tickTestManager`
-- Default: false
-- Ticks TestManager.INSTANCE
-
 `CommandManager#<init>`:
 - Argument: `fabric.dev.registerDebugCommands`
 - Default: true
@@ -39,30 +34,15 @@
 - Default: true
 - Logs an error if a command threw an exception
 
-`ArgumentTypes#register`:
-- Argument: `fabric.dev.registerTestArguments`
-- Default: false
-- Register's test_argument and test_class command arguments
-
 `BlockBox#<init>`
 - Argument: `fabric.dev.throwOnInvalidBlockBoxes`
 - Default: true
 - Throw's an exception if a bounding box is invalid
 
 `Chunk#sampleHeightmap`:
-- Argument: `fabric.dev.enable_unprimed_heightmap_logging`
+- Argument: `fabric.dev.enableUnprimedHeightmapLogging`
 - Default: true
 - Logs an error if the heightmap is null
-
-`StructureTemplateManager#<init>`:
-- Argument: `fabric.dev.enableLoadingStructuresFromGameTests`
-- Default: true
-- Adds a provider to load structure templates from GameTest files
-
-`Util#getChoiceTypeInternal`:
-- Argument: `fabric.dev.throwOnMissingDataFixers`
-- Default: false
-- Throw's an exception if a DataFixer isn't registered
 
 `Util#debugRunnable` & `Util#debugSupplier`:
 - Argument: `fabric.dev.enableSupplierAndRunnableDebugging`

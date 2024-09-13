@@ -27,9 +27,8 @@ import net.fabricmc.fabric.FabricDev;
 
 @Mixin(Weight.class)
 public class WeightMixin {
-	@Dynamic("@ModifyExpressionValue's the FIELD GET of SharedConstants.isDevelopment to add a OR condition for FabricDev.ZERO_WEIGHT_WARNING")
 	@ModifyExpressionValue(method = "validate", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-	private static boolean fabric$mevIsDevelopmentForDevModule(boolean original) {
+	private static boolean mevIsDevelopmentForDevModule(boolean original) {
 		return original || FabricDev.ZERO_WEIGHT_WARNING;
 	}
 }

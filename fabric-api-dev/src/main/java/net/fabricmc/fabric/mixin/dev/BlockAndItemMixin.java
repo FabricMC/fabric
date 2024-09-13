@@ -28,12 +28,11 @@ import net.fabricmc.fabric.FabricDev;
 
 @Mixin({Block.class, Item.class})
 public class BlockAndItemMixin {
-	@Dynamic("@ModifyExpressionValue's the FIELD GET of SharedConstants.isDevelopment to add a OR condition for FabricDev.LOG_CONVENTION_ISSUES")
 	@ModifyExpressionValue(method = {
 			"<init>(Lnet/minecraft/block/AbstractBlock$Settings;)V",
 			"<init>(Lnet/minecraft/item/Item$Settings;)V"
 	}, at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-	private boolean fabric$mevIsDevelopmentForDevModule(boolean original) {
+	private boolean mevIsDevelopmentForDevModule(boolean original) {
 		return original || FabricDev.LOG_CONVENTION_ISSUES;
 	}
 }
