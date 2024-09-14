@@ -128,7 +128,7 @@ public class FabricDevProperties {
 
 	private static boolean getProperty(String name, boolean defaultValue) {
 		String propertyValue = System.getProperty("fabric.dev" + name);
-		if (propertyValue.isEmpty())
+		if (propertyValue == null || propertyValue.isEmpty())
 			return IS_DEVELOPMENT_ENV && defaultValue;
 		return "true".equalsIgnoreCase(propertyValue);
 	}
