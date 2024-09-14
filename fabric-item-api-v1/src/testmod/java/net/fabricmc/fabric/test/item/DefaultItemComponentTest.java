@@ -24,7 +24,6 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.FireworkExplosionComponent;
 import net.minecraft.component.type.FireworksComponent;
 import net.minecraft.item.Items;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -58,9 +57,7 @@ public class DefaultItemComponentTest implements ModInitializer {
 						DataComponentTypes.ITEM_NAME,
 						Items.DIAMOND_PICKAXE::getName
 				);
-				MutableText modifiedName = Text.literal("Modified ")
-						.append(baseName);
-				builder.add(DataComponentTypes.ITEM_NAME, modifiedName);
+				builder.add(DataComponentTypes.ITEM_NAME, prependModifiedLiteral(baseName));
 			});
 		});
 
@@ -70,5 +67,10 @@ public class DefaultItemComponentTest implements ModInitializer {
 				builder.add(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
 			});
 		});
+	}
+
+	public static Text prependModifiedLiteral(Text name) {
+		return Text.literal("Modified ")
+				.append(name);
 	}
 }
