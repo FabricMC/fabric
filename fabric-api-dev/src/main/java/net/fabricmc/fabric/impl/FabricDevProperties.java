@@ -127,10 +127,9 @@ public class FabricDevProperties {
 	private static final boolean IS_DEVELOPMENT_ENV = FabricLoader.getInstance().isDevelopmentEnvironment();
 
 	private static boolean getProperty(String name, boolean defaultValue) {
-		try {
-			return "true".equalsIgnoreCase(System.getProperty("fabric.dev" + name));
-		} catch (Throwable e) {
+		String propertyValue = System.getProperty("fabric.dev" + name);
+		if (propertyValue.isEmpty())
 			return IS_DEVELOPMENT_ENV && defaultValue;
-		}
+		return "true".equalsIgnoreCase(propertyValue);
 	}
 }
