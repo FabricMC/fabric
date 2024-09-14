@@ -20,52 +20,24 @@ import com.google.gson.JsonElement;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.serialization.Decoder;
+
+import net.minecraft.registry.RegistryOps;
+
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.registry.MutableRegistry;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryLoader;
-import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryInfo;
 import net.minecraft.resource.Resource;
 
-import net.fabricmc.fabric.api.item.v1.EnchantmentSource;
 import net.fabricmc.fabric.impl.item.EnchantmentUtil;
 
 @Mixin(RegistryLoader.class)
 abstract class RegistryLoaderMixin {
-	@Unique
-	private static final ThreadLocal<EnchantmentSource> FABRIC_API$SOURCE = ThreadLocal.withInitial(() -> EnchantmentSource.DATA_PACK);
-
-	@Inject(
-			method = "parseAndAdd",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/registry/MutableRegistry;add(Lnet/minecraft/registry/RegistryKey;Ljava/lang/Object;Lnet/minecraft/registry/entry/RegistryEntryInfo;)Lnet/minecraft/registry/entry/RegistryEntry$Reference;",
-					shift = At.Shift.BEFORE
-			)
-	)
-	private static <E> void determineSource(
-			MutableRegistry<E> registry,
-			Decoder<E> decoder,
-			RegistryOps<JsonElement> ops,
-			RegistryKey<E> key,
-			Resource resource,
-			RegistryEntryInfo entryInfo,
-			CallbackInfo ci
-	) {
-		if (key.isOf(RegistryKeys.ENCHANTMENT)) {
-			FABRIC_API$SOURCE.set(EnchantmentUtil.determineSource(resource));
-		}
-	}
-
 	@WrapOperation(
 			method = "parseAndAdd",
 			at = @At(
@@ -74,16 +46,21 @@ abstract class RegistryLoaderMixin {
 			)
 	)
 	@SuppressWarnings("unchecked")
-	private static <T> RegistryEntry.Reference<T> afterParse(
+	private static <T> RegistryEntry.Reference<T> enchantmentKey(
 			MutableRegistry<T> instance,
-			RegistryKey<T> registryKey,
+			RegistryKey<T> objectKey,
 			Object object,
 			RegistryEntryInfo registryEntryInfo,
-			Operation<RegistryEntry.Reference<T>> original
+			Operation<RegistryEntry.Reference<T>> original,
+			MutableRegistry<T> registry,
+			Decoder<T> decoder,
+			RegistryOps<JsonElement> ops,
+			RegistryKey<T> registryKey,
+			Resource resource,
+			RegistryEntryInfo entryInfo
 	) {
 		if (object instanceof Enchantment enchantment) {
-			object = EnchantmentUtil.modify((RegistryKey<Enchantment>) registryKey, enchantment, FABRIC_API$SOURCE.get());
-			FABRIC_API$SOURCE.remove();
+			object = EnchantmentUtil.modify((RegistryKey<Enchantment>) objectKey, enchantment, EnchantmentUtil.determineSource(resource));
 		}
 
 		return original.call(instance, registryKey, object, registryEntryInfo);
