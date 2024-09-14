@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.entity.event.v1;
 
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -67,9 +67,9 @@ public final class ServerPlayerEvents {
     /**
      * Called when a player is about to be teleported.
      */
-    public static final Event<AllowTeleport> ALLOW_TELEPORT = EventFactory.createArrayBacked(AllowTeleport.class, callbacks -> (player, pos) -> {
+    public static final Event<AllowTeleport> ALLOW_TELEPORT = EventFactory.createArrayBacked(AllowTeleport.class, callbacks -> (player, world, pos) -> {
 		for (AllowTeleport callback : callbacks) {
-			if (!callback.allowTeleport(player, pos)) {
+			if (!callback.allowTeleport(player, world, pos)) {
 				return false;
 			}
 		}
@@ -116,10 +116,11 @@ public final class ServerPlayerEvents {
 		 * Called when a player is about to be teleported.
          * 
          * @param player the teleporting player
+         * @param world the world to teleport to
          * @param pos the new position to teleport to
          * @return true if the teleport should go ahead, false otherwise.
 		 */
-		boolean allowTeleport(ServerPlayerEntity player, Vec3d pos);
+		boolean allowTeleport(ServerPlayerEntity player, ServerWorld world, Vec3d pos);
 	}
 
     @FunctionalInterface

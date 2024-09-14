@@ -64,6 +64,15 @@ public final class EntityEventTests implements ModInitializer {
 			LOGGER.info("Entity {} Killed: {}", entity, killed);
 		});
 
+		ServerEntityWorldChangeEvents.ALLOW_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
+			if (player.getStackInHand(Hand.MAIN_HAND).getItem() == Items.END_ROD) {
+                LOGGER.info("Player {} failed to change world because of handing an end rod", player.getGameProfile().getName());
+                return false;
+            }
+            LOGGER.info("Allow Moving player {}: [{} -> {}]", player, origin.getRegistryKey().getValue(), destination.getRegistryKey().getValue());
+            return true;
+        });
+
 		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
 			LOGGER.info("Moved player {}: [{} -> {}]", player, origin.getRegistryKey().getValue(), destination.getRegistryKey().getValue());
 		});
@@ -80,13 +89,13 @@ public final class EntityEventTests implements ModInitializer {
 			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().getName(), oldPlayer.getWorld().getRegistryKey().getValue(), newPlayer.getWorld().getRegistryKey().getValue());
 		});
 
-        ServerPlayerEvents.ALLOW_TELEPORT.register((player, pos) -> {
-            if(pos.getY() < -256)
+        ServerPlayerEvents.ALLOW_TELEPORT.register((player, world, pos) -> {
+            if (pos.y < -256)
             {
-                LOGGER.info("Player {} is trying to teleport to a negative Y position", player.getGameProfile().getName());
+                LOGGER.info("Player {} is trying to teleport below the world height", player.getGameProfile().getName());
                 return false;
             }
-            LOGGER.info("Player {} is teleporting to {}", player.getGameProfile().getName(), pos);
+            LOGGER.info("Player {} is teleporting to {} {}", player.getGameProfile().getName(), world, pos);
             return true;
         });
 

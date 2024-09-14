@@ -23,6 +23,7 @@ import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Either;
 import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -48,6 +49,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
@@ -82,6 +84,16 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 		ServerLivingEntityEvents.AFTER_DEATH.invoker().afterDeath((ServerPlayerEntity) (Object) this, source);
 	}
 
+	@Inject(method = "teleportTo", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayerEntity;inTeleportationState:Z", opcode = Opcodes.PUTFIELD, shift = At.Shift.BEFORE), cancellable = true)
+	private void beforeWorldChanged(TeleportTarget teleportTarget, CallbackInfoReturnable<Entity> cir) {
+		ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
+        boolean allowed = ServerEntityWorldChangeEvents.ALLOW_PLAYER_CHANGE_WORLD.invoker().allowChangeWorld(player, player.getServerWorld(), teleportTarget.world());
+        if (!allowed) {
+            cir.setReturnValue(null);
+            cir.cancel();    
+        }
+    }
+
 	/**
 	 * This is called by {@code teleportTo}.
 	 */
@@ -98,7 +110,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
     @Inject(method = "teleport(Lnet/minecraft/server/world/ServerWorld;DDDLjava/util/Set;FF)Z", at = @At("HEAD"), cancellable = true)
     private void beforeTeleport(ServerWorld world, double destX, double destY, double destZ, Set<PositionFlag> flags, float yaw, float pitch, CallbackInfoReturnable<Boolean> cir) throws CommandSyntaxException {
         ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
-        boolean allowed = ServerPlayerEvents.ALLOW_TELEPORT.invoker().allowTeleport(player, new Vec3d(destX, destY, destZ));
+        boolean allowed = ServerPlayerEvents.ALLOW_TELEPORT.invoker().allowTeleport(player, world, new Vec3d(destX, destY, destZ));
         if (!allowed) {
             throw new CommandSyntaxException(null, new LiteralMessage(""));
         }
