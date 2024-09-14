@@ -30,14 +30,14 @@ import net.minecraft.registry.entry.RegistryEntryList;
 @Mixin(Enchantment.Builder.class)
 public interface EnchantmentBuilderAccessor {
 	@Accessor("definition")
-	Enchantment.Definition fabric_api$getDefinition();
+	Enchantment.Definition getDefinition();
 
 	@Accessor("exclusiveSet")
-	RegistryEntryList<Enchantment> fabric_api$getExclusiveSet();
+	RegistryEntryList<Enchantment> getExclusiveSet();
 
 	@Accessor("effectMap")
-	ComponentMap.Builder fabric_api$getEffectMap();
+	ComponentMap.Builder getEffectMap();
 
 	@Invoker("getEffectsList")
-	<E> List<E> fabric_api$getEffectsList(ComponentType<List<E>> type);
+	<E> List<E> getEffectsList(ComponentType<List<E>> type);
 }

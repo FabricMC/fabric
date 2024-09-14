@@ -38,13 +38,13 @@ public class EnchantmentUtil {
 		EnchantmentBuilderAccessor accessor = (EnchantmentBuilderAccessor) builder;
 
 		builder.exclusiveSet(originalEnchantment.exclusiveSet());
-		accessor.fabric_api$getEffectMap().addAll(originalEnchantment.effects());
+		accessor.getEffectMap().addAll(originalEnchantment.effects());
 
 		originalEnchantment.effects().stream()
 				.forEach(component -> {
 					if (component.value() instanceof List<?> valueList) {
 						// component type cast is checked by the value
-						accessor.fabric_api$getEffectsList((ComponentType<List<Object>>) component.type())
+						accessor.getEffectsList((ComponentType<List<Object>>) component.type())
 								.addAll(valueList);
 					}
 				});
@@ -53,9 +53,9 @@ public class EnchantmentUtil {
 
 		return new Enchantment(
 				originalEnchantment.description(),
-				accessor.fabric_api$getDefinition(),
-				accessor.fabric_api$getExclusiveSet(),
-				accessor.fabric_api$getEffectMap().build()
+				accessor.getDefinition(),
+				accessor.getExclusiveSet(),
+				accessor.getEffectMap().build()
 		);
 	}
 
