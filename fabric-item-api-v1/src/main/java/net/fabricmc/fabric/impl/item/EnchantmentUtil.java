@@ -44,7 +44,7 @@ public class EnchantmentUtil {
 				.forEach(component -> {
 					if (component.value() instanceof List<?> valueList) {
 						// component type cast is checked by the value
-						accessor.getEffectsList((ComponentType<List<Object>>) component.type())
+						accessor.invokeGetEffectsList((ComponentType<List<Object>>) component.type())
 								.addAll(valueList);
 					}
 				});

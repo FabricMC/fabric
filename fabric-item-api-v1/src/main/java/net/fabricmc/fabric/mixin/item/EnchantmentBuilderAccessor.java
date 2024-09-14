@@ -39,5 +39,5 @@ public interface EnchantmentBuilderAccessor {
 	ComponentMap.Builder getEffectMap();
 
 	@Invoker("getEffectsList")
-	<E> List<E> getEffectsList(ComponentType<List<E>> type);
+	<E> List<E> invokeGetEffectsList(ComponentType<List<E>> type);
 }
