@@ -81,5 +81,7 @@ public interface TransferVariant<O> {
 	 * @param changes the changes to apply
 	 * @return the new variant with the changes applied
 	 */
-	TransferVariant<O> withComponentChanges(ComponentChanges changes);
+	default TransferVariant<O> withComponentChanges(ComponentChanges changes) {
+		throw new UnsupportedOperationException("withComponentChanges is not supported by this TransferVariant");
+	}
 }
