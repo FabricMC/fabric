@@ -94,8 +94,9 @@ public final class ServerEntityWorldChangeEvents {
 		 * Called before a player is being moved to a different world.
 		 *
 		 * @param player the player
-		 * @param origin the original world the player was in
-		 * @param destination the new world the player was moved to
+		 * @param origin the original world the player is in
+		 * @param destination the new world the player is moving to
+		 * @return true if the player is allowed to change worlds, false otherwise
 		 */
 		boolean allowChangeWorld(ServerPlayerEntity player, ServerWorld origin, ServerWorld destination);
 	}

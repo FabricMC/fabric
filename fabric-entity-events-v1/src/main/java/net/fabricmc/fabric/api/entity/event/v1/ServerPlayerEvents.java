@@ -114,7 +114,8 @@ public final class ServerPlayerEvents {
 	public interface AllowTeleport {
 		/**
 		 * Called when a player is about to be teleported.
-		* 
+		 * <p>this event will not call if the player is using a portal.
+		 * 
 		 * @param player the teleporting player
 		 * @param world the world to teleport to
 		 * @param pos the new position to teleport to
@@ -127,6 +128,7 @@ public final class ServerPlayerEvents {
 	public interface AfterTeleport {
 		/**
 		 * Called when a player has been teleported.
+		 * <p>this event will not call if the player used a portal.
 		 * 
 		 * @param player the teleported player
 		 */
