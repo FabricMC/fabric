@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -102,7 +103,7 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 
 	@Override
 	public List<AttachmentChange> fabric_getInitialSyncChanges(ServerPlayerEntity player) {
-		List<AttachmentChange> changes = super.fabric_getInitialSyncChanges(player);
+		List<AttachmentChange> changes = new ArrayList<>(super.fabric_getInitialSyncChanges(player));
 
 		this.alwaysSentToNewcomersBE.values().forEach(m -> changes.addAll(m.values()));
 		this.maybeSentToNewcomersBE.forEach((blockPos, map) -> {
