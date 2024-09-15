@@ -63,11 +63,11 @@ public final class ServerPlayerEvents {
 
 		return true;
 	});
-    
-    /**
-     * Called when a player is about to be teleported.
-     */
-    public static final Event<AllowTeleport> ALLOW_TELEPORT = EventFactory.createArrayBacked(AllowTeleport.class, callbacks -> (player, world, pos) -> {
+
+	/**
+	 * Called when a player is about to be teleported.
+	 */
+	public static final Event<AllowTeleport> ALLOW_TELEPORT = EventFactory.createArrayBacked(AllowTeleport.class, callbacks -> (player, world, pos) -> {
 		for (AllowTeleport callback : callbacks) {
 			if (!callback.allowTeleport(player, world, pos)) {
 				return false;
@@ -77,10 +77,10 @@ public final class ServerPlayerEvents {
 		return true;
 	});
 
-    /**
-     * Called when a player has been teleported.
-     */
-    public static final Event<AfterTeleport> AFTER_TELEPORT = EventFactory.createArrayBacked(AfterTeleport.class, callbacks -> (player) -> {
+	/**
+	 * Called when a player has been teleported.
+	 */
+	public static final Event<AfterTeleport> AFTER_TELEPORT = EventFactory.createArrayBacked(AfterTeleport.class, callbacks -> (player) -> {
 		for (AfterTeleport callback : callbacks) {
 			callback.afterTeleport(player);
 		}
@@ -110,25 +110,25 @@ public final class ServerPlayerEvents {
 		void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive);
 	}
 
-    @FunctionalInterface
+	@FunctionalInterface
 	public interface AllowTeleport {
 		/**
 		 * Called when a player is about to be teleported.
-         * 
-         * @param player the teleporting player
-         * @param world the world to teleport to
-         * @param pos the new position to teleport to
-         * @return true if the teleport should go ahead, false otherwise.
+		* 
+		 * @param player the teleporting player
+		 * @param world the world to teleport to
+		 * @param pos the new position to teleport to
+		 * @return true if the teleport should go ahead, false otherwise.
 		 */
 		boolean allowTeleport(ServerPlayerEntity player, ServerWorld world, Vec3d pos);
 	}
 
-    @FunctionalInterface
+	@FunctionalInterface
 	public interface AfterTeleport {
 		/**
 		 * Called when a player has been teleported.
-         * 
-         * @param player the teleported player
+		 * 
+		 * @param player the teleported player
 		 */
 		void afterTeleport(ServerPlayerEntity player);
 	}

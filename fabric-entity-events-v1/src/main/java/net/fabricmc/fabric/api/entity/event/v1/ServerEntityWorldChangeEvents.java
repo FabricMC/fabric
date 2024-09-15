@@ -45,17 +45,17 @@ public final class ServerEntityWorldChangeEvents {
 		}
 	});
 
-    /**
+	/**
 	 * Called before a player is being moved to a different world.
 	 */
 	public static final Event<AllowPlayerChange> ALLOW_PLAYER_CHANGE_WORLD = EventFactory.createArrayBacked(AllowPlayerChange.class, callbacks -> (player, origin, destination) -> {
 		for (AllowPlayerChange callback : callbacks) {
 			if(!callback.allowChangeWorld(player, origin, destination)){
-                return false;
-            }
+				return false;
+			}
 		}
 
-        return true;
+		return true;
 	});
 
 	/**

@@ -66,12 +66,12 @@ public final class EntityEventTests implements ModInitializer {
 
 		ServerEntityWorldChangeEvents.ALLOW_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
 			if (player.getStackInHand(Hand.MAIN_HAND).getItem() == Items.END_ROD) {
-                LOGGER.info("Player {} failed to change world because of handing an end rod", player.getGameProfile().getName());
-                return false;
-            }
-            LOGGER.info("Allow Moving player {}: [{} -> {}]", player, origin.getRegistryKey().getValue(), destination.getRegistryKey().getValue());
-            return true;
-        });
+				LOGGER.info("Player {} failed to change world because of handing an end rod", player.getGameProfile().getName());
+			return false;
+			}
+			LOGGER.info("Allow Moving player {}: [{} -> {}]", player, origin.getRegistryKey().getValue(), destination.getRegistryKey().getValue());
+			return true;
+		});
 
 		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
 			LOGGER.info("Moved player {}: [{} -> {}]", player, origin.getRegistryKey().getValue(), destination.getRegistryKey().getValue());
@@ -89,20 +89,20 @@ public final class EntityEventTests implements ModInitializer {
 			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().getName(), oldPlayer.getWorld().getRegistryKey().getValue(), newPlayer.getWorld().getRegistryKey().getValue());
 		});
 
-        ServerPlayerEvents.ALLOW_TELEPORT.register((player, world, pos) -> {
-            if (pos.y < -256)
-            {
-                LOGGER.info("Player {} is trying to teleport below the world height", player.getGameProfile().getName());
-                return false;
-            }
-            LOGGER.info("Player {} is teleporting to {} {}", player.getGameProfile().getName(), world, pos);
-            return true;
-        });
+		ServerPlayerEvents.ALLOW_TELEPORT.register((player, world, pos) -> {
+			if (pos.y < -256)
+			{
+				LOGGER.info("Player {} is trying to teleport below the world height", player.getGameProfile().getName());
+				return false;
+			}
+			LOGGER.info("Player {} is teleporting to {} {}", player.getGameProfile().getName(), world, pos);
+			return true;
+		});
 
-        ServerPlayerEvents.AFTER_TELEPORT.register((player) -> {
-            LOGGER.info("Player {} is teleported", player.getGameProfile().getName());
-        });
-    
+		ServerPlayerEvents.AFTER_TELEPORT.register((player) -> {
+			LOGGER.info("Player {} is teleported", player.getGameProfile().getName());
+		});
+
 		// No fall damage if holding a feather in the main hand
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
 			if (source.getTypeRegistryEntry().matchesKey(DamageTypes.FALL) && entity.getStackInHand(Hand.MAIN_HAND).isOf(Items.FEATHER)) {
