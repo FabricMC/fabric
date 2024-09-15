@@ -90,5 +90,6 @@ public interface FluidVariant extends TransferVariant<Fluid> {
 	 * @param changes the changes to apply
 	 * @return the new variant with the changes applied
 	 */
+	@Override
 	FluidVariant withComponentChanges(ComponentChanges changes);
 }

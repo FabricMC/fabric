@@ -75,4 +75,11 @@ public interface TransferVariant<O> {
 	default boolean isOf(O object) {
 		return getObject() == object;
 	}
+
+	/**
+	 * Creates a copy of this TransferVariant with the provided component changes applied.
+	 * @param changes the changes to apply
+	 * @return the new variant with the changes applied
+	 */
+	TransferVariant<O> withComponentChanges(ComponentChanges changes);
 }
