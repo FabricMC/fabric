@@ -44,7 +44,7 @@ abstract class ChunkDataSenderMixin {
 	private void sendInitialAttachmentData(ServerPlayNetworkHandler handler, ServerWorld world, WorldChunk chunk, Operation<Void> original, ServerPlayerEntity player) {
 		original.call(handler, world, chunk);
 		// do a wrap operation so this packet is sent *after* the chunk ones
-		List<AttachmentChange> changes = ((AttachmentTargetImpl) player.getServerWorld()).fabric_getInitialSyncChanges(player);
+		List<AttachmentChange> changes = ((AttachmentTargetImpl) chunk).fabric_getInitialSyncChanges(player);
 
 		if (changes != null) {
 			AttachmentChange.partitionAndSendPackets(changes, player);

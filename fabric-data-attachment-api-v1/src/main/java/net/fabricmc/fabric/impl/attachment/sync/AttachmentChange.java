@@ -58,7 +58,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 	@SuppressWarnings("unchecked")
 	public static AttachmentChange create(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value) {
 		PacketCodec<PacketByteBuf, Object> codec = (PacketCodec<PacketByteBuf, Object>) ((AttachmentTypeImpl<?>) type).packetCodec();
-		assert codec != null;
+		Objects.requireNonNull(codec, "attachment packet codec cannot be null");
 
 		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeOptional(Optional.ofNullable(value), codec);
@@ -107,7 +107,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 	@Nullable
 	public Object decodeValue() {
 		PacketCodec<PacketByteBuf, Object> codec = (PacketCodec<PacketByteBuf, Object>) ((AttachmentTypeImpl<?>) type).packetCodec();
-		assert codec != null;
+		Objects.requireNonNull(codec, "codec was null");
 
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.copiedBuffer(data));
 		return codec.decode(buf);

@@ -70,7 +70,6 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
 		if (!this.getWorld().isClient()) {
 			AttachmentSyncPredicateImpl pred = ((AttachmentTypeImpl<?>) type).syncPredicate();
-			assert pred != null;
 
 			switch (pred.type()) {
 			case ALL -> PlayerLookup

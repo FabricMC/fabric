@@ -97,7 +97,6 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
 		if (this.hasWorld() && !this.world.isClient()) {
 			AttachmentSyncPredicateImpl pred = ((AttachmentTypeImpl<?>) type).syncPredicate();
-			assert pred != null;
 
 			switch (pred.type()) {
 			case ALL, ALL_BUT_TARGET -> PlayerLookup

@@ -22,6 +22,12 @@ import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
+/*
+ * Interface to allow block entities to communicate with their parent chunk. Initial sync data
+ * (as in AttachmentTargetImpl#fabric_getInitialSyncChanges) of block entities is sent at the same time as that of
+ * their chunk for convenience, because the game sends chunk and block entity data at the same time anyway.
+ * Thus, all the initial sync data for block entities is tracked on the parent WorldChunk, using this interface.
+ */
 public interface BlockEntityAttachmentReceiver {
 	default void fabric_acknowledgeBlockEntityAttachment(BlockPos pos, AttachmentType<?> type, @Nullable Object value) {
 		// shouldn't do anything outside of WorldChunk, but needs testing

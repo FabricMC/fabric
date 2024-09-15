@@ -86,11 +86,9 @@ abstract class ServerWorldMixin extends World implements AttachmentTargetImpl {
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
 		AttachmentSyncPredicateImpl pred = ((AttachmentTypeImpl<?>) type).syncPredicate();
-		assert pred != null;
 
 		switch (pred.type()) {
 		case ALL, ALL_BUT_TARGET -> PlayerLookup
-				// Can't shadow the method or field as we are already extending a supermixin
 				.world((ServerWorld) (Object) this)
 				.forEach(player -> AttachmentSync.trySync(payload, player));
 		case CUSTOM -> PlayerLookup
