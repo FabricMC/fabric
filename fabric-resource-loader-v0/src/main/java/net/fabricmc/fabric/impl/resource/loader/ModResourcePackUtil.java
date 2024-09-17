@@ -105,17 +105,17 @@ public final class ModResourcePackUtil {
 			if (loadOrder != null && loadOrder.getType() == CustomValue.CvType.OBJECT) {
 				CustomValue.CvObject object = loadOrder.getAsObject();
 
-				addLoadOrdering(object, allIds, sorter, true, id);
-				addLoadOrdering(object, allIds, sorter, false, id);
+				addLoadOrdering(object, allIds, sorter, "before", id);
+				addLoadOrdering(object, allIds, sorter, "after", id);
 			}
 		}
 
 		sorter.appendPacks(packs);
 	}
 
-	public static void addLoadOrdering(CustomValue.CvObject object, List<String> allIds, ModResourcePackSorter sorter, boolean before, String currentId) {
+	public static void addLoadOrdering(CustomValue.CvObject object, List<String> allIds, ModResourcePackSorter sorter, String order, String currentId) {
 		List<String> modIds = new ArrayList<>();
-		CustomValue array = object.get(before ? "before" : "after");
+		CustomValue array = object.get(order);
 
 		if (array != null && array.getType() == CustomValue.CvType.ARRAY) {
 			for (CustomValue id : array.getAsArray()) {
@@ -125,7 +125,7 @@ public final class ModResourcePackUtil {
 			}
 		}
 
-		modIds.stream().filter(allIds::contains).forEach(modId -> sorter.addLoadOrdering(modId, currentId, before));
+		modIds.stream().filter(allIds::contains).forEach(modId -> sorter.addLoadOrdering(modId, currentId, order));
 	}
 
 	public static void refreshAutoEnabledPacks(List<ResourcePackProfile> enabledProfiles, Map<String, ResourcePackProfile> allProfiles) {

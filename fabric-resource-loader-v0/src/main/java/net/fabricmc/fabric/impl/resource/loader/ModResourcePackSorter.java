@@ -95,7 +95,7 @@ public class ModResourcePackSorter {
 		}
 	}
 
-	public void addLoadOrdering(String firstPhase, String secondPhase, boolean before) {
+	public void addLoadOrdering(String firstPhase, String secondPhase, String order) {
 		Objects.requireNonNull(firstPhase, "Tried to add an ordering for a null phase.");
 		Objects.requireNonNull(secondPhase, "Tried to add an ordering for a null phase.");
 		if (firstPhase.equals(secondPhase)) throw new IllegalArgumentException("Tried to add a phase that depends on itself.");
@@ -104,7 +104,7 @@ public class ModResourcePackSorter {
 			LoadPhaseData first = getOrCreatePhase(firstPhase, false);
 			LoadPhaseData second = getOrCreatePhase(secondPhase, false);
 
-			if (before) {
+			if (order.equals("before")) {
 				LoadPhaseData.link(first, second);
 			} else {
 				LoadPhaseData.link(second, first);
