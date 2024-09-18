@@ -67,7 +67,7 @@ public final class EntityEventTests implements ModInitializer {
 		ServerEntityWorldChangeEvents.ALLOW_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
 			if (player.getStackInHand(Hand.MAIN_HAND).getItem() == Items.END_ROD) {
 				LOGGER.info("Player {} failed to change world because of handing an end rod", player.getGameProfile().getName());
-			return false;
+				return false;
 			}
 			LOGGER.info("Allow Moving player {}: [{} -> {}]", player, origin.getRegistryKey().getValue(), destination.getRegistryKey().getValue());
 			return true;

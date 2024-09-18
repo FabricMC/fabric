@@ -50,7 +50,7 @@ public final class ServerEntityWorldChangeEvents {
 	 */
 	public static final Event<AllowPlayerChange> ALLOW_PLAYER_CHANGE_WORLD = EventFactory.createArrayBacked(AllowPlayerChange.class, callbacks -> (player, origin, destination) -> {
 		for (AllowPlayerChange callback : callbacks) {
-			if(!callback.allowChangeWorld(player, origin, destination)){
+			if (!callback.allowChangeWorld(player, origin, destination)){
 				return false;
 			}
 		}

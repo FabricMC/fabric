@@ -84,13 +84,13 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 		ServerLivingEntityEvents.AFTER_DEATH.invoker().afterDeath((ServerPlayerEntity) (Object) this, source);
 	}
 
-	@Inject(method = "teleportTo", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayerEntity;inTeleportationState:Z", opcode = Opcodes.PUTFIELD, shift = At.Shift.BEFORE), cancellable = true)
+	@Inject(method = "teleportTo", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayerEntity;inTeleportationState:Z", opcode = Opcodes.PUTFIELD), cancellable = true)
 	private void beforeWorldChanged(TeleportTarget teleportTarget, CallbackInfoReturnable<Entity> cir) {
 		ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
 		boolean allowed = ServerEntityWorldChangeEvents.ALLOW_PLAYER_CHANGE_WORLD.invoker().allowChangeWorld(player, player.getServerWorld(), teleportTarget.world());
+
 		if (!allowed) {
 			cir.setReturnValue(null);
-			cir.cancel();
 		}
 	}
 
@@ -107,16 +107,17 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 		ServerPlayerEvents.COPY_FROM.invoker().copyFromPlayer(oldPlayer, (ServerPlayerEntity) (Object) this, alive);
 	}
 
-	@Inject(method = "teleport(Lnet/minecraft/server/world/ServerWorld;DDDLjava/util/Set;FF)Z", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "teleport(Lnet/minecraft/server/world/ServerWorld;DDDLjava/util/Set;FF)Z", at = @At("HEAD"))
 	private void beforeTeleport(ServerWorld world, double destX, double destY, double destZ, Set<PositionFlag> flags, float yaw, float pitch, CallbackInfoReturnable<Boolean> cir) throws CommandSyntaxException {
 		ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
 		boolean allowed = ServerPlayerEvents.ALLOW_TELEPORT.invoker().allowTeleport(player, world, new Vec3d(destX, destY, destZ));
+
 		if (!allowed) {
 			throw new CommandSyntaxException(null, new LiteralMessage(""));
 		}
 	}
 
-	@Inject(method = "teleport(Lnet/minecraft/server/world/ServerWorld;DDDLjava/util/Set;FF)Z", at = @At("TAIL"), cancellable = true)
+	@Inject(method = "teleport(Lnet/minecraft/server/world/ServerWorld;DDDLjava/util/Set;FF)Z", at = @At("TAIL"))
 	private void afterTeleported(ServerWorld world, double destX, double destY, double destZ, Set<PositionFlag> flags, float yaw, float pitch, CallbackInfoReturnable<Boolean> cir) {
 		ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
 		ServerPlayerEvents.AFTER_TELEPORT.invoker().afterTeleport(player);
