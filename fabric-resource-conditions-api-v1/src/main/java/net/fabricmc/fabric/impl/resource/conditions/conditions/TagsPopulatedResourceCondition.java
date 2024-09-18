@@ -48,7 +48,7 @@ public record TagsPopulatedResourceCondition(Identifier registry, List<Identifie
 
 	@SafeVarargs
 	public <T> TagsPopulatedResourceCondition(TagKey<T>... tags) {
-		this(tags[0].registry().getValue(), Arrays.stream(tags).map(TagKey::id).toList());
+		this(tags[0].registryRef().getValue(), Arrays.stream(tags).map(TagKey::id).toList());
 	}
 
 	@Override

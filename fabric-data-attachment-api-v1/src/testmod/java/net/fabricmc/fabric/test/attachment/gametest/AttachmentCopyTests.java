@@ -57,7 +57,7 @@ public class AttachmentCopyTests implements FabricGameTest {
 		ServerWorld end = server.getWorld(World.END);
 		// using overworld and end to avoid portal code related to the nether
 
-		Entity entity = EntityType.PIG.create(overworld, SpawnReason.SPAWN_EGG);
+		Entity entity = EntityType.PIG.create(overworld, SpawnReason.SPAWN_ITEM_USE);
 		Objects.requireNonNull(entity, "entity was null");
 		entity.setAttached(DUMMY, () -> 10);
 		entity.setAttached(COPY_ON_DEATH, () -> 10);
