@@ -17,17 +17,11 @@
 package net.fabricmc.fabric.api.renderer.v1.render;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
@@ -59,12 +53,8 @@ public interface RenderContext {
 
 	/**
 	 * Returns whether this context currently has at least one transform.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default boolean hasTransform() {
-		return true;
-	}
+	boolean hasTransform();
 
 	/**
 	 * Causes all models/quads/meshes sent to this consumer to be transformed by the provided
@@ -101,24 +91,16 @@ public interface RenderContext {
 	 *
 	 * <p>This function can only be used on a block render context (i.e. in {@link FabricBakedModel#emitBlockQuads}).
 	 * Calling it on another context (e.g. in {@link FabricBakedModel#emitItemQuads}) will throw an exception.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default boolean isFaceCulled(@Nullable Direction face) {
-		return false;
-	}
+	boolean isFaceCulled(@Nullable Direction face);
 
 	/**
 	 * Returns the current transformation mode.
 	 *
 	 * <p>This function can only be used on an item render context (i.e. in {@link FabricBakedModel#emitItemQuads}).
 	 * Calling it on another context (e.g. in {@link FabricBakedModel#emitBlockQuads}) will throw an exception.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default ModelTransformationMode itemTransformationMode() {
-		return ModelTransformationMode.NONE;
-	}
+	ModelTransformationMode itemTransformationMode();
 
 	@FunctionalInterface
 	interface QuadTransform {
@@ -135,48 +117,5 @@ public interface RenderContext {
 	@Deprecated
 	default Consumer<Mesh> meshConsumer() {
 		return mesh -> mesh.outputTo(getEmitter());
-	}
-
-	/**
-	 * @deprecated Use {@link FabricBakedModel#emitBlockQuads(BlockRenderView, BlockState, BlockPos, Supplier, RenderContext) emitBlockQuads}
-	 * or {@link FabricBakedModel#emitItemQuads(ItemStack, Supplier, RenderContext) emitItemQuads} on the baked model
-	 * that you want to consume instead.
-	 */
-	@Deprecated(forRemoval = true)
-	BakedModelConsumer bakedModelConsumer();
-
-	/**
-	 * @deprecated Use {@link FabricBakedModel#emitBlockQuads(BlockRenderView, BlockState, BlockPos, Supplier, RenderContext) emitBlockQuads}
-	 * or {@link FabricBakedModel#emitItemQuads(ItemStack, Supplier, RenderContext) emitItemQuads} on the baked model
-	 * that you want to consume instead.
-	 */
-	@Deprecated(forRemoval = true)
-	default Consumer<BakedModel> fallbackConsumer() {
-		return bakedModelConsumer();
-	}
-
-	@Deprecated(forRemoval = true)
-	interface BakedModelConsumer extends Consumer<BakedModel> {
-		/**
-		 * Render a baked model by processing its {@linkplain BakedModel#getQuads} using the rendered block state.
-		 *
-		 * <p>For block contexts, this will pass the block state being rendered to {@link BakedModel#getQuads}.
-		 * For item contexts, this will pass a {@code null} block state to {@link BakedModel#getQuads}.
-		 * {@link #accept(BakedModel, BlockState)} can be used instead to pass the block state explicitly.
-		 */
-		@Override
-		void accept(BakedModel model);
-
-		/**
-		 * Render a baked model by processing its {@linkplain BakedModel#getQuads} with an explicit block state.
-		 *
-		 * <p>This overload allows passing the block state (or {@code null} to query the item quads).
-		 * This is useful when a model is being wrapped, and expects a different
-		 * block state than the one of the block being rendered.
-		 *
-		 * <p>For item render contexts, you can use this function if you want to render the model with a specific block state.
-		 * Otherwise, use {@linkplain #accept(BakedModel)} the other overload} to render the usual item quads.
-		 */
-		void accept(BakedModel model, @Nullable BlockState state);
 	}
 }
