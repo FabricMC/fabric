@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.resource.loader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -44,8 +45,8 @@ public class ModResourcePackSorter {
 		this.packs = new ModResourcePack[0];
 	}
 
-	public void appendPacks(List<ModResourcePack> packs) {
-		packs.addAll(Arrays.asList(this.packs));
+	public List<ModResourcePack> getPacks() {
+		return Collections.unmodifiableList(Arrays.asList(this.packs));
 	}
 
 	public void addPack(ModResourcePack pack) {
@@ -95,7 +96,7 @@ public class ModResourcePackSorter {
 		}
 	}
 
-	public void addLoadOrdering(String firstPhase, String secondPhase, String order) {
+	public void addLoadOrdering(String firstPhase, String secondPhase, ModResourcePackUtil.Order order) {
 		Objects.requireNonNull(firstPhase, "Tried to add an ordering for a null phase.");
 		Objects.requireNonNull(secondPhase, "Tried to add an ordering for a null phase.");
 		if (firstPhase.equals(secondPhase)) throw new IllegalArgumentException("Tried to add a phase that depends on itself.");
@@ -104,10 +105,9 @@ public class ModResourcePackSorter {
 			LoadPhaseData first = getOrCreatePhase(firstPhase, false);
 			LoadPhaseData second = getOrCreatePhase(secondPhase, false);
 
-			if (order.equals("before")) {
-				LoadPhaseData.link(first, second);
-			} else {
-				LoadPhaseData.link(second, first);
+			switch (order) {
+			case BEFORE -> LoadPhaseData.link(first, second);
+			case AFTER -> LoadPhaseData.link(second, first);
 			}
 
 			NodeSorting.sort(this.sortedPhases, "event phases", Comparator.comparing(data -> data.modId));

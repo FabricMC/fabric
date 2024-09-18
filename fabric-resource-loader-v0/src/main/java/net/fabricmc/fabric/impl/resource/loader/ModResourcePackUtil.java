@@ -72,16 +72,15 @@ public final class ModResourcePackUtil {
 	}
 
 	/**
-	 * Appends mod resource packs to the given list.
+	 * Returns a list of mod resource packs.
 	 *
-	 * @param packs   the resource pack list to append
 	 * @param type    the type of resource
 	 * @param subPath the resource pack sub path directory in mods, may be {@code null}
 	 */
-	public static void appendModResourcePacks(List<ModResourcePack> packs, ResourceType type, @Nullable String subPath) {
+	public static List<ModResourcePack> getModResourcePacks(FabricLoader fabricLoader, ResourceType type, @Nullable String subPath) {
 		ModResourcePackSorter sorter = new ModResourcePackSorter();
 
-		Collection<ModContainer> containers = FabricLoader.getInstance().getAllMods();
+		Collection<ModContainer> containers = fabricLoader.getAllMods();
 		List<String> allIds = containers.stream().map(ModContainer::getMetadata).map(ModMetadata::getId).toList();
 
 		for (ModContainer container : containers) {
@@ -105,17 +104,17 @@ public final class ModResourcePackUtil {
 			if (loadOrder != null && loadOrder.getType() == CustomValue.CvType.OBJECT) {
 				CustomValue.CvObject object = loadOrder.getAsObject();
 
-				addLoadOrdering(object, allIds, sorter, "before", id);
-				addLoadOrdering(object, allIds, sorter, "after", id);
+				addLoadOrdering(object, allIds, sorter, Order.BEFORE, id);
+				addLoadOrdering(object, allIds, sorter, Order.AFTER, id);
 			}
 		}
 
-		sorter.appendPacks(packs);
+		return sorter.getPacks();
 	}
 
-	public static void addLoadOrdering(CustomValue.CvObject object, List<String> allIds, ModResourcePackSorter sorter, String order, String currentId) {
+	public static void addLoadOrdering(CustomValue.CvObject object, List<String> allIds, ModResourcePackSorter sorter, Order order, String currentId) {
 		List<String> modIds = new ArrayList<>();
-		CustomValue array = object.get(order);
+		CustomValue array = object.get(order.jsonKey);
 
 		if (array != null && array.getType() == CustomValue.CvType.ARRAY) {
 			for (CustomValue id : array.getAsArray()) {
@@ -282,5 +281,16 @@ public final class ModResourcePackUtil {
 	 */
 	public static ResourcePackManager createClientManager() {
 		return new ResourcePackManager(new VanillaDataPackProvider(new SymlinkFinder((path) -> true)), new ModResourcePackCreator(ResourceType.SERVER_DATA, true));
+	}
+
+	public enum Order {
+		BEFORE("before"),
+		AFTER("after");
+
+		private final String jsonKey;
+
+		Order(String jsonKey) {
+			this.jsonKey = jsonKey;
+		}
 	}
 }
