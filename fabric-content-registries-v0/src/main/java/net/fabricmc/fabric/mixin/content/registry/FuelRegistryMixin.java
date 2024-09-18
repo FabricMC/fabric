@@ -28,7 +28,7 @@ import net.minecraft.registry.tag.TagKey;
 import net.fabricmc.fabric.api.registry.FabricFuelRegistryBuilder;
 
 /**
- * Implements the invokation of {@link FabricFuelRegistryBuilder} callbacks.
+ * Implements the invocation of {@link FabricFuelRegistryBuilder} callbacks.
  */
 @Mixin(FuelRegistry.class)
 public abstract class FuelRegistryMixin {

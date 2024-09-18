@@ -60,7 +60,7 @@ public interface FabricFuelRegistryBuilder {
 	}
 
 	/**
-	 * Use this event to register custom brewing recipes.
+	 * Use this event to register custom fuels.
 	 */
 	@FunctionalInterface
 	interface BuildCallback {
@@ -73,7 +73,7 @@ public interface FabricFuelRegistryBuilder {
 	}
 
 	/**
-	 * Use this event to register custom brewing recipes.
+	 * Use this event to register custom fuels.
 	 */
 	@FunctionalInterface
 	interface ExclusionsCallback {
