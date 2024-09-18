@@ -21,7 +21,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.ComponentMapImpl;
+import net.minecraft.component.MergedComponentMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -60,6 +60,6 @@ public class VariantCodecs {
 	);
 
 	private static DataResult<ItemVariant> validateComponents(ItemVariant variant) {
-		return ItemStack.validateComponents(ComponentMapImpl.create(variant.getItem().getComponents(), variant.getComponents())).map(v -> variant);
+		return ItemStack.validateComponents(MergedComponentMap.create(variant.getItem().getComponents(), variant.getComponents())).map(v -> variant);
 	}
 }
