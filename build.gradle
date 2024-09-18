@@ -242,7 +242,7 @@ allprojects {
 
 		testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
 		testImplementation sourceSets.testmodClient.output
-		testImplementation 'org.mockito:mockito-core:5.4.0'
+		testImplementation 'org.mockito:mockito-core:5.13.0'
 	}
 
 	test {
