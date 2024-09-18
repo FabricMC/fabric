@@ -24,8 +24,8 @@ import net.fabricmc.fabric.test.lookup.api.Inspectable;
 public class InspectableItem extends Item implements Inspectable {
 	private final String inspectionResult;
 
-	public InspectableItem(String inspectionResult) {
-		super(new Settings());
+	public InspectableItem(String inspectionResult, Item.Settings settings) {
+		super(settings);
 		this.inspectionResult = inspectionResult;
 	}
 

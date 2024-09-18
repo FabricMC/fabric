@@ -77,6 +77,7 @@ public final class ContentRegistryTest implements ModInitializer {
 	private static final TagKey<Item> SMELTING_FUELS_EXCLUDED_BY_TAG = itemTag("smelting_fuels_excluded_by_tag");
 
 	public static final Identifier TEST_EVENT_ID = id("test_event");
+	public static final RegistryKey<Block> TEST_EVENT_BLOCK_KEY = RegistryKey.of(RegistryKeys.BLOCK, TEST_EVENT_ID);
 	public static final RegistryEntry.Reference<GameEvent> TEST_EVENT = Registry.registerReference(Registries.GAME_EVENT, TEST_EVENT_ID, new GameEvent(GameEvent.DEFAULT_RANGE));
 
 	@Override
@@ -107,12 +108,12 @@ public final class ContentRegistryTest implements ModInitializer {
 
 		FabricFuelRegistryBuilder.BUILD.register(builder -> {
 			builder.add(SMELTING_FUEL_INCLUDED_BY_ITEM, 50);
-			builder.addAll(SMELTING_FUELS_INCLUDED_BY_TAG, 100);
+			builder.add(SMELTING_FUELS_INCLUDED_BY_TAG, 100);
 		});
 
 		FabricFuelRegistryBuilder.EXCLUSIONS.register(builder -> {
 			builder.remove(SMELTING_FUEL_EXCLUDED_BY_ITEM);
-			builder.removeAll(SMELTING_FUELS_EXCLUDED_BY_TAG);
+			builder.remove(SMELTING_FUELS_EXCLUDED_BY_TAG);
 		});
 
 		LandPathNodeTypesRegistry.register(Blocks.DEAD_BUSH, PathNodeType.DAMAGE_OTHER, PathNodeType.DANGER_OTHER);
@@ -158,7 +159,7 @@ public final class ContentRegistryTest implements ModInitializer {
 
 		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.ofVanilla("fake_loot_table")));
 
-		Registry.register(Registries.BLOCK, TEST_EVENT_ID, new TestEventBlock(AbstractBlock.Settings.copy(Blocks.STONE)));
+		Registry.register(Registries.BLOCK, TEST_EVENT_BLOCK_KEY, new TestEventBlock(AbstractBlock.Settings.copy(Blocks.STONE).registryKey(TEST_EVENT_BLOCK_KEY)));
 		SculkSensorFrequencyRegistry.register(TEST_EVENT.registryKey(), 2);
 
 		// assert that SculkSensorFrequencyRegistry throws when registering a frequency outside the allowed range
@@ -171,14 +172,15 @@ public final class ContentRegistryTest implements ModInitializer {
 			LOGGER.info("SculkSensorFrequencyRegistry test passed!");
 		}
 
-		var dirtyPotion = new DirtyPotionItem(new Item.Settings().maxCount(1));
-		Registry.register(Registries.ITEM, id("dirty_potion"), dirtyPotion);
+		RegistryKey<Item> dirtyPotionKey = RegistryKey.of(RegistryKeys.ITEM, id("dirty_potion"));
+		var dirtyPotion = new DirtyPotionItem(new Item.Settings().maxCount(1).registryKey(dirtyPotionKey));
+		Registry.register(Registries.ITEM, dirtyPotionKey, dirtyPotion);
 		/* Mods should use BrewingRecipeRegistry.registerPotionType(Item), which is access widened by fabric-transitive-access-wideners-v1
 		 * This testmod uses an accessor due to Loom limitations that prevent TAWs from applying across Gradle subproject boundaries */
 		FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> {
 			builder.registerPotionType(dirtyPotion);
-			builder.registerItemRecipe(Items.POTION, Ingredient.fromTag(Registries.ITEM.getEntryList(ItemTags.DIRT).get()), dirtyPotion);
-			builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.fromTag(Registries.ITEM.getEntryList(ItemTags.SMALL_FLOWERS).get()), Potions.HEALING);
+			builder.registerItemRecipe(Items.POTION, Ingredient.fromTag(Registries.ITEM.getOrThrow(ItemTags.DIRT)), dirtyPotion);
+			builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.fromTag(Registries.ITEM.getOrThrow(ItemTags.SMALL_FLOWERS)), Potions.HEALING);
 
 			if (builder.getEnabledFeatures().contains(FeatureFlags.BUNDLE)) {
 				builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.ofItems(Items.BUNDLE), Potions.LUCK);
@@ -215,7 +217,8 @@ public final class ContentRegistryTest implements ModInitializer {
 	}
 
 	private static Item registerItem(String path) {
-		return Registry.register(Registries.ITEM, id(path), new Item(new Item.Settings()));
+		RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, id(path));
+		return Registry.register(Registries.ITEM, key, new Item(new Item.Settings().registryKey(key)));
 	}
 
 	private static TagKey<Item> itemTag(String path) {

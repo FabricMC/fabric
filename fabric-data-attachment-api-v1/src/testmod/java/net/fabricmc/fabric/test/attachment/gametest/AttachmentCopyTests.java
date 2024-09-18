@@ -16,19 +16,22 @@
 
 package net.fabricmc.fabric.test.attachment.gametest;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.IntSupplier;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.DrownedEntity;
+import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
@@ -36,6 +39,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
+import net.fabricmc.fabric.test.attachment.mixin.ZombieEntityAccessor;
 
 public class AttachmentCopyTests implements FabricGameTest {
 	// using a lambda type because serialization shouldn't play a role in this
@@ -53,7 +57,7 @@ public class AttachmentCopyTests implements FabricGameTest {
 		ServerWorld end = server.getWorld(World.END);
 		// using overworld and end to avoid portal code related to the nether
 
-		Entity entity = EntityType.PIG.create(overworld, SpawnReason.SPAWN_EGG);
+		Entity entity = EntityType.PIG.create(overworld, SpawnReason.SPAWN_ITEM_USE);
 		Objects.requireNonNull(entity, "entity was null");
 		entity.setAttached(DUMMY, () -> 10);
 		entity.setAttached(COPY_ON_DEATH, () -> 10);
@@ -74,10 +78,19 @@ public class AttachmentCopyTests implements FabricGameTest {
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testMobConversion(TestContext context) {
-		MobEntity mob = Objects.requireNonNull(EntityType.ZOMBIE.create(context.getWorld(), SpawnReason.SPAWN_EGG));
+		ZombieEntity mob = context.spawnEntity(EntityType.ZOMBIE, BlockPos.ORIGIN);
 		mob.setAttached(DUMMY, () -> 42);
 		mob.setAttached(COPY_ON_DEATH, () -> 42);
-		MobEntity converted = mob.convertTo(EntityType.DROWNED, false);
+
+		ZombieEntityAccessor zombieEntityAccessor = (ZombieEntityAccessor) mob;
+		zombieEntityAccessor.invokeConvertTo(EntityType.DROWNED);
+		List<DrownedEntity> drowned = context.getEntities(EntityType.DROWNED);
+
+		if (drowned.size() != 1) {
+			throw new GameTestException("Conversion failed");
+		}
+
+		DrownedEntity converted = drowned.getFirst();
 		if (converted == null) throw new GameTestException("Conversion failed");
 
 		if (converted.hasAttached(DUMMY)) {

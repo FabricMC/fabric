@@ -135,7 +135,7 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 		@Override
 		public void reload(ResourceManager manager) {
 			Objects.requireNonNull(wrapperLookup);
-			wrapperLookup.getWrapperOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
+			wrapperLookup.getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
 		}
 	}
 }

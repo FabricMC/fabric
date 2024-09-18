@@ -20,9 +20,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.util.Identifier;
 
 /**
  * Block state resolvers are responsible for mapping each {@link BlockState} of a block to an {@link UnbakedModel}.
@@ -69,18 +67,5 @@ public interface BlockStateResolver {
 		 * @param model the unbaked model for this block state
 		 */
 		void setModel(BlockState state, UnbakedModel model);
-
-		/**
-		 * Loads a model using an {@link Identifier}, or gets it if it was already loaded.
-		 *
-		 * @param id the model identifier
-		 * @return the unbaked model, or a missing model if it is not present
-		 */
-		UnbakedModel getOrLoadModel(Identifier id);
-
-		/**
-		 * The current model loader instance, which changes between resource reloads.
-		 */
-		ModelLoader loader();
 	}
 }

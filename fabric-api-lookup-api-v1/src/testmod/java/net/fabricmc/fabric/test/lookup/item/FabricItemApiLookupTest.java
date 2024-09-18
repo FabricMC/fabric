@@ -19,9 +19,12 @@ package net.fabricmc.fabric.test.lookup.item;
 import static net.fabricmc.fabric.test.lookup.FabricApiLookupTest.ensureException;
 
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -33,10 +36,11 @@ public class FabricItemApiLookupTest {
 	public static final ItemApiLookup<Inspectable, Void> INSPECTABLE =
 			ItemApiLookup.get(Identifier.of("testmod", "inspectable"), Inspectable.class, Void.class);
 
-	public static final InspectableItem HELLO_ITEM = new InspectableItem("Hello Fabric API tester!");
+	public static final RegistryKey<Item> HELLO_ITEM_KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(FabricApiLookupTest.MOD_ID, "hello"));
+	public static final InspectableItem HELLO_ITEM = new InspectableItem("Hello Fabric API tester!", new Item.Settings().registryKey(HELLO_ITEM_KEY));
 
 	public static void onInitialize() {
-		Registry.register(Registries.ITEM, Identifier.of(FabricApiLookupTest.MOD_ID, "hello"), HELLO_ITEM);
+		Registry.register(Registries.ITEM, HELLO_ITEM_KEY, HELLO_ITEM);
 
 		// Diamonds and diamond blocks can be inspected and will also print their name.
 		INSPECTABLE.registerForItems((stack, ignored) -> () -> {

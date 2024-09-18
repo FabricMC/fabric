@@ -21,6 +21,7 @@ import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.ComponentMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -68,6 +69,11 @@ public class ItemVariantImpl implements ItemVariant {
 	@Override
 	public ComponentChanges getComponents() {
 		return components;
+	}
+
+	@Override
+	public ComponentMap getComponentMap() {
+		return getCachedStack().getComponents();
 	}
 
 	@Override

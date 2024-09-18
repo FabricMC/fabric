@@ -6,15 +6,10 @@
     "EntityMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
-    "MooshroomEntityMixin",
-    "PigEntityMixin",
     "PlayerEntityMixin",
     "PlayerManagerMixin",
     "ServerPlayerEntityMixin",
-    "TadpoleEntityMixin",
-    "VillagerEntityMixin",
-    "elytra.LivingEntityMixin",
-    "elytra.PlayerEntityMixin"
+    "elytra.LivingEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1,

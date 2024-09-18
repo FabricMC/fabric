@@ -154,12 +154,13 @@ public class RegistrySyncTest implements ModInitializer {
 
 	private static void registerBlocks(String namespace, int amount, int startingId) {
 		for (int i = 0; i < amount; i++) {
-			Block block = new Block(AbstractBlock.Settings.create());
-			Registry.register(Registries.BLOCK, Identifier.of(namespace, "block_" + (i + startingId)), block);
+			Identifier id = Identifier.of(namespace, "block_" + (i + startingId));
+			Block block = new Block(AbstractBlock.Settings.create().registryKey(RegistryKey.of(RegistryKeys.BLOCK, id)));
+			Registry.register(Registries.BLOCK, id, block);
 
 			if (REGISTER_ITEMS) {
-				BlockItem blockItem = new BlockItem(block, new Item.Settings());
-				Registry.register(Registries.ITEM, Identifier.of(namespace, "block_" + (i + startingId)), blockItem);
+				BlockItem blockItem = new BlockItem(block, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id)));
+				Registry.register(Registries.ITEM, id, blockItem);
 			}
 		}
 	}

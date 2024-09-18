@@ -3,7 +3,8 @@
   "package": "net.fabricmc.fabric.test.attachment.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "BlockEntityTypeAccessor"
+    "BlockEntityTypeAccessor",
+    "ZombieEntityAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

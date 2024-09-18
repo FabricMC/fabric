@@ -19,15 +19,18 @@ package net.fabricmc.fabric.test.rendering;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 
 public class CustomAtlasSourcesTestInit implements ModInitializer {
-	public static final Item DOUBLE_IRON_INGOT = new Item(new Item.Settings());
+	public static final RegistryKey<Item> DOUBLE_IRON_INGOT_KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of("fabric-rendering-v1-testmod", "double_iron_ingot"));
+	public static final Item DOUBLE_IRON_INGOT = new Item(new Item.Settings().registryKey(DOUBLE_IRON_INGOT_KEY));
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.ITEM, Identifier.of("fabric-rendering-v1-testmod", "double_iron_ingot"), DOUBLE_IRON_INGOT);
+		Registry.register(Registries.ITEM, DOUBLE_IRON_INGOT_KEY, DOUBLE_IRON_INGOT);
 	}
 }

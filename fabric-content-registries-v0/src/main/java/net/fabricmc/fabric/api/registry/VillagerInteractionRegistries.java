@@ -46,7 +46,7 @@ public final class VillagerInteractionRegistries {
 	 * by any profession villagers.
 	 *
 	 * @param item the item to register
-	 * @deprecated Add items to the {@linkplain net.minecraft.tag.ItemTags#VILLAGER_PICKS_UP {@code <#789950127774105602>:villager_picks_up} item tag} instead
+	 * @deprecated Add items to the {@linkplain net.minecraft.registry.tag.ItemTags#VILLAGER_PICKS_UP {@code minecraft:villager_picks_up} item tag} instead.
 	 */
 	@Deprecated
 	public static void registerCollectable(ItemConvertible item) {

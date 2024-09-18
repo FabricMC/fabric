@@ -48,7 +48,7 @@ public interface PreparableModelLoadingPlugin<T> {
 	 * @param data The data loaded by the {@link DataLoader}.
 	 * @param pluginContext The context that can be used to extend model loading.
 	 */
-	void onInitializeModelLoader(T data, ModelLoadingPlugin.Context pluginContext);
+	void initialize(T data, ModelLoadingPlugin.Context pluginContext);
 
 	@FunctionalInterface
 	interface DataLoader<T> {

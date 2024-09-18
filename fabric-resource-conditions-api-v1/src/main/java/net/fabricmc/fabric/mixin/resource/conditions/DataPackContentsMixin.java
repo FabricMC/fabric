@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.resource.conditions;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -52,6 +53,6 @@ public class DataPackContentsMixin {
 			at = @At("TAIL")
 	)
 	private void removeLoadedTags(CallbackInfo ci) {
-		ResourceConditionsImpl.LOADED_TAGS.remove();
+		Objects.requireNonNull(ResourceConditionsImpl.LOADED_TAGS.getAndSet(null), "loaded tags not reset");
 	}
 }

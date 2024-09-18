@@ -159,7 +159,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param value The value of the entry.
 		 */
 		default void add(RegistryKey<ItemGroup> registryKey, String value) {
-			final ItemGroup group = Registries.ITEM_GROUP.getOrThrow(registryKey);
+			final ItemGroup group = Registries.ITEM_GROUP.getValueOrThrow(registryKey);
 			final TextContent content = group.getDisplayName().getContent();
 
 			if (content instanceof TranslatableTextContent translatableTextContent) {

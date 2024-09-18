@@ -40,13 +40,6 @@ public interface Mesh {
 
 	/**
 	 * Outputs all quads in this mesh to the given quad emitter.
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default void outputTo(QuadEmitter emitter) {
-		forEach(quad -> {
-			emitter.copyFrom(quad);
-			emitter.emit();
-		});
-	};
+	void outputTo(QuadEmitter emitter);
 }

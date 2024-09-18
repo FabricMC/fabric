@@ -45,7 +45,7 @@ public class LootTest implements ModInitializer {
 		// The LootTable.Builder LootPool.Builder methods here should use
 		// prebuilt entries and pools to test the injected methods.
 		LootTableEvents.REPLACE.register((key, original, source, registries) -> {
-			if (Blocks.BLACK_WOOL.getLootTableKey() == key) {
+			if (Blocks.BLACK_WOOL.getLootTableKey().orElse(null) == key) {
 				if (source != LootTableSource.VANILLA) {
 					throw new AssertionError("black wool loot table should have LootTableSource.VANILLA, got " + source);
 				}
@@ -63,7 +63,7 @@ public class LootTest implements ModInitializer {
 
 		// Test that the event is stopped when the loot table is replaced
 		LootTableEvents.REPLACE.register((key, original, source, registries) -> {
-			if (Blocks.BLACK_WOOL.getLootTableKey() == key) {
+			if (Blocks.BLACK_WOOL.getLootTableKey().orElse(null) == key) {
 				throw new AssertionError("Event should have been stopped from replaced loot table");
 			}
 
@@ -71,11 +71,11 @@ public class LootTest implements ModInitializer {
 		});
 
 		LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
-			if (Blocks.BLACK_WOOL.getLootTableKey() == key && source != LootTableSource.REPLACED) {
+			if (Blocks.BLACK_WOOL.getLootTableKey().orElse(null) == key && source != LootTableSource.REPLACED) {
 				throw new AssertionError("black wool loot table should have LootTableSource.REPLACED, got " + source);
 			}
 
-			if (Blocks.WHITE_WOOL.getLootTableKey() == key) {
+			if (Blocks.WHITE_WOOL.getLootTableKey().orElse(null) == key) {
 				if (source != LootTableSource.VANILLA) {
 					throw new AssertionError("white wool loot table should have LootTableSource.VANILLA, got " + source);
 				}
@@ -91,20 +91,20 @@ public class LootTest implements ModInitializer {
 			}
 
 			// We modify red wool to drop diamonds in the test mod resources.
-			if (Blocks.RED_WOOL.getLootTableKey() == key && source != LootTableSource.MOD) {
+			if (Blocks.RED_WOOL.getLootTableKey().orElse(null) == key && source != LootTableSource.MOD) {
 				throw new AssertionError("red wool loot table should have LootTableSource.MOD, got " + source);
 			}
 
 			// Modify yellow wool to drop *either* yellow wool or emeralds by adding
 			// emeralds to the same loot pool.
-			if (Blocks.YELLOW_WOOL.getLootTableKey() == key) {
+			if (Blocks.YELLOW_WOOL.getLootTableKey().orElse(null) == key) {
 				tableBuilder.modifyPools(poolBuilder -> poolBuilder.with(ItemEntry.builder(Items.EMERALD)));
 			}
 		});
 
 		LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
-			if (EntityType.SALMON.getLootTableId() == key) {
-				Optional<RegistryEntry<Enchantment>> lure = registries.getOptionalWrapper(RegistryKeys.ENCHANTMENT).flatMap(registry -> registry.getOptional(Enchantments.LURE));
+			if (EntityType.SALMON.getLootTable().orElse(null) == key) {
+				Optional<RegistryEntry<Enchantment>> lure = registries.getOptional(RegistryKeys.ENCHANTMENT).flatMap(registry -> registry.getOptional(Enchantments.LURE));
 
 				lure.ifPresent((lureEnchantment) -> tableBuilder.pool(LootPool.builder().with(
 						ItemEntry.builder(Items.FISHING_ROD)
@@ -115,9 +115,9 @@ public class LootTest implements ModInitializer {
 		});
 
 		LootTableEvents.ALL_LOADED.register((resourceManager, lootRegistry) -> {
-			LootTable blackWoolTable = lootRegistry.get(Blocks.BLACK_WOOL.getLootTableKey());
+			Optional<LootTable> blackWoolTable = lootRegistry.getOptionalValue(Blocks.BLACK_WOOL.getLootTableKey().orElse(null));
 
-			if (blackWoolTable == LootTable.EMPTY) {
+			if (blackWoolTable.isEmpty() || blackWoolTable.get() == LootTable.EMPTY) {
 				throw new AssertionError("black wool loot table should not be empty");
 			}
 		});

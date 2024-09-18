@@ -29,6 +29,8 @@ import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.potion.Potions;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.EnchantmentTags;
 import net.minecraft.text.Text;
@@ -56,11 +58,12 @@ public class CustomDamageTest implements ModInitializer {
 		}
 	};
 	// Do this static init *after* the damage handler otherwise it's still null while inside the constructor
-	public static final Item WEIRD_PICK = new WeirdPick();
+	public static final RegistryKey<Item> WEIRD_PICK_KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of("fabric-item-api-v1-testmod", "weird_pickaxe"));
+	public static final Item WEIRD_PICK = new WeirdPick(WEIRD_PICK_KEY);
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.ITEM, Identifier.of("fabric-item-api-v1-testmod", "weird_pickaxe"), WEIRD_PICK);
+		Registry.register(Registries.ITEM, WEIRD_PICK_KEY, WEIRD_PICK);
 		FabricFuelRegistryBuilder.BUILD.register(builder -> builder.add(WEIRD_PICK, 200));
 		FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> builder.registerPotionRecipe(Potions.WATER, WEIRD_PICK, Potions.AWKWARD));
 		EnchantmentEvents.ALLOW_ENCHANTING.register(((enchantment, target, enchantingContext) -> {
@@ -73,8 +76,8 @@ public class CustomDamageTest implements ModInitializer {
 	}
 
 	public static class WeirdPick extends PickaxeItem {
-		protected WeirdPick() {
-			super(ToolMaterial.GOLD, 3f, 5f, new Item.Settings().customDamage(WEIRD_DAMAGE_HANDLER));
+		protected WeirdPick(RegistryKey<Item> registryKey) {
+			super(ToolMaterial.GOLD, 3f, 5f, new Item.Settings().customDamage(WEIRD_DAMAGE_HANDLER).registryKey(registryKey));
 		}
 
 		@Override

@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
@@ -56,19 +54,8 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		this.shadeMode = shadeMode;
 	}
 
-	// TODO 24w33a
-	/*@Override
-	public Collection<Identifier> getModelDependencies() {
-		return Collections.emptySet();
-	}
-
 	@Override
-	public void setParents(Function<Identifier, UnbakedModel> modelLoader) {
-	}*/
-
-	@Override
-	public void method_62326(class_10103 arg, class_10102 arg2) {
-
+	public void resolve(Resolver resolver) {
 	}
 
 	@Override

@@ -1,0 +1,11 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "fabric-data-gen-api-v1-testmod"
+      ]
+    }
+  ],
+  "value": ":tiny_potato:"
+}

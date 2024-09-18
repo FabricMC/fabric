@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.tag.convention.v2;
 
 import net.minecraft.item.Item;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
@@ -135,6 +136,10 @@ public final class ConventionalItemTags {
 	// Foods
 	public static final TagKey<Item> FOODS = register("foods");
 	/**
+	 * All foods edible by animals excluding poisonous foods. (Does not include {@link ItemTags#PARROT_POISONOUS_FOOD})
+	 */
+	public static final TagKey<Item> ANIMAL_FOODS = register("animal_foods");
+	/**
 	 * Apples and other foods that are considered fruits in the culinary field belong in this tag.
 	 * Cherries would go here as they are considered a "stone fruit" within culinary fields.
 	 */
@@ -209,7 +214,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> GLAZED_TERRACOTTAS = register("glazed_terracottas");
 	public static final TagKey<Item> CONCRETES = register("concretes");
 	/**
-	 * Block tag equivalent is {@link BlockTags#CONCRETE_POWDERS}.
+	 * Block tag equivalent is {@link BlockTags#CONCRETE_POWDER}.
 	 */
 	public static final TagKey<Item> CONCRETE_POWDERS = register("concrete_powders");
 

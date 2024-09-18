@@ -10,6 +10,7 @@
     "FuelRegistryMixin",
     "FuelRegistryBuilderMixin",
     "GiveGiftsToHeroTaskAccessor",
+    "GiveGiftsToHeroTaskMixin",
     "HoeItemAccessor",
     "HoneycombItemMixin",
     "LandPathNodeMakerMixin",

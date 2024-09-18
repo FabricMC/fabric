@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.access;
 
 import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SignBlock;
@@ -29,6 +30,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.SignItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
@@ -37,26 +40,36 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 
 public final class SignBlockEntityTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-transitive-access-wideners-v1-testmod";
-	public static final SignBlock TEST_SIGN = new SignBlock(WoodType.OAK, AbstractBlock.Settings.copy(Blocks.OAK_SIGN)) {
+	public static final RegistryKey<Block> TEST_SIGN_KEY = keyOf("test_sign");
+	public static final SignBlock TEST_SIGN = new SignBlock(WoodType.OAK, AbstractBlock.Settings.copy(Blocks.OAK_SIGN).registryKey(TEST_SIGN_KEY)) {
 		@Override
 		public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 			return new TestSign(pos, state);
 		}
 	};
-	public static final WallSignBlock TEST_WALL_SIGN = new WallSignBlock(WoodType.OAK, AbstractBlock.Settings.copy(Blocks.OAK_SIGN)) {
+	public static final RegistryKey<Block> TEST_WALL_SIGN_KEY = keyOf("test_wall_sign");
+	public static final WallSignBlock TEST_WALL_SIGN = new WallSignBlock(WoodType.OAK, AbstractBlock.Settings.copy(Blocks.OAK_SIGN).registryKey(TEST_WALL_SIGN_KEY)) {
 		@Override
 		public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 			return new TestSign(pos, state);
 		}
 	};
-	public static final SignItem TEST_SIGN_ITEM = new SignItem(new Item.Settings(), TEST_SIGN, TEST_WALL_SIGN);
+	public static final SignItem TEST_SIGN_ITEM = new SignItem(TEST_SIGN, TEST_WALL_SIGN, new Item.Settings().registryKey(itemKey(TEST_SIGN_KEY)));
 	public static final BlockEntityType<TestSign> TEST_SIGN_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(TestSign::new, TEST_SIGN, TEST_WALL_SIGN).build();
+
+	private static RegistryKey<Block> keyOf(String id) {
+		return RegistryKey.of(RegistryKeys.BLOCK, Identifier.of(MOD_ID, id));
+	}
+
+	private static RegistryKey<Item> itemKey(RegistryKey<Block> blockKey) {
+		return RegistryKey.of(RegistryKeys.ITEM, blockKey.getValue());
+	}
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "test_sign"), TEST_SIGN);
-		Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "test_wall_sign"), TEST_WALL_SIGN);
-		Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "test_sign"), TEST_SIGN_ITEM);
+		Registry.register(Registries.BLOCK, TEST_SIGN_KEY, TEST_SIGN);
+		Registry.register(Registries.BLOCK, TEST_WALL_SIGN_KEY, TEST_WALL_SIGN);
+		Registry.register(Registries.ITEM, TEST_SIGN_KEY.getValue(), TEST_SIGN_ITEM);
 		Registry.register(Registries.BLOCK_ENTITY_TYPE, Identifier.of(MOD_ID, "test_sign"), TEST_SIGN_BLOCK_ENTITY);
 	}
 

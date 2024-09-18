@@ -115,12 +115,8 @@ public interface MaterialFinder extends MaterialView {
 	 * <p>This property is respected only in block contexts. It will not have an effect in other contexts.
 	 *
 	 * @see ShadeMode
-	 *
-	 * @apiNote The default implementation will be removed in the next breaking release.
 	 */
-	default MaterialFinder shadeMode(ShadeMode mode) {
-		return this;
-	}
+	MaterialFinder shadeMode(ShadeMode mode);
 
 	/**
 	 * Copies all properties from the given {@link MaterialView} to this material finder.

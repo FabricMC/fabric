@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_payment": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#minecraft:beacon_payment_items"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "minecraft:beacon"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_payment"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:beacon"
+    ]
+  }
+}

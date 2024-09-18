@@ -6,7 +6,7 @@
     "AttachmentTargetsMixin",
     "BannerBlockEntityMixin",
     "BlockEntityMixin",
-    "ChunkSerializerMixin",
+    "SerializedChunkMixin",
     "EntityMixin",
     "ServerWorldMixin",
     "WorldChunkMixin",

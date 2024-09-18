@@ -288,7 +288,7 @@ public class VanillaStorageTests {
 	 */
 	@GameTest(templateName = "fabric-transfer-api-v1-testmod:double_chest_comparators", skyAccess = true)
 	public void testDoubleChestComparator(TestContext context) {
-		BlockPos chestPos = new BlockPos(2, 2, 2);
+		BlockPos chestPos = new BlockPos(2, 1, 2);
 		Storage<ItemVariant> storage = ItemStorage.SIDED.find(context.getWorld(), context.getAbsolutePos(chestPos), Direction.UP);
 		context.assertTrue(storage != null, "Storage must not be null");
 

@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
@@ -34,21 +32,10 @@ public class RiverstoneUnbakedModel implements UnbakedModel {
 	private static final Identifier STONE_MODEL_ID = Identifier.ofVanilla("block/stone");
 	private static final Identifier GOLD_BLOCK_MODEL_ID = Identifier.ofVanilla("block/gold_block");
 
-	// TODO 24w33a
-	/*@Override
-	public Collection<Identifier> getModelDependencies() {
-		return Collections.emptySet();
-	}
-
 	@Override
-	public void setParents(Function<Identifier, UnbakedModel> modelLoader) {
-		modelLoader.apply(STONE_MODEL_ID).setParents(modelLoader);
-		modelLoader.apply(GOLD_BLOCK_MODEL_ID).setParents(modelLoader);
-	}*/
-
-	@Override
-	public void method_62326(class_10103 arg, class_10102 arg2) {
-
+	public void resolve(Resolver resolver) {
+		resolver.resolve(STONE_MODEL_ID);
+		resolver.resolve(GOLD_BLOCK_MODEL_ID);
 	}
 
 	@Nullable

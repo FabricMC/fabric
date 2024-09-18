@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:diamond_pickaxe",
+    "minecraft:diamond_pickaxe",
+    "minecraft:diamond_pickaxe",
+    "minecraft:diamond_pickaxe",
+    {
+      "fabric:type": "fabric:components",
+      "base": "minecraft:diamond_pickaxe",
+      "components": {
+        "minecraft:damage": 0
+      }
+    },
+    "minecraft:diamond_pickaxe",
+    "minecraft:diamond_pickaxe",
+    "minecraft:diamond_pickaxe",
+    "minecraft:diamond_pickaxe"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:diamond_block"
+  }
+}

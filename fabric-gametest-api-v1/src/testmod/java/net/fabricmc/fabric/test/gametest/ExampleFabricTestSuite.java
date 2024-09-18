@@ -47,7 +47,7 @@ public class ExampleFabricTestSuite implements FabricGameTest {
 
 	private void afterEach(TestContext context) {
 		context.addInstantFinalTask(() ->
-				context.checkBlock(new BlockPos(0, 2, 0), (block) -> block == Blocks.DIAMOND_BLOCK, "Expect block to be gold")
+				context.checkBlock(new BlockPos(0, 1, 0), (block) -> block == Blocks.DIAMOND_BLOCK, "Expect block to be diamond")
 		);
 	}
 
@@ -58,6 +58,6 @@ public class ExampleFabricTestSuite implements FabricGameTest {
 
 	@GameTest(templateName = EMPTY_STRUCTURE)
 	public void noStructure(TestContext context) {
-		context.setBlockState(0, 2, 0, Blocks.DIAMOND_BLOCK);
+		context.setBlockState(0, 1, 0, Blocks.DIAMOND_BLOCK);
 	}
 }

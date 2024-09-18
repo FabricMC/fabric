@@ -65,7 +65,6 @@ public interface CustomIngredient {
 	 *     <li>These stacks are generally used for display purposes, and need not be exhaustive or perfectly accurate.</li>
 	 *     <li>An exception is ingredients that {@linkplain #requiresTesting() don't require testing},
 	 *     for which it is important that the returned stacks correspond exactly to all the accepted {@link Item}s.</li>
-	 *     <li>At least one stack must be returned for the ingredient not to be considered {@linkplain Ingredient#isEmpty() empty}.</li>
 	 *     <li>The ingredient should try to return at least one stack with each accepted {@link Item}.
 	 *     This allows mods that inspect the ingredient to figure out which stacks it might accept.</li>
 	 * </ul>

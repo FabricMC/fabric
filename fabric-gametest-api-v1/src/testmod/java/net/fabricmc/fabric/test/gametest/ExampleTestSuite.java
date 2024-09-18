@@ -27,7 +27,7 @@ public class ExampleTestSuite {
 	@GameTest
 	public void diamond(TestContext context) {
 		context.addInstantFinalTask(() ->
-				context.checkBlock(new BlockPos(0, 2, 0), (block) -> block == Blocks.DIAMOND_BLOCK, "Expect block to be diamond")
+				context.checkBlock(new BlockPos(0, 1, 0), (block) -> block == Blocks.DIAMOND_BLOCK, "Expect block to be diamond")
 		);
 	}
 

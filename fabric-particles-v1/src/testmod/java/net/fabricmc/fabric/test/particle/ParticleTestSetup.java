@@ -26,6 +26,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.Identifier;
 
@@ -34,17 +36,20 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 public final class ParticleTestSetup implements ModInitializer {
 	// The dust particles of this block are always tinted (default).
-	public static final Block ALWAYS_TINTED = new ParticleTintTestBlock(AbstractBlock.Settings.create().breakInstantly(), 0xFF00FF);
+	public static final RegistryKey<Block> ALWAYS_TINTED_KEY = block("always_tinted");
+	public static final Block ALWAYS_TINTED = new ParticleTintTestBlock(AbstractBlock.Settings.create().breakInstantly().registryKey(ALWAYS_TINTED_KEY), 0xFF00FF);
 	// The dust particles of this block are only tinted when the block is broken over water.
-	public static final Block TINTED_OVER_WATER = new ParticleTintTestBlock(AbstractBlock.Settings.create().breakInstantly(), 0xFFFF00);
+	public static final RegistryKey<Block> TINTED_OVER_WATER_KEY = block("tinted_over_water");
+	public static final Block TINTED_OVER_WATER = new ParticleTintTestBlock(AbstractBlock.Settings.create().breakInstantly().registryKey(TINTED_OVER_WATER_KEY), 0xFFFF00);
 	// The dust particles of this block are never tinted.
-	public static final Block NEVER_TINTED = new ParticleTintTestBlock(AbstractBlock.Settings.create().breakInstantly(), 0x00FFFF);
+	public static final RegistryKey<Block> NEVER_TINTED_KEY = block("never_tinted");
+	public static final Block NEVER_TINTED = new ParticleTintTestBlock(AbstractBlock.Settings.create().breakInstantly().registryKey(NEVER_TINTED_KEY), 0x00FFFF);
 
 	@Override
 	public void onInitialize() {
-		registerBlock("always_tinted", ALWAYS_TINTED);
-		registerBlock("tinted_over_water", TINTED_OVER_WATER);
-		registerBlock("never_tinted", NEVER_TINTED);
+		registerBlock(ALWAYS_TINTED_KEY, ALWAYS_TINTED);
+		registerBlock(TINTED_OVER_WATER_KEY, TINTED_OVER_WATER);
+		registerBlock(NEVER_TINTED_KEY, NEVER_TINTED);
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(CommandManager.literal("addparticletestblocks").executes(context -> {
@@ -57,9 +62,12 @@ public final class ParticleTestSetup implements ModInitializer {
 		});
 	}
 
-	private static void registerBlock(String path, Block block) {
-		Identifier id = Identifier.of("fabric-particles-v1-testmod", path);
-		Registry.register(Registries.BLOCK, id, block);
-		Registry.register(Registries.ITEM, id, new BlockItem(block, new Item.Settings()));
+	private static RegistryKey<Block> block(String path) {
+		return RegistryKey.of(RegistryKeys.BLOCK, Identifier.of("fabric-particles-v1-testmod", path));
+	}
+
+	private static void registerBlock(RegistryKey<Block> key, Block block) {
+		Registry.register(Registries.BLOCK, key, block);
+		Registry.register(Registries.ITEM, key.getValue(), new BlockItem(block, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, key.getValue()))));
 	}
 }

@@ -52,7 +52,7 @@ public class ClientTagsLoader {
 	 */
 	public static LoadedTag loadTag(TagKey<?> tagKey) {
 		var tags = new HashSet<TagEntry>();
-		HashSet<Path> tagFiles = getTagFiles(tagKey.registry(), tagKey.id());
+		HashSet<Path> tagFiles = getTagFiles(tagKey.registryRef(), tagKey.id());
 
 		for (Path tagPath : tagFiles) {
 			try (BufferedReader tagReader = Files.newBufferedReader(tagPath)) {
@@ -88,7 +88,7 @@ public class ClientTagsLoader {
 				@Nullable
 				@Override
 				public Collection<Identifier> tag(Identifier id) {
-					TagKey<?> tag = TagKey.of(tagKey.registry(), id);
+					TagKey<?> tag = TagKey.of(tagKey.registryRef(), id);
 					immediateChildTags.add(tag);
 					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).completeIds;
 				}

@@ -36,6 +36,9 @@ import net.minecraft.entity.attribute.DefaultAttributeRegistry;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.PigEntity;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.Heightmap;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityType;
@@ -51,7 +54,7 @@ public class FabricEntityTypeTest {
 	void buildEntityType() {
 		EntityType<Entity> type = EntityType.Builder.create(SpawnGroup.MISC)
 				.alwaysUpdateVelocity(true)
-				.build();
+				.build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of("test", "test")));
 
 		assertNotNull(type);
 		assertTrue(type.alwaysUpdateVelocity());
@@ -61,7 +64,7 @@ public class FabricEntityTypeTest {
 	void buildLivingEntityType() {
 		EntityType<LivingEntity> type = FabricEntityType.Builder.createLiving((t, w) -> null, SpawnGroup.MISC, living -> living
 						.defaultAttributes(FabricEntityTypeTest::createAttributes)
-		).build();
+		).build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of("test", "test2")));
 
 		assertNotNull(type);
 		assertNotNull(DefaultAttributeRegistry.get(type));
@@ -72,7 +75,7 @@ public class FabricEntityTypeTest {
 		EntityType<MobEntity> type = FabricEntityType.Builder.createMob((t, w) -> null, SpawnGroup.MISC, mob -> mob
 				.spawnRestriction(SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, PigEntity::canMobSpawn)
 				.defaultAttributes(FabricEntityTypeTest::createAttributes)
-		).build();
+		).build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of("test", "test3")));
 
 		assertNotNull(type);
 		assertEquals(SpawnLocationTypes.ON_GROUND, SpawnRestriction.getLocation(type));

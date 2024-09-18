@@ -37,6 +37,6 @@ public final class BuiltInRegistryKeys {
 	}
 
 	public static RegistryEntryLookup<Biome> biomeRegistryWrapper() {
-		return vanillaRegistries.getWrapperOrThrow(RegistryKeys.BIOME);
+		return vanillaRegistries.getOrThrow(RegistryKeys.BIOME);
 	}
 }

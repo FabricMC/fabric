@@ -40,7 +40,7 @@ public abstract class FuelRegistryBuilderMixin implements FabricFuelRegistryBuil
 
 	@Shadow
 	@Final
-	private FeatureSet featureSet;
+	private FeatureSet enabledFeatures;
 
 	@Shadow
 	@Final
@@ -59,6 +59,6 @@ public abstract class FuelRegistryBuilderMixin implements FabricFuelRegistryBuil
 
 	@Override
 	public FeatureSet getEnabledFeatures() {
-		return this.featureSet;
+		return this.enabledFeatures;
 	}
 }

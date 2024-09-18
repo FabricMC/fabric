@@ -317,8 +317,8 @@ transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	regist
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	uploadArmor	(Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	uploadArmor	(Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;)V
 transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	suffixTrim	(Lnet/minecraft/util/Identifier;Ljava/lang/String;)Lnet/minecraft/util/Identifier;
-transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	createArmorJson	(Lnet/minecraft/util/Identifier;Ljava/util/Map;Lnet/minecraft/registry/entry/RegistryEntry;)Lcom/google/gson/JsonObject;
-transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	registerArmor	(Lnet/minecraft/item/ArmorItem;)V
+transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	createArmorJson	(Lnet/minecraft/util/Identifier;Ljava/util/Map;Lnet/minecraft/util/Identifier;)Lcom/google/gson/JsonObject;
+transitive-accessible	method	net/minecraft/data/client/ItemModelGenerator	registerArmor	(Lnet/minecraft/item/Item;Lnet/minecraft/util/Identifier;Lnet/minecraft/item/equipment/EquipmentModel;Lnet/minecraft/entity/EquipmentSlot;)V
 transitive-extendable	method	net/minecraft/data/MetadataProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/SnbtProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/client/ModelProvider	getName	()Ljava/lang/String;

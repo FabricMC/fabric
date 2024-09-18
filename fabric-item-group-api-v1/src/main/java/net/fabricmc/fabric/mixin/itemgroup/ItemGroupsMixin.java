@@ -109,7 +109,7 @@ public class ItemGroupsMixin {
 		var map = new HashMap<ItemGroupPosition, String>();
 
 		for (RegistryKey<ItemGroup> registryKey : Registries.ITEM_GROUP.getKeys()) {
-			final ItemGroup itemGroup = Registries.ITEM_GROUP.getOrThrow(registryKey);
+			final ItemGroup itemGroup = Registries.ITEM_GROUP.getValueOrThrow(registryKey);
 			final FabricItemGroupImpl fabricItemGroup = (FabricItemGroupImpl) itemGroup;
 			final String displayName = itemGroup.getDisplayName().getString();
 			final var position = new ItemGroupPosition(itemGroup.getRow(), itemGroup.getColumn(), fabricItemGroup.fabric_getPage());

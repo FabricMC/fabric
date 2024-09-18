@@ -47,11 +47,6 @@ public final class ModelLoadingPluginManager {
 		PREPARABLE_PLUGINS.add(new PreparablePluginHolder<>(loader, plugin));
 	}
 
-	/**
-	 * The current exception behavior as of 1.20 is as follows.
-	 * If getting a {@link CompletableFuture}s throws then the whole client will crash.
-	 * If a {@link CompletableFuture} completes exceptionally then the resource reload will fail.
-	 */
 	public static CompletableFuture<List<ModelLoadingPlugin>> preparePlugins(ResourceManager resourceManager, Executor executor) {
 		List<CompletableFuture<ModelLoadingPlugin>> futures = new ArrayList<>();
 
@@ -63,12 +58,12 @@ public final class ModelLoadingPluginManager {
 			futures.add(preparePlugin(holder, resourceManager, executor));
 		}
 
-		return Util.combine(futures);
+		return Util.combineSafe(futures);
 	}
 
 	private static <T> CompletableFuture<ModelLoadingPlugin> preparePlugin(PreparablePluginHolder<T> holder, ResourceManager resourceManager, Executor executor) {
 		CompletableFuture<T> dataFuture = holder.loader.load(resourceManager, executor);
-		return dataFuture.thenApply(data -> pluginContext -> holder.plugin.onInitializeModelLoader(data, pluginContext));
+		return dataFuture.thenApply(data -> pluginContext -> holder.plugin.initialize(data, pluginContext));
 	}
 
 	private ModelLoadingPluginManager() { }

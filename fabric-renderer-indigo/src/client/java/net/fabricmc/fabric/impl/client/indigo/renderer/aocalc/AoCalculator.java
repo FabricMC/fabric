@@ -147,17 +147,16 @@ public abstract class AoCalculator {
 	// Because this instance is effectively thread-local, we preserve instances
 	// to avoid making a new allocation each call.
 	private final float[] vanillaAoData = new float[Direction.values().length * 2];
-	private final BitSet vanillaAoControlBits = new BitSet(3);
+	private final BitSet vanillaAoFlags = new BitSet(3);
 	private final int[] vertexData = new int[EncodingFormat.QUAD_STRIDE];
 
 	private void calcVanilla(QuadViewImpl quad, float[] aoDest, int[] lightDest) {
-		vanillaAoControlBits.clear();
+		vanillaAoFlags.clear();
 		final Direction lightFace = quad.lightFace();
 		quad.toVanilla(vertexData, 0);
 
-		VanillaAoHelper.updateShape(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vertexData, lightFace, vanillaAoData, vanillaAoControlBits);
-		// TODO 24w33a
-		//vanillaCalc.apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, lightFace, vanillaAoData, vanillaAoControlBits, quad.hasShade());
+		VanillaAoHelper.getQuadDimensions(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vertexData, lightFace, vanillaAoData, vanillaAoFlags);
+		vanillaCalc.apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, lightFace, vanillaAoData, vanillaAoFlags, quad.hasShade());
 
 		System.arraycopy(vanillaCalc.brightness, 0, aoDest, 0, 4);
 		System.arraycopy(vanillaCalc.light, 0, lightDest, 0, 4);

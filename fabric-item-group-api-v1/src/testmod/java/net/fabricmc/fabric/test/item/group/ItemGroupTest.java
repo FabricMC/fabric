@@ -37,13 +37,14 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
 public class ItemGroupTest implements ModInitializer {
 	private static final String MOD_ID = "fabric-item-group-api-v1-testmod";
-	private static Item TEST_ITEM;
+	private static final RegistryKey<Item> ITEM_KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(MOD_ID, "item_test_group"));
+	private static final Item TEST_ITEM = new Item(new Item.Settings().registryKey(ITEM_KEY));
 
 	private static final RegistryKey<ItemGroup> ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(MOD_ID, "test_group"));
 
 	@Override
 	public void onInitialize() {
-		TEST_ITEM = Registry.register(Registries.ITEM, Identifier.of("fabric-item-groups-v0-testmod", "item_test_group"), new Item(new Item.Settings()));
+		Registry.register(Registries.ITEM, Identifier.of("fabric-item-groups-v0-testmod", "item_test_group"), TEST_ITEM);
 
 		Registry.register(Registries.ITEM_GROUP, ITEM_GROUP, FabricItemGroup.builder()
 				.displayName(Text.literal("Test Item Group"))

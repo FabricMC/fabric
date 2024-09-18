@@ -156,16 +156,16 @@ public class TagUtilTest implements ModInitializer {
 		}
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			if (!TagUtil.isIn(server.getRegistryManager(), ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS, server.getRegistryManager().get(RegistryKeys.ENCHANTMENT).get(Enchantments.FORTUNE))) {
+			if (!TagUtil.isIn(server.getRegistryManager(), ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS, server.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).get(Enchantments.FORTUNE))) {
 				throw new AssertionError("Failed to find fortune in c:increase_block_drops!");
 			}
 
-			if (TagUtil.isIn(ConventionalBiomeTags.IS_OVERWORLD, server.getRegistryManager().get(RegistryKeys.BIOME).get(BiomeKeys.BADLANDS))) {
+			if (TagUtil.isIn(ConventionalBiomeTags.IS_OVERWORLD, server.getRegistryManager().getOrThrow(RegistryKeys.BIOME).get(BiomeKeys.BADLANDS))) {
 				throw new AssertionError("Found a dynamic entry in a static registry?!");
 			}
 
 			// If this fails, the tag is missing a biome or the util is broken
-			if (!TagUtil.isIn(server.getRegistryManager(), ConventionalBiomeTags.IS_OVERWORLD, server.getRegistryManager().get(RegistryKeys.BIOME).get(BiomeKeys.BADLANDS))) {
+			if (!TagUtil.isIn(server.getRegistryManager(), ConventionalBiomeTags.IS_OVERWORLD, server.getRegistryManager().getOrThrow(RegistryKeys.BIOME).get(BiomeKeys.BADLANDS))) {
 				throw new AssertionError("Failed to find an overworld biome (%s) in c:in_overworld!".formatted(BiomeKeys.BADLANDS));
 			}
 

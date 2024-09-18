@@ -64,9 +64,9 @@ public final class TagUtil {
 		Objects.requireNonNull(entry);
 
 		if (registryManager != null) {
-			maybeRegistry = registryManager.getOptional(tagKey.registry());
+			maybeRegistry = registryManager.getOptional(tagKey.registryRef());
 		} else {
-			maybeRegistry = Registries.REGISTRIES.getOrEmpty(tagKey.registry().getValue());
+			maybeRegistry = Registries.REGISTRIES.getOptionalValue(tagKey.registryRef().getValue());
 		}
 
 		if (maybeRegistry.isPresent()) {
@@ -77,7 +77,7 @@ public final class TagUtil {
 
 				// Check synced tag
 				if (maybeKey.isPresent()) {
-					return registry.entryOf(maybeKey.get()).isIn(tagKey);
+					return registry.getOrThrow(maybeKey.get()).isIn(tagKey);
 				}
 			}
 		}

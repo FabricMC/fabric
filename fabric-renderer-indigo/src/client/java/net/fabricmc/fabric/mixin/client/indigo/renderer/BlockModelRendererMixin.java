@@ -31,7 +31,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.VanillaAoHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderContext;
 
 @Mixin(BlockModelRenderer.class)
@@ -46,10 +45,5 @@ public abstract class BlockModelRendererMixin {
 			context.render(blockView, model, state, pos, matrix, buffer, cull, rand, seed, overlay);
 			ci.cancel();
 		}
-	}
-
-	@Inject(at = @At("RETURN"), method = "<init>*")
-	private void onInit(CallbackInfo ci) {
-		VanillaAoHelper.initialize((BlockModelRenderer) (Object) this);
 	}
 }

@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
+import net.minecraft.util.profiler.Profilers;
 
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.mixin.command.HelpCommandAccessor;
@@ -76,7 +77,7 @@ public final class ClientCommandInternals {
 		// noinspection ConstantConditions
 		FabricClientCommandSource commandSource = (FabricClientCommandSource) client.getNetworkHandler().getCommandSource();
 
-		client.getProfiler().push(command);
+		Profilers.get().push(command);
 
 		try {
 			// TODO: Check for server commands before executing.
@@ -100,7 +101,7 @@ public final class ClientCommandInternals {
 			commandSource.sendError(Text.of(e.getMessage()));
 			return true;
 		} finally {
-			client.getProfiler().pop();
+			Profilers.get().pop();
 		}
 	}
 

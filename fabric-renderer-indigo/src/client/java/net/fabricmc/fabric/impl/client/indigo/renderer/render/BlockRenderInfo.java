@@ -111,9 +111,7 @@ public class BlockRenderInfo {
 		if ((cullCompletionFlags & mask) == 0) {
 			cullCompletionFlags |= mask;
 
-			// TODO 24w33a - Double check this
-			//if (Block.shouldDrawSide(blockState, blockView, blockPos, face, searchPos.set(blockPos, face))) {
-			if (Block.shouldDrawSide(blockState, blockState, face)) {
+			if (Block.shouldDrawSide(blockState, blockView.getBlockState(searchPos.set(blockPos, face)), face)) {
 				cullResultFlags |= mask;
 				return true;
 			} else {

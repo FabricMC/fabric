@@ -16,8 +16,12 @@
 
 package net.fabricmc.fabric.impl.client.model.loading;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -35,13 +39,14 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
+import net.minecraft.client.render.model.BlockStatesLoader;
 import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.state.StateManager;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
@@ -51,24 +56,23 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ModelResolver;
 
 public class ModelLoadingEventDispatcher {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoadingEventDispatcher.class);
+	public static final ThreadLocal<ModelLoadingEventDispatcher> CURRENT = new ThreadLocal<>();
 
-	private final ModelLoader loader;
 	private final ModelLoadingPluginContextImpl pluginContext;
 
-	private final ObjectArrayList<ModelResolverContext> modelResolverContextStack = new ObjectArrayList<>();
+	private final ModelResolverContext modelResolverContext = new ModelResolverContext();
 	private final BlockStateResolverContext blockStateResolverContext = new BlockStateResolverContext();
 
-	private final ObjectArrayList<OnLoadModifierContext> onLoadModifierContextStack = new ObjectArrayList<>();
+	private final OnLoadModifierContext onLoadModifierContext = new OnLoadModifierContext();
 	private final ObjectArrayList<BeforeBakeModifierContext> beforeBakeModifierContextStack = new ObjectArrayList<>();
 	private final ObjectArrayList<AfterBakeModifierContext> afterBakeModifierContextStack = new ObjectArrayList<>();
 
-	public ModelLoadingEventDispatcher(ModelLoader loader, List<ModelLoadingPlugin> plugins) {
-		this.loader = loader;
+	public ModelLoadingEventDispatcher(List<ModelLoadingPlugin> plugins) {
 		this.pluginContext = new ModelLoadingPluginContextImpl();
 
 		for (ModelLoadingPlugin plugin : plugins) {
 			try {
-				plugin.onInitializeModelLoader(pluginContext);
+				plugin.initialize(pluginContext);
 			} catch (Exception exception) {
 				LOGGER.error("Failed to initialize model loading plugin", exception);
 			}
@@ -81,18 +85,30 @@ public class ModelLoadingEventDispatcher {
 		}
 	}
 
-	public boolean loadBlockStateModels(Identifier id, StateManager<Block, BlockState> stateManager) {
-		BlockStateResolver resolver = pluginContext.blockStateResolvers.get(id);
+	public BlockStatesLoader.BlockStateDefinition loadBlockStateModels() {
+		Map<ModelIdentifier, BlockStatesLoader.BlockModel> map = new HashMap<>();
 
-		if (resolver != null) {
-			resolveBlockStates(resolver, stateManager.getOwner(), id);
-			return true;
-		} else {
-			return false;
-		}
+		pluginContext.blockStateResolvers.forEach((block, resolver) -> {
+			Optional<RegistryKey<Block>> optionalKey = Registries.BLOCK.getKey(block);
+
+			if (optionalKey.isEmpty()) {
+				return;
+			}
+
+			Identifier blockId = optionalKey.get().getValue();
+
+			BiConsumer<BlockState, UnbakedModel> output = (state, model) -> {
+				ModelIdentifier modelId = BlockModels.getModelId(blockId, state);
+				map.put(modelId, new BlockStatesLoader.BlockModel(state, model));
+			};
+
+			resolveBlockStates(resolver, block, output);
+		});
+
+		return new BlockStatesLoader.BlockStateDefinition(map);
 	}
 
-	private void resolveBlockStates(BlockStateResolver resolver, Block block, Identifier blockId) {
+	private void resolveBlockStates(BlockStateResolver resolver, Block block, BiConsumer<BlockState, UnbakedModel> output) {
 		BlockStateResolverContext context = blockStateResolverContext;
 		context.prepare(block);
 
@@ -100,7 +116,6 @@ public class ModelLoadingEventDispatcher {
 		ImmutableList<BlockState> allStates = block.getStateManager().getStates();
 		boolean thrown = false;
 
-		// Call resolver
 		try {
 			resolver.resolveBlockStates(context);
 		} catch (Exception e) {
@@ -108,34 +123,21 @@ public class ModelLoadingEventDispatcher {
 			thrown = true;
 		}
 
-		// Copy models over to the loader
-		if (thrown) {
-			UnbakedModel missingModel = ((ModelLoaderHooks) loader).fabric_getMissingModel();
+		if (!thrown) {
+			if (resolvedModels.size() == allStates.size()) {
+				// If there are as many resolved models as total states, all states have
+				// been resolved and models do not need to be null-checked.
+				resolvedModels.forEach(output);
+			} else {
+				for (BlockState state : allStates) {
+					@Nullable
+					UnbakedModel model = resolvedModels.get(state);
 
-			for (BlockState state : allStates) {
-				ModelIdentifier modelId = BlockModels.getModelId(blockId, state);
-				((ModelLoaderHooks) loader).fabric_add(modelId, missingModel);
-			}
-		} else if (resolvedModels.size() == allStates.size()) {
-			// If there are as many resolved models as total states, all states have
-			// been resolved and models do not need to be null-checked.
-			resolvedModels.forEach((state, model) -> {
-				ModelIdentifier modelId = BlockModels.getModelId(blockId, state);
-				((ModelLoaderHooks) loader).fabric_add(modelId, model);
-			});
-		} else {
-			UnbakedModel missingModel = ((ModelLoaderHooks) loader).fabric_getMissingModel();
-
-			for (BlockState state : allStates) {
-				ModelIdentifier modelId = BlockModels.getModelId(blockId, state);
-				@Nullable
-				UnbakedModel model = resolvedModels.get(state);
-
-				if (model == null) {
-					LOGGER.error("Block state resolver did not provide a model for state {} in block {}. Using missing model.", state, block);
-					((ModelLoaderHooks) loader).fabric_add(modelId, missingModel);
-				} else {
-					((ModelLoaderHooks) loader).fabric_add(modelId, model);
+					if (model == null) {
+						LOGGER.error("Block state resolver did not provide a model for state {} in block {}. Using missing model.", state, block);
+					} else {
+						output.accept(state, model);
+					}
 				}
 			}
 		}
@@ -145,31 +147,13 @@ public class ModelLoadingEventDispatcher {
 
 	@Nullable
 	public UnbakedModel resolveModel(Identifier id) {
-		if (modelResolverContextStack.isEmpty()) {
-			modelResolverContextStack.add(new ModelResolverContext());
-		}
-
-		ModelResolverContext context = modelResolverContextStack.pop();
-		context.prepare(id);
-
-		UnbakedModel model = pluginContext.resolveModel().invoker().resolveModel(context);
-
-		modelResolverContextStack.push(context);
-		return model;
+		modelResolverContext.prepare(id);
+		return pluginContext.resolveModel().invoker().resolveModel(modelResolverContext);
 	}
 
 	public UnbakedModel modifyModelOnLoad(UnbakedModel model, @UnknownNullability Identifier resourceId, @UnknownNullability ModelIdentifier topLevelId) {
-		if (onLoadModifierContextStack.isEmpty()) {
-			onLoadModifierContextStack.add(new OnLoadModifierContext());
-		}
-
-		OnLoadModifierContext context = onLoadModifierContextStack.pop();
-		context.prepare(resourceId, topLevelId);
-
-		model = pluginContext.modifyModelOnLoad().invoker().modifyModelOnLoad(model, context);
-
-		onLoadModifierContextStack.push(context);
-		return model;
+		onLoadModifierContext.prepare(resourceId, topLevelId);
+		return pluginContext.modifyModelOnLoad().invoker().modifyModelOnLoad(model, onLoadModifierContext);
 	}
 
 	public UnbakedModel modifyModelBeforeBake(UnbakedModel model, @UnknownNullability Identifier resourceId, @UnknownNullability ModelIdentifier topLevelId, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
@@ -201,7 +185,7 @@ public class ModelLoadingEventDispatcher {
 		return model;
 	}
 
-	private class ModelResolverContext implements ModelResolver.Context {
+	private static class ModelResolverContext implements ModelResolver.Context {
 		private Identifier id;
 
 		private void prepare(Identifier id) {
@@ -212,19 +196,9 @@ public class ModelLoadingEventDispatcher {
 		public Identifier id() {
 			return id;
 		}
-
-		@Override
-		public UnbakedModel getOrLoadModel(Identifier id) {
-			return ((ModelLoaderHooks) loader).fabric_getOrLoadModel(id);
-		}
-
-		@Override
-		public ModelLoader loader() {
-			return loader;
-		}
 	}
 
-	private class BlockStateResolverContext implements BlockStateResolver.Context {
+	private static class BlockStateResolverContext implements BlockStateResolver.Context {
 		private Block block;
 		private final Reference2ReferenceMap<BlockState, UnbakedModel> models = new Reference2ReferenceOpenHashMap<>();
 
@@ -251,19 +225,9 @@ public class ModelLoadingEventDispatcher {
 				throw new IllegalStateException("Duplicate model for state " + state + " on block " + block);
 			}
 		}
-
-		@Override
-		public UnbakedModel getOrLoadModel(Identifier id) {
-			return ((ModelLoaderHooks) loader).fabric_getOrLoadModel(id);
-		}
-
-		@Override
-		public ModelLoader loader() {
-			return loader;
-		}
 	}
 
-	private class OnLoadModifierContext implements ModelModifier.OnLoad.Context {
+	private static class OnLoadModifierContext implements ModelModifier.OnLoad.Context {
 		@UnknownNullability
 		private Identifier resourceId;
 		@UnknownNullability
@@ -285,19 +249,9 @@ public class ModelLoadingEventDispatcher {
 		public ModelIdentifier topLevelId() {
 			return topLevelId;
 		}
-
-		@Override
-		public UnbakedModel getOrLoadModel(Identifier id) {
-			return ((ModelLoaderHooks) loader).fabric_getOrLoadModel(id);
-		}
-
-		@Override
-		public ModelLoader loader() {
-			return loader;
-		}
 	}
 
-	private class BeforeBakeModifierContext implements ModelModifier.BeforeBake.Context {
+	private static class BeforeBakeModifierContext implements ModelModifier.BeforeBake.Context {
 		@UnknownNullability
 		private Identifier resourceId;
 		@UnknownNullability
@@ -340,14 +294,9 @@ public class ModelLoadingEventDispatcher {
 		public Baker baker() {
 			return baker;
 		}
-
-		@Override
-		public ModelLoader loader() {
-			return loader;
-		}
 	}
 
-	private class AfterBakeModifierContext implements ModelModifier.AfterBake.Context {
+	private static class AfterBakeModifierContext implements ModelModifier.AfterBake.Context {
 		@UnknownNullability
 		private Identifier resourceId;
 		@UnknownNullability
@@ -396,11 +345,6 @@ public class ModelLoadingEventDispatcher {
 		@Override
 		public Baker baker() {
 			return baker;
-		}
-
-		@Override
-		public ModelLoader loader() {
-			return loader;
 		}
 	}
 }

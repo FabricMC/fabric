@@ -41,7 +41,7 @@ public abstract class FuelRegistryMixin {
 			method = "createDefault(Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;Lnet/minecraft/resource/featuretoggle/FeatureSet;I)Lnet/minecraft/item/FuelRegistry;",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/item/FuelRegistry$Builder;removeAll(Lnet/minecraft/registry/tag/TagKey;)Lnet/minecraft/item/FuelRegistry$Builder;"
+					target = "Lnet/minecraft/item/FuelRegistry$Builder;remove(Lnet/minecraft/registry/tag/TagKey;)Lnet/minecraft/item/FuelRegistry$Builder;"
 			),
 			allow = 1
 	)

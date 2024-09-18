@@ -29,6 +29,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
@@ -40,19 +42,19 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
 public class BlockEntityTypeBuilderTest implements ModInitializer {
-	private static final Identifier INITIAL_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.id("initial_betrayal_block");
-	static final Block INITIAL_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.BLUE);
+	private static final RegistryKey<Block> INITIAL_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.block("initial_betrayal_block");
+	static final Block INITIAL_BETRAYAL_BLOCK = createBetrayalBlock(INITIAL_BETRAYAL_BLOCK_ID, MapColor.BLUE);
 
-	private static final Identifier ADDED_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.id("added_betrayal_block");
-	static final Block ADDED_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.GREEN);
+	private static final RegistryKey<Block> ADDED_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.block("added_betrayal_block");
+	static final Block ADDED_BETRAYAL_BLOCK = createBetrayalBlock(ADDED_BETRAYAL_BLOCK_ID, MapColor.GREEN);
 
-	private static final Identifier FIRST_MULTI_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.id("first_multi_betrayal_block");
-	static final Block FIRST_MULTI_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.RED);
+	private static final RegistryKey<Block> FIRST_MULTI_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.block("first_multi_betrayal_block");
+	static final Block FIRST_MULTI_BETRAYAL_BLOCK = createBetrayalBlock(FIRST_MULTI_BETRAYAL_BLOCK_ID, MapColor.RED);
 
-	private static final Identifier SECOND_MULTI_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.id("second_multi_betrayal_block");
-	static final Block SECOND_MULTI_BETRAYAL_BLOCK = new BetrayalBlock(MapColor.YELLOW);
+	private static final RegistryKey<Block> SECOND_MULTI_BETRAYAL_BLOCK_ID = ObjectBuilderTestConstants.block("second_multi_betrayal_block");
+	static final Block SECOND_MULTI_BETRAYAL_BLOCK = createBetrayalBlock(SECOND_MULTI_BETRAYAL_BLOCK_ID, MapColor.YELLOW);
 
-	private static final Identifier BLOCK_ENTITY_TYPE_ID = ObjectBuilderTestConstants.id("betrayal_block");
+	private static final RegistryKey<Block> BLOCK_ENTITY_TYPE_ID = ObjectBuilderTestConstants.block("betrayal_block");
 	public static final BlockEntityType<?> BLOCK_ENTITY_TYPE = FabricBlockEntityTypeBuilder.create(BetrayalBlockEntity::new, INITIAL_BETRAYAL_BLOCK, ADDED_BETRAYAL_BLOCK, FIRST_MULTI_BETRAYAL_BLOCK, SECOND_MULTI_BETRAYAL_BLOCK).build();
 
 	@Override
@@ -62,19 +64,23 @@ public class BlockEntityTypeBuilderTest implements ModInitializer {
 		register(FIRST_MULTI_BETRAYAL_BLOCK_ID, FIRST_MULTI_BETRAYAL_BLOCK);
 		register(SECOND_MULTI_BETRAYAL_BLOCK_ID, SECOND_MULTI_BETRAYAL_BLOCK);
 
-		Registry.register(Registries.BLOCK_ENTITY_TYPE, BLOCK_ENTITY_TYPE_ID, BLOCK_ENTITY_TYPE);
+		Registry.register(Registries.BLOCK_ENTITY_TYPE, BLOCK_ENTITY_TYPE_ID.getValue(), BLOCK_ENTITY_TYPE);
 	}
 
-	private static void register(Identifier id, Block block) {
+	private static Block createBetrayalBlock(RegistryKey<Block> key, MapColor color) {
+		return new BetrayalBlock(AbstractBlock.Settings.copy(Blocks.STONE).mapColor(color).registryKey(key));
+	}
+
+	private static void register(RegistryKey<Block> id, Block block) {
 		Registry.register(Registries.BLOCK, id, block);
 
-		Item item = new BlockItem(block, new Item.Settings());
-		Registry.register(Registries.ITEM, id, item);
+		Item item = new BlockItem(block, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id.getValue())));
+		Registry.register(Registries.ITEM, id.getValue(), item);
 	}
 
 	private static class BetrayalBlock extends Block implements BlockEntityProvider {
-		private BetrayalBlock(MapColor color) {
-			super(AbstractBlock.Settings.copy(Blocks.STONE).mapColor(color));
+		private BetrayalBlock(AbstractBlock.Settings settings) {
+			super(settings);
 		}
 
 		@Override

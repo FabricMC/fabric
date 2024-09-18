@@ -4,9 +4,9 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "BakedModelManagerMixin",
-    "BlockStatesLoaderMixin",
-    "ModelLoaderMixin",
-    "ModelLoaderBakerImplMixin"
+    "ReferencedModelsCollectorMixin",
+    "ModelLoaderBakerImplMixin",
+    "ModelLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

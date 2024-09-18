@@ -32,7 +32,8 @@ public interface CustomDamageHandler {
 	/**
 	 * Called to apply damage to the given stack.
 	 * This can be used to e.g. drain from a battery before actually damaging the item.
-	 * Note that this does not get called if non-entities, such as dispensers, are damaging the item.
+	 * Note that this does not get called if non-entities, such as dispensers, are damaging the item,
+	 * or for thrown tridents.
 	 * Calling {@code breakCallback} breaks the item, bypassing the vanilla logic. The return value is
 	 * ignored in this case.
 	 * @param amount the amount of damage originally requested

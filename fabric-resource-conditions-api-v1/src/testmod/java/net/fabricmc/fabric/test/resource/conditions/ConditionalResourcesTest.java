@@ -82,11 +82,11 @@ public class ConditionalResourcesTest {
 
 		RegistryEntryLookup.RegistryLookup registries = context.getWorld().getServer().getReloadableRegistries().createRegistryLookup();
 
-		if (registries.getOptionalEntry(RegistryKeys.PREDICATE, RegistryKey.of(RegistryKeys.PREDICATE, id("loaded"))).isEmpty()) {
+		if (registries.getOptionalEntry(RegistryKey.of(RegistryKeys.PREDICATE, id("loaded"))).isEmpty()) {
 			throw new AssertionError("loaded predicate should have been loaded.");
 		}
 
-		if (registries.getOptionalEntry(RegistryKeys.PREDICATE, RegistryKey.of(RegistryKeys.PREDICATE, id("not_loaded"))).isPresent()) {
+		if (registries.getOptionalEntry(RegistryKey.of(RegistryKeys.PREDICATE, id("not_loaded"))).isPresent()) {
 			throw new AssertionError("not_loaded predicate should not have been loaded.");
 		}
 
@@ -110,7 +110,7 @@ public class ConditionalResourcesTest {
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void conditionalDynamicRegistry(TestContext context) {
-		Registry<BannerPattern> registry = context.getWorld().getRegistryManager().get(RegistryKeys.BANNER_PATTERN);
+		Registry<BannerPattern> registry = context.getWorld().getRegistryManager().getOrThrow(RegistryKeys.BANNER_PATTERN);
 
 		if (registry.get(id("loaded")) == null) {
 			throw new AssertionError("loaded banner pattern should have been loaded.");
@@ -127,11 +127,11 @@ public class ConditionalResourcesTest {
 	public void conditionalOverlays(TestContext context) {
 		RegistryEntryLookup.RegistryLookup registries = context.getWorld().getServer().getReloadableRegistries().createRegistryLookup();
 
-		if (registries.getOptionalEntry(RegistryKeys.PREDICATE, RegistryKey.of(RegistryKeys.PREDICATE, id("do_overlay"))).isEmpty()) {
+		if (registries.getOptionalEntry(RegistryKey.of(RegistryKeys.PREDICATE, id("do_overlay"))).isEmpty()) {
 			throw new AssertionError("do_overlay predicate should have been overlayed.");
 		}
 
-		if (registries.getOptionalEntry(RegistryKeys.PREDICATE, RegistryKey.of(RegistryKeys.PREDICATE, id("dont_overlay"))).isPresent()) {
+		if (registries.getOptionalEntry(RegistryKey.of(RegistryKeys.PREDICATE, id("dont_overlay"))).isPresent()) {
 			throw new AssertionError("dont_overlay predicate should not have been overlayed.");
 		}
 
