@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.content.registry;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -26,6 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.api.registry.FabricFuelRegistryBuilder;
+import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 
 /**
  * Implements the invocation of {@link FabricFuelRegistryBuilder} callbacks.
@@ -45,11 +47,11 @@ public abstract class FuelRegistryMixin {
 			),
 			allow = 1
 	)
-	private static FuelRegistry.Builder build(FuelRegistry.Builder builder, TagKey<Item> tag, Operation<FuelRegistry.Builder> operation) {
-		FabricFuelRegistryBuilder.BUILD.invoker().build(builder);
+	private static FuelRegistry.Builder build(FuelRegistry.Builder builder, TagKey<Item> tag, Operation<FuelRegistry.Builder> operation, @Local(argsOnly = true) int baseSmeltTime) {
+		FuelRegistryEvents.BUILD.invoker().build(builder, baseSmeltTime);
 
 		operation.call(builder, tag);
-		FabricFuelRegistryBuilder.EXCLUSIONS.invoker().buildExclusions(builder);
+		FuelRegistryEvents.EXCLUSIONS.invoker().buildExclusions(builder, baseSmeltTime);
 
 		return builder;
 	}

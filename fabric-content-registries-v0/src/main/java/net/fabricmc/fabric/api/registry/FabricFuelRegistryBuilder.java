@@ -16,72 +16,50 @@
 
 package net.fabricmc.fabric.api.registry;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.item.FuelRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
-
 /**
  * Contains events to aid in modifying fuels during registration.
  */
+@ApiStatus.NonExtendable
 public interface FabricFuelRegistryBuilder {
 	/**
-	 * An event that is called when the fuel registry is being built after vanilla fuels have been registered and before exclusions have been applied.
+	 * Remove an @{link ItemConvertible} from the fuel registry.
+	 *
+	 * @param item the item to remove
+	 * @return the @{link FuelRegistry.Builder} instance
 	 */
-	Event<FabricFuelRegistryBuilder.BuildCallback> BUILD = EventFactory.createArrayBacked(FabricFuelRegistryBuilder.BuildCallback.class, listeners -> builder -> {
-		for (FabricFuelRegistryBuilder.BuildCallback listener : listeners) {
-			listener.build(builder);
-		}
-	});
-
-	/**
-	 * An event that is called when the fuel registry is being built after vanilla exclusions have been applied.
-	 */
-	Event<FabricFuelRegistryBuilder.ExclusionsCallback> EXCLUSIONS = EventFactory.createArrayBacked(FabricFuelRegistryBuilder.ExclusionsCallback.class, listeners -> builder -> {
-		for (FabricFuelRegistryBuilder.ExclusionsCallback listener : listeners) {
-			listener.buildExclusions(builder);
-		}
-	});
-
 	default FuelRegistry.Builder remove(ItemConvertible item) {
 		throw new AssertionError("Must be implemented via interface injection");
 	}
 
+	/**
+	 * Get the {@link RegistryWrapper} for {@link Item}.
+	 * @return the item lookup
+	 */
 	default RegistryWrapper<Item> getItemLookup() {
 		throw new AssertionError("Must be implemented via interface injection");
 	}
 
-	default FeatureSet getEnabledFeatures() {
+	/**
+	 * Get the {@link RegistryWrapper.WrapperLookup} for all registries.
+	 * @return the registry lookup
+	 */
+	default RegistryWrapper.WrapperLookup getRegistries() {
 		throw new AssertionError("Must be implemented via interface injection");
 	}
 
 	/**
-	 * Use this event to register custom fuels.
+	 * Get the currently enabled feature set.
+	 * @return the {@link FeatureSet} instance
 	 */
-	@FunctionalInterface
-	interface BuildCallback {
-		/**
-		 * Called when the fuel registry is being built after vanilla fuels have been registered and before exclusions have been applied.
-		 *
-		 * @param builder the builder being used to construct a {@link FuelRegistry} instance
-		 */
-		void build(FuelRegistry.Builder builder);
-	}
-
-	/**
-	 * Use this event to register custom fuels.
-	 */
-	@FunctionalInterface
-	interface ExclusionsCallback {
-		/**
-		 * Called when the fuel registry is being built after vanilla exclusions have been applied.
-		 *
-		 * @param builder the builder being used to construct a {@link FuelRegistry} instance
-		 */
-		void buildExclusions(FuelRegistry.Builder builder);
+	default FeatureSet getEnabledFeatures() {
+		throw new AssertionError("Must be implemented via interface injection");
 	}
 }

@@ -20,6 +20,9 @@ import it.unimi.dsi.fastutil.objects.Object2IntSortedMap;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 
 import net.minecraft.item.FuelRegistry;
 import net.minecraft.item.Item;
@@ -46,6 +49,14 @@ public abstract class FuelRegistryBuilderMixin implements FabricFuelRegistryBuil
 	@Final
 	private Object2IntSortedMap<Item> fuelValues;
 
+	@Unique
+	private RegistryWrapper.WrapperLookup registries;
+
+	@Inject(method = "<init>", at = @At("TAIL"))
+	private void init(RegistryWrapper.WrapperLookup registries, FeatureSet enabledFeatures) {
+		this.registries = registries;
+	}
+
 	@Override
 	public FuelRegistry.Builder remove(ItemConvertible item) {
 		this.fuelValues.removeInt(item.asItem());
@@ -55,6 +66,11 @@ public abstract class FuelRegistryBuilderMixin implements FabricFuelRegistryBuil
 	@Override
 	public RegistryWrapper<Item> getItemLookup() {
 		return this.itemLookup;
+	}
+
+	@Override
+	public RegistryWrapper.WrapperLookup getRegistries() {
+		return registries;
 	}
 
 	@Override

@@ -53,9 +53,9 @@ import net.minecraft.world.event.GameEvent;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
-import net.fabricmc.fabric.api.registry.FabricFuelRegistryBuilder;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
+import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.fabricmc.fabric.api.registry.LandPathNodeTypesRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.SculkSensorFrequencyRegistry;
@@ -106,12 +106,12 @@ public final class ContentRegistryTest implements ModInitializer {
 		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.getDefaultState());
 
-		FabricFuelRegistryBuilder.BUILD.register(builder -> {
+		FuelRegistryEvents.BUILD.register((builder, baseSmeltTime) -> {
 			builder.add(SMELTING_FUEL_INCLUDED_BY_ITEM, 50);
 			builder.add(SMELTING_FUELS_INCLUDED_BY_TAG, 100);
 		});
 
-		FabricFuelRegistryBuilder.EXCLUSIONS.register(builder -> {
+		FuelRegistryEvents.EXCLUSIONS.register((builder, baseSmeltTime) -> {
 			builder.remove(SMELTING_FUEL_EXCLUDED_BY_ITEM);
 			builder.remove(SMELTING_FUELS_EXCLUDED_BY_TAG);
 		});
