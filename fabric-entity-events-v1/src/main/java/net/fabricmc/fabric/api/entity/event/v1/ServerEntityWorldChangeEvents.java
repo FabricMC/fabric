@@ -46,6 +46,19 @@ public final class ServerEntityWorldChangeEvents {
 	});
 
 	/**
+	 * Called before a player is being moved to a different world.
+	 */
+	public static final Event<AllowPlayerChange> ALLOW_PLAYER_CHANGE_WORLD = EventFactory.createArrayBacked(AllowPlayerChange.class, callbacks -> (player, origin, destination) -> {
+		for (AllowPlayerChange callback : callbacks) {
+			if (!callback.allowChangeWorld(player, origin, destination)){
+				return false;
+			}
+		}
+
+		return true;
+	});
+
+	/**
 	 * An event which is called after a player has been moved to a different world.
 	 *
 	 * <p>This is similar to {@link ServerEntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD} but is only called for players.
@@ -73,6 +86,19 @@ public final class ServerEntityWorldChangeEvents {
 		 * @param destination the destination world the new entity is in
 		 */
 		void afterChangeWorld(Entity originalEntity, Entity newEntity, ServerWorld origin, ServerWorld destination);
+	}
+
+	@FunctionalInterface
+	public interface AllowPlayerChange {
+		/**
+		 * Called before a player is being moved to a different world.
+		 *
+		 * @param player the player
+		 * @param origin the original world the player is in
+		 * @param destination the new world the player is moving to
+		 * @return true if the player is allowed to change worlds, false otherwise
+		 */
+		boolean allowChangeWorld(ServerPlayerEntity player, ServerWorld origin, ServerWorld destination);
 	}
 
 	@FunctionalInterface
