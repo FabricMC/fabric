@@ -10,8 +10,10 @@
     "ChunkMixin",
     "ChunkSerializerMixin",
     "ClientConnectionMixin",
+    "CustomPayloadS2CPacketAccessor",
     "EntityMixin",
     "ServerWorldMixin",
+    "VarIntsAccessor",
     "WorldChunkMixin",
     "WrapperProtoChunkMixin"
   ],

@@ -21,13 +21,13 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-public class AcceptedAttachmentsPayloadS2C implements CustomPayload {
-	public static final AcceptedAttachmentsPayloadS2C INSTANCE = new AcceptedAttachmentsPayloadS2C();
+public class RequestAcceptedAttachmentsPayloadS2C implements CustomPayload {
+	public static final RequestAcceptedAttachmentsPayloadS2C INSTANCE = new RequestAcceptedAttachmentsPayloadS2C();
 	public static final Identifier PACKET_ID = Identifier.of("fabric", "accepted_attachments_v1");
-	public static final Id<AcceptedAttachmentsPayloadS2C> ID = new Id<>(PACKET_ID);
-	public static final PacketCodec<PacketByteBuf, AcceptedAttachmentsPayloadS2C> CODEC = PacketCodec.unit(INSTANCE);
+	public static final Id<RequestAcceptedAttachmentsPayloadS2C> ID = new Id<>(PACKET_ID);
+	public static final PacketCodec<PacketByteBuf, RequestAcceptedAttachmentsPayloadS2C> CODEC = PacketCodec.unit(INSTANCE);
 
-	private AcceptedAttachmentsPayloadS2C() {
+	private RequestAcceptedAttachmentsPayloadS2C() {
 	}
 
 	@Override

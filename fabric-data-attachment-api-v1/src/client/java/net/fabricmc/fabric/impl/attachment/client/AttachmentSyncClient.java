@@ -20,14 +20,14 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AcceptedAttachmentsPayloadS2C;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.RequestAcceptedAttachmentsPayloadS2C;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
 public class AttachmentSyncClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// config
-		ClientConfigurationNetworking.registerGlobalReceiver(AcceptedAttachmentsPayloadS2C.ID, (payload, context) -> {
+		ClientConfigurationNetworking.registerGlobalReceiver(RequestAcceptedAttachmentsPayloadS2C.ID, (payload, context) -> {
 			context.responseSender().sendPacket(AttachmentSync.createResponsePayload());
 		});
 

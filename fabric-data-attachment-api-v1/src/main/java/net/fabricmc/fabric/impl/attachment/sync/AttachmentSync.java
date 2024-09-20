@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.c2s.AcceptedAttachmentsPayloadC2S;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AcceptedAttachmentsPayloadS2C;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.RequestAcceptedAttachmentsPayloadS2C;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
@@ -50,7 +50,7 @@ public class AttachmentSync implements ModInitializer {
 	}
 
 	public static void trySync(AttachmentSyncPayload payload, ServerPlayerEntity player) {
-		if (ServerPlayNetworking.canSend(player, AttachmentSyncPayload.PACKET_ID)) {
+		if (!payload.attachments().isEmpty()) {
 			ServerPlayNetworking.send(player, payload);
 		}
 	}
@@ -77,13 +77,15 @@ public class AttachmentSync implements ModInitializer {
 		PayloadTypeRegistry.configurationC2S()
 				.register(AcceptedAttachmentsPayloadC2S.ID, AcceptedAttachmentsPayloadC2S.CODEC);
 		PayloadTypeRegistry.configurationS2C()
-				.register(AcceptedAttachmentsPayloadS2C.ID, AcceptedAttachmentsPayloadS2C.CODEC);
+				.register(RequestAcceptedAttachmentsPayloadS2C.ID, RequestAcceptedAttachmentsPayloadS2C.CODEC);
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
-			if (ServerConfigurationNetworking.canSend(handler, AcceptedAttachmentsPayloadS2C.PACKET_ID)) {
+			if (ServerConfigurationNetworking.canSend(handler, RequestAcceptedAttachmentsPayloadS2C.PACKET_ID)) {
 				handler.addTask(new AttachmentSyncTask());
 			} else {
-				AttachmentEntrypoint.LOGGER.debug("Couldn't send attachment configuration packet to client");
+				AttachmentEntrypoint.LOGGER.debug(
+						"Couldn't send attachment configuration packet to client, as the client cannot receive the payload."
+				);
 			}
 		});
 
@@ -118,11 +120,11 @@ public class AttachmentSync implements ModInitializer {
 	}
 
 	private record AttachmentSyncTask() implements ServerPlayerConfigurationTask {
-		public static final Key KEY = new Key(AcceptedAttachmentsPayloadS2C.PACKET_ID.toString());
+		public static final Key KEY = new Key(RequestAcceptedAttachmentsPayloadS2C.PACKET_ID.toString());
 
 		@Override
 		public void sendPacket(Consumer<Packet<?>> sender) {
-			sender.accept(ServerConfigurationNetworking.createS2CPacket(AcceptedAttachmentsPayloadS2C.INSTANCE));
+			sender.accept(ServerConfigurationNetworking.createS2CPacket(RequestAcceptedAttachmentsPayloadS2C.INSTANCE));
 		}
 
 		@Override
