@@ -1,6 +1,12 @@
 {
   "values": [
-    "minecraft:obsidian",
-    "minecraft:crying_obsidian"
+    {
+      "id": "#c:obsidians/normal",
+      "required": false
+    },
+    {
+      "id": "#c:obsidians/crying",
+      "required": false
+    }
   ]
 }
