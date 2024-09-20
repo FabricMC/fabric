@@ -19,14 +19,18 @@ package net.fabricmc.fabric.mixin.content.registry;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+
+import net.fabricmc.fabric.impl.content.registry.FuelRegistryEventsContextImpl;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.item.FuelRegistry;
 import net.minecraft.item.Item;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 
-import net.fabricmc.fabric.api.registry.FabricFuelRegistryBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 
 /**
@@ -47,11 +51,13 @@ public abstract class FuelRegistryMixin {
 			),
 			allow = 1
 	)
-	private static FuelRegistry.Builder build(FuelRegistry.Builder builder, TagKey<Item> tag, Operation<FuelRegistry.Builder> operation, @Local(argsOnly = true) int baseSmeltTime) {
-		FuelRegistryEvents.BUILD.invoker().build(builder, baseSmeltTime);
+	private static FuelRegistry.Builder build(FuelRegistry.Builder builder, TagKey<Item> tag, Operation<FuelRegistry.Builder> operation, @Local(argsOnly = true) RegistryWrapper.WrapperLookup registries, @Local(argsOnly = true) FeatureSet features, @Local(argsOnly = true) int baseSmeltTime) {
+		final var context = new FuelRegistryEventsContextImpl(registries, features, baseSmeltTime);
+
+		FuelRegistryEvents.BUILD.invoker().build(builder, context);
 
 		operation.call(builder, tag);
-		FuelRegistryEvents.EXCLUSIONS.invoker().buildExclusions(builder, baseSmeltTime);
+		FuelRegistryEvents.EXCLUSIONS.invoker().buildExclusions(builder, context);
 
 		return builder;
 	}

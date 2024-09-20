@@ -64,7 +64,7 @@ public class CustomDamageTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.ITEM, WEIRD_PICK_KEY, WEIRD_PICK);
-		FuelRegistryEvents.BUILD.register((builder, baseSmeltTime) -> builder.add(WEIRD_PICK, 200));
+		FuelRegistryEvents.BUILD.register((builder, context) -> builder.add(WEIRD_PICK, context.baseSmeltTime()));
 		FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> builder.registerPotionRecipe(Potions.WATER, WEIRD_PICK, Potions.AWKWARD));
 		EnchantmentEvents.ALLOW_ENCHANTING.register(((enchantment, target, enchantingContext) -> {
 			if (target.isOf(Items.DIAMOND_PICKAXE) && enchantment.matchesKey(Enchantments.SHARPNESS) && EnchantmentHelper.hasAnyEnchantmentsIn(target, EnchantmentTags.MINING_EXCLUSIVE_SET)) {

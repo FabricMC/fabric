@@ -69,7 +69,6 @@ public final class ContentRegistryTest implements ModInitializer {
 
 	public static final Item SMELTING_FUEL_INCLUDED_BY_ITEM = registerItem("smelting_fuel_included_by_item");
 	public static final Item SMELTING_FUEL_INCLUDED_BY_TAG = registerItem("smelting_fuel_included_by_tag");
-	public static final Item SMELTING_FUEL_EXCLUDED_BY_ITEM = registerItem("smelting_fuel_excluded_by_item");
 	public static final Item SMELTING_FUEL_EXCLUDED_BY_TAG = registerItem("smelting_fuel_excluded_by_tag");
 	public static final Item SMELTING_FUEL_EXCLUDED_BY_VANILLA_TAG = registerItem("smelting_fuel_excluded_by_vanilla_tag");
 
@@ -106,13 +105,12 @@ public final class ContentRegistryTest implements ModInitializer {
 		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.getDefaultState());
 
-		FuelRegistryEvents.BUILD.register((builder, baseSmeltTime) -> {
-			builder.add(SMELTING_FUEL_INCLUDED_BY_ITEM, 50);
-			builder.add(SMELTING_FUELS_INCLUDED_BY_TAG, 100);
+		FuelRegistryEvents.BUILD.register((builder, context) -> {
+			builder.add(SMELTING_FUEL_INCLUDED_BY_ITEM, context.baseSmeltTime() / 4);
+			builder.add(SMELTING_FUELS_INCLUDED_BY_TAG, context.baseSmeltTime() / 2);
 		});
 
-		FuelRegistryEvents.EXCLUSIONS.register((builder, baseSmeltTime) -> {
-			builder.remove(SMELTING_FUEL_EXCLUDED_BY_ITEM);
+		FuelRegistryEvents.EXCLUSIONS.register((builder, context) -> {
 			builder.remove(SMELTING_FUELS_EXCLUDED_BY_TAG);
 		});
 

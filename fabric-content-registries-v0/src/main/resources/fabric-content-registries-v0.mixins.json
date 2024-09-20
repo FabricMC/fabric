@@ -8,7 +8,6 @@
     "PathContextMixin",
     "FarmerWorkTaskAccessor",
     "FuelRegistryMixin",
-    "FuelRegistryBuilderMixin",
     "GiveGiftsToHeroTaskAccessor",
     "GiveGiftsToHeroTaskMixin",
     "HoeItemAccessor",

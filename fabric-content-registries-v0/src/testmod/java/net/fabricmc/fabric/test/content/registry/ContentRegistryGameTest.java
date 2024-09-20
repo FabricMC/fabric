@@ -139,12 +139,6 @@ public class ContentRegistryGameTest {
 	}
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 110)
-	public void testSmeltingFuelExcludedByItem(TestContext context) {
-		// Item is in the smelting fuels tag but is excluded directly by item
-		smeltFailed(context, new ItemStack(ContentRegistryTest.SMELTING_FUEL_EXCLUDED_BY_ITEM));
-	}
-
-	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 110)
 	public void testSmeltingFuelExcludedByTag(TestContext context) {
 		// Item is in both the smelting fuels tag and the excluded smithing fuels tag
 		smeltFailed(context, new ItemStack(ContentRegistryTest.SMELTING_FUEL_EXCLUDED_BY_TAG));
