@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.attachment.v1;
 
-import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
@@ -43,6 +43,14 @@ public final class AttachmentRegistry {
 	private AttachmentRegistry() {
 	}
 
+	public static <A> AttachmentType<A> create(Identifier id, Consumer<Builder<A>> consumer) {
+		var builder = AttachmentRegistry.<A>builder();
+
+		consumer.accept(builder);
+
+		return builder.buildAndRegister(id);
+	}
+
 	/**
 	 * Creates <i>and registers</i> an attachment. The data will not be persisted.
 	 *
@@ -51,9 +59,7 @@ public final class AttachmentRegistry {
 	 * @return the registered {@link AttachmentType} instance
 	 */
 	public static <A> AttachmentType<A> create(Identifier id) {
-		Objects.requireNonNull(id, "identifier cannot be null");
-
-		return AttachmentRegistry.<A>builder().buildAndRegister(id);
+		return create(id, builder -> {});
 	}
 
 	/**
@@ -66,12 +72,9 @@ public final class AttachmentRegistry {
 	 * @return the registered {@link AttachmentType} instance
 	 */
 	public static <A> AttachmentType<A> createDefaulted(Identifier id, Supplier<A> initializer) {
-		Objects.requireNonNull(id, "identifier cannot be null");
-		Objects.requireNonNull(initializer, "initializer cannot be null");
-
-		return AttachmentRegistry.<A>builder()
-				.initializer(initializer)
-				.buildAndRegister(id);
+		return create(id, builder -> {
+			builder.initializer(initializer);
+		});
 	}
 
 	/**
@@ -83,10 +86,9 @@ public final class AttachmentRegistry {
 	 * @return the registered {@link AttachmentType} instance
 	 */
 	public static <A> AttachmentType<A> createPersistent(Identifier id, Codec<A> codec) {
-		Objects.requireNonNull(id, "identifier cannot be null");
-		Objects.requireNonNull(codec, "codec cannot be null");
-
-		return AttachmentRegistry.<A>builder().persistent(codec).buildAndRegister(id);
+		return create(id, builder -> {
+			builder.persistent(codec);
+		});
 	}
 
 	/**
