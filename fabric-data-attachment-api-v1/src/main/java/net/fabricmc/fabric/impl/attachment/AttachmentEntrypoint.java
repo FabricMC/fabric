@@ -16,12 +16,6 @@
 
 package net.fabricmc.fabric.impl.attachment;
 
-import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.loader.api.FabricLoader;
-
-import net.minecraft.util.Identifier;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,17 +40,6 @@ public class AttachmentEntrypoint implements ModInitializer {
 				AttachmentTargetImpl.transfer(previous, converted, true)
 		);
 
-		FabricLoader.getInstance().getEntrypointContainers(AttachmentRegistry.ENTRYPOINT_KEY, AttachmentType.class).forEach(container -> {
-			if (container.getEntrypoint() instanceof AttachmentTypeImpl.Lazy<?> lazy) {
-				initialize(lazy, container.getProvider().getMetadata().getId());
-			} else {
-				throw new RuntimeException("Cannot reinitialize a non-lazy attachment type.");
-			}
-		});
-	}
-
-	private static <T> void initialize(AttachmentTypeImpl.Lazy<T> attachmentType, String namespace) {
-		attachmentType.initialize(namespace);
-		AttachmentRegistryImpl.register(attachmentType.identifier(), attachmentType);
+		AttachmentRegistryImpl.initialize();
 	}
 }

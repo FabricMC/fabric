@@ -22,6 +22,9 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
+
+import net.fabricmc.loader.api.FabricLoader;
+
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +53,27 @@ public final class AttachmentRegistryImpl {
 
 	public static <A> AttachmentRegistry.Builder<A> builder() {
 		return new BuilderImpl<>();
+	}
+
+	private static <T> void initialize(AttachmentTypeImpl.Lazy<T> attachmentType, String namespace) {
+		attachmentType.initialize(namespace);
+		AttachmentRegistryImpl.register(attachmentType.identifier(), attachmentType);
+	}
+
+	public static void initialize() {
+		FabricLoader.getInstance().getEntrypointContainers(AttachmentRegistry.ENTRYPOINT_KEY, AttachmentType.class).forEach(container -> {
+			if (container.getEntrypoint() instanceof AttachmentTypeImpl.Lazy<?> lazy) {
+				initialize(lazy, container.getProvider().getMetadata().getId());
+			} else {
+				throw new RuntimeException("Cannot reinitialize a non-lazy attachment type.");
+			}
+		});
+
+		for (var attachmentType : attachmentRegistry.values()) {
+			if (attachmentType instanceof AttachmentTypeImpl.Lazy<?> lazy && !lazy.isInitialized()) {
+				throw new RuntimeException(String.format("Attachment type '?:%s' not registered via fabric-attachment entrypoint.", lazy.path()));
+			}
+		}
 	}
 
 	public static class BuilderImpl<A> implements AttachmentRegistry.Builder<A> {

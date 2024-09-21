@@ -106,5 +106,13 @@ public sealed class AttachmentTypeImpl<A> implements AttachmentType<A> permits A
 		public void initialize(String namespace) {
 			this.identifier = Identifier.of(namespace, this.path);
 		}
+
+		public boolean isInitialized() {
+			return this.identifier != null;
+		}
+
+		public String path() {
+			return this.path;
+		}
 	}
 }
