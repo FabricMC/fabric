@@ -89,5 +89,12 @@ public final class AttachmentRegistryImpl {
 			register(id, attachment);
 			return attachment;
 		}
+
+		@Override
+		public AttachmentType<A> build(String path) {
+			Objects.requireNonNull(path, "path cannot be null");
+
+			return new AttachmentTypeImpl.Lazy<>(path, defaultInitializer, persistenceCodec, copyOnDeath);
+		}
 	}
 }

@@ -68,24 +68,10 @@ import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 public class CommonAttachmentTests {
-	public record WheelInfo(float wheelDiameter, float tireDiameter, float tireThickness) {
-		public static final Codec<WheelInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codecs.POSITIVE_FLOAT.fieldOf("wheelDiameter").forGetter(WheelInfo::wheelDiameter),
-				Codecs.POSITIVE_FLOAT.fieldOf("tireDiameter").forGetter(WheelInfo::tireDiameter),
-				Codecs.POSITIVE_FLOAT.fieldOf("tireThickness").forGetter(WheelInfo::tireThickness)
-		).apply(instance, WheelInfo::new));
-	}
-
 	private static final String MOD_ID = "example";
 	private static final AttachmentType<Integer> PERSISTENT = AttachmentRegistry.createPersistent(
 			Identifier.of(MOD_ID, "persistent"),
 			Codec.INT
-	);
-
-	private static final AttachmentType<WheelInfo> WHEEL_INFO = AttachmentRegistry.create(
-			Identifier.of(MOD_ID, "wheel_info"), attachment -> attachment
-					.initializer(() -> new WheelInfo(100, 5432, 37))
-					.persistent(WheelInfo.CODEC)
 	);
 
 	@BeforeAll

@@ -40,15 +40,42 @@ import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
  */
 @ApiStatus.Experimental
 public final class AttachmentRegistry {
+	/**
+	 * Entrypoint key to register {@link AttachmentType}s created without identifiers.
+	 */
+	public static final String ENTRYPOINT_KEY = "fabric-attachment";
+
 	private AttachmentRegistry() {
 	}
 
+	/**
+	 * Creates <i>and registers</i> an attachment, configuring the builder used underneath.
+	 *
+	 * @param id  the identifier of this attachment
+	 * @param <A> the type of attached data
+	 * @return the registered {@link AttachmentType} instance
+	 */
 	public static <A> AttachmentType<A> create(Identifier id, Consumer<Builder<A>> consumer) {
 		var builder = AttachmentRegistry.<A>builder();
 
 		consumer.accept(builder);
 
 		return builder.buildAndRegister(id);
+	}
+
+	/**
+	 * Creates <i>and registers</i> an attachment, configuring the builder used underneath.
+	 *
+	 * @param path the path portion of the {@link Identifier} that will eventually be created for this attachment
+	 * @param <A> the type of attached data
+	 * @return the registered {@link AttachmentType} instance
+	 */
+	public static <A> AttachmentType<A> create(String path, Consumer<Builder<A>> consumer) {
+		var builder = AttachmentRegistry.<A>builder();
+
+		consumer.accept(builder);
+
+		return builder.build(path);
 	}
 
 	/**
@@ -60,6 +87,17 @@ public final class AttachmentRegistry {
 	 */
 	public static <A> AttachmentType<A> create(Identifier id) {
 		return create(id, builder -> {});
+	}
+
+	/**
+	 * Creates <i>and registers</i> an attachment. The data will not be persisted.
+	 *
+	 * @param path the path portion of the {@link Identifier} that will eventually be created for this attachment
+	 * @param <A> the type of attached data
+	 * @return the registered {@link AttachmentType} instance
+	 */
+	public static <A> AttachmentType<A> create(String path) {
+		return create(path, builder -> {});
 	}
 
 	/**
@@ -78,6 +116,21 @@ public final class AttachmentRegistry {
 	}
 
 	/**
+	 * Creates <i>and registers</i> an attachment, that will be automatically initialized with a default value
+	 * when an attachment does not exist on a given target, using {@link AttachmentTarget#getAttachedOrCreate(AttachmentType)}.
+	 *
+	 * @param path the path portion of the {@link Identifier} that will eventually be created for this attachment
+	 * @param initializer the initializer used to provide a default value
+	 * @param <A>         the type of attached data
+	 * @return the registered {@link AttachmentType} instance
+	 */
+	public static <A> AttachmentType<A> createDefaulted(String path, Supplier<A> initializer) {
+		return create(path, builder -> {
+			builder.initializer(initializer);
+		});
+	}
+
+	/**
 	 * Creates <i>and registers</i> an attachment, that will persist across server restarts.
 	 *
 	 * @param id    the identifier of this attachment
@@ -90,6 +143,21 @@ public final class AttachmentRegistry {
 			builder.persistent(codec);
 		});
 	}
+
+	/**
+	 * Creates <i>and registers</i> an attachment, that will persist across server restarts.
+	 *
+	 * @param path the path portion of the {@link Identifier} that will eventually be created for this attachment
+	 * @param codec the codec used for (de)serialization
+	 * @param <A>   the type of attached data
+	 * @return the registered {@link AttachmentType} instance
+	 */
+	public static <A> AttachmentType<A> createPersistent(String path, Codec<A> codec) {
+		return create(path, builder -> {
+			builder.persistent(codec);
+		});
+	}
+
 
 	/**
 	 * Creates a {@link Builder}, that gives finer control over the attachment's properties.
@@ -148,5 +216,14 @@ public final class AttachmentRegistry {
 		 * @return the built and registered {@link AttachmentType}
 		 */
 		AttachmentType<A> buildAndRegister(Identifier id);
+
+		/**
+		 * Builds the {@link AttachmentType} but does NOT register it. {@link AttachmentType}s built this way should
+		 * be registered under the {@link AttachmentRegistry#ENTRYPOINT_KEY} entrypoint.
+		 *
+		 * @param path the path portion of the {@link Identifier} that will eventually be created for this attachment
+		 * @return the built and registered {@link AttachmentType}
+		 */
+		AttachmentType<A> build(String path);
 	}
 }
