@@ -53,7 +53,7 @@ public final class AttachmentRegistry {
 	 * @return the registered {@link AttachmentType} instance
 	 */
 	public static <A> AttachmentType<A> create(Identifier id, Consumer<Builder<A>> consumer) {
-		var builder = AttachmentRegistry.<A>builder();
+		AttachmentRegistry.Builder<A> builder = AttachmentRegistry.builder();
 
 		consumer.accept(builder);
 
@@ -68,7 +68,7 @@ public final class AttachmentRegistry {
 	 * @return the registered {@link AttachmentType} instance
 	 */
 	public static <A> AttachmentType<A> create(Identifier id) {
-		return create(id, builder -> {});
+		return create(id, builder -> { });
 	}
 
 	/**

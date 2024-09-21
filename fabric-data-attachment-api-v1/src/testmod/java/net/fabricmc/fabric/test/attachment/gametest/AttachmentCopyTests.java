@@ -14,82 +14,247 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.attachment.gametest;
+package net.fabricmc.fabric.test.attachment;
 
-import java.util.Objects;
-import java.util.function.IntSupplier;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.function.UnaryOperator;
+
+import com.mojang.serialization.Codec;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import net.minecraft.Bootstrap;
+import net.minecraft.SharedConstants;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BellBlockEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.entity.MarkerEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.test.GameTest;
-import net.minecraft.test.GameTestException;
-import net.minecraft.test.TestContext;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.TeleportTarget;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.ProtoChunk;
+import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
-import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
+import net.fabricmc.fabric.impl.attachment.AttachmentPersistentState;
+import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
+import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
-public class AttachmentCopyTests implements FabricGameTest {
-	// using a lambda type because serialization shouldn't play a role in this
-	public static AttachmentType<IntSupplier> DUMMY = AttachmentRegistry.create(
-			Identifier.of(AttachmentTestMod.MOD_ID, "dummy")
+public class CommonAttachmentTests {
+	private static final String MOD_ID = "example";
+	private static final AttachmentType<Integer> PERSISTENT = AttachmentRegistry.createPersistent(
+			Identifier.of(MOD_ID, "persistent"),
+			Codec.INT
 	);
-	public static AttachmentType<IntSupplier> COPY_ON_DEATH = AttachmentRegistry.<IntSupplier>builder()
-			.copyOnDeath()
-			.buildAndRegister(Identifier.of(AttachmentTestMod.MOD_ID, "copy_test"));
 
-	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
-	public void testCrossWorldTeleport(TestContext context) {
-		MinecraftServer server = context.getWorld().getServer();
-		ServerWorld overworld = server.getOverworld();
-		ServerWorld end = server.getWorld(World.END);
-		// using overworld and end to avoid portal code related to the nether
-
-		Entity entity = EntityType.PIG.create(overworld);
-		Objects.requireNonNull(entity, "entity was null");
-		entity.setAttached(DUMMY, () -> 10);
-		entity.setAttached(COPY_ON_DEATH, () -> 10);
-
-		Entity moved = entity.teleportTo(new TeleportTarget(end, entity, TeleportTarget.NO_OP));
-		if (moved == null) throw new GameTestException("Cross-world teleportation failed");
-
-		IntSupplier attached1 = moved.getAttached(DUMMY);
-		IntSupplier attached2 = moved.getAttached(COPY_ON_DEATH);
-
-		if (attached1 == null || attached1.getAsInt() != 10 || attached2 == null || attached2.getAsInt() != 10) {
-			throw new GameTestException("Attachment copying failed during cross-world teleportation");
-		}
-
-		moved.discard();
-		context.complete();
+	@BeforeAll
+	static void beforeAll() {
+		SharedConstants.createGameVersion();
+		Bootstrap.initialize();
 	}
 
-	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
-	public void testMobConversion(TestContext context) {
-		MobEntity mob = Objects.requireNonNull(EntityType.ZOMBIE.create(context.getWorld()));
-		mob.setAttached(DUMMY, () -> 42);
-		mob.setAttached(COPY_ON_DEATH, () -> 42);
-		MobEntity converted = mob.convertTo(EntityType.DROWNED, false);
-		if (converted == null) throw new GameTestException("Conversion failed");
+	@Test
+	void testTargets() {
+		AttachmentType<String> basic = AttachmentRegistry.create(Identifier.of(MOD_ID, "basic_attachment"));
+		// Attachment targets
+		/*
+		 * CALLS_REAL_METHODS makes sense here because AttachmentTarget does not refer to anything in the underlying
+		 * class, and it saves us a lot of pain trying to get the regular constructors for ServerWorld and WorldChunk to work.
+		 */
+		ServerWorld serverWorld = mock(ServerWorld.class, CALLS_REAL_METHODS);
+		Entity entity = mock(Entity.class, CALLS_REAL_METHODS);
+		BlockEntity blockEntity = mock(BlockEntity.class, CALLS_REAL_METHODS);
+		WorldChunk worldChunk = mock(WorldChunk.class, CALLS_REAL_METHODS);
+		ProtoChunk protoChunk = mock(ProtoChunk.class, CALLS_REAL_METHODS);
 
-		if (converted.hasAttached(DUMMY)) {
-			throw new GameTestException("Attachment shouldn't have been copied on mob conversion");
+		for (AttachmentTarget target : new AttachmentTarget[]{serverWorld, entity, blockEntity, worldChunk, protoChunk}) {
+			testForTarget(target, basic);
 		}
+	}
 
-		IntSupplier attached = converted.getAttached(COPY_ON_DEATH);
+	private void testForTarget(AttachmentTarget target, AttachmentType<String> basic) {
+		assertFalse(target.hasAttached(basic));
+		assertEquals("", target.getAttachedOrElse(basic, ""));
+		assertNull(target.getAttached(basic));
 
-		if (attached == null || attached.getAsInt() != 42) {
-			throw new GameTestException("Attachment copying failed during mob conversion");
-		}
+		String value = "attached";
+		assertEquals(value, target.getAttachedOrSet(basic, value));
+		assertTrue(target.hasAttached(basic));
+		assertEquals(value, target.getAttached(basic));
+		assertDoesNotThrow(() -> target.getAttachedOrThrow(basic));
 
-		converted.discard();
-		context.complete();
+		UnaryOperator<String> modifier = s -> s + '_';
+		String modified = modifier.apply(value);
+		target.modifyAttached(basic, modifier);
+		assertEquals(modified, target.getAttached(basic));
+		assertEquals(modified, target.removeAttached(basic));
+		assertFalse(target.hasAttached(basic));
+		assertThrows(NullPointerException.class, () -> target.getAttachedOrThrow(basic));
+	}
+
+	@Test
+	void testDefaulted() {
+		AttachmentType<Integer> defaulted = AttachmentRegistry.createDefaulted(
+				Identifier.of(MOD_ID, "defaulted_attachment"),
+				() -> 0
+		);
+		Entity target = mock(Entity.class, CALLS_REAL_METHODS);
+
+		assertFalse(target.hasAttached(defaulted));
+		assertEquals(0, target.getAttachedOrCreate(defaulted));
+		target.removeAttached(defaulted);
+		assertFalse(target.hasAttached(defaulted));
+	}
+
+	@Test
+	void testStaticReadWrite() {
+		AttachmentType<Double> dummy = AttachmentRegistry.createPersistent(
+				Identifier.of(MOD_ID, "dummy"),
+				Codec.DOUBLE
+		);
+		var map = new IdentityHashMap<AttachmentType<?>, Object>();
+		map.put(dummy, 0.5d);
+		var fakeSave = new NbtCompound();
+
+		AttachmentSerializingImpl.serializeAttachmentData(fakeSave, mockDRM(), map);
+		assertTrue(fakeSave.contains(AttachmentTarget.NBT_ATTACHMENT_KEY, NbtElement.COMPOUND_TYPE));
+		assertTrue(fakeSave.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).contains(dummy.identifier().toString()));
+
+		map = AttachmentSerializingImpl.deserializeAttachmentData(fakeSave, mockDRM());
+		assertEquals(1, map.size());
+		Map.Entry<AttachmentType<?>, Object> entry = map.entrySet().stream().findFirst().orElseThrow();
+		// in this case the key should be the exact same object
+		// but in practice this is meaningless because on a dedicated server the JVM restarted
+		assertEquals(dummy.identifier(), entry.getKey().identifier());
+		assertEquals(0.5d, entry.getValue());
+	}
+
+	@Test
+	void deserializeNull() {
+		var nbt = new NbtCompound();
+		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(nbt, mockDRM()));
+
+		nbt.put(Identifier.ofVanilla("test").toString(), new NbtCompound());
+		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(nbt, mockDRM()));
+	}
+
+	@Test
+	void serializeNullOrEmpty() {
+		var nbt = new NbtCompound();
+		AttachmentSerializingImpl.serializeAttachmentData(nbt, mockDRM(), null);
+		assertFalse(nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+
+		AttachmentSerializingImpl.serializeAttachmentData(nbt, mockDRM(), new IdentityHashMap<>());
+		assertFalse(nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+	}
+
+	@Test
+	void testEntityCopy() {
+		AttachmentType<Boolean> notCopiedOnRespawn = AttachmentRegistry.create(
+				Identifier.of(MOD_ID, "not_copied_on_respawn")
+		);
+		AttachmentType<Boolean> copiedOnRespawn = AttachmentRegistry.<Boolean>builder()
+				.copyOnDeath()
+				.buildAndRegister(Identifier.of(MOD_ID, "copied_on_respawn"));
+
+		Entity original = mock(Entity.class, CALLS_REAL_METHODS);
+		original.setAttached(notCopiedOnRespawn, true);
+		original.setAttached(copiedOnRespawn, true);
+
+		Entity respawnTarget = mock(Entity.class, CALLS_REAL_METHODS);
+		Entity nonRespawnTarget = mock(Entity.class, CALLS_REAL_METHODS);
+
+		AttachmentTargetImpl.transfer(original, respawnTarget, true);
+		AttachmentTargetImpl.transfer(original, nonRespawnTarget, false);
+		assertTrue(respawnTarget.hasAttached(copiedOnRespawn));
+		assertFalse(respawnTarget.hasAttached(notCopiedOnRespawn));
+		assertTrue(nonRespawnTarget.hasAttached(copiedOnRespawn));
+		assertTrue(nonRespawnTarget.hasAttached(notCopiedOnRespawn));
+	}
+
+	@Test
+	void testEntityPersistence() {
+		DynamicRegistryManager drm = mockDRM();
+		World mockWorld = mock(World.class);
+		when(mockWorld.getRegistryManager()).thenReturn(drm);
+		Entity entity = new MarkerEntity(EntityType.MARKER, mockWorld);
+		assertFalse(entity.hasAttached(PERSISTENT));
+
+		int expected = 1;
+		entity.setAttached(PERSISTENT, expected);
+		NbtCompound fakeSave = new NbtCompound();
+		entity.writeNbt(fakeSave);
+
+		entity = new MarkerEntity(EntityType.MARKER, mockWorld); // fresh object, like on restart
+		entity.setChangeListener(mock());
+		entity.readNbt(fakeSave);
+		assertTrue(entity.hasAttached(PERSISTENT));
+		assertEquals(expected, entity.getAttached(PERSISTENT));
+	}
+
+	@Test
+	void testBlockEntityPersistence() {
+		BlockEntity blockEntity = new BellBlockEntity(BlockPos.ORIGIN, Blocks.BELL.getDefaultState());
+		assertFalse(blockEntity.hasAttached(PERSISTENT));
+
+		int expected = 1;
+		blockEntity.setAttached(PERSISTENT, expected);
+		NbtCompound fakeSave = blockEntity.createNbtWithId(mockDRM());
+
+		blockEntity = BlockEntity.createFromNbt(BlockPos.ORIGIN, Blocks.BELL.getDefaultState(), fakeSave, mockDRM());
+		assertNotNull(blockEntity);
+		assertTrue(blockEntity.hasAttached(PERSISTENT));
+		assertEquals(expected, blockEntity.getAttached(PERSISTENT));
+	}
+
+	@Test
+	void testWorldPersistentState() {
+		// Trying to simulate actual saving and loading for the world is too hard
+		ServerWorld world = mock(ServerWorld.class, CALLS_REAL_METHODS);
+		AttachmentPersistentState state = new AttachmentPersistentState(world);
+		assertFalse(world.hasAttached(PERSISTENT));
+
+		int expected = 1;
+		world.setAttached(PERSISTENT, expected);
+		NbtCompound fakeSave = state.writeNbt(new NbtCompound(), mockDRM());
+
+		world = mock(ServerWorld.class, CALLS_REAL_METHODS);
+		AttachmentPersistentState.read(world, fakeSave, mockDRM());
+		assertTrue(world.hasAttached(PERSISTENT));
+		assertEquals(expected, world.getAttached(PERSISTENT));
+	}
+
+	/*
+	 * Chunk serializing is coupled with world saving in ChunkSerializer which is too much of a pain to mock,
+	 * so testing is handled by the testmod instead.
+	 */
+
+	private static DynamicRegistryManager mockDRM() {
+		DynamicRegistryManager drm = mock(DynamicRegistryManager.class);
+		when(drm.getOps(any())).thenReturn((RegistryOps<Object>) (Object) RegistryOps.of(NbtOps.INSTANCE, drm));
+		return drm;
 	}
 }

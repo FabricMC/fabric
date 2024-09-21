@@ -22,9 +22,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
-
-import net.fabricmc.loader.api.FabricLoader;
-
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

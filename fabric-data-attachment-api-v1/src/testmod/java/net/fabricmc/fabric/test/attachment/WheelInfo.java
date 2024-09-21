@@ -19,11 +19,11 @@ package net.fabricmc.fabric.test.attachment;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
+
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
 public record WheelInfo(float wheelDiameter, float tireDiameter, float tireThickness) {
 	public static final Codec<WheelInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
