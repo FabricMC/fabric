@@ -22,6 +22,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 
 public record WheelInfo(float wheelDiameter, float tireDiameter, float tireThickness) {
