@@ -55,27 +55,6 @@ public final class AttachmentRegistryImpl {
 		return new BuilderImpl<>();
 	}
 
-	private static <T> void initialize(AttachmentTypeImpl.Lazy<T> attachmentType, String namespace) {
-		attachmentType.initialize(namespace);
-		AttachmentRegistryImpl.register(attachmentType.identifier(), attachmentType);
-	}
-
-	public static void initialize() {
-		FabricLoader.getInstance().getEntrypointContainers(AttachmentRegistry.ENTRYPOINT_KEY, AttachmentType.class).forEach(container -> {
-			if (container.getEntrypoint() instanceof AttachmentTypeImpl.Lazy<?> lazy) {
-				initialize(lazy, container.getProvider().getMetadata().getId());
-			} else {
-				throw new RuntimeException("Cannot reinitialize a non-lazy attachment type.");
-			}
-		});
-
-		for (var attachmentType : attachmentRegistry.values()) {
-			if (attachmentType instanceof AttachmentTypeImpl.Lazy<?> lazy && !lazy.isInitialized()) {
-				throw new RuntimeException(String.format("Attachment type '?:%s' not registered via fabric-attachment entrypoint.", lazy.path()));
-			}
-		}
-	}
-
 	public static class BuilderImpl<A> implements AttachmentRegistry.Builder<A> {
 		@Nullable
 		private Supplier<A> defaultInitializer = null;
@@ -112,13 +91,6 @@ public final class AttachmentRegistryImpl {
 			var attachment = new AttachmentTypeImpl<>(id, defaultInitializer, persistenceCodec, copyOnDeath);
 			register(id, attachment);
 			return attachment;
-		}
-
-		@Override
-		public AttachmentType<A> build(String path) {
-			Objects.requireNonNull(path, "path cannot be null");
-
-			return new AttachmentTypeImpl.Lazy<>(path, defaultInitializer, persistenceCodec, copyOnDeath);
 		}
 	}
 }

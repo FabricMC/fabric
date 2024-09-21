@@ -39,7 +39,5 @@ public class AttachmentEntrypoint implements ModInitializer {
 		ServerLivingEntityEvents.MOB_CONVERSION.register((previous, converted, keepEquipment) ->
 				AttachmentTargetImpl.transfer(previous, converted, true)
 		);
-
-		AttachmentRegistryImpl.initialize();
 	}
 }

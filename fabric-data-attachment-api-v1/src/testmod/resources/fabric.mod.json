@@ -17,9 +17,6 @@
     "fabric-gametest": [
       "net.fabricmc.fabric.test.attachment.gametest.AttachmentCopyTests",
       "net.fabricmc.fabric.test.attachment.gametest.BlockEntityTests"
-    ],
-    "fabric-attachment": [
-      "net.fabricmc.fabric.test.attachment.WheelInfo::ATTACHMENT"
     ]
   },
   "mixins": [
