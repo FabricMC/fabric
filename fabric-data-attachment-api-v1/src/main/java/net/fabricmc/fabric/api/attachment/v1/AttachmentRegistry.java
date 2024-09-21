@@ -81,9 +81,7 @@ public final class AttachmentRegistry {
 	 * @return the registered {@link AttachmentType} instance
 	 */
 	public static <A> AttachmentType<A> createDefaulted(Identifier id, Supplier<A> initializer) {
-		return create(id, builder -> {
-			builder.initializer(initializer);
-		});
+		return create(id, builder -> builder.initializer(initializer));
 	}
 
 	/**
@@ -95,9 +93,7 @@ public final class AttachmentRegistry {
 	 * @return the registered {@link AttachmentType} instance
 	 */
 	public static <A> AttachmentType<A> createPersistent(Identifier id, Codec<A> codec) {
-		return create(id, builder -> {
-			builder.persistent(codec);
-		});
+		return create(id, builder -> builder.persistent(codec));
 	}
 
 	/**
