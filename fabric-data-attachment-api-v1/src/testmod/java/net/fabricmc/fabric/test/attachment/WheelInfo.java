@@ -33,7 +33,8 @@ public record WheelInfo(float wheelDiameter, float tireDiameter, float tireThick
 	).apply(instance, WheelInfo::new));
 
 	public static final AttachmentType<WheelInfo> ATTACHMENT = AttachmentRegistry.create(Identifier.of(AttachmentTestMod.MOD_ID, "wheel_info"),
-			attachment -> attachment.initializer(() -> new WheelInfo(100, 5432, 37))
+			attachment -> attachment
+					.initializer(() -> new WheelInfo(100, 5432, 37))
 					.persistent(WheelInfo.CODEC)
 	);
 }

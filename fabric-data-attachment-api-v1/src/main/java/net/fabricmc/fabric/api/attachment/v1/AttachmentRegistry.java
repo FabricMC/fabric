@@ -30,13 +30,14 @@ import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
  * Class used to create and register {@link AttachmentType}s. To quickly create {@link AttachmentType}s, use one of the various
  * {@code createXXX} methods:
  * <ul>
+ * 	   <li>{@link #create(Identifier, Consumer)}: attachments can be further configured by the supplied consumer.</li>
  *     <li>{@link #create(Identifier)}: attachments will be neither persistent nor auto-initialized.</li>
  *     <li>{@link #createDefaulted(Identifier, Supplier)}: attachments will be auto-initialized, but not persistent.</li>
  *     <li>{@link #createPersistent(Identifier, Codec)}: attachments will be persistent, but not auto-initialized.</li>
  * </ul>
  *
- * <p>For finer control over the attachment type and its properties, use {@link AttachmentRegistry#builder()} to
- * get a {@link Builder} instance.</p>
+ * <p>For finer control over the attachment type and its properties, use {@link #create(Identifier, Consumer)} to
+ * get and configure a {@link Builder} instance.</p>
  */
 @ApiStatus.Experimental
 public final class AttachmentRegistry {
@@ -44,7 +45,8 @@ public final class AttachmentRegistry {
 	}
 
 	/**
-	 * Creates <i>and registers</i> an attachment, configuring the builder used underneath.
+	 * Creates <i>and registers</i> an attachment, configuring the builder used underneath. This method is intended as an
+	 * alternative to {@link AttachmentRegistry#builder()}.
 	 *
 	 * @param id  the identifier of this attachment
 	 * @param <A> the type of attached data
