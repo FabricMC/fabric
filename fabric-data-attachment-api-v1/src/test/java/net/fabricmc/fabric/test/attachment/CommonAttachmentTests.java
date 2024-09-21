@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 
 import com.mojang.serialization.Codec;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
