@@ -40,6 +40,12 @@ public final class ServerBlockEntityLifecycleTests implements ModInitializer {
 	public void onInitialize() {
 		final Logger logger = ServerLifecycleTests.LOGGER;
 
+		ServerBlockEntityEvents.BLOCK_ENTITY_TICK.register((blockEntity, world) -> {
+			if (PRINT_SERVER_BLOCKENTITY_MESSAGES) {
+				logger.info("[SERVER] TICKED " + Registries.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.serverBlockEntities.size());
+			}
+		});
+
 		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
 			this.serverBlockEntities.add(blockEntity);
 

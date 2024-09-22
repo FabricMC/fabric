@@ -23,6 +23,8 @@ import com.google.common.collect.Iterables;
 import org.slf4j.Logger;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
 
 import net.fabricmc.api.ModInitializer;
@@ -42,11 +44,17 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 	public void onInitialize() {
 		final Logger logger = ServerLifecycleTests.LOGGER;
 
+		ServerEntityEvents.ENTITY_TICK.register((entity, world) -> {
+			if (PRINT_SERVER_ENTITY_MESSAGES && entity instanceof PlayerEntity player && player.getMainHandStack().isOf(Items.LILY_PAD) && player.isSneaking()) {
+				logger.info("[SERVER] TICKING {}.", player.getName().getString());
+			}
+		});
+
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
 			this.serverEntities.add(entity);
 
 			if (PRINT_SERVER_ENTITY_MESSAGES) {
-				logger.info("[SERVER] LOADED " + entity.toString() + " - Entities: " + this.serverEntities.size());
+				logger.info("[SERVER] LOADED {} - Entities: {}", entity.toString(), this.serverEntities.size());
 			}
 		});
 
@@ -54,7 +62,7 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 			this.serverEntities.remove(entity);
 
 			if (PRINT_SERVER_ENTITY_MESSAGES) {
-				logger.info("[SERVER] UNLOADED " + entity.toString() + " - Entities: " + this.serverEntities.size());
+				logger.info("[SERVER] UNLOADED {} - Entities: {}", entity.toString(), this.serverEntities.size());
 			}
 		});
 
@@ -72,7 +80,7 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 					final int worldEntities = Iterables.size(world.iterateEntities());
 
 					if (PRINT_SERVER_ENTITY_MESSAGES) {
-						logger.info("[SERVER] Tracked Entities in " + world.getRegistryKey().toString() + " - " + worldEntities);
+						logger.info("[SERVER] Tracked Entities in {} - {}", world.getRegistryKey().toString(), worldEntities);
 					}
 
 					entities += worldEntities;
@@ -92,7 +100,7 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			logger.info("[SERVER] Disconnected. Tracking: " + this.serverEntities.size() + " entities");
 
-			if (this.serverEntities.size() != 0) {
+			if (!this.serverEntities.isEmpty()) {
 				logger.error("[SERVER] Mismatch in tracked entities, expected 0");
 			}
 		});

@@ -63,6 +63,15 @@ public final class ServerEntityEvents {
 		}
 	});
 
+	/**
+	 * Called when an entity is ticked by a ServerWorld.
+	 */
+	public static final Event<ServerEntityEvents.Tick> ENTITY_TICK = EventFactory.createArrayBacked(ServerEntityEvents.Tick.class, callbacks -> (serverWorld, entity) -> {
+		for (ServerEntityEvents.Tick callback : callbacks) {
+			callback.onTick(serverWorld, entity);
+		}
+	});
+
 	@FunctionalInterface
 	public interface Load {
 		void onLoad(Entity entity, ServerWorld world);
@@ -76,5 +85,10 @@ public final class ServerEntityEvents {
 	@FunctionalInterface
 	public interface EquipmentChange {
 		void onChange(LivingEntity livingEntity, EquipmentSlot equipmentSlot, ItemStack previousStack, ItemStack currentStack);
+	}
+
+	@FunctionalInterface
+	public interface Tick {
+		void onTick(Entity entity, ServerWorld world);
 	}
 }
