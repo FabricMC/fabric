@@ -17,16 +17,33 @@
 package net.fabricmc.fabric.test.entity.event.client;
 
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.Items;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.entity.event.ClientPlayerEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRenderEvents;
 import net.fabricmc.fabric.test.entity.event.EntityEventTests;
 
 public class EntityEventTestsClient implements ClientModInitializer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(EntityEventTestsClient.class);
+
 	@Override
 	public void onInitializeClient() {
 		LivingEntityFeatureRenderEvents.ALLOW_CAPE_RENDER.register(player -> {
 			return !player.getEquippedStack(EquipmentSlot.CHEST).isOf(EntityEventTests.DIAMOND_ELYTRA);
+		});
+
+		ClientPlayerEvents.MODIFY_PLAYER_MOVEMENT_DURING_USINGITEM.register(player -> {
+			LOGGER.info("Player {} is moving during using item.", player);
+
+			if(player.getMainHandStack().isOf(Items.BOW) && player.getEquippedStack(EquipmentSlot.FEET).isOf(Items.DIAMOND_BOOTS)) {
+				LOGGER.info("Player {} can move without slowdown becase of diamond boots on feet.", player);
+				player.input.movementForward *= 5F;
+				player.input.movementSideways *= 5F;
+			}
 		});
 	}
 }
