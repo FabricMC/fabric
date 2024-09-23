@@ -28,14 +28,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
 @Mixin(BlockEntity.class)
 abstract class BlockEntityMixin implements AttachmentTargetImpl {
@@ -48,6 +50,9 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 
 	@Shadow
 	public abstract void markDirty();
+
+	@Shadow
+	public abstract boolean hasWorld();
 
 	@Inject(
 			method = "read",
@@ -76,7 +81,14 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public Iterable<ServerPlayerEntity> fabric_getTracking() {
-		return PlayerLookup.tracking((BlockEntity) (Object) this);
+	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
+		if (this.hasWorld() && !this.world.isClient()) {
+			PlayerLookup.tracking((BlockEntity) (Object) this)
+					.forEach(player -> {
+						if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
+							AttachmentSync.trySync(payload, player);
+						}
+					});
+		}
 	}
 }

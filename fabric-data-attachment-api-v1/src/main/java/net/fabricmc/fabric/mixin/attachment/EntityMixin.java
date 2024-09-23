@@ -25,20 +25,28 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
 @Mixin(Entity.class)
 abstract class EntityMixin implements AttachmentTargetImpl {
 	@Shadow
 	private int id;
+	@Shadow
+	private World world;
 
 	@Shadow
 	public abstract World getWorld();
+
+	@Shadow
+	public abstract World getEntityWorld();
 
 	@Inject(
 			at = @At(value = "INVOKE", target = "net/minecraft/entity/Entity.readCustomDataFromNbt(Lnet/minecraft/nbt/NbtCompound;)V"),
@@ -62,7 +70,15 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public Iterable<ServerPlayerEntity> fabric_getTracking() {
-		return PlayerLookup.tracking((Entity) (Object) this);
+	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
+		if (!this.getWorld().isClient()) {
+			// can't shadow from Chunk because this already extends a supermixin
+			PlayerLookup.tracking((Entity) (Object) this)
+					.forEach(player -> {
+						if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
+							AttachmentSync.trySync(payload, player);
+						}
+					});
+		}
 	}
 }

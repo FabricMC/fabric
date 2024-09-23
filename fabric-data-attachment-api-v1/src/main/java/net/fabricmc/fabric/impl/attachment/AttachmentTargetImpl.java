@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.attachment;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -29,7 +28,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
@@ -88,18 +86,8 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 	}
 
 	default void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
-		for (ServerPlayerEntity player : fabric_getTracking()) {
-			if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
-				AttachmentSync.trySync(payload, player);
-			}
-		}
 	}
 
 	default void fabric_markChanged(AttachmentType<?> type) {
-		// default should be a no-op
-	}
-
-	default Iterable<ServerPlayerEntity> fabric_getTracking() {
-		return List.of();
 	}
 }
