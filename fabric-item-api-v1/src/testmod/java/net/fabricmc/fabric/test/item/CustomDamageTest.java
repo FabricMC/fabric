@@ -42,6 +42,7 @@ import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
+import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.fabricmc.fabric.api.util.TriState;
 
 public class CustomDamageTest implements ModInitializer {
@@ -63,6 +64,7 @@ public class CustomDamageTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.ITEM, WEIRD_PICK_KEY, WEIRD_PICK);
+		FuelRegistryEvents.BUILD.register((builder, context) -> builder.add(WEIRD_PICK, context.baseSmeltTime()));
 		FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> builder.registerPotionRecipe(Potions.WATER, WEIRD_PICK, Potions.AWKWARD));
 		EnchantmentEvents.ALLOW_ENCHANTING.register(((enchantment, target, enchantingContext) -> {
 			if (target.isOf(Items.DIAMOND_PICKAXE) && enchantment.matchesKey(Enchantments.SHARPNESS) && EnchantmentHelper.hasAnyEnchantmentsIn(target, EnchantmentTags.MINING_EXCLUSIVE_SET)) {
