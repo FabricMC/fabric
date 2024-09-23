@@ -35,6 +35,13 @@ public final class ConventionalBlockTags {
 	 */
 	public static final TagKey<Block> STONES = register("stones");
 	public static final TagKey<Block> COBBLESTONES = register("cobblestones");
+	public static final TagKey<Block> OBSIDIANS = register("obsidians");
+	/**
+	 * For common obsidian that has no special quirks or behaviors. Ideal for recipe use.
+	 * Crying Obsidian, for example, is a light block and harder to obtain. So it gets its own tag instead of being under normal tag.
+	 */
+	public static final TagKey<Block> NORMAL_OBSIDIANS = register("obsidians/normal");
+	public static final TagKey<Block> CRYING_OBSIDIANS = register("obsidians/crying");
 
 	// Ores - broad categories
 	public static final TagKey<Block> ORES = register("ores");
