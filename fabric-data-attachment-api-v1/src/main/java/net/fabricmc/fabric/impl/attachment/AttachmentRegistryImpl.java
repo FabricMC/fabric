@@ -37,7 +37,6 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPredicateImpl;
 
 public final class AttachmentRegistryImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-data-attachment-api-v1");
@@ -83,7 +82,7 @@ public final class AttachmentRegistryImpl {
 		@Nullable
 		private PacketCodec<PacketByteBuf, A> packetCodec = null;
 		@Nullable
-		private AttachmentSyncPredicateImpl syncPredicate = null;
+		private AttachmentSyncPredicate syncPredicate = null;
 		private boolean copyOnDeath = false;
 
 		@Override
@@ -113,7 +112,7 @@ public final class AttachmentRegistryImpl {
 			Objects.requireNonNull(syncPredicate, "sync predicate cannot be null");
 
 			this.packetCodec = packetCodec;
-			this.syncPredicate = (AttachmentSyncPredicateImpl) syncPredicate;
+			this.syncPredicate = syncPredicate;
 			return this;
 		}
 

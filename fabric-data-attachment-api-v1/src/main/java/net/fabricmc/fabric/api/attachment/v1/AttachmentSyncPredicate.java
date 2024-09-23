@@ -22,36 +22,26 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPredicateImpl;
-
 @ApiStatus.NonExtendable
-public interface AttachmentSyncPredicate {
+public interface AttachmentSyncPredicate extends BiPredicate<AttachmentTarget, ServerPlayerEntity> {
 	/**
 	 * @return a predicate that syncs an attachment with all clients
 	 */
 	static AttachmentSyncPredicate all() {
-		return AttachmentSyncPredicateImpl.all();
+		return (t, p) -> true;
 	}
 
 	/**
 	 * @return a predicate that syncs an attachment only with the target it is attached to, when that is a player
 	 */
 	static AttachmentSyncPredicate targetOnly() {
-		return AttachmentSyncPredicateImpl.targetOnly();
+		return (target, player) -> target == player;
 	}
 
 	/**
 	 * @return a predicate that syncs an attachment with every client except the target it is attached to, when that is a player
 	 */
 	static AttachmentSyncPredicate allButTarget() {
-		return AttachmentSyncPredicateImpl.allButTarget();
-	}
-
-	/**
-	 * @param syncTargetTest a custom predicate, taking in the target of the attachment and a {@link ServerPlayerEntity player}
-	 * @return a custom predicate to determine if the attachment should be synced with a given player
-	 */
-	static AttachmentSyncPredicate custom(BiPredicate<AttachmentTarget, ServerPlayerEntity> syncTargetTest) {
-		return AttachmentSyncPredicateImpl.custom(syncTargetTest);
+		return (target, player) -> target != player;
 	}
 }

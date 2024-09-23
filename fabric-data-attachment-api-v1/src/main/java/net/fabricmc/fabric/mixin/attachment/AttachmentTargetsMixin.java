@@ -16,15 +16,14 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -34,29 +33,19 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
-import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
-import net.fabricmc.fabric.impl.attachment.sync.SyncType;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
 @Mixin({BlockEntity.class, Entity.class, World.class, Chunk.class})
 abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, Object> fabric_dataAttachments = null;
-	/*
-	 * All the attachment changes that should always be sent to newcomers, players that begin to track this target
-	 */
 	@Nullable
-	private IdentityHashMap<AttachmentType<?>, AttachmentChange> fabric_alwaysSentToNewcomers = null;
-	/*
-	 * Same as above, except that the changes might not be sent to any newcomer, needs to be checked before sending
-	 */
-	@Nullable
-	private IdentityHashMap<AttachmentType<?>, AttachmentChange> fabric_maybeSentToNewcomers = null;
+	private IdentityHashMap<AttachmentType<?>, AttachmentChange> fabric_syncedAttachments = null;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -72,7 +61,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 		this.fabric_markChanged(type);
 
 		if (type.isSynced()) {
-			this.fabric_acknowledgeSyncedEntry(type, value);
+			acknowledgeSyncedEntry(type, value);
 			var payload = new AttachmentSyncPayload(List.of(AttachmentChange.create(
 					fabric_getSyncTargetInfo(),
 					type,
@@ -130,92 +119,35 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 		return fabric_dataAttachments;
 	}
 
-	@Override
-	public void fabric_acknowledgeSyncedEntry(AttachmentType<?> type, @Nullable Object value) {
-		/*
-		 * The SyncType is used here to not have to unnecessarily run predicates on every AttachmentChange every single time
-		 * fabric_getInitialSyncChanges is called. Instead, we modify two maps:
-		 *   - fabric_alwaysSentToNewcomers keeps track of the changes that will always be synced with new players.
-		 *   - fabric_maybeSentToNewcomers keeps track of the changes for which the predicate must be checked every single time
-		 * The first includes all() and allButTarget() predicates, because we already know that their predicates will always
-		 * return true in the context they're called in, so it's wasteful to call them every time.
-		 * Likewise, in context, targetOnly() predicates would always fail, so it's wasteful to keep track of them.
-		 * On the other hand, custom() predicates need to be rechecked every time, so get sent to the second map.
-		 *
-		 * As such, there is no re-computation for all non-custom() attachments, which could prove significant for larger servers.
-		 */
-		SyncType syncType = ((AttachmentTypeImpl<?>) type).syncPredicate().type();
-
-		if (syncType == SyncType.TARGET_ONLY) {
-			// the target can never be a newcomer (i.e. start tracking itself), so this never needs to be synced
-			return;
-		}
-
-		if (syncType == SyncType.CUSTOM) {
-			if (value == null) {
-				if (fabric_maybeSentToNewcomers == null) {
-					return;
-				}
-
-				fabric_maybeSentToNewcomers.remove(type);
-			} else {
-				AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value);
-
-				if (fabric_maybeSentToNewcomers == null) {
-					fabric_maybeSentToNewcomers = new IdentityHashMap<>();
-				}
-
-				fabric_maybeSentToNewcomers.put(type, change);
+	@Unique
+	private void acknowledgeSyncedEntry(AttachmentType<?> type, @Nullable Object value) {
+		if (value == null) {
+			if (fabric_syncedAttachments == null) {
+				return;
 			}
+
+			fabric_syncedAttachments.remove(type);
 		} else {
-			/*
-			 * covers both ALL and ALL_BUT_TARGET: the target is never a newcomer,
-			 * so it *always* needs to be synced in the second case
-			 */
-			if (value == null) {
-				if (fabric_alwaysSentToNewcomers == null) {
-					return;
-				}
+			AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value);
 
-				fabric_alwaysSentToNewcomers.remove(type);
-			} else {
-				AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value);
-
-				if (fabric_alwaysSentToNewcomers == null) {
-					fabric_alwaysSentToNewcomers = new IdentityHashMap<>();
-				}
-
-				fabric_alwaysSentToNewcomers.put(type, change);
+			if (fabric_syncedAttachments == null) {
+				fabric_syncedAttachments = new IdentityHashMap<>();
 			}
+
+			fabric_syncedAttachments.put(type, change);
 		}
 	}
 
 	@Override
-	public List<AttachmentChange> fabric_getInitialSyncChanges(ServerPlayerEntity player) {
-		if (fabric_dataAttachments == null || fabric_alwaysSentToNewcomers == null && fabric_maybeSentToNewcomers == null) {
-			return List.of();
+	public void fabric_getInitialSyncChanges(ServerPlayerEntity player, Consumer<AttachmentChange> changeOutput) {
+		if (fabric_syncedAttachments == null) {
+			return;
 		}
 
-		List<AttachmentChange> list = new ArrayList<>();
-
-		if (fabric_alwaysSentToNewcomers != null) {
-			list.addAll(fabric_alwaysSentToNewcomers.values());
-		}
-
-		if (fabric_maybeSentToNewcomers != null) {
-			for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : fabric_maybeSentToNewcomers.entrySet()) {
-				BiPredicate<AttachmentTarget, ServerPlayerEntity> pred =
-						((AttachmentTypeImpl<?>) entry.getKey()).syncPredicate().customTest();
-				// trySync type should always be CUSTOM here, hence pred != null
-
-				if (pred.test(this, player)) {
-					list.add(entry.getValue());
-				}
+		for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : fabric_syncedAttachments.entrySet()) {
+			if (((AttachmentTypeImpl<?>) entry.getKey()).syncPredicate().test(this, player)) {
+				changeOutput.accept(entry.getValue());
 			}
 		}
-
-		// sort by size to better partition packets
-		list.sort(Comparator.comparingInt(c -> c.data().length));
-		return list;
 	}
 }

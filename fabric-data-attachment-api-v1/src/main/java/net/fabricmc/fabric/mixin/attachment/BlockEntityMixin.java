@@ -28,18 +28,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
-import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
-import net.fabricmc.fabric.impl.attachment.BlockEntityAttachmentReceiver;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPredicateImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
 @Mixin(BlockEntity.class)
 abstract class BlockEntityMixin implements AttachmentTargetImpl {
@@ -49,9 +45,6 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	@Shadow
 	@Nullable
 	protected World world;
-
-	@Shadow
-	public abstract boolean hasWorld();
 
 	@Shadow
 	public abstract void markDirty();
@@ -78,40 +71,12 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public void fabric_acknowledgeSyncedEntry(AttachmentType<?> type, @Nullable Object value) {
-		if (this.hasWorld() && !this.world.isClient()) {
-			((BlockEntityAttachmentReceiver) this.world.getChunk(this.pos)).fabric_acknowledgeBlockEntityAttachment(
-					this.pos,
-					type,
-					value
-			);
-		}
-	}
-
-	@Override
 	public AttachmentTargetInfo<?> fabric_getSyncTargetInfo() {
 		return new AttachmentTargetInfo.BlockEntityTarget(this.pos);
 	}
 
 	@Override
-	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
-		if (this.hasWorld() && !this.world.isClient()) {
-			AttachmentSyncPredicateImpl pred = ((AttachmentTypeImpl<?>) type).syncPredicate();
-
-			switch (pred.type()) {
-			case ALL, ALL_BUT_TARGET -> PlayerLookup
-					.tracking((BlockEntity) (Object) this)
-					.forEach(player -> AttachmentSync.trySync(payload, player));
-			case CUSTOM -> PlayerLookup
-					.tracking((BlockEntity) (Object) this)
-					.forEach(player -> {
-						if (pred.customTest().test(this, player)) {
-							AttachmentSync.trySync(payload, player);
-						}
-					});
-			case TARGET_ONLY -> {
-			}
-			}
-		}
+	public Iterable<ServerPlayerEntity> fabric_getTracking() {
+		return PlayerLookup.tracking((BlockEntity) (Object) this);
 	}
 }

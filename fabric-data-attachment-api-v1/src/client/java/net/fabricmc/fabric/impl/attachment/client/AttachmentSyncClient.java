@@ -20,8 +20,8 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.RequestAcceptedAttachmentsPayloadS2C;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.RequestAcceptedAttachmentsPayloadS2C;
 
 public class AttachmentSyncClient implements ClientModInitializer {
 	@Override

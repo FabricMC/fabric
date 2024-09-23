@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.attachment;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +29,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
@@ -81,22 +83,23 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 	 * Returns a list of changes that should be communicated to newcomers (i.e. clients that start tracking this target)
 	 * Most of it is computed in advance through acknowledgeSyncedEntry
 	 */
-	default List<AttachmentChange> fabric_getInitialSyncChanges(ServerPlayerEntity player) {
+	default void fabric_getInitialSyncChanges(ServerPlayerEntity player, Consumer<AttachmentChange> changeOutput) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	default void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
-		// default can be reached and should be no-op, e.g. in ProtoChunk
+		for (ServerPlayerEntity player : fabric_getTracking()) {
+			if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
+				AttachmentSync.trySync(payload, player);
+			}
+		}
 	}
 
 	default void fabric_markChanged(AttachmentType<?> type) {
 		// default should be a no-op
 	}
 
-	/*
-	 * Called every time the value for a synced attachment is modified. Used for the logic needed for getInitialSyncChanges
-	 */
-	default void fabric_acknowledgeSyncedEntry(AttachmentType<?> type, @Nullable Object value) {
-		throw new UnsupportedOperationException("Implemented via mixin");
+	default Iterable<ServerPlayerEntity> fabric_getTracking() {
+		return List.of();
 	}
 }

@@ -81,7 +81,7 @@ public class AttachmentTestMod implements ModInitializer {
 			.buildAndRegister(Identifier.of(MOD_ID, "synced_expect_target"));
 	public static final AttachmentType<Boolean> SYNCED_CUSTOM_RULE = AttachmentRegistry.<Boolean>builder()
 			.initializer(() -> false)
-			.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.custom((target, player) -> player.isCreative()))
+			.syncWith(PacketCodecs.BOOL.cast(), (target, player) -> player.isCreative())
 			.buildAndRegister(Identifier.of(MOD_ID, "synced_custom"));
 	private static final SimpleCommandExceptionType BAD_GAMEMODE = new SimpleCommandExceptionType(() -> "You must be in creative mode");
 

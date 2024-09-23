@@ -27,11 +27,10 @@ import net.minecraft.world.chunk.ChunkStatus;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
-import net.fabricmc.fabric.impl.attachment.BlockEntityAttachmentReceiver;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 @Mixin(Chunk.class)
-abstract class ChunkMixin implements AttachmentTargetImpl, BlockEntityAttachmentReceiver {
+abstract class ChunkMixin implements AttachmentTargetImpl {
 	@Shadow
 	@Final
 	protected ChunkPos pos;

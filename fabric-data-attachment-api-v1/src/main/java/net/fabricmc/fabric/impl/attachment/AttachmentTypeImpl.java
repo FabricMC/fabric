@@ -25,15 +25,15 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPredicateImpl;
 
 public record AttachmentTypeImpl<A>(
 		Identifier identifier,
 		@Nullable Supplier<A> initializer,
 		@Nullable Codec<A> persistenceCodec,
 		@Nullable PacketCodec<PacketByteBuf, A> packetCodec,
-		@Nullable AttachmentSyncPredicateImpl syncPredicate,
+		@Nullable AttachmentSyncPredicate syncPredicate,
 		boolean copyOnDeath
 ) implements AttachmentType<A> {
 	@Override

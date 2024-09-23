@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.attachment.sync;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -38,8 +39,8 @@ import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.c2s.AcceptedAttachmentsPayloadC2S;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.RequestAcceptedAttachmentsPayloadS2C;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.RequestAcceptedAttachmentsPayloadS2C;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
 public class AttachmentSync implements ModInitializer {
@@ -102,18 +103,19 @@ public class AttachmentSync implements ModInitializer {
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			ServerPlayerEntity player = handler.player;
-			List<AttachmentChange> changes =
-					((AttachmentTargetImpl) player.getServerWorld()).fabric_getInitialSyncChanges(player);
+			List<AttachmentChange> changes = new ArrayList<>();
+			((AttachmentTargetImpl) player.getServerWorld()).fabric_getInitialSyncChanges(player, changes::add);
 
-			if (changes != null) {
+			if (!changes.isEmpty()) {
 				AttachmentChange.partitionAndSendPackets(changes, player);
 			}
 		});
 
 		EntityTrackingEvents.START_TRACKING.register((trackedEntity, player) -> {
-			List<AttachmentChange> changes = ((AttachmentTargetImpl) trackedEntity).fabric_getInitialSyncChanges(player);
+			List<AttachmentChange> changes = new ArrayList<>();
+			((AttachmentTargetImpl) trackedEntity).fabric_getInitialSyncChanges(player, changes::add);
 
-			if (changes != null) {
+			if (!changes.isEmpty()) {
 				AttachmentChange.partitionAndSendPackets(changes, player);
 			}
 		});

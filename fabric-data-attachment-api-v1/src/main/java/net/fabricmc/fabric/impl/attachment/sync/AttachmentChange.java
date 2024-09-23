@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.attachment.sync;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,6 +40,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 import net.fabricmc.fabric.mixin.attachment.CustomPayloadS2CPacketAccessor;
+import net.fabricmc.fabric.mixin.attachment.VarIntsAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
 public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, byte[] data) {
@@ -78,8 +80,11 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 	public static void partitionAndSendPackets(List<AttachmentChange> changes, ServerPlayerEntity player) {
 		Set<Identifier> supported = ((SupportedAttachmentsClientConnection) ((ServerCommonNetworkHandlerAccessor) player.networkHandler).getConnection())
 				.fabric_getSupportedAttachments();
+		// sort by size to better partition packets
+		changes.sort(Comparator.comparingInt(c -> c.data().length));
 		List<AttachmentChange> packetChanges = new ArrayList<>();
-		int byteSize = Integer.BYTES + 1; // VarInts.MAX_BYTES
+		int maxVarIntSize = VarIntsAccessor.getMaxByteSize();
+		int byteSize = maxVarIntSize;
 
 		for (AttachmentChange change : changes) {
 			if (!supported.contains(change.type.identifier())) {
@@ -91,7 +96,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			if (byteSize + size >= MAX_DATA_SIZE_IN_BYTES) {
 				ServerPlayNetworking.send(player, new AttachmentSyncPayload(packetChanges));
 				packetChanges.clear();
-				byteSize = Integer.BYTES + 1;
+				byteSize = maxVarIntSize;
 			}
 
 			packetChanges.add(change);

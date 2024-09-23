@@ -16,23 +16,18 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -41,108 +36,39 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.WorldChunk;
 
-import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
-import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
-import net.fabricmc.fabric.impl.attachment.BlockEntityAttachmentReceiver;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPredicateImpl;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
-import net.fabricmc.fabric.impl.attachment.sync.SyncType;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
 @Mixin(WorldChunk.class)
-abstract class WorldChunkMixin extends AttachmentTargetsMixin implements AttachmentTargetImpl, BlockEntityAttachmentReceiver {
+abstract class WorldChunkMixin extends AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Shadow
 	@Final
 	World world;
-	@Unique
-	private Map<BlockPos, Map<AttachmentType<?>, AttachmentChange>> alwaysSentToNewcomersBE = new HashMap<>();
-	@Unique
-	private Map<BlockPos, Map<AttachmentType<?>, AttachmentChange>> maybeSentToNewcomersBE = new HashMap<>();
+
+	@Shadow
+	public abstract Map<BlockPos, BlockEntity> getBlockEntities();
 
 	@Inject(method = "<init>(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/ProtoChunk;Lnet/minecraft/world/chunk/WorldChunk$EntityLoader;)V", at = @At("TAIL"))
 	private void transferProtoChunkAttachement(ServerWorld world, ProtoChunk protoChunk, WorldChunk.EntityLoader entityLoader, CallbackInfo ci) {
 		AttachmentTargetImpl.transfer(protoChunk, this, false);
 	}
 
-	@Inject(method = "removeBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;markRemoved()V"))
-	private void removeBlockEntityAttachments(BlockPos pos, CallbackInfo ci) {
-		alwaysSentToNewcomersBE.remove(pos);
-		maybeSentToNewcomersBE.remove(pos);
-	}
-
 	@Override
-	public void fabric_acknowledgeBlockEntityAttachment(BlockPos pos, AttachmentType<?> type, @Nullable Object value) {
-		SyncType syncType = ((AttachmentTypeImpl<?>) type).syncPredicate().type();
+	public void fabric_getInitialSyncChanges(ServerPlayerEntity player, Consumer<AttachmentChange> changeOutput) {
+		super.fabric_getInitialSyncChanges(player, changeOutput);
 
-		if (syncType == SyncType.TARGET_ONLY) {
-			return;
-		}
-
-		Map<BlockPos, Map<AttachmentType<?>, AttachmentChange>> globalMap = syncType == SyncType.CUSTOM
-				? maybeSentToNewcomersBE
-				: alwaysSentToNewcomersBE;
-		var targetInfo = new AttachmentTargetInfo.BlockEntityTarget(pos);
-
-		if (value == null && globalMap.containsKey(pos)) {
-			Map<AttachmentType<?>, AttachmentChange> map = globalMap.get(pos);
-			map.remove(type);
-
-			if (map.isEmpty()) {
-				globalMap.remove(pos);
-			}
-		} else if (value != null) {
-			globalMap.computeIfAbsent(pos, k -> new IdentityHashMap<>())
-					.put(type, AttachmentChange.create(targetInfo, type, value));
+		for (BlockEntity be : this.getBlockEntities().values()) {
+			((AttachmentTargetImpl) be).fabric_getInitialSyncChanges(player, changeOutput);
 		}
 	}
 
 	@Override
-	public List<AttachmentChange> fabric_getInitialSyncChanges(ServerPlayerEntity player) {
-		List<AttachmentChange> changes = new ArrayList<>(super.fabric_getInitialSyncChanges(player));
-
-		this.alwaysSentToNewcomersBE.values().forEach(m -> changes.addAll(m.values()));
-		this.maybeSentToNewcomersBE.forEach((blockPos, map) -> {
-			for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : map.entrySet()) {
-				BiPredicate<AttachmentTarget, ServerPlayerEntity> pred =
-						((AttachmentTypeImpl<?>) entry.getKey()).syncPredicate().customTest();
-				// trySync type should always be CUSTOM here, hence pred != null
-
-				if (pred.test(this, player)) {
-					changes.add(entry.getValue());
-				}
-			}
-		});
-
-		// sort by size to better partition packets
-		changes.sort(Comparator.comparingInt(c -> c.data().length));
-		return changes;
-	}
-
-	@Override
-	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
+	public Iterable<ServerPlayerEntity> fabric_getTracking() {
 		if (this.world instanceof ServerWorld serverWorld) {
-			AttachmentSyncPredicateImpl pred = ((AttachmentTypeImpl<?>) type).syncPredicate();
-
-			switch (pred.type()) {
-			case ALL, ALL_BUT_TARGET -> PlayerLookup
-					// Can't shadow the method or field as we are already extending a supermixin
-					.tracking(serverWorld, ((Chunk) (Object) this).getPos())
-					.forEach(player -> AttachmentSync.trySync(payload, player));
-			case CUSTOM -> PlayerLookup
-					.tracking(serverWorld, ((Chunk) (Object) this).getPos())
-					.forEach(player -> {
-						if (pred.customTest().test(this, player)) {
-							AttachmentSync.trySync(payload, player);
-						}
-					});
-			case TARGET_ONLY -> {
-			}
-			}
+			return PlayerLookup.tracking(serverWorld, ((Chunk) (Object) this).getPos());
+		} else {
+			return List.of();
 		}
 	}
 }

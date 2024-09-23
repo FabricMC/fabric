@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.attachment.sync;
+package net.fabricmc.fabric.mixin.attachment;
 
-/*
- * Enum to keep track of the type of an AttachmentSyncPredicate to allow for special-casing not possible with a simple
- * BiPredicate, see the comment in AttachmentTargetsMixin#fabric_acknowledgeSyncedEntry
- */
-public enum SyncType {
-	ALL,
-	TARGET_ONLY,
-	ALL_BUT_TARGET,
-	CUSTOM
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
+import net.minecraft.network.encoding.VarInts;
+
+@Mixin(VarInts.class)
+public interface VarIntsAccessor {
+	@Accessor("MAX_BYTES")
+	static int getMaxByteSize() {
+		throw new UnsupportedOperationException("implemented via mixin");
+	}
 }

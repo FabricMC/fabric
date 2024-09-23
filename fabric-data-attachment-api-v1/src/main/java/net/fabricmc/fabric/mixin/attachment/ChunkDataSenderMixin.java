@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -44,9 +45,10 @@ abstract class ChunkDataSenderMixin {
 	private void sendInitialAttachmentData(ServerPlayNetworkHandler handler, ServerWorld world, WorldChunk chunk, Operation<Void> original, ServerPlayerEntity player) {
 		original.call(handler, world, chunk);
 		// do a wrap operation so this packet is sent *after* the chunk ones
-		List<AttachmentChange> changes = ((AttachmentTargetImpl) chunk).fabric_getInitialSyncChanges(player);
+		List<AttachmentChange> changes = new ArrayList<>();
+		((AttachmentTargetImpl) chunk).fabric_getInitialSyncChanges(player, changes::add);
 
-		if (changes != null) {
+		if (!changes.isEmpty()) {
 			AttachmentChange.partitionAndSendPackets(changes, player);
 		}
 	}

@@ -28,14 +28,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
-import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncPredicateImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
 
 @Mixin(Entity.class)
 abstract class EntityMixin implements AttachmentTargetImpl {
@@ -67,34 +62,7 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayload payload) {
-		if (!this.getWorld().isClient()) {
-			AttachmentSyncPredicateImpl pred = ((AttachmentTypeImpl<?>) type).syncPredicate();
-
-			switch (pred.type()) {
-			case ALL -> PlayerLookup
-					.tracking((Entity) (Object) this)
-					.forEach(player -> AttachmentSync.trySync(payload, player));
-			case ALL_BUT_TARGET -> PlayerLookup
-					.tracking((Entity) (Object) this)
-					.forEach(player -> {
-						if (player != (Object) this) {
-							AttachmentSync.trySync(payload, player);
-						}
-					});
-			case TARGET_ONLY -> {
-				if ((Object) this instanceof ServerPlayerEntity player) {
-					AttachmentSync.trySync(payload, player);
-				}
-			}
-			case CUSTOM -> PlayerLookup
-					.tracking((Entity) (Object) this)
-					.forEach(player -> {
-						if (pred.customTest().test(this, player)) {
-							AttachmentSync.trySync(payload, player);
-						}
-					});
-			}
-		}
+	public Iterable<ServerPlayerEntity> fabric_getTracking() {
+		return PlayerLookup.tracking((Entity) (Object) this);
 	}
 }
