@@ -54,6 +54,9 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	private void copyItemTags() {
 		copy(ConventionalBlockTags.STONES, ConventionalItemTags.STONES);
 		copy(ConventionalBlockTags.COBBLESTONES, ConventionalItemTags.COBBLESTONES);
+		copy(ConventionalBlockTags.OBSIDIANS, ConventionalItemTags.OBSIDIANS);
+		copy(ConventionalBlockTags.NORMAL_OBSIDIANS, ConventionalItemTags.NORMAL_OBSIDIANS);
+		copy(ConventionalBlockTags.CRYING_OBSIDIANS, ConventionalItemTags.CRYING_OBSIDIANS);
 		copy(ConventionalBlockTags.BARRELS, ConventionalItemTags.BARRELS);
 		copy(ConventionalBlockTags.WOODEN_BARRELS, ConventionalItemTags.WOODEN_BARRELS);
 		copy(ConventionalBlockTags.BOOKSHELVES, ConventionalItemTags.BOOKSHELVES);
@@ -295,6 +298,32 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.SPIDER_EYE)
 				.add(Items.CHICKEN)
 				.add(Items.ROTTEN_FLESH);
+
+		getOrCreateTagBuilder(ConventionalItemTags.ANIMAL_FOODS)
+				.addOptionalTag(ItemTags.ARMADILLO_FOOD)
+				.addOptionalTag(ItemTags.AXOLOTL_FOOD)
+				.addOptionalTag(ItemTags.BEE_FOOD)
+				.addOptionalTag(ItemTags.CAMEL_FOOD)
+				.addOptionalTag(ItemTags.CAT_FOOD)
+				.addOptionalTag(ItemTags.CHICKEN_FOOD)
+				.addOptionalTag(ItemTags.COW_FOOD)
+				.addOptionalTag(ItemTags.FOX_FOOD)
+				.addOptionalTag(ItemTags.FROG_FOOD)
+				.addOptionalTag(ItemTags.GOAT_FOOD)
+				.addOptionalTag(ItemTags.HOGLIN_FOOD)
+				.addOptionalTag(ItemTags.HORSE_FOOD)
+				.addOptionalTag(ItemTags.LLAMA_FOOD)
+				.addOptionalTag(ItemTags.OCELOT_FOOD)
+				.addOptionalTag(ItemTags.PANDA_FOOD)
+				.addOptionalTag(ItemTags.PARROT_FOOD)
+				.addOptionalTag(ItemTags.PIG_FOOD)
+				.addOptionalTag(ItemTags.PIGLIN_FOOD)
+				.addOptionalTag(ItemTags.RABBIT_FOOD)
+				.addOptionalTag(ItemTags.SHEEP_FOOD)
+				.addOptionalTag(ItemTags.SNIFFER_FOOD)
+				.addOptionalTag(ItemTags.STRIDER_FOOD)
+				.addOptionalTag(ItemTags.TURTLE_FOOD)
+				.addOptionalTag(ItemTags.WOLF_FOOD);
 
 		getOrCreateTagBuilder(ConventionalItemTags.FOODS)
 				.add(Items.BAKED_POTATO)
@@ -597,7 +626,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ItemTags.CROSSBOW_ENCHANTABLE)
 				.addOptionalTag(ItemTags.MACE_ENCHANTABLE)
 				.addOptionalTag(ItemTags.FIRE_ASPECT_ENCHANTABLE)
-				.addOptionalTag(ItemTags.DURABILITY_ENCHANTABLE);
+				.addOptionalTag(ItemTags.DURABILITY_ENCHANTABLE)
+				.addOptionalTag(ItemTags.VANISHING_ENCHANTABLE);
 
 		// Deprecated tags below
 

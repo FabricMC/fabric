@@ -40,6 +40,9 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		// Blocks
 		translationBuilder.add(ConventionalBlockTags.STONES, "Stones");
 		translationBuilder.add(ConventionalBlockTags.COBBLESTONES, "Cobblestones");
+		translationBuilder.add(ConventionalBlockTags.OBSIDIANS, "Obsidians");
+		translationBuilder.add(ConventionalBlockTags.NORMAL_OBSIDIANS, "Normal Obsidians");
+		translationBuilder.add(ConventionalBlockTags.CRYING_OBSIDIANS, "Crying Obsidians");
 		translationBuilder.add(ConventionalBlockTags.ORES, "Ores");
 		translationBuilder.add(ConventionalBlockTags.QUARTZ_ORES, "Quartz Ores");
 		translationBuilder.add(ConventionalBlockTags.NETHERITE_SCRAP_ORES, "Netherite Scrap Ores");
@@ -117,6 +120,9 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		// Items
 		translationBuilder.add(ConventionalItemTags.STONES, "Stones");
 		translationBuilder.add(ConventionalItemTags.COBBLESTONES, "Cobblestones");
+		translationBuilder.add(ConventionalItemTags.OBSIDIANS, "Obsidians");
+		translationBuilder.add(ConventionalItemTags.NORMAL_OBSIDIANS, "Normal Obsidians");
+		translationBuilder.add(ConventionalItemTags.CRYING_OBSIDIANS, "Crying Obsidians");
 		translationBuilder.add(ConventionalItemTags.TOOLS, "Tools");
 		translationBuilder.add(ConventionalItemTags.SHEAR_TOOLS, "Shears");
 		translationBuilder.add(ConventionalItemTags.SPEAR_TOOLS, "Spears");
@@ -177,6 +183,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.COAL, "Coal");
 		translationBuilder.add(ConventionalItemTags.POTIONS, "Potions");
 		translationBuilder.add(ConventionalItemTags.FOODS, "Foods");
+		translationBuilder.add(ConventionalItemTags.ANIMAL_FOODS, "Animal Foods");
 		translationBuilder.add(ConventionalItemTags.FRUIT_FOODS, "Fruits");
 		translationBuilder.add(ConventionalItemTags.VEGETABLE_FOODS, "Vegetables");
 		translationBuilder.add(ConventionalItemTags.BERRY_FOODS, "Berries");

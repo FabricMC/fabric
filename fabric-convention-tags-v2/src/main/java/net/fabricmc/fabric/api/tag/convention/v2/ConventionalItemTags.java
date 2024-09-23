@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.tag.convention.v2;
 
 import net.minecraft.item.Item;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
@@ -35,6 +36,13 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> STONES = register("stones");
 	public static final TagKey<Item> COBBLESTONES = register("cobblestones");
+	public static final TagKey<Item> OBSIDIANS = register("obsidians");
+	/**
+	 * For common obsidian that has no special quirks or behaviors. Ideal for recipe use.
+	 * Crying Obsidian, for example, is a light block and harder to obtain. So it gets its own tag instead of being under normal tag.
+	 */
+	public static final TagKey<Item> NORMAL_OBSIDIANS = register("obsidians/normal");
+	public static final TagKey<Item> CRYING_OBSIDIANS = register("obsidians/crying");
 
 	// Tool tags
 	public static final TagKey<Item> TOOLS = register("tools");
@@ -134,6 +142,10 @@ public final class ConventionalItemTags {
 
 	// Foods
 	public static final TagKey<Item> FOODS = register("foods");
+	/**
+	 * All foods edible by animals excluding poisonous foods. (Does not include {@link ItemTags#PARROT_POISONOUS_FOOD})
+	 */
+	public static final TagKey<Item> ANIMAL_FOODS = register("animal_foods");
 	/**
 	 * Apples and other foods that are considered fruits in the culinary field belong in this tag.
 	 * Cherries would go here as they are considered a "stone fruit" within culinary fields.

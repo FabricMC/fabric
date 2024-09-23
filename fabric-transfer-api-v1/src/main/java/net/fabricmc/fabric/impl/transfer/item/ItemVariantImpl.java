@@ -21,12 +21,14 @@ import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.ComponentMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 public class ItemVariantImpl implements ItemVariant {
 	public static ItemVariant of(Item item, ComponentChanges components) {
@@ -68,6 +70,16 @@ public class ItemVariantImpl implements ItemVariant {
 	@Override
 	public ComponentChanges getComponents() {
 		return components;
+	}
+
+	@Override
+	public ComponentMap getComponentMap() {
+		return getCachedStack().getComponents();
+	}
+
+	@Override
+	public ItemVariant withComponentChanges(ComponentChanges changes) {
+		return of(item, TransferApiImpl.mergeChanges(getComponents(), changes));
 	}
 
 	@Override

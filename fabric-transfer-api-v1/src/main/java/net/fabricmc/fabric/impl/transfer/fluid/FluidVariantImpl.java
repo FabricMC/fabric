@@ -21,6 +21,8 @@ import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.ComponentMap;
+import net.minecraft.component.ComponentMapImpl;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -29,6 +31,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 public class FluidVariantImpl implements FluidVariant {
 	public static FluidVariant of(Fluid fluid, ComponentChanges components) {
@@ -63,11 +66,13 @@ public class FluidVariantImpl implements FluidVariant {
 
 	private final Fluid fluid;
 	private final ComponentChanges components;
+	private final ComponentMap componentMap;
 	private final int hashCode;
 
 	public FluidVariantImpl(Fluid fluid, ComponentChanges components) {
 		this.fluid = fluid;
 		this.components = components;
+		this.componentMap = components == ComponentChanges.EMPTY ? ComponentMap.EMPTY : ComponentMapImpl.create(ComponentMap.EMPTY, components);
 		this.hashCode = Objects.hash(fluid, components);
 	}
 
@@ -84,6 +89,16 @@ public class FluidVariantImpl implements FluidVariant {
 	@Override
 	public @Nullable ComponentChanges getComponents() {
 		return components;
+	}
+
+	@Override
+	public ComponentMap getComponentMap() {
+		return componentMap;
+	}
+
+	@Override
+	public FluidVariant withComponentChanges(ComponentChanges changes) {
+		return of(fluid, TransferApiImpl.mergeChanges(getComponents(), changes));
 	}
 
 	@Override
