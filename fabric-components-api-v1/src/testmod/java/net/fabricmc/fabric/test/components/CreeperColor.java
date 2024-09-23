@@ -30,7 +30,12 @@ public record CreeperColor(int r, int g, int b) implements Component<CreeperEnti
 		ComponentTestMod.LOGGER.info("Creeper with color {} loaded at {}", this, creeper.getBlockPos());
 	}
 
+
 	void onUnload(CreeperEntity creeper) {
 		ComponentTestMod.LOGGER.info("Creeper with color {} unloaded at {}", this, creeper.getBlockPos());
+	}
+
+	void onLoad2() {
+		ComponentTestMod.LOGGER.info("Creeper with color {} loaded", this);
 	}
 }

@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.components.v1.api;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import net.minecraft.util.Identifier;
@@ -42,9 +43,13 @@ public interface ComponentType<A extends AttachmentTarget, C extends Component<A
 	<EA extends AttachmentTarget, E> List<Component.EventHandler<?, EA, E>> getEventHandlers(TargetedEvent<EA, E> event);
 
 	interface Builder<A extends AttachmentTarget, C extends Component<A>> extends AttachmentRegistry.Builder<C> {
+		// We probably don't absolutely need all three of
 		<E> Builder<A, C> listen(TargetedEvent<? super A, E> event, Class<A> targetClass, Component.EventHandler<C, A, E> handler);
-		<E> Builder<A, C> listen(TargetedEvent<? super A, E> event, Class<A> targetClass, Component.EventListener<C, A> handler);
+		<E> Builder<A, C> listen(TargetedEvent<? super A, E> event, Class<A> targetClass, BiConsumer<C, A> handler);
+		<E> Builder<A, C> listen(TargetedEvent<? super A, E> event, Class<A> targetClass, Consumer<C> handler);
+
 		<E> Builder<A, C> listen(TargetedEvent<A, E> event, Component.EventHandler<C, A, E> handler);
-		<E> Builder<A, C> listen(TargetedEvent<A, E> event, Component.EventListener<C, A> handler);
+		<E> Builder<A, C> listen(TargetedEvent<A, E> event, BiConsumer<C, A> handler);
+		<E> Builder<A, C> listen(TargetedEvent<A, E> event, Consumer<C> handler);
 	}
 }

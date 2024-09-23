@@ -35,6 +35,8 @@ public class ComponentTestMod implements ModInitializer {
 		builder.listen(ComponentEvents.ENTITY_LOAD, CreeperEntity.class, CreeperColor::onLoad);
 		// Not using the context object
 		builder.listen(ComponentEvents.ENTITY_UNLOAD, CreeperEntity.class, CreeperColor::onUnload);
+		// Not using the context object or the attachment target
+		builder.listen(ComponentEvents.ENTITY_UNLOAD, CreeperEntity.class, CreeperColor::onLoad2);
 		builder.initializer(CreeperColor::new);
 	});
 

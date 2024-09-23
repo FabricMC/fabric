@@ -22,8 +22,4 @@ public interface Component<A extends AttachmentTarget> {
 	interface EventHandler<C extends Component<? extends A>, A extends AttachmentTarget, E> {
 		void handle(C component, A target, E eventPayload);
 	}
-
-	interface EventListener<C extends Component<? extends A>, A extends AttachmentTarget> {
-		void handle(C component, A target);
-	}
 }

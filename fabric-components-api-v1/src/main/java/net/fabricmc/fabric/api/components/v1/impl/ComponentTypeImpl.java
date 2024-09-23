@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
@@ -96,9 +98,16 @@ public final class ComponentTypeImpl<A extends AttachmentTarget, C extends Compo
 		}
 
 		@Override
-		public <E> Builder<A, C> listen(TargetedEvent<? super A, E> event, Class<A> targetClass, Component.EventListener<C, A> handler) {
+		public <E> Builder<A, C> listen(TargetedEvent<? super A, E> event, Class<A> targetClass, BiConsumer<C, A> handler) {
 			return this.listen(event, targetClass, (component, attachmentTarget, eventPayload) ->
-					handler.handle(component, attachmentTarget)
+					handler.accept(component, attachmentTarget)
+			);
+		}
+
+		@Override
+		public <E> Builder<A, C> listen(TargetedEvent<? super A, E> event, Class<A> targetClass, Consumer<C> handler) {
+			return this.listen(event, targetClass, (component, attachmentTarget, eventPayload) ->
+					handler.accept(component)
 			);
 		}
 
@@ -110,9 +119,16 @@ public final class ComponentTypeImpl<A extends AttachmentTarget, C extends Compo
 		}
 
 		@Override
-		public <E> Builder<A, C> listen(TargetedEvent<A, E> event, Component.EventListener<C, A> handler) {
+		public <E> Builder<A, C> listen(TargetedEvent<A, E> event, BiConsumer<C, A> handler) {
 			return this.listen(event, (component, attachmentTarget, eventPayload) ->
-					handler.handle(component, attachmentTarget)
+					handler.accept(component, attachmentTarget)
+			);
+		}
+
+		@Override
+		public <E> Builder<A, C> listen(TargetedEvent<A, E> event, Consumer<C> handler) {
+			return this.listen(event, (component, attachmentTarget, eventPayload) ->
+					handler.accept(component)
 			);
 		}
 
