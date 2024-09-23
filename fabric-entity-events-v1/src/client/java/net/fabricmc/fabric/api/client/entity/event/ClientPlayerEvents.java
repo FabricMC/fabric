@@ -22,7 +22,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.network.ClientPlayerEntity;
 
 public final class ClientPlayerEvents {
-	/*
+	/**
 	 * An event that is called when a player is moving during using an item.
 	 */
 	public static final Event<ModifyPlayerMovementDuringUsingitem> MODIFY_PLAYER_MOVEMENT_DURING_USINGITEM = EventFactory.createArrayBacked(ModifyPlayerMovementDuringUsingitem.class, callbacks -> player -> {
@@ -34,6 +34,8 @@ public final class ClientPlayerEvents {
 	@FunctionalInterface
 	public interface ModifyPlayerMovementDuringUsingitem {
 		/**
+		 * Called when a player is moving during using an item.
+		 * 
 		 * @param player the player is moving during using an item.
 		 */
 		void modifyPlayerMovementDuringUsingitem(ClientPlayerEntity player);
