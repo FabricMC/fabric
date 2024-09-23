@@ -29,7 +29,6 @@ import net.minecraft.test.TestContext;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
-import net.fabricmc.fabric.test.item.DefaultItemComponentTest;
 
 public class DefaultItemComponentGameTest implements FabricGameTest {
 	@GameTest(templateName = EMPTY_STRUCTURE)
@@ -81,8 +80,8 @@ public class DefaultItemComponentGameTest implements FabricGameTest {
 		Item testItem = Items.DIAMOND_PICKAXE;
 		ItemStack stack = testItem.getDefaultStack();
 
-		Text itemName = stack.getOrDefault(DataComponentTypes.ITEM_NAME, Text.literal(""));
-		Text expectedName = DefaultItemComponentTest.prependModifiedLiteral(testItem.getName());
+		String itemName = stack.getName().getString();
+		String expectedName = "Modified Diamond Pickaxe";
 
 		String errorMessage = "Expected '%s' to be contained in '%s', but it was not!";
 

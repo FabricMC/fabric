@@ -29,6 +29,7 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.predicate.entity.DamageSourcePredicate;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.EntityTypePredicate;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
@@ -66,7 +67,7 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 								EntityPropertiesLootCondition.builder(
 										LootContext.EntityTarget.THIS,
 										EntityPredicate.Builder.create()
-												.type(EntityTypePredicate.create(EntityType.ZOMBIE))
+												.type(EntityTypePredicate.create(Registries.ENTITY_TYPE, EntityType.ZOMBIE))
 								)
 						);
 					}

@@ -52,7 +52,7 @@ public class CustomEnchantmentEffectsGameTest implements FabricGameTest {
 
 		ItemStack trident = Items.TRIDENT.getDefaultStack();
 		Optional<RegistryEntry.Reference<Enchantment>> impaling = getEnchantmentRegistry(context)
-				.getEntry(CustomEnchantmentEffectsTest.WEIRD_IMPALING);
+				.getOptional(CustomEnchantmentEffectsTest.WEIRD_IMPALING);
 		if (impaling.isEmpty()) {
 			throw new GameTestException("Weird Impaling enchantment is not present");
 		}
@@ -86,6 +86,6 @@ public class CustomEnchantmentEffectsGameTest implements FabricGameTest {
 
 	private static Registry<Enchantment> getEnchantmentRegistry(TestContext context) {
 		DynamicRegistryManager registryManager = context.getWorld().getRegistryManager();
-		return registryManager.get(RegistryKeys.ENCHANTMENT);
+		return registryManager.getOrThrow(RegistryKeys.ENCHANTMENT);
 	}
 }
