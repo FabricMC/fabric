@@ -78,7 +78,7 @@ public class AttachmentTestMod implements ModInitializer {
 	public static final AttachmentType<Boolean> SYNCED_EXCEPT_TARGET = AttachmentRegistry.<Boolean>builder()
 			.initializer(() -> false)
 			.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.allButTarget())
-			.buildAndRegister(Identifier.of(MOD_ID, "synced_expect_target"));
+			.buildAndRegister(Identifier.of(MOD_ID, "synced_except_target"));
 	public static final AttachmentType<Boolean> SYNCED_CUSTOM_RULE = AttachmentRegistry.<Boolean>builder()
 			.initializer(() -> false)
 			.syncWith(PacketCodecs.BOOL.cast(), (target, player) -> player.isCreative())
