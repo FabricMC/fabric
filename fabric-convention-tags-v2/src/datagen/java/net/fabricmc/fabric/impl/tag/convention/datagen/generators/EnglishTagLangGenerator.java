@@ -195,6 +195,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.COOKED_FISH_FOODS, "Cooked Fishes");
 		translationBuilder.add(ConventionalItemTags.SOUP_FOODS, "Soups");
 		translationBuilder.add(ConventionalItemTags.CANDY_FOODS, "Candies");
+		translationBuilder.add(ConventionalItemTags.PIE_FOODS, "Pies");
 		translationBuilder.add(ConventionalItemTags.GOLDEN_FOODS, "Golden Foods");
 		translationBuilder.add(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS, "Edible When Placed");
 		translationBuilder.add(ConventionalItemTags.FOOD_POISONING_FOODS, "Food Poisoning");
