@@ -26,6 +26,7 @@ import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.text.Text;
 import net.minecraft.util.Unit;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -52,7 +53,7 @@ class FluidVariantTests extends AbstractTransferApiTest {
 
 		FluidVariant newVariant = variant.withComponentChanges(ComponentChanges.builder()
 				.remove(DataComponentTypes.HIDE_TOOLTIP)
-				.add(DataComponentTypes.GLIDER, Unit.INSTANCE)
+				.add(DataComponentTypes.CUSTOM_NAME, Text.literal("Test"))
 				.build());
 
 		Assertions.assertFalse(
@@ -61,7 +62,7 @@ class FluidVariantTests extends AbstractTransferApiTest {
 		);
 
 		Assertions.assertTrue(
-				newVariant.getComponentMap().contains(DataComponentTypes.GLIDER),
+				newVariant.getComponentMap().contains(DataComponentTypes.CUSTOM_NAME),
 				"New variant's GLIDER component was added, but is not present"
 		);
 	}
