@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.components;
+package net.fabricmc.fabric.test.component;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +23,8 @@ import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.components.v1.api.ComponentEvents;
-import net.fabricmc.fabric.api.components.v1.api.ComponentType;
+import net.fabricmc.fabric.api.component.v1.api.ComponentEvents;
+import net.fabricmc.fabric.api.component.v1.api.ComponentType;
 
 public class ComponentTestMod implements ModInitializer {
 	public static final String MOD_ID = "fabric-components-api-v1-testmod";

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.components.v1.api;
+package net.fabricmc.fabric.api.component.v1.api;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -36,10 +36,8 @@ public final class ComponentEvents {
 					event.accept(livingEntity, new EquipmentChangeEvent(equipmentSlot, previousStack, currentStack)));
 
 	private ComponentEvents() {
-
 	}
 
 	public record EquipmentChangeEvent(EquipmentSlot equipmentSlot, ItemStack previousStack, ItemStack currentStack) {
-
 	}
 }

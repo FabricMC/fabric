@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.components.v1.api;
+package net.fabricmc.fabric.api.component.v1.api;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -25,7 +25,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.api.components.v1.impl.ComponentTypeImpl;
+import net.fabricmc.fabric.api.component.v1.impl.ComponentTypeImpl;
 
 public interface ComponentType<A extends AttachmentTarget, C extends Component<A>> extends AttachmentType<C> {
 	static <A extends AttachmentTarget, C extends Component<A>> ComponentType<A, C> create(Identifier identifier) {

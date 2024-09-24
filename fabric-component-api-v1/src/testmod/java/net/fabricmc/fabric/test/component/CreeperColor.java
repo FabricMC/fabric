@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.components;
+package net.fabricmc.fabric.test.component;
 
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.server.world.ServerWorld;
 
-import net.fabricmc.fabric.api.components.v1.api.Component;
+import net.fabricmc.fabric.api.component.v1.api.Component;
 
 public record CreeperColor(int r, int g, int b) implements Component<CreeperEntity> {
 	public CreeperColor() {
@@ -29,7 +29,6 @@ public record CreeperColor(int r, int g, int b) implements Component<CreeperEnti
 	void onLoad(CreeperEntity creeper, ServerWorld world) {
 		ComponentTestMod.LOGGER.info("Creeper with color {} loaded at {}", this, creeper.getBlockPos());
 	}
-
 
 	void onUnload(CreeperEntity creeper) {
 		ComponentTestMod.LOGGER.info("Creeper with color {} unloaded at {}", this, creeper.getBlockPos());

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.components.v1.impl;
+package net.fabricmc.fabric.api.component.v1.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,11 +33,11 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.api.components.v1.api.Component;
-import net.fabricmc.fabric.api.components.v1.api.ComponentType;
-import net.fabricmc.fabric.api.components.v1.api.TargetedEvent;
+import net.fabricmc.fabric.api.component.v1.api.Component;
+import net.fabricmc.fabric.api.component.v1.api.ComponentType;
+import net.fabricmc.fabric.api.component.v1.api.TargetedEvent;
 
-public final class ComponentTypeImpl<A extends AttachmentTarget, C extends Component<A>> implements ComponentType<A, C>  {
+public final class ComponentTypeImpl<A extends AttachmentTarget, C extends Component<A>> implements ComponentType<A, C> {
 	private final AttachmentType<C> attachmentType;
 	private final Map<TargetedEvent<? super A, ?>, List<Component.EventHandler<?, ? super A, ?>>> eventHandlers = new IdentityHashMap<>();
 
@@ -133,8 +133,8 @@ public final class ComponentTypeImpl<A extends AttachmentTarget, C extends Compo
 		}
 
 		public ComponentTypeImpl<A, C> buildAndRegister(Identifier id) {
-			var attachmentType = this.attachmentBuilder.buildAndRegister(id);
-			var type = new ComponentTypeImpl<>(attachmentType);
+			AttachmentType<C> attachmentType = this.attachmentBuilder.buildAndRegister(id);
+			ComponentTypeImpl<A, C> type = new ComponentTypeImpl<>(attachmentType);
 
 			this.eventHandlers.forEach((event, list) -> {
 				type.eventHandlers.put(event, List.copyOf(list));

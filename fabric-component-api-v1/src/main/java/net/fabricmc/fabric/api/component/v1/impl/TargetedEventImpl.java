@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.components.v1.impl;
+package net.fabricmc.fabric.api.component.v1.impl;
 
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
-import net.fabricmc.fabric.api.components.v1.api.Component;
-import net.fabricmc.fabric.api.components.v1.api.ComponentType;
-import net.fabricmc.fabric.api.components.v1.api.TargetedEvent;
+import net.fabricmc.fabric.api.component.v1.api.Component;
+import net.fabricmc.fabric.api.component.v1.api.ComponentType;
+import net.fabricmc.fabric.api.component.v1.api.TargetedEvent;
 import net.fabricmc.fabric.api.event.Event;
 
 public class TargetedEventImpl<A extends AttachmentTarget, E> implements TargetedEvent<A, E> {
@@ -33,7 +33,6 @@ public class TargetedEventImpl<A extends AttachmentTarget, E> implements Targete
 	private final List<ComponentType<? extends A, ?>> componentTypes = new ArrayList<>();
 
 	private TargetedEventImpl() {
-
 	}
 
 	public void addListener(ComponentType<? extends A, ?> componentType) {
@@ -45,16 +44,15 @@ public class TargetedEventImpl<A extends AttachmentTarget, E> implements Targete
 		return (TargetedEventImpl<T, C>) INSTANCES.computeIfAbsent(event, e -> new TargetedEventImpl<>());
 	}
 
-
 	private <CA extends A, C extends Component<CA>> void invokeListenersForComponentType(ComponentType<CA, C> componentType, AttachmentTarget attachmentTarget, E eventPayload) {
-		var component = attachmentTarget.getAttached(componentType);
+		C component = attachmentTarget.getAttached(componentType);
 
 		if (component == null && componentType.initializer() != null) {
 			component = attachmentTarget.getAttachedOrCreate(componentType);
 		}
 
 		if (component != null) {
-			for (var handler : componentType.getEventHandlers(this)) {
+			for (Component.EventHandler<?, A, E> handler : componentType.getEventHandlers(this)) {
 				//noinspection unchecked,rawtypes
 				((Component.EventHandler) handler).handle(component, attachmentTarget, eventPayload);
 			}
@@ -63,7 +61,7 @@ public class TargetedEventImpl<A extends AttachmentTarget, E> implements Targete
 
 	@Override
 	public void invoke(A attachmentTarget, E eventContext) {
-		for (var componentType : this.componentTypes) {
+		for (ComponentType<? extends A, ?> componentType : this.componentTypes) {
 			this.invokeListenersForComponentType(componentType, attachmentTarget, eventContext);
 		}
 	}

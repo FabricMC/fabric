@@ -14,24 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.components.v1.api;
-
-import java.util.function.BiConsumer;
-import java.util.function.Function;
+package net.fabricmc.fabric.api.component.v1.api;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
-import net.fabricmc.fabric.api.components.v1.impl.TargetedEventImpl;
-import net.fabricmc.fabric.api.event.Event;
 
-public interface TargetedEvent<A extends AttachmentTarget, E> {
-	static <T, A extends AttachmentTarget, E> TargetedEvent<A, E> create(Event<T> event, Function<BiConsumer<A, E>, T> invokerFactory) {
-		TargetedEventImpl<A, E> targetedEvent = TargetedEventImpl.create(event);
-		T invoker = invokerFactory.apply(targetedEvent::invoke);
-
-		event.register(invoker);
-
-		return targetedEvent;
+public interface Component<A extends AttachmentTarget> {
+	interface EventHandler<C extends Component<? extends A>, A extends AttachmentTarget, E> {
+		void handle(C component, A target, E eventPayload);
 	}
-
-	void invoke(A attachmentTarget, E eventContext);
 }
