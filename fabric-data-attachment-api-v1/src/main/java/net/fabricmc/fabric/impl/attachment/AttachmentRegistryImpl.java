@@ -120,9 +120,7 @@ public final class AttachmentRegistryImpl {
 		public AttachmentType<A> buildAndRegister(Identifier id) {
 			if (syncPredicate != null && id.toString().length() >= AttachmentSync.MAX_IDENTIFIER_SIZE) {
 				throw new IllegalArgumentException(
-						"Identifier length is too long for a synced attachment type (max "
-						+ AttachmentSync.MAX_IDENTIFIER_SIZE
-						+ ")"
+						"Identifier length is too long for a synced attachment type (max %d)".formatted(AttachmentSync.MAX_IDENTIFIER_SIZE)
 				);
 			}
 
