@@ -22,12 +22,12 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.util.collection.Weight;
 
-import net.fabricmc.fabric.impl.FabricDevProperties;
+import net.fabricmc.fabric.api.FabricDevProperties;
 
 @Mixin(Weight.class)
 public class WeightMixin {
 	@ModifyExpressionValue(method = "validate", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-	private static boolean mevIsDevelopmentForDevModule(boolean original) {
+	private static boolean isDevelopmentForDevModule(boolean original) {
 		return original || FabricDevProperties.ZERO_WEIGHT_WARNING;
 	}
 }

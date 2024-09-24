@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
-import net.fabricmc.fabric.impl.FabricDevProperties;
+import net.fabricmc.fabric.api.FabricDevProperties;
 
 @Mixin({Block.class, Item.class})
 public class BlockAndItemMixin {
@@ -31,7 +31,7 @@ public class BlockAndItemMixin {
 			"<init>(Lnet/minecraft/block/AbstractBlock$Settings;)V",
 			"<init>(Lnet/minecraft/item/Item$Settings;)V"
 	}, at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-	private boolean mevIsDevelopmentForDevModule(boolean original) {
-		return original || FabricDevProperties.LOG_CONVENTION_ISSUES;
+	private boolean isDevelopmentForDevModule(boolean original) {
+		return original || FabricDevProperties.LOG_BLOCK_AND_ITEM_CONVENTION_ISSUES;
 	}
 }

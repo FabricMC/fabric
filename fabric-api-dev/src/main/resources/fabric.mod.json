@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "fabric-api-dev",
-  "name": "Fabric API Dev Utilities",
+  "name": "Fabric API Dev Tools",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",

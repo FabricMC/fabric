@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.util.Util;
 
-import net.fabricmc.fabric.impl.FabricDevProperties;
+import net.fabricmc.fabric.api.FabricDevProperties;
 
 @Mixin(Util.class)
 public class UtilMixin {
@@ -30,12 +30,12 @@ public class UtilMixin {
 			"debugRunnable(Ljava/lang/String;Ljava/lang/Runnable;)Ljava/lang/Runnable;",
 			"debugSupplier(Ljava/lang/String;Ljava/util/function/Supplier;)Ljava/util/function/Supplier;"
 	}, at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-	private static boolean mevIsDevelopmentForDevModule2(boolean original) {
+	private static boolean isDevelopmentForDevModule2(boolean original) {
 		return original || FabricDevProperties.ENABLE_SUPPLIER_AND_RUNNABLE_DEBUGGING;
 	}
 
 	@ModifyExpressionValue(method = {"error(Ljava/lang/String;)V", "error(Ljava/lang/String;Ljava/lang/Throwable;)V", "throwOrPause"}, at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-	private static boolean mevIsDevelopmentForDevModule3(boolean original) {
+	private static boolean isDevelopmentForDevModule3(boolean original) {
 		return original || FabricDevProperties.ENABLE_EXCEPTION_IDE_PAUSING;
 	}
 }

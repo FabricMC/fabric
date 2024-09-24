@@ -26,12 +26,12 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.Bootstrap;
 
-import net.fabricmc.fabric.impl.FabricDevProperties;
+import net.fabricmc.fabric.api.FabricDevProperties;
 
 @Mixin(Bootstrap.class)
 public class BootstrapMixin {
 	@ModifyExpressionValue(method = "logMissing", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-	private static boolean mevIsDevelopmentForDevModule(boolean original) {
+	private static boolean isDevelopmentForDevModule(boolean original) {
 		return original || FabricDevProperties.LOG_MISSING_TRANSLATIONS || FabricDevProperties.ENABLE_COMMAND_ARGUMENT_LOGGING;
 	}
 

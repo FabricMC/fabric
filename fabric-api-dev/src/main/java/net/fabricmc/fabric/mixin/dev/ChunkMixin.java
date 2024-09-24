@@ -22,12 +22,12 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.world.chunk.Chunk;
 
-import net.fabricmc.fabric.impl.FabricDevProperties;
+import net.fabricmc.fabric.api.FabricDevProperties;
 
 @Mixin(Chunk.class)
 public class ChunkMixin {
 	@ModifyExpressionValue(method = "sampleHeightmap", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-	private boolean mevIsDevelopmentForDevModule(boolean original) {
+	private boolean isDevelopmentForDevModule(boolean original) {
 		return original || FabricDevProperties.ENABLE_UNPRIMED_HEIGHTMAP_LOGGING;
 	}
 }

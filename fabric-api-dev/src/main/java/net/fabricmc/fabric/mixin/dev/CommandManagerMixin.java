@@ -22,17 +22,17 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.server.command.CommandManager;
 
-import net.fabricmc.fabric.impl.FabricDevProperties;
+import net.fabricmc.fabric.api.FabricDevProperties;
 
 @Mixin(CommandManager.class)
 public class CommandManagerMixin {
 	@ModifyExpressionValue(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-	private static boolean mevIsDevelopmentForDevModule(boolean original) {
+	private static boolean isDevelopmentForDevModule(boolean original) {
 		return original || FabricDevProperties.REGISTER_DEBUG_COMMANDS;
 	}
 
 	@ModifyExpressionValue(method = "execute", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-	private static boolean mevIsDevelopmentForDevModule2(boolean original) {
+	private static boolean isDevelopmentForDevModule2(boolean original) {
 		return original || FabricDevProperties.ENABLE_COMMAND_EXCEPTION_LOGGING;
 	}
 }

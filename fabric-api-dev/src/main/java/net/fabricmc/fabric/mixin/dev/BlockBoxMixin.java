@@ -22,12 +22,12 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.util.math.BlockBox;
 
-import net.fabricmc.fabric.impl.FabricDevProperties;
+import net.fabricmc.fabric.api.FabricDevProperties;
 
 @Mixin(BlockBox.class)
 public class BlockBoxMixin {
 	@ModifyExpressionValue(method = "<init>(IIIIII)V", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-	private boolean mevIsDevelopmentForDevModule(boolean original) {
+	private boolean isDevelopmentForDevModule(boolean original) {
 		return original || FabricDevProperties.THROW_ON_INVALID_BLOCK_BOXES;
 	}
 }
