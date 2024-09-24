@@ -16,16 +16,21 @@
 
 package net.fabricmc.fabric.test.attachment;
 
+import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 import java.io.File;
 import java.io.IOException;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.serialization.Codec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -171,56 +176,55 @@ public class AttachmentTestMod implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(
 					literal("attachment").requires(ServerCommandSource::isExecutedByPlayer)
-							.then(literal("all").executes(context -> {
-								ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
-								boolean current = player.getAttachedOrElse(SYNCED_WITH_ALL, false);
-								player.setAttached(SYNCED_WITH_ALL, !current);
-								context.getSource()
-										.sendFeedback(
-												() -> Text.literal("Set flag (synced with all) to " + !current),
-												false
-										);
-								return 1;
-							}))
-							.then(literal("self_only").executes(context -> {
-								ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
-								boolean current = player.getAttachedOrElse(SYNCED_WITH_TARGET, false);
-								player.setAttached(SYNCED_WITH_ALL, !current);
-								context.getSource()
-										.sendFeedback(
-												() -> Text.literal("Set flag (synced with only self) to " + !current),
-												false
-										);
-								return 1;
-							}))
-							.then(literal("others_only").executes(context -> {
-								ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
-								boolean current = player.getAttachedOrElse(SYNCED_EXCEPT_TARGET, false);
-								player.setAttached(SYNCED_WITH_ALL, !current);
-								context.getSource()
-										.sendFeedback(
-												() -> Text.literal("Set flag (synced with all but self) to " + !current),
-												false
-										);
-								return 1;
-							}))
-							.then(literal("custom").executes(context -> {
-								ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
-
-								if (!player.isCreative()) {
-									throw BAD_GAMEMODE.create();
-								}
-
-								boolean current = player.getAttachedOrElse(SYNCED_CUSTOM_RULE, false);
-								player.setAttached(SYNCED_CUSTOM_RULE, !current);
-								context.getSource()
-										.sendFeedback(
-												() -> Text.literal("Set flag (synced with creative only) to " + !current),
-												false
-										);
-								return 1;
-							}))
+							.then(buildCommandForKind("all", "all", SYNCED_WITH_ALL))
+							.then(buildCommandForKind("self_only", "only self", SYNCED_WITH_TARGET))
+							.then(buildCommandForKind("others_only", "all but self", SYNCED_EXCEPT_TARGET))
+							.then(literal("custom").executes(context -> updateAttachmentFor(
+									checkCreative(context.getSource().getPlayerOrThrow()),
+									SYNCED_CUSTOM_RULE,
+									context,
+									"Set flag (synced with creative only) to %s"
+								)).then(
+									argument("target", EntityArgumentType.player()).executes(context -> updateAttachmentFor(
+											checkCreative(EntityArgumentType.getPlayer(context, "target")),
+											SYNCED_CUSTOM_RULE,
+											context,
+											"Set flag (synced with creative only) to %s"
+									))
+								)
+							)
 			);
 		});
+	}
+
+	private static LiteralArgumentBuilder<ServerCommandSource> buildCommandForKind(String id, String syncedWith, AttachmentType<Boolean> type) {
+		return literal(id).executes(context -> updateAttachmentFor(
+				context.getSource().getPlayerOrThrow(),
+				type,
+				context,
+				"Set flag (synced with %s) to %%s".formatted(syncedWith)
+		)).then(
+				argument("target", EntityArgumentType.player()).executes(context -> updateAttachmentFor(
+						EntityArgumentType.getPlayer(context, "target"),
+						type,
+						context,
+						"Set flag (synced with %s) to %%s".formatted(syncedWith)
+				))
+		);
+	}
+
+	private static int updateAttachmentFor(ServerPlayerEntity player, AttachmentType<Boolean> attachment, CommandContext<ServerCommandSource> context, String messageFormat) throws CommandSyntaxException {
+		boolean current = player.getAttachedOrElse(attachment, false);
+		player.setAttached(attachment, !current);
+		context.getSource().sendFeedback(() -> Text.literal(messageFormat.formatted(!current)), false);
+		return 1;
+	}
+
+	private static ServerPlayerEntity checkCreative(ServerPlayerEntity player) throws CommandSyntaxException {
+		if (!player.isCreative()) {
+			throw BAD_GAMEMODE.create();
+		}
+
+		return player;
 	}
 }

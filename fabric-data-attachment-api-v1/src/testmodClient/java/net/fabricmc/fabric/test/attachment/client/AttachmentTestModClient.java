@@ -16,28 +16,77 @@
 
 package net.fabricmc.fabric.test.attachment.client;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
 
 public class AttachmentTestModClient implements ClientModInitializer {
+	private static AbstractClientPlayerEntity parseClientPlayer(FabricClientCommandSource source, String name) throws CommandSyntaxException {
+		if (name.equals("@s")) {
+			return source.getPlayer();
+		} else {
+			for (AbstractClientPlayerEntity player : source.getWorld().getPlayers()) {
+				if (name.equals(player.getName().getLiteralString())) {
+					return player;
+				}
+			}
+
+			throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
+		}
+	}
+
 	@Override
 	public void onInitializeClient() {
-		// Various test renderers to display attachments clientside
-		HudRenderCallback.EVENT.register((drawContext, tickCounter) -> {
-			if (MinecraftClient.getInstance().player.getAttachedOrCreate(AttachmentTestMod.SYNCED_WITH_TARGET)) {
-				drawContext.fillGradient(10, 10, 60, 60, 0xFFFF0000, 0xFF0000FF);
-			}
-		});
-
-		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
-			if (entityRenderer instanceof PlayerEntityRenderer playerRenderer) {
-				registrationHelper.register(new AttachmentDebugFeatureRenderer<>(playerRenderer));
-			}
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+			dispatcher.register(literal("attachment_test").then(argument("target", StringArgumentType.word()).executes(
+					context -> {
+						AbstractClientPlayerEntity player = parseClientPlayer(
+								context.getSource(),
+								StringArgumentType.getString(context, "target")
+						);
+						context.getSource().sendFeedback(
+								Text.literal("Attachments for player %s:".formatted(player.getName().getLiteralString()))
+						);
+						boolean attAll = player.getAttachedOrCreate(AttachmentTestMod.SYNCED_WITH_ALL);
+						context.getSource().sendFeedback(
+								Text.literal("Synced-with-all attachment: %s".formatted(attAll)).withColor(
+										attAll ? Colors.GREEN : Colors.WHITE
+								)
+						);
+						boolean attTarget = player.getAttachedOrCreate(AttachmentTestMod.SYNCED_WITH_TARGET);
+						context.getSource().sendFeedback(
+								Text.literal("Synced-with-target attachment: %s".formatted(attTarget)).withColor(
+										attTarget ? player == MinecraftClient.getInstance().player ? Colors.GREEN : Colors.RED : Colors.WHITE
+								)
+						);
+						boolean attOther = player.getAttachedOrCreate(AttachmentTestMod.SYNCED_EXCEPT_TARGET);
+						context.getSource().sendFeedback(
+								Text.literal("Synced-with-non-targets attachment: %s".formatted(attOther)).withColor(
+										attOther ? player != MinecraftClient.getInstance().player ? Colors.GREEN : Colors.RED : Colors.WHITE
+								)
+						);
+						boolean attCustom = player.getAttachedOrCreate(AttachmentTestMod.SYNCED_CUSTOM_RULE);
+						context.getSource().sendFeedback(
+								Text.literal("Synced-with-creative attachment: %s".formatted(attCustom)).withColor(
+										attCustom ? player.isCreative() ? Colors.GREEN : Colors.RED : Colors.WHITE
+								)
+						);
+						return 1;
+					}))
+			);
 		});
 	}
 }
