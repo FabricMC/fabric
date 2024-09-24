@@ -19,13 +19,12 @@ package net.fabricmc.fabric.api;
 import java.util.function.Supplier;
 
 import com.mojang.brigadier.ParseResults;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.Bootstrap;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.collection.Weight;
 import net.minecraft.world.Heightmap;
-
-import org.jetbrains.annotations.ApiStatus;
 
 /** Mods should not directly use these fields; they only exist here as a reference of what Dev Properties exist */
 @ApiStatus.Internal
@@ -54,7 +53,7 @@ public class FabricDevProperties {
 	 * {@link net.minecraft.block.Block#Block} and {@link net.minecraft.item.Item#Item}
 	 */
 	public static final boolean LOG_BLOCK_AND_ITEM_CONVENTION_ISSUES = getProperty("logBlockAndItemConventionIssues");
-	
+
 	/**
 	 * Registers Minecraft's debug commands
 	 * (TestCommand, RaidCommand, DebugPathCommand, DebugMobSpawningCommand,
