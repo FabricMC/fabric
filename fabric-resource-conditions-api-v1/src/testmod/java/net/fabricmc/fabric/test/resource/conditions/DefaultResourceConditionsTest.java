@@ -124,14 +124,14 @@ public class DefaultResourceConditionsTest {
 	public void featuresEnabled(TestContext context) {
 		ResourceCondition vanilla = ResourceConditions.featuresEnabled(FeatureFlags.VANILLA);
 		// Reminder: GameTest enables all features by default
-		ResourceCondition vanillaAndBundle = ResourceConditions.featuresEnabled(FeatureFlags.VANILLA, FeatureFlags.BUNDLE);
+		ResourceCondition vanillaAndRedstoneExperiments = ResourceConditions.featuresEnabled(FeatureFlags.VANILLA, FeatureFlags.REDSTONE_EXPERIMENTS);
 		Identifier unknownId = Identifier.of(TESTMOD_ID, "unknown_feature_to_test_condition");
 		ResourceCondition unknown = ResourceConditions.featuresEnabled(unknownId);
 		// Passing an array to avoid type ambiguity
 		ResourceCondition empty = ResourceConditions.featuresEnabled(new FeatureFlag[]{});
 
 		expectCondition(context, "vanilla only", vanilla, true);
-		expectCondition(context, "vanilla and bundle", vanillaAndBundle, true);
+		expectCondition(context, "vanilla and redstone experiments", vanillaAndRedstoneExperiments, true);
 		expectCondition(context, "unknown feature ID", unknown, false);
 		expectCondition(context, "no feature", empty, true);
 

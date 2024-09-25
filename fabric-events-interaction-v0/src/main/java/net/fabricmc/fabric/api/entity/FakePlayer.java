@@ -120,7 +120,7 @@ public class FakePlayer extends ServerPlayerEntity {
 	public void resetStat(Stat<?> stat) { }
 
 	@Override
-	public boolean isInvulnerableTo(DamageSource damageSource) {
+	public boolean isInvulnerableTo(ServerWorld world, DamageSource damageSource) {
 		return true;
 	}
 
