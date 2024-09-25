@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
-import net.fabricmc.fabric.api.common.FabricDevProperties;
+import net.fabricmc.fabric.api.dev.FabricDevProperties;
 
 @Mixin({Block.class, Item.class})
 public class BlockAndItemMixin {
