@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.util.math.BlockBox;
 
-import net.fabricmc.fabric.api.FabricDevProperties;
+import net.fabricmc.fabric.api.common.FabricDevProperties;
 
 @Mixin(BlockBox.class)
 public class BlockBoxMixin {

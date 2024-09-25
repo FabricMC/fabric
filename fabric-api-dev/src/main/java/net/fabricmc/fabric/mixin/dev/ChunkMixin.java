@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.world.chunk.Chunk;
 
-import net.fabricmc.fabric.api.FabricDevProperties;
+import net.fabricmc.fabric.api.common.FabricDevProperties;
 
 @Mixin(Chunk.class)
 public class ChunkMixin {
