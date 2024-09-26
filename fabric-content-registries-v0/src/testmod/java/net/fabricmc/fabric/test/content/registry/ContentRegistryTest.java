@@ -97,7 +97,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - assign a loot table to the nitwit villager type
 		//  - right-clicking a 'test_event' block will emit a 'test_event' game event, which will have a sculk sensor frequency of 2
 		//  - instant health potions can be brewed from awkward potions with any item in the 'minecraft:small_flowers' tag
-		//  - if Bundle experiment is enabled, luck potions can be brewed from awkward potions with a bundle
+		//  - if Redstone Experiments experiment is enabled, luck potions can be brewed from awkward potions with a bundle
 		//  - dirty potions can be brewed by adding any item in the 'minecraft:dirt' tag to any standard potion
 
 		CompostingChanceRegistry.INSTANCE.add(Items.OBSIDIAN, 0.5F);
@@ -180,7 +180,7 @@ public final class ContentRegistryTest implements ModInitializer {
 			builder.registerItemRecipe(Items.POTION, Ingredient.fromTag(Registries.ITEM.getOrThrow(ItemTags.DIRT)), dirtyPotion);
 			builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.fromTag(Registries.ITEM.getOrThrow(ItemTags.SMALL_FLOWERS)), Potions.HEALING);
 
-			if (builder.getEnabledFeatures().contains(FeatureFlags.BUNDLE)) {
+			if (builder.getEnabledFeatures().contains(FeatureFlags.REDSTONE_EXPERIMENTS)) {
 				builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.ofItems(Items.BUNDLE), Potions.LUCK);
 			}
 		});

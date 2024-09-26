@@ -11,7 +11,7 @@
       "condition": "fabric:features_enabled",
       "features": [
         "minecraft:vanilla",
-        "minecraft:bundle"
+        "minecraft:redstone_experiments"
       ]
     }
   ]
