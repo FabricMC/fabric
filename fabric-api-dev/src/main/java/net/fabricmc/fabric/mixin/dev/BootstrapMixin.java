@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.Bootstrap;
 
-import net.fabricmc.fabric.api.dev.FabricDevProperties;
+import net.fabricmc.fabric.api.dev.v1.FabricDevProperties;
 
 @Mixin(Bootstrap.class)
 public class BootstrapMixin {

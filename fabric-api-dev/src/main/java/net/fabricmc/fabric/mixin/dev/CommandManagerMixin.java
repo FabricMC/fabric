@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.server.command.CommandManager;
 
-import net.fabricmc.fabric.api.dev.FabricDevProperties;
+import net.fabricmc.fabric.api.dev.v1.FabricDevProperties;
 
 @Mixin(CommandManager.class)
 public class CommandManagerMixin {

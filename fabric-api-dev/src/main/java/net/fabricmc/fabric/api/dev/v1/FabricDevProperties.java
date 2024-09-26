@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.dev;
+package net.fabricmc.fabric.api.dev.v1;
 
 import java.util.function.Supplier;
 
