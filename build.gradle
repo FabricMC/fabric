@@ -331,6 +331,7 @@ allprojects {
 		addNestedDependencies = false
 		includesClientOnlyClasses = true
 		clientOnlySourceSetName = sourceSets.testmodClient.name
+		classpath.from(sourceSets.testmodClient.compileClasspath)
 	}
 	build.dependsOn remapTestmodJar
 
