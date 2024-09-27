@@ -26,13 +26,13 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 
-public record AttachmentSyncPayload(List<AttachmentChange> attachments) implements CustomPayload {
-	public static final PacketCodec<PacketByteBuf, AttachmentSyncPayload> CODEC = PacketCodec.tuple(
-			AttachmentChange.PACKET_CODEC.collect(PacketCodecs.toList()), AttachmentSyncPayload::attachments,
-			AttachmentSyncPayload::new
+public record AttachmentSyncPayloadS2C(List<AttachmentChange> attachments) implements CustomPayload {
+	public static final PacketCodec<PacketByteBuf, AttachmentSyncPayloadS2C> CODEC = PacketCodec.tuple(
+			AttachmentChange.PACKET_CODEC.collect(PacketCodecs.toList()), AttachmentSyncPayloadS2C::attachments,
+			AttachmentSyncPayloadS2C::new
 	);
 	public static final Identifier PACKET_ID = Identifier.of("fabric", "attachment_sync_v1");
-	public static final Id<AttachmentSyncPayload> ID = new Id<>(PACKET_ID);
+	public static final Id<AttachmentSyncPayloadS2C> ID = new Id<>(PACKET_ID);
 
 	@Override
 	public Id<? extends CustomPayload> getId() {

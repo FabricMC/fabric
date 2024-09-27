@@ -99,7 +99,7 @@ public class AttachmentSync implements ModInitializer {
 		});
 
 		// Play
-		PayloadTypeRegistry.playS2C().register(AttachmentSyncPayload.ID, AttachmentSyncPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(AttachmentSyncPayloadS2C.ID, AttachmentSyncPayloadS2C.CODEC);
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			ServerPlayerEntity player = handler.player;

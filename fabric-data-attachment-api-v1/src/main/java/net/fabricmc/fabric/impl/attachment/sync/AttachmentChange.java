@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 import net.fabricmc.fabric.mixin.attachment.CustomPayloadS2CPacketAccessor;
 import net.fabricmc.fabric.mixin.attachment.VarIntsAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
@@ -94,7 +94,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			int size = MAX_PADDING_SIZE_IN_BYTES + change.data.length;
 
 			if (byteSize + size >= MAX_DATA_SIZE_IN_BYTES) {
-				ServerPlayNetworking.send(player, new AttachmentSyncPayload(packetChanges));
+				ServerPlayNetworking.send(player, new AttachmentSyncPayloadS2C(packetChanges));
 				packetChanges.clear();
 				byteSize = maxVarIntSize;
 			}
@@ -104,7 +104,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		}
 
 		if (!packetChanges.isEmpty()) {
-			ServerPlayNetworking.send(player, new AttachmentSyncPayload(packetChanges));
+			ServerPlayNetworking.send(player, new AttachmentSyncPayloadS2C(packetChanges));
 		}
 	}
 

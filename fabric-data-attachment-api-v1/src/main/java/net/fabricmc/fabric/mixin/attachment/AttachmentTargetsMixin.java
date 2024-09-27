@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 
 @Mixin({BlockEntity.class, Entity.class, World.class, Chunk.class})
 abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
@@ -62,7 +62,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 		if (type.isSynced()) {
 			acknowledgeSyncedEntry(type, value);
-			var payload = new AttachmentSyncPayload(List.of(AttachmentChange.create(
+			var payload = new AttachmentSyncPayloadS2C(List.of(AttachmentChange.create(
 					fabric_getSyncTargetInfo(),
 					type,
 					value
