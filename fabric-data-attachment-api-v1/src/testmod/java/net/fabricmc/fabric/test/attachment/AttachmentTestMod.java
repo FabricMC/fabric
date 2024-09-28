@@ -30,6 +30,9 @@ import com.mojang.serialization.Codec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.command.argument.BlockPosArgumentType;
+import net.minecraft.command.argument.ColumnPosArgumentType;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
@@ -37,12 +40,12 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.ColumnPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.ProtoChunk;
@@ -54,6 +57,7 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
@@ -84,11 +88,11 @@ public class AttachmentTestMod implements ModInitializer {
 			.initializer(() -> false)
 			.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.allButTarget())
 			.buildAndRegister(Identifier.of(MOD_ID, "synced_except_target"));
-	public static final AttachmentType<Boolean> SYNCED_CUSTOM_RULE = AttachmentRegistry.<Boolean>builder()
+	public static final AttachmentType<Boolean> SYNCED_CREATIVE_ONLY = AttachmentRegistry.<Boolean>builder()
 			.initializer(() -> false)
 			.syncWith(PacketCodecs.BOOL.cast(), (target, player) -> player.isCreative())
 			.buildAndRegister(Identifier.of(MOD_ID, "synced_custom"));
-	private static final SimpleCommandExceptionType BAD_GAMEMODE = new SimpleCommandExceptionType(() -> "You must be in creative mode");
+	public static final SimpleCommandExceptionType BLOCK_ENTITY_NOT_LOADED = new SimpleCommandExceptionType(Text.literal("No block entity found"));
 
 	public static final ChunkPos FAR_CHUNK_POS = new ChunkPos(300, 0);
 
@@ -173,28 +177,13 @@ public class AttachmentTestMod implements ModInitializer {
 			if (!"protochunk_data".equals(chunk.getAttached(PERSISTENT))) throw new AssertionError("ProtoChunk attachment was not transfered to WorldChunk");
 		}));
 
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-			dispatcher.register(
-					literal("attachment").requires(ServerCommandSource::isExecutedByPlayer)
-							.then(buildCommandForKind("all", "all", SYNCED_WITH_ALL))
-							.then(buildCommandForKind("self_only", "only self", SYNCED_WITH_TARGET))
-							.then(buildCommandForKind("others_only", "all but self", SYNCED_EXCEPT_TARGET))
-							.then(literal("custom").executes(context -> updateAttachmentFor(
-									checkCreative(context.getSource().getPlayerOrThrow()),
-									SYNCED_CUSTOM_RULE,
-									context,
-									"Set flag (synced with creative only) to %s"
-								)).then(
-									argument("target", EntityArgumentType.player()).executes(context -> updateAttachmentFor(
-											checkCreative(EntityArgumentType.getPlayer(context, "target")),
-											SYNCED_CUSTOM_RULE,
-											context,
-											"Set flag (synced with creative only) to %s"
-									))
-								)
-							)
-			);
-		});
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
+				literal("attachment")
+						.then(buildCommandForKind("all", "all", SYNCED_WITH_ALL))
+						.then(buildCommandForKind("self_only", "only self", SYNCED_WITH_TARGET))
+						.then(buildCommandForKind("others_only", "all but self", SYNCED_EXCEPT_TARGET))
+						.then(buildCommandForKind("creative_only", "creative players only", SYNCED_CREATIVE_ONLY))
+		));
 	}
 
 	private static LiteralArgumentBuilder<ServerCommandSource> buildCommandForKind(String id, String syncedWith, AttachmentType<Boolean> type) {
@@ -202,29 +191,47 @@ public class AttachmentTestMod implements ModInitializer {
 				context.getSource().getPlayerOrThrow(),
 				type,
 				context,
-				"Set flag (synced with %s) to %%s".formatted(syncedWith)
+				"Set self flag (synced with %s) to %%s".formatted(syncedWith)
 		)).then(
-				argument("target", EntityArgumentType.player()).executes(context -> updateAttachmentFor(
+				argument("target", EntityArgumentType.entity()).executes(context -> updateAttachmentFor(
 						EntityArgumentType.getPlayer(context, "target"),
 						type,
 						context,
-						"Set flag (synced with %s) to %%s".formatted(syncedWith)
+						"Set entity flag (synced with %s) to %%s".formatted(syncedWith)
 				))
-		);
+		).then(argument("pos", BlockPosArgumentType.blockPos()).executes(context -> {
+			BlockEntity be = context.getSource().getWorld().getBlockEntity(BlockPosArgumentType.getBlockPos(context, "pos"));
+
+			if (be == null) {
+				throw BLOCK_ENTITY_NOT_LOADED.create();
+			}
+
+			return updateAttachmentFor(
+					be,
+					type,
+					context,
+					"Set block entity flag (synced with %s) to %%s".formatted(syncedWith)
+			);
+		})).then(argument("chunkPos", ColumnPosArgumentType.columnPos()).executes(context -> {
+			ColumnPos pos = ColumnPosArgumentType.getColumnPos(context, "chunkpos");
+			return updateAttachmentFor(
+					context.getSource().getWorld().getChunk(pos.x(), pos.z(), ChunkStatus.STRUCTURE_STARTS, true),
+					type,
+					context,
+					"Set chunk flag (synced with %s) to %%s".formatted(syncedWith)
+			);
+		})).then(literal("world").executes(context -> updateAttachmentFor(
+				context.getSource().getWorld(),
+				type,
+				context,
+				"Set world flag (synced with %s) to %%s".formatted(syncedWith)
+		)));
 	}
 
-	private static int updateAttachmentFor(ServerPlayerEntity player, AttachmentType<Boolean> attachment, CommandContext<ServerCommandSource> context, String messageFormat) throws CommandSyntaxException {
-		boolean current = player.getAttachedOrElse(attachment, false);
-		player.setAttached(attachment, !current);
+	private static int updateAttachmentFor(AttachmentTarget target, AttachmentType<Boolean> attachment, CommandContext<ServerCommandSource> context, String messageFormat) throws CommandSyntaxException {
+		boolean current = target.getAttachedOrElse(attachment, false);
+		target.setAttached(attachment, !current);
 		context.getSource().sendFeedback(() -> Text.literal(messageFormat.formatted(!current)), false);
 		return 1;
-	}
-
-	private static ServerPlayerEntity checkCreative(ServerPlayerEntity player) throws CommandSyntaxException {
-		if (!player.isCreative()) {
-			throw BAD_GAMEMODE.create();
-		}
-
-		return player;
 	}
 }

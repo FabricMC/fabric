@@ -24,6 +24,10 @@
     ]
   },
   "mixins": [
-    "fabric-data-attachment-api-v1-testmod.mixins.json"
+    "fabric-data-attachment-api-v1-testmod.mixins.json",
+    {
+      "config": "fabric-data-attachment-api-v1-testmod.client.mixins.json",
+      "environment": "client"
+    }
   ]
 }
