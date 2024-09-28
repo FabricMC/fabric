@@ -13,6 +13,16 @@ rootProject.name = "fabric-api"
 include 'fabric-api-bom'
 include 'fabric-api-catalog'
 
+def focus = new File('focus.txt')
+
+if (focus.exists()) {
+	focus.eachLine {
+		include it
+	}
+
+	return // Skip the rest of the includes
+}
+
 include 'fabric-api-base'
 
 include 'fabric-api-lookup-api-v1'
