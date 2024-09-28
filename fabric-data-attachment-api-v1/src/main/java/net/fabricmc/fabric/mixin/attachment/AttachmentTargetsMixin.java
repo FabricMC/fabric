@@ -34,6 +34,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
@@ -60,14 +61,10 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	public <T> T setAttached(AttachmentType<T> type, @Nullable T value) {
 		this.fabric_markChanged(type);
 
-		if (type.isSynced()) {
-			acknowledgeSyncedEntry(type, value);
-			var payload = new AttachmentSyncPayloadS2C(List.of(AttachmentChange.create(
-					fabric_getSyncTargetInfo(),
-					type,
-					value
-			)));
-			this.fabric_syncChange(type, payload);
+		if (this.fabric_shouldTryToSync() && type.isSynced()) {
+			AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value);
+			acknowledgeSyncedEntry(type, change);
+			this.fabric_syncChange(type, new AttachmentSyncPayloadS2C(List.of(change)));
 		}
 
 		if (value == null) {
@@ -95,17 +92,18 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 		AttachmentSerializingImpl.serializeAttachmentData(nbt, wrapperLookup, fabric_dataAttachments);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void fabric_readAttachmentsFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
-		Map<AttachmentType<?>, Object> deserialized = AttachmentSerializingImpl.deserializeAttachmentData(nbt, wrapperLookup);
+		// No syncing can happen here as the networkHandler is still null
+		// Instead it is done on player join (see AttachmentSync)
+		this.fabric_dataAttachments = AttachmentSerializingImpl.deserializeAttachmentData(nbt, wrapperLookup);
 
-		if (deserialized != null) {
-			// calling setAttached so that sync logic runs properly
-			// takes care of the case of targetOnly() attachments that would have no opportunity to sync
-			for (Map.Entry<AttachmentType<?>, Object> entry : deserialized.entrySet()) {
-				setAttached((AttachmentType<Object>) entry.getKey(), entry.getValue());
-			}
+		if (this.fabric_shouldTryToSync() && this.fabric_dataAttachments != null) {
+			this.fabric_dataAttachments.forEach((type, value) -> {
+				if (type.isSynced()) {
+					acknowledgeSyncedEntry(type, AttachmentChange.create(fabric_getSyncTargetInfo(), type, value));
+				}
+			});
 		}
 	}
 
@@ -120,16 +118,14 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	}
 
 	@Unique
-	private void acknowledgeSyncedEntry(AttachmentType<?> type, @Nullable Object value) {
-		if (value == null) {
+	private void acknowledgeSyncedEntry(AttachmentType<?> type, @Nullable AttachmentChange change) {
+		if (change == null) {
 			if (fabric_syncedAttachments == null) {
 				return;
 			}
 
 			fabric_syncedAttachments.remove(type);
 		} else {
-			AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value);
-
 			if (fabric_syncedAttachments == null) {
 				fabric_syncedAttachments = new IdentityHashMap<>();
 			}
@@ -139,7 +135,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public void fabric_getInitialSyncChanges(ServerPlayerEntity player, Consumer<AttachmentChange> changeOutput) {
+	public void fabric_computeInitialSyncChanges(ServerPlayerEntity player, Consumer<AttachmentChange> changeOutput) {
 		if (fabric_syncedAttachments == null) {
 			return;
 		}

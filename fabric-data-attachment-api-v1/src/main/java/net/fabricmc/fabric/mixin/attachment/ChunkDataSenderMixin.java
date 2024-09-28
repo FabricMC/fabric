@@ -30,6 +30,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.chunk.WorldChunk;
 
+import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 
@@ -46,7 +47,7 @@ abstract class ChunkDataSenderMixin {
 		original.call(handler, world, chunk);
 		// do a wrap operation so this packet is sent *after* the chunk ones
 		List<AttachmentChange> changes = new ArrayList<>();
-		((AttachmentTargetImpl) chunk).fabric_getInitialSyncChanges(player, changes::add);
+		((AttachmentTargetImpl) chunk).fabric_computeInitialSyncChanges(player, changes::add);
 
 		if (!changes.isEmpty()) {
 			AttachmentChange.partitionAndSendPackets(changes, player);

@@ -46,12 +46,11 @@ public sealed interface AttachmentTargetInfo<T> {
 	AttachmentTarget getTarget(World world);
 
 	record Type<T>(byte id, PacketCodec<ByteBuf, ? extends AttachmentTargetInfo<T>> packetCodec) {
+		static Byte2ObjectMap<Type<?>> TYPES = new Byte2ObjectArrayMap<>();
 		static Type<BlockEntity> BLOCK_ENTITY = new Type<>((byte) 0, BlockEntityTarget.PACKET_CODEC);
 		static Type<Entity> ENTITY = new Type<>((byte) 1, EntityTarget.PACKET_CODEC);
 		static Type<Chunk> CHUNK = new Type<>((byte) 2, ChunkTarget.PACKET_CODEC);
 		static Type<World> WORLD = new Type<>((byte) 3, WorldTarget.PACKET_CODEC);
-
-		static Byte2ObjectMap<Type<?>> TYPES = new Byte2ObjectArrayMap<>();
 
 		public Type {
 			TYPES.put(id, this);

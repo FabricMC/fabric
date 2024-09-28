@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.attachment.sync;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -39,7 +40,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.c2s.AcceptedAttachmentsPayloadC2S;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.RequestAcceptedAttachmentsPayloadS2C;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
@@ -50,7 +51,7 @@ public class AttachmentSync implements ModInitializer {
 		return new AcceptedAttachmentsPayloadC2S(AttachmentRegistryImpl.getSyncableAttachments());
 	}
 
-	public static void trySync(AttachmentSyncPayload payload, ServerPlayerEntity player) {
+	public static void trySync(AttachmentSyncPayloadS2C payload, ServerPlayerEntity player) {
 		if (!payload.attachments().isEmpty()) {
 			ServerPlayNetworking.send(player, payload);
 		}
@@ -104,7 +105,10 @@ public class AttachmentSync implements ModInitializer {
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			ServerPlayerEntity player = handler.player;
 			List<AttachmentChange> changes = new ArrayList<>();
-			((AttachmentTargetImpl) player.getServerWorld()).fabric_getInitialSyncChanges(player, changes::add);
+			// sync world attachments
+			((AttachmentTargetImpl) player.getServerWorld()).fabric_computeInitialSyncChanges(player, changes::add);
+			// sync player's own persistent attachments that couldn't be synced earlier
+			((AttachmentTargetImpl) player).fabric_computeInitialSyncChanges(player, changes::add);
 
 			if (!changes.isEmpty()) {
 				AttachmentChange.partitionAndSendPackets(changes, player);
@@ -113,7 +117,7 @@ public class AttachmentSync implements ModInitializer {
 
 		EntityTrackingEvents.START_TRACKING.register((trackedEntity, player) -> {
 			List<AttachmentChange> changes = new ArrayList<>();
-			((AttachmentTargetImpl) trackedEntity).fabric_getInitialSyncChanges(player, changes::add);
+			((AttachmentTargetImpl) trackedEntity).fabric_computeInitialSyncChanges(player, changes::add);
 
 			if (!changes.isEmpty()) {
 				AttachmentChange.partitionAndSendPackets(changes, player);

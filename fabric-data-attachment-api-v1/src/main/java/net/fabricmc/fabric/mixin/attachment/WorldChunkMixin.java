@@ -58,11 +58,11 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 	}
 
 	@Override
-	public void fabric_getInitialSyncChanges(ServerPlayerEntity player, Consumer<AttachmentChange> changeOutput) {
-		super.fabric_getInitialSyncChanges(player, changeOutput);
+	public void fabric_computeInitialSyncChanges(ServerPlayerEntity player, Consumer<AttachmentChange> changeOutput) {
+		super.fabric_computeInitialSyncChanges(player, changeOutput);
 
 		for (BlockEntity be : this.getBlockEntities().values()) {
-			((AttachmentTargetImpl) be).fabric_getInitialSyncChanges(player, changeOutput);
+			((AttachmentTargetImpl) be).fabric_computeInitialSyncChanges(player, changeOutput);
 		}
 	}
 
@@ -77,5 +77,10 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 						}
 					});
 		}
+	}
+
+	@Override
+	public boolean fabric_shouldTryToSync() {
+		return !this.world.isClient();
 	}
 }

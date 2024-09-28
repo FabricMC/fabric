@@ -82,13 +82,17 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayloadS2C payload) {
-		if (this.hasWorld() && !this.world.isClient()) {
-			PlayerLookup.tracking((BlockEntity) (Object) this)
-					.forEach(player -> {
-						if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
-							AttachmentSync.trySync(payload, player);
-						}
-					});
-		}
+		PlayerLookup.tracking((BlockEntity) (Object) this)
+				.forEach(player -> {
+					if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
+						AttachmentSync.trySync(payload, player);
+					}
+				});
+	}
+
+	@Override
+	public boolean fabric_shouldTryToSync() {
+		// Persistent attachments are read at a time with no world
+		return !this.hasWorld() || !this.world.isClient();
 	}
 }

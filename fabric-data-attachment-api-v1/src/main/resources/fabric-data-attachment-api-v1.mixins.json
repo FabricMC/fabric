@@ -15,6 +15,7 @@
     "ServerWorldMixin",
     "VarIntsAccessor",
     "WorldChunkMixin",
+    "WorldMixin",
     "WrapperProtoChunkMixin"
   ],
   "injectors": {

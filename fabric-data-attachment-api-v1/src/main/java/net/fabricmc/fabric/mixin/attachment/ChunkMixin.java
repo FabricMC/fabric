@@ -57,4 +57,10 @@ abstract class ChunkMixin implements AttachmentTargetImpl {
 			);
 		}
 	}
+
+	@Override
+	public boolean fabric_shouldTryToSync() {
+		// ProtoChunk or EmptyChunk
+		return false;
+	}
 }

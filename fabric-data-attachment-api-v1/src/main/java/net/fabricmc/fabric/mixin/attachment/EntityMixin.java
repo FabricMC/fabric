@@ -25,10 +25,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
@@ -39,14 +42,9 @@ import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 abstract class EntityMixin implements AttachmentTargetImpl {
 	@Shadow
 	private int id;
-	@Shadow
-	private World world;
 
 	@Shadow
 	public abstract World getWorld();
-
-	@Shadow
-	public abstract World getEntityWorld();
 
 	@Inject(
 			at = @At(value = "INVOKE", target = "net/minecraft/entity/Entity.readCustomDataFromNbt(Lnet/minecraft/nbt/NbtCompound;)V"),
@@ -72,13 +70,24 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayloadS2C payload) {
 		if (!this.getWorld().isClient()) {
-			// can't shadow from Chunk because this already extends a supermixin
+			AttachmentSyncPredicate predicate = ((AttachmentTypeImpl<?>) type).syncPredicate();
+
+			if ((Object) this instanceof ServerPlayerEntity self && predicate.test(this, self)) {
+				// Players do not track themselves
+				AttachmentSync.trySync(payload, self);
+			}
+
 			PlayerLookup.tracking((Entity) (Object) this)
 					.forEach(player -> {
-						if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
+						if (predicate.test(this, player)) {
 							AttachmentSync.trySync(payload, player);
 						}
 					});
 		}
+	}
+
+	@Override
+	public boolean fabric_shouldTryToSync() {
+		return !this.getWorld().isClient();
 	}
 }

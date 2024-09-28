@@ -27,13 +27,15 @@ public class AttachmentSyncClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// config
-		ClientConfigurationNetworking.registerGlobalReceiver(RequestAcceptedAttachmentsPayloadS2C.ID, (payload, context) -> {
-			context.responseSender().sendPacket(AttachmentSync.createResponsePayload());
-		});
+		ClientConfigurationNetworking.registerGlobalReceiver(
+				RequestAcceptedAttachmentsPayloadS2C.ID,
+				(payload, context) -> context.responseSender().sendPacket(AttachmentSync.createResponsePayload())
+		);
 
 		// play
-		ClientPlayNetworking.registerGlobalReceiver(AttachmentSyncPayloadS2C.ID, (payload, context) -> {
-			payload.attachments().forEach(attachmentChange -> attachmentChange.apply(context.client().world));
-		});
+		ClientPlayNetworking.registerGlobalReceiver(
+				AttachmentSyncPayloadS2C.ID,
+				(payload, context) -> payload.attachments().forEach(attachmentChange -> attachmentChange.apply(context.client().world))
+		);
 	}
 }
