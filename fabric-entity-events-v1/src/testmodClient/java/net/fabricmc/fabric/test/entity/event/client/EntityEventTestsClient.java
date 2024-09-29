@@ -39,7 +39,7 @@ public class EntityEventTestsClient implements ClientModInitializer {
 		ClientPlayerEvents.MODIFY_PLAYER_MOVEMENT_DURING_USINGITEM.register(player -> {
 			LOGGER.info("Player {} is moving during using item.", player);
 
-			if(player.getMainHandStack().isOf(Items.BOW) && player.getEquippedStack(EquipmentSlot.FEET).isOf(Items.DIAMOND_BOOTS)) {
+			if (player.getMainHandStack().isOf(Items.BOW) && player.getEquippedStack(EquipmentSlot.FEET).isOf(Items.DIAMOND_BOOTS)) {
 				LOGGER.info("Player {} can move without slowdown becase of diamond boots on feet.", player);
 				player.input.movementForward *= 5F;
 				player.input.movementSideways *= 5F;
