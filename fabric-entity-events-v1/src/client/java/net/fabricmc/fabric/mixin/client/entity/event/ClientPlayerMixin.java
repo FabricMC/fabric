@@ -21,9 +21,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.fabricmc.fabric.api.client.entity.event.ClientPlayerEvents;
-
 import net.minecraft.client.network.ClientPlayerEntity;
+
+import net.fabricmc.fabric.api.entity.event.client.ClientPlayerEvents;
 
 @Mixin(ClientPlayerEntity.class)
 abstract class ClientPlayerMixin {

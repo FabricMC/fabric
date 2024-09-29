@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.test.entity.event.client;
 
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.Items;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.Items;
+
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.entity.event.ClientPlayerEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRenderEvents;
+import net.fabricmc.fabric.api.entity.event.client.ClientPlayerEvents;
 import net.fabricmc.fabric.test.entity.event.EntityEventTests;
 
 public class EntityEventTestsClient implements ClientModInitializer {

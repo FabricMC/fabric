@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.entity.event;
+package net.fabricmc.fabric.api.entity.event.client;
+
+import net.minecraft.client.network.ClientPlayerEntity;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-
-import net.minecraft.client.network.ClientPlayerEntity;
 
 public final class ClientPlayerEvents {
 	/**
@@ -35,7 +35,7 @@ public final class ClientPlayerEvents {
 	public interface ModifyPlayerMovementDuringUsingitem {
 		/**
 		 * Called when a player is moving during using an item.
-		 * 
+		 *
 		 * @param player the player is moving during using an item.
 		 */
 		void modifyPlayerMovementDuringUsingitem(ClientPlayerEntity player);
