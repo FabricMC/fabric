@@ -32,7 +32,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.command.argument.BlockPosArgumentType;
-import net.minecraft.command.argument.ColumnPosArgumentType;
 import net.minecraft.command.argument.DefaultPosArgument;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.UuidArgumentType;
