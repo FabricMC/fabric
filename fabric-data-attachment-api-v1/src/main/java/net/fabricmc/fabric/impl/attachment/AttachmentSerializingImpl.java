@@ -53,7 +53,7 @@ public class AttachmentSerializingImpl {
 				RegistryOps<NbtElement> registryOps = wrapperLookup.getOps(NbtOps.INSTANCE);
 				codec.encodeStart(registryOps, entry.getValue())
 						.ifError(partial -> {
-							LOGGER.warn("Couldn't serialize attachment " + type.identifier() + ", skipping. Error:");
+							LOGGER.warn("Couldn't serialize attachment {}, skipping. Error:", type.identifier());
 							LOGGER.warn(partial.message());
 						})
 						.ifSuccess(serialized -> compound.put(type.identifier().toString(), serialized));

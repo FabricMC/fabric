@@ -94,14 +94,14 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 	@Override
 	public void fabric_readAttachmentsFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
-		// No syncing can happen here as the networkHandler is still null
+		// Note on player targets: no syncing can happen here as the networkHandler is still null
 		// Instead it is done on player join (see AttachmentSync)
 		this.fabric_dataAttachments = AttachmentSerializingImpl.deserializeAttachmentData(nbt, wrapperLookup);
 
 		if (this.fabric_shouldTryToSync() && this.fabric_dataAttachments != null) {
 			this.fabric_dataAttachments.forEach((type, value) -> {
 				if (type.isSynced()) {
-					acknowledgeSyncedEntry(type, AttachmentChange.create(fabric_getSyncTargetInfo(), type, value));
+					acknowledgeSynced(type, value);
 				}
 			});
 		}
@@ -115,6 +115,11 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Override
 	public Map<AttachmentType<?>, ?> fabric_getAttachments() {
 		return fabric_dataAttachments;
+	}
+
+	@Unique
+	private void acknowledgeSynced(AttachmentType<?> type, Object value) {
+		acknowledgeSyncedEntry(type, AttachmentChange.create(fabric_getSyncTargetInfo(), type, value));
 	}
 
 	@Unique

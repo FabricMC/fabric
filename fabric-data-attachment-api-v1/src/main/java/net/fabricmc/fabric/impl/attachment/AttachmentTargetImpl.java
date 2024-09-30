@@ -78,8 +78,7 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 	}
 
 	/*
-	 * Returns a list of changes that should be communicated to newcomers (i.e. clients that start tracking this target)
-	 * Most of it is computed in advance through acknowledgeSyncedEntry
+	 * Computes changes that should be communicated to newcomers (i.e. clients that start tracking this target)
 	 */
 	default void fabric_computeInitialSyncChanges(ServerPlayerEntity player, Consumer<AttachmentChange> changeOutput) {
 		throw new UnsupportedOperationException("Implemented via mixin");
