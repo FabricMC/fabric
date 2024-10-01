@@ -27,6 +27,8 @@ import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
  * <p></p>
  * Note, fluid tags should not be plural to match the vanilla standard.
  * This is the only tag category exempted from many-different-types plural rule.
+ * <p>
+ * (See {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants} for the correct droplet rates for containers)
  */
 public final class ConventionalFluidTags {
 	private ConventionalFluidTags() {
@@ -46,8 +48,6 @@ public final class ConventionalFluidTags {
 	public static final TagKey<Fluid> MILK = register("milk");
 	/**
 	 * Holds all fluids related to honey.
-	 * <p>
-	 * (Standard unit for honey bottle is 27000 droplet per bottle)
 	 */
 	public static final TagKey<Fluid> HONEY = register("honey");
 	/**
@@ -64,34 +64,24 @@ public final class ConventionalFluidTags {
 	 * Holds all fluids related to potions. The effects of the potion fluid should be read from Data Components.
 	 * The effects and color of the potion fluid should be read from {@link net.minecraft.component.DataComponentTypes#POTION_CONTENTS}
 	 * component that people should be attaching to the FluidVariant of this fluid.
-	 * <p>
-	 * (Standard unit for potions is 27000 droplet per bottle)
 	 */
 	public static final TagKey<Fluid> POTION = register("potion");
 	/**
 	 * Holds all fluids related to Suspicious Stew.
 	 * The effects of the suspicious stew fluid should be read from {@link net.minecraft.component.DataComponentTypes#SUSPICIOUS_STEW_EFFECTS}
 	 * component that people should be attaching to the FluidVariant of this fluid.
-	 * <p>
-	 * (Standard unit for suspicious stew is 27000 droplet per bowl)
 	 */
 	public static final TagKey<Fluid> SUSPICIOUS_STEW = register("suspicious_stew");
 	/**
 	 * Holds all fluids related to Mushroom Stew.
-	 * <p>
-	 * (Standard unit for mushroom stew is 27000 droplet per bowl)
 	 */
 	public static final TagKey<Fluid> MUSHROOM_STEW = register("mushroom_stew");
 	/**
 	 * Holds all fluids related to Rabbit Stew.
-	 * <p>
-	 * (Standard unit for rabbit stew is 27000 droplet per bowl)
 	 */
 	public static final TagKey<Fluid> RABBIT_STEW = register("rabbit_stew");
 	/**
 	 * Holds all fluids related to Beetroot Soup.
-	 * <p>
-	 * (Standard unit for beetroot soup is 27000 droplet per bowl)
 	 */
 	public static final TagKey<Fluid> BEETROOT_SOUP = register("beetroot_soup");
 	/**
