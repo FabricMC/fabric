@@ -32,10 +32,68 @@ public final class ConventionalFluidTags {
 	private ConventionalFluidTags() {
 	}
 
+	/**
+	 * Holds all fluids related to water without the behaviors attached to the vanilla lava fluid tag.
+	 */
 	public static final TagKey<Fluid> LAVA = register("lava");
+	/**
+	 * Holds all fluids related to water without the behaviors attached to the vanilla water fluid tag.
+	 */
 	public static final TagKey<Fluid> WATER = register("water");
+	/**
+	 * Holds all fluids related to milk.
+	 */
 	public static final TagKey<Fluid> MILK = register("milk");
+	/**
+	 * Holds all fluids related to honey.
+	 * <p>
+	 * (Standard unit for honey bottle is 27000 droplet per bottle)
+	 */
 	public static final TagKey<Fluid> HONEY = register("honey");
+	/**
+	 * Holds all fluids that are gaseous at room temperature.
+	 */
+	public static final TagKey<Fluid> GASEOUS = register("gaseous");
+	/**
+	 * Holds all fluids related to experience.
+	 * <p>
+	 * (Standard unit for experience is 81 droplet per 1 experience)
+	 */
+	public static final TagKey<Fluid> EXPERIENCE = register("experience");
+	/**
+	 * Holds all fluids related to potions. The effects of the potion fluid should be read from Data Components.
+	 * The effects and color of the potion fluid should be read from {@link net.minecraft.component.DataComponentTypes#POTION_CONTENTS}
+	 * component that people should be attaching to the fluidstack of this fluid.
+	 * <p>
+	 * (Standard unit for potions is 27000 droplet per bottle)
+	 */
+	public static final TagKey<Fluid> POTION = register("potion");
+	/**
+	 * Holds all fluids related to Suspicious Stew.
+	 * The effects of the suspicious stew fluid should be read from {@link net.minecraft.component.DataComponentTypes#SUSPICIOUS_STEW_EFFECTS}
+	 * component that people should be attaching to the fluidstack of this fluid.
+	 * <p>
+	 * (Standard unit for suspicious stew is 27000 droplet per bowl)
+	 */
+	public static final TagKey<Fluid> SUSPICIOUS_STEW = register("suspicious_stew");
+	/**
+	 * Holds all fluids related to Mushroom Stew.
+	 * <p>
+	 * (Standard unit for mushroom stew is 27000 droplet per bowl)
+	 */
+	public static final TagKey<Fluid> MUSHROOM_STEW = register("mushroom_stew");
+	/**
+	 * Holds all fluids related to Rabbit Stew.
+	 * <p>
+	 * (Standard unit for rabbit stew is 27000 droplet per bowl)
+	 */
+	public static final TagKey<Fluid> RABBIT_STEW = register("rabbit_stew");
+	/**
+	 * Holds all fluids related to Beetroot Soup.
+	 * <p>
+	 * (Standard unit for beetroot soup is 27000 droplet per bowl)
+	 */
+	public static final TagKey<Fluid> BEETROOT_SOUP = register("beetroot_soup");
 	/**
 	 * Tag that holds all fluids that recipe viewers should not show to users.
 	 */
