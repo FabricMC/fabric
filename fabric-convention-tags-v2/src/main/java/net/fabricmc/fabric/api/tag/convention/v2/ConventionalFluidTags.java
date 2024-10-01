@@ -27,8 +27,8 @@ import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
  * <p></p>
  * Note, fluid tags should not be plural to match the vanilla standard.
  * This is the only tag category exempted from many-different-types plural rule.
- * <p>
- * (See {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants} for the correct droplet rates for containers)
+ * 
+ * <p>(See {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants} for the correct droplet rates for containers)
  */
 public final class ConventionalFluidTags {
 	private ConventionalFluidTags() {
@@ -56,8 +56,8 @@ public final class ConventionalFluidTags {
 	public static final TagKey<Fluid> GASEOUS = register("gaseous");
 	/**
 	 * Holds all fluids related to experience.
-	 * <p>
-	 * (Standard unit for experience is 81 droplet per 1 experience)
+	 *
+	 * <p>(Standard unit for experience is 81 droplet per 1 experience)
 	 */
 	public static final TagKey<Fluid> EXPERIENCE = register("experience");
 	/**
