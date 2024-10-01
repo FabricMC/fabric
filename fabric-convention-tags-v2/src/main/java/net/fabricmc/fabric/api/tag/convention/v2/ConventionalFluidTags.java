@@ -63,7 +63,7 @@ public final class ConventionalFluidTags {
 	/**
 	 * Holds all fluids related to potions. The effects of the potion fluid should be read from Data Components.
 	 * The effects and color of the potion fluid should be read from {@link net.minecraft.component.DataComponentTypes#POTION_CONTENTS}
-	 * component that people should be attaching to the fluidstack of this fluid.
+	 * component that people should be attaching to the FluidVariant of this fluid.
 	 * <p>
 	 * (Standard unit for potions is 27000 droplet per bottle)
 	 */
@@ -71,7 +71,7 @@ public final class ConventionalFluidTags {
 	/**
 	 * Holds all fluids related to Suspicious Stew.
 	 * The effects of the suspicious stew fluid should be read from {@link net.minecraft.component.DataComponentTypes#SUSPICIOUS_STEW_EFFECTS}
-	 * component that people should be attaching to the fluidstack of this fluid.
+	 * component that people should be attaching to the FluidVariant of this fluid.
 	 * <p>
 	 * (Standard unit for suspicious stew is 27000 droplet per bowl)
 	 */
