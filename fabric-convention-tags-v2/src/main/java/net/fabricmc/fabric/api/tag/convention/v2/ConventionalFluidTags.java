@@ -57,7 +57,7 @@ public final class ConventionalFluidTags {
 	/**
 	 * Holds all fluids related to experience.
 	 *
-	 * <p>(Standard unit for experience is 810 droplet per 1 experience)
+	 * <p>(Standard unit for experience is 810 droplet per 1 experience. However, extraction from Bottle o' Enchanting should yield 27000 droplets while smashing yields less)
 	 */
 	public static final TagKey<Fluid> EXPERIENCE = register("experience");
 	/**
