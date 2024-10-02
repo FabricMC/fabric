@@ -46,25 +46,15 @@ public final class EntityTypeTagGenerator extends FabricTagProvider.EntityTypeTa
 				.add(EntityType.SPAWNER_MINECART);
 		getOrCreateTagBuilder(ConventionalEntityTypeTags.BOATS)
 				.addOptionalTag(EntityTypeTags.BOAT)
-				.add(EntityType.OAK_BOAT)
 				.add(EntityType.OAK_CHEST_BOAT)
-				.add(EntityType.SPRUCE_BOAT)
 				.add(EntityType.SPRUCE_CHEST_BOAT)
-				.add(EntityType.BIRCH_BOAT)
 				.add(EntityType.BIRCH_CHEST_BOAT)
-				.add(EntityType.JUNGLE_BOAT)
 				.add(EntityType.JUNGLE_CHEST_BOAT)
-				.add(EntityType.ACACIA_BOAT)
 				.add(EntityType.ACACIA_CHEST_BOAT)
-				.add(EntityType.CHERRY_BOAT)
 				.add(EntityType.CHERRY_CHEST_BOAT)
-				.add(EntityType.PALE_OAK_BOAT)
 				.add(EntityType.PALE_OAK_CHEST_BOAT)
-				.add(EntityType.DARK_OAK_BOAT)
 				.add(EntityType.DARK_OAK_CHEST_BOAT)
-				.add(EntityType.MANGROVE_BOAT)
 				.add(EntityType.MANGROVE_CHEST_BOAT)
-				.add(EntityType.BAMBOO_RAFT)
 				.add(EntityType.BAMBOO_CHEST_RAFT);
 		getOrCreateTagBuilder(ConventionalEntityTypeTags.CAPTURING_NOT_SUPPORTED);
 		getOrCreateTagBuilder(ConventionalEntityTypeTags.TELEPORTING_NOT_SUPPORTED);
