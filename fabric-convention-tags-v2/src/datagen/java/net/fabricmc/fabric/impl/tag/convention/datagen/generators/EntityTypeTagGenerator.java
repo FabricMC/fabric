@@ -52,6 +52,7 @@ public final class EntityTypeTagGenerator extends FabricTagProvider.EntityTypeTa
 				.add(EntityType.JUNGLE_CHEST_BOAT)
 				.add(EntityType.ACACIA_CHEST_BOAT)
 				.add(EntityType.CHERRY_CHEST_BOAT)
+				.add(EntityType.PALE_OAK_BOAT)
 				.add(EntityType.DARK_OAK_CHEST_BOAT)
 				.add(EntityType.MANGROVE_CHEST_BOAT)
 				.add(EntityType.BAMBOO_CHEST_RAFT);
