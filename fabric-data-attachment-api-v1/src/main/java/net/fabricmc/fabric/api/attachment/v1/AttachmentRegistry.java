@@ -45,15 +45,14 @@ public final class AttachmentRegistry {
 	}
 
 	/**
-	 * Creates <i>and registers</i> an attachment, configuring the builder used underneath. This method is intended as an
-	 * alternative to {@link AttachmentRegistry#builder()}.
+	 * Creates <i>and registers</i> an attachment, configuring the builder used underneath.
 	 *
 	 * @param id  the identifier of this attachment
 	 * @param <A> the type of attached data
 	 * @return the registered {@link AttachmentType} instance
 	 */
 	public static <A> AttachmentType<A> create(Identifier id, Consumer<Builder<A>> consumer) {
-		AttachmentRegistry.Builder<A> builder = AttachmentRegistry.builder();
+		AttachmentRegistry.Builder<A> builder = AttachmentRegistryImpl.builder();
 
 		consumer.accept(builder);
 
@@ -97,11 +96,13 @@ public final class AttachmentRegistry {
 	}
 
 	/**
-	 * Creates a {@link Builder}, that gives finer control over the attachment's properties.
+	 * Creates a {@link Builder}, that gives finer control over the attachment's properties. Calling this method
+	 * directly is not recommended, as it requires explicit type parameters. {@link #create} should be used instead.
 	 *
 	 * @param <A> the type of the attached data
 	 * @return a {@link Builder} instance
 	 */
+	@Deprecated
 	public static <A> Builder<A> builder() {
 		return AttachmentRegistryImpl.builder();
 	}
