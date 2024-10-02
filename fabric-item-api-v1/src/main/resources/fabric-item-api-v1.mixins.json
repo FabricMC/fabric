@@ -7,6 +7,7 @@
     "AnvilScreenHandlerMixin",
     "BrewingStandBlockEntityMixin",
     "ComponentMapBuilderMixin",
+    "CraftingRecipeMixin",
     "EnchantmentBuilderAccessor",
     "EnchantCommandMixin",
     "EnchantmentHelperMixin",
@@ -16,7 +17,6 @@
     "ItemSettingsMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "RecipeMixin",
     "RegistriesMixin",
     "RegistryLoaderMixin"
   ],

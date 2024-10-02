@@ -309,6 +309,7 @@
   "tag.worldgen.biome.c.is_cold": "Cold",
   "tag.worldgen.biome.c.is_cold.end": "Cold End",
   "tag.worldgen.biome.c.is_cold.overworld": "Cold Overworld",
+  "tag.worldgen.biome.c.is_dark_forest": "Dark Forest",
   "tag.worldgen.biome.c.is_dead": "Dead",
   "tag.worldgen.biome.c.is_deep_ocean": "Deep Ocean",
   "tag.worldgen.biome.c.is_dense_vegetation": "Dense Vegetation",

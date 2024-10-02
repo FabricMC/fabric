@@ -385,6 +385,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBiomeTags.IS_SNOWY_PLAINS, "Snowy Plains");
 		translationBuilder.add(ConventionalBiomeTags.IS_FOREST, "Forest");
 		translationBuilder.add(ConventionalBiomeTags.IS_BIRCH_FOREST, "Birch Forest");
+		translationBuilder.add(ConventionalBiomeTags.IS_DARK_FOREST, "Dark Forest");
 		translationBuilder.add(ConventionalBiomeTags.IS_FLOWER_FOREST, "Flower Forest");
 		translationBuilder.add(ConventionalBiomeTags.IS_TAIGA, "Taiga");
 		translationBuilder.add(ConventionalBiomeTags.IS_OLD_GROWTH, "Old Growth");

@@ -104,6 +104,7 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_FOREST = register("is_forest");
 	public static final TagKey<Biome> IS_BIRCH_FOREST = register("is_birch_forest");
+	public static final TagKey<Biome> IS_DARK_FOREST = register("is_dark_forest");
 	public static final TagKey<Biome> IS_FLOWER_FOREST = register("is_flower_forest");
 	public static final TagKey<Biome> IS_TAIGA = register("is_taiga");
 	public static final TagKey<Biome> IS_OLD_GROWTH = register("is_old_growth");

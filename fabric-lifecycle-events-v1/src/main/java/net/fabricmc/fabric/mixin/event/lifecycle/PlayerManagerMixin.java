@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 public class PlayerManagerMixin {
 	@Inject(
 			method = "onPlayerConnect",
-			at = @At(value = "INVOKE", target = "net/minecraft/network/packet/s2c/play/SynchronizeRecipesS2CPacket.<init>(Ljava/util/Collection;)V")
+			at = @At(value = "NEW", target = "net/minecraft/network/packet/s2c/play/SynchronizeRecipesS2CPacket")
 	)
 	private void hookOnPlayerConnect(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData arg, CallbackInfo ci) {
 		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.invoker().onSyncDataPackContents(player, true);

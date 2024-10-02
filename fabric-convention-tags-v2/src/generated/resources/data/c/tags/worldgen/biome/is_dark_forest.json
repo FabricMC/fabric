@@ -1,0 +1,9 @@
+{
+  "values": [
+    "minecraft:dark_forest",
+    {
+      "id": "minecraft:pale_garden",
+      "required": false
+    }
+  ]
+}
