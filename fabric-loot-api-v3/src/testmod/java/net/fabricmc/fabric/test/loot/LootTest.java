@@ -103,7 +103,7 @@ public class LootTest implements ModInitializer {
 		});
 
 		LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
-			if (EntityType.SALMON.getLootTable().orElse(null) == key) {
+			if (EntityType.SALMON.getLootTableKey().orElse(null) == key) {
 				Optional<RegistryEntry<Enchantment>> lure = registries.getOptional(RegistryKeys.ENCHANTMENT).flatMap(registry -> registry.getOptional(Enchantments.LURE));
 
 				lure.ifPresent((lureEnchantment) -> tableBuilder.pool(LootPool.builder().with(

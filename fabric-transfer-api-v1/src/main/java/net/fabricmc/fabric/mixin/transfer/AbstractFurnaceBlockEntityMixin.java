@@ -28,9 +28,9 @@ import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
 
@@ -75,15 +75,15 @@ public abstract class AbstractFurnaceBlockEntityMixin extends LockableContainerB
 			// Update cook time if needed. Code taken from AbstractFurnaceBlockEntity#setStack.
 			boolean bl = !stack.isEmpty() && ItemStack.areItemsAndComponentsEqual(stack, itemStack);
 
-			if (!bl) {
-				this.cookTimeTotal = getCookTime(this.world, (AbstractFurnaceBlockEntity) (Object) this);
+			if (!bl && this.world instanceof ServerWorld world) {
+				this.cookTimeTotal = getCookTime(world, (AbstractFurnaceBlockEntity) (Object) this);
 				this.cookTime = 0;
 			}
 		}
 	}
 
 	@Shadow
-	private static int getCookTime(World world, AbstractFurnaceBlockEntity abstractFurnaceBlockEntity) {
+	private static int getCookTime(ServerWorld world, AbstractFurnaceBlockEntity abstractFurnaceBlockEntity) {
 		throw new AssertionError();
 	}
 }

@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.class_10351;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.BiomeTags;
@@ -94,6 +95,9 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_BIRCH_FOREST)
 				.add(BiomeKeys.BIRCH_FOREST)
 				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_DARK_FOREST)
+				.add(BiomeKeys.DARK_FOREST)
+				.addOptional(class_10351.PALE_GARDEN);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_OCEAN)
 				.addOptionalTag(BiomeTags.IS_OCEAN)
 				.addOptionalTag(ConventionalBiomeTags.IS_DEEP_OCEAN)
@@ -175,6 +179,7 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.SWAMP)
 				.add(BiomeKeys.STONY_SHORE)
 				.add(BiomeKeys.DARK_FOREST)
+				.addOptional(class_10351.PALE_GARDEN)
 				.add(BiomeKeys.WINDSWEPT_FOREST)
 				.add(BiomeKeys.BIRCH_FOREST)
 				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST)
@@ -247,6 +252,7 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_DENSE_OVERWORLD)
 				.add(BiomeKeys.DARK_FOREST)
+				.addOptional(class_10351.PALE_GARDEN)
 				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST)
 				.add(BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA)
 				.add(BiomeKeys.JUNGLE)
@@ -279,6 +285,7 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.FLOWER_FOREST)
 				.add(BiomeKeys.BIRCH_FOREST)
 				.add(BiomeKeys.DARK_FOREST)
+				.addOptional(class_10351.PALE_GARDEN)
 				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_JUNGLE_TREE)
 				.addOptionalTag(ConventionalBiomeTags.IS_JUNGLE);

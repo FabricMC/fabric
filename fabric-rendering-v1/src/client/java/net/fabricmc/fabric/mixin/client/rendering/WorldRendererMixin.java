@@ -116,7 +116,7 @@ public abstract class WorldRendererMixin {
 
 	@SuppressWarnings("ConstantConditions")
 	@Inject(method = "drawBlockOutline", at = @At("HEAD"), cancellable = true)
-	private void onDrawBlockOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos blockPos, BlockState blockState, CallbackInfo ci) {
+	private void onDrawBlockOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos blockPos, BlockState blockState, int color, CallbackInfo ci) {
 		if (!context.renderBlockOutline) {
 			// Was cancelled before we got here, so do not
 			// fire the BLOCK_OUTLINE event per contract of the API.
