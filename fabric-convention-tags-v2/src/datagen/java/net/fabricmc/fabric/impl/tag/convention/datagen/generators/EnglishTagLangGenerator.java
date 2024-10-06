@@ -109,6 +109,8 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE, "Redstone Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_SLIME, "Slime Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT, "Wheat Storage Blocks");
+		translationBuilder.add(ConventionalBlockTags.STRIPPED_LOGS, "Stripped Log Blocks");
+		translationBuilder.add(ConventionalBlockTags.STRIPPED_WOODS, "Stripped Wood Blocks");
 		translationBuilder.add(ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, "Crafting Tables");
 		translationBuilder.add(ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES, "Furnaces");
 		translationBuilder.add(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED, "Relocation Not Supported");
@@ -298,6 +300,8 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_REDSTONE, "Redstone Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_SLIME, "Slime Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_WHEAT, "Wheat Storage Blocks");
+		translationBuilder.add(ConventionalItemTags.STRIPPED_LOGS, "Stripped Log Blocks");
+		translationBuilder.add(ConventionalItemTags.STRIPPED_WOODS, "Stripped Wood Blocks");
 		translationBuilder.add(ConventionalItemTags.CROPS, "Crops");
 		translationBuilder.add(ConventionalItemTags.BEETROOT_CROPS, "Beetroot Crops");
 		translationBuilder.add(ConventionalItemTags.CACTUS_CROPS, "Cactus Crops");
