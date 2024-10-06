@@ -115,7 +115,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		generateDyedTags();
 
 		generateStorageTags();
-		
+
 		generateLogTags();
 
 		generateHeadTags();
@@ -498,7 +498,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT)
 				.add(Blocks.HAY_BLOCK);
 	}
-	
+
 	private void generateLogTags() {
 		getOrCreateTagBuilder(ConventionalBlockTags.STRIPPED_LOGS)
 				.add(Blocks.STRIPPED_ACACIA_LOG)

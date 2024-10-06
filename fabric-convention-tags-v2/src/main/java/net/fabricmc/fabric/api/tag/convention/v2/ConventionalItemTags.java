@@ -320,7 +320,7 @@ public final class ConventionalItemTags {
 	// Logs
 	public static final TagKey<Item> STRIPPED_LOGS = register("stripped_logs");
 	public static final TagKey<Item> STRIPPED_WOODS = register("stripped_woods");
-	
+
 	// Crops
 	/**
 	 * For raw materials harvested from growable plants. Crop items can be edible like carrots or non-edible like
