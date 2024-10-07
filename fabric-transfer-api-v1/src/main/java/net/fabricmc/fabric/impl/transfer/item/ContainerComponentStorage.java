@@ -21,28 +21,28 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.jetbrains.annotations.UnmodifiableView;
-
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ContainerComponent;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedSlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.mixin.transfer.ContainerComponentAccessor;
 
-public class ContainerComponentStorage extends CombinedStorage<ItemVariant, SingleSlotStorage<ItemVariant>> implements SlottedStorage<ItemVariant> {
+public class ContainerComponentStorage extends CombinedSlottedStorage<ItemVariant, SingleSlotStorage<ItemVariant>> {
 	final ContainerItemContext ctx;
+	private final Item originalItem;
 
 	public ContainerComponentStorage(ContainerItemContext ctx, int slots) {
 		super(Collections.emptyList());
 		this.ctx = ctx;
+		this.originalItem = ctx.getItemVariant().getItem();
 
 		List<ContainerSlotWrapper> backingList = new ArrayList<>(slots);
 
@@ -61,19 +61,8 @@ public class ContainerComponentStorage extends CombinedStorage<ItemVariant, Sing
 		return (ContainerComponentAccessor) (Object) container();
 	}
 
-	@Override
-	public @UnmodifiableView List<SingleSlotStorage<ItemVariant>> getSlots() {
-		return parts;
-	}
-
-	@Override
-	public int getSlotCount() {
-		return parts.size();
-	}
-
-	@Override
-	public SingleSlotStorage<ItemVariant> getSlot(int slot) {
-		return parts.get(slot);
+	private boolean isStillValid() {
+		return ctx.getItemVariant().getItem() == originalItem;
 	}
 
 	private class ContainerSlotWrapper implements SingleSlotStorage<ItemVariant> {
@@ -111,6 +100,8 @@ public class ContainerComponentStorage extends CombinedStorage<ItemVariant, Sing
 		public long insert(ItemVariant insertedVariant, long maxAmount, TransactionContext transaction) {
 			StoragePreconditions.notBlankNotNegative(insertedVariant, maxAmount);
 
+			if (!ContainerComponentStorage.this.isStillValid()) return 0;
+
 			ItemStack currentStack = getStack();
 
 			if ((insertedVariant.matches(currentStack) || currentStack.isEmpty()) && insertedVariant.getItem().canBeNested()) {
@@ -137,6 +128,8 @@ public class ContainerComponentStorage extends CombinedStorage<ItemVariant, Sing
 		@Override
 		public long extract(ItemVariant variant, long maxAmount, TransactionContext transaction) {
 			StoragePreconditions.notBlankNotNegative(variant, maxAmount);
+
+			if (!ContainerComponentStorage.this.isStillValid()) return 0;
 
 			ItemStack currentStack = getStack();
 

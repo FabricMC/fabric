@@ -41,7 +41,7 @@ class ContainerItemTests extends AbstractTransferApiTest {
 	@Test
 	public void emptyShulkerBox() {
 		ItemStack stack = new ItemStack(Items.SHULKER_BOX);
-		Storage<ItemVariant> storage = ItemStorage.ITEM.find(stack, ContainerItemContext.withConstant(stack));
+		Storage<ItemVariant> storage = ContainerItemContext.withConstant(stack).find(ItemStorage.ITEM);
 
 		Assertions.assertInstanceOf(SlottedStorage.class, storage);
 		Assertions.assertEquals(27, ((SlottedStorage<ItemVariant>) storage).getSlotCount());
@@ -63,7 +63,7 @@ class ContainerItemTests extends AbstractTransferApiTest {
 			}
 		};
 
-		Storage<ItemVariant> storage = ItemStorage.ITEM.find(sourceStorage.stack, ContainerItemContext.ofSingleSlot(sourceStorage));
+		Storage<ItemVariant> storage = ContainerItemContext.ofSingleSlot(sourceStorage).find(ItemStorage.ITEM);
 
 		Assertions.assertNotNull(storage, "Shulker Box didn't have a Storage<ItemVariant>");
 
@@ -94,7 +94,7 @@ class ContainerItemTests extends AbstractTransferApiTest {
 			}
 		};
 
-		Storage<ItemVariant> storage = ItemStorage.ITEM.find(sourceStorage.stack, ContainerItemContext.ofSingleSlot(sourceStorage));
+		Storage<ItemVariant> storage = ContainerItemContext.ofSingleSlot(sourceStorage).find(ItemStorage.ITEM);
 
 		Assertions.assertNotNull(storage, "Bundle didn't have a Storage<ItemVariant>");
 
@@ -117,6 +117,69 @@ class ContainerItemTests extends AbstractTransferApiTest {
 
 			StorageView<ItemVariant> view = storage.nonEmptyIterator().next();
 			Assertions.assertEquals(29, view.getAmount());
+		}
+	}
+
+	@Test
+	public void shulkerBoxWrongItem() {
+		var sourceStorage = new SingleStackStorage() {
+			public ItemStack stack = new ItemStack(Items.SHULKER_BOX);
+
+			@Override
+			protected ItemStack getStack() {
+				return stack;
+			}
+
+			@Override
+			public void setStack(ItemStack stack) {
+				this.stack = stack;
+			}
+		};
+
+		Storage<ItemVariant> storage = ContainerItemContext.ofSingleSlot(sourceStorage).find(ItemStorage.ITEM);
+
+		Assertions.assertNotNull(storage, "Shulker Box didn't have a Storage<ItemVariant>");
+
+		try (var tx = Transaction.openOuter()) {
+			Assertions.assertEquals(20, storage.insert(ItemVariant.of(Items.NETHER_STAR), 20, tx));
+		}
+
+		sourceStorage.setStack(new ItemStack(Items.NETHER_STAR));
+
+		try (var tx = Transaction.openOuter()) {
+			Assertions.assertEquals(0, storage.insert(ItemVariant.of(Items.NETHER_STAR), 20, tx));
+		}
+	}
+
+	@Test
+	public void bundleWrongItem() {
+		var sourceStorage = new SingleStackStorage() {
+			public ItemStack stack = new ItemStack(Items.BUNDLE);
+
+			@Override
+			protected ItemStack getStack() {
+				return stack;
+			}
+
+			@Override
+			public void setStack(ItemStack stack) {
+				this.stack = stack;
+			}
+		};
+
+		Storage<ItemVariant> storage = ContainerItemContext.ofSingleSlot(sourceStorage).find(ItemStorage.ITEM);
+
+		Assertions.assertNotNull(storage, "Bundle didn't have a Storage<ItemVariant>");
+
+		try (Transaction tx = Transaction.openOuter()) {
+			long inserted1 = storage.insert(ItemVariant.of(Items.NETHER_STAR), 200, tx);
+			Assertions.assertEquals(64, inserted1);
+		}
+
+		sourceStorage.setStack(new ItemStack(Items.NETHER_STAR));
+
+		try (var tx = Transaction.openOuter()) {
+			Assertions.assertEquals(0, storage.insert(ItemVariant.of(Items.NETHER_STAR), 200, tx));
 		}
 	}
 }

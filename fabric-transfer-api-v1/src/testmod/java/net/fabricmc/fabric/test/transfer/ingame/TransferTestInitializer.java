@@ -85,7 +85,7 @@ public class TransferTestInitializer implements ModInitializer {
 														.createStack(1, false));
 
 												ContainerItemContext containerCtx = ContainerItemContext.ofPlayerHand(context.getSource().getPlayerOrThrow(), Hand.MAIN_HAND);
-												Storage<ItemVariant> storage = ItemStorage.ITEM.find(containerCtx.getItemVariant().toStack(), containerCtx);
+												Storage<ItemVariant> storage = containerCtx.find(ItemStorage.ITEM);
 
 												if (storage == null) {
 													context.getSource().sendMessage(Text.literal("no storage found"));
@@ -118,7 +118,7 @@ public class TransferTestInitializer implements ModInitializer {
 														.createStack(1, false));
 
 												ContainerItemContext containerCtx = ContainerItemContext.ofPlayerHand(context.getSource().getPlayerOrThrow(), Hand.MAIN_HAND);
-												Storage<ItemVariant> storage = ItemStorage.ITEM.find(containerCtx.getItemVariant().toStack(), containerCtx);
+												Storage<ItemVariant> storage = containerCtx.find(ItemStorage.ITEM);
 
 												if (storage == null) {
 													context.getSource().sendMessage(Text.literal("no storage found"));

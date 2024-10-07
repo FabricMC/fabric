@@ -85,6 +85,13 @@ public final class ItemStorage {
 	public static final BlockApiLookup<Storage<ItemVariant>, @Nullable Direction> SIDED =
 			BlockApiLookup.get(Identifier.of("fabric", "sided_item_storage"), Storage.asClass(), Direction.class);
 
+	/**
+	 * Item access to item variant storages.
+	 * Querying should happen through {@link ContainerItemContext#find}.
+	 *
+	 * <p>This may be queried both client-side and server-side.
+	 * Returned APIs should behave the same regardless of the logical side.
+	 */
 	public static final ItemApiLookup<Storage<ItemVariant>, ContainerItemContext> ITEM =
 			ItemApiLookup.get(Identifier.of("fabric", "item_storage"), Storage.asClass(), ContainerItemContext.class);
 

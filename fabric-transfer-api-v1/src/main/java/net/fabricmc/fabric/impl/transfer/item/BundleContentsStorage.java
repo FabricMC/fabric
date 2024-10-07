@@ -23,12 +23,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.math.Fraction;
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.BundleContentsComponent;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -56,6 +56,8 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 	public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notBlankNotNegative(resource, maxAmount);
 
+		if (!isStillBundle()) return 0;
+
 		if (maxAmount > Integer.MAX_VALUE) maxAmount = Integer.MAX_VALUE;
 
 		ItemStack stack = resource.toStack((int) maxAmount);
@@ -79,6 +81,8 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 	public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notNegative(maxAmount);
 
+		if (!isStillBundle()) return 0;
+
 		updateSlotsIfNeeded();
 
 		long amount = 0;
@@ -92,10 +96,14 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 	}
 
 	@Override
-	public @NotNull Iterator<StorageView<ItemVariant>> iterator() {
+	public Iterator<StorageView<ItemVariant>> iterator() {
 		updateSlotsIfNeeded();
 
 		return slots.iterator();
+	}
+
+	private boolean isStillBundle() {
+		return ctx.getItemVariant().getItem() == Items.BUNDLE;
 	}
 
 	private void updateSlotsIfNeeded() {
@@ -129,6 +137,7 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 		public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
 			StoragePreconditions.notNegative(maxAmount);
 
+			if (!BundleContentsStorage.this.isStillBundle()) return 0;
 			if (bundleContents().size() <= index) return 0;
 			if (!resource.matches(getStack())) return 0;
 
