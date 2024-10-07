@@ -178,7 +178,7 @@ public class ContainerComponentStorage extends CombinedStorage<ItemVariant, Sing
 
 		@Override
 		public String toString() {
-			return "ContainerSlotWrapper[%s#%d]".formatted(ContainerComponentStorage.this.ctx.getItemVariant().getRegistryEntry().getIdAsString(), slot);
+			return "ContainerSlotWrapper[%s#%d]".formatted(ContainerComponentStorage.this.ctx.getItemVariant(), slot);
 		}
 	}
 }
