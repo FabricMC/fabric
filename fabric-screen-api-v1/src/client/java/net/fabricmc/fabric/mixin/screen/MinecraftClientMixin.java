@@ -66,9 +66,8 @@ abstract class MinecraftClientMixin {
 		ScreenEvents.remove(this.currentScreen).invoker().onRemove(this.currentScreen);
 	}
 
-	// Synthetic method in `tick`
-	// These two injections should be caught by "Screen#wrapScreenError" if anything fails in an event and then rethrown in the crash report
-	@Inject(method = "method_1572", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;tick()V"))
+	// These two injections should be caught by the try-catch block if anything fails in an event and then rethrown in the crash report
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;tick()V"))
 	private void beforeScreenTick(CallbackInfo ci) {
 		// Store the screen in a variable in case someone tries to change the screen during this before tick event.
 		// If someone changes the screen, the after tick event will likely have class cast exceptions or an NPE.
@@ -76,8 +75,7 @@ abstract class MinecraftClientMixin {
 		ScreenEvents.beforeTick(this.tickingScreen).invoker().beforeTick(this.tickingScreen);
 	}
 
-	// Synthetic method in `tick`
-	@Inject(method = "method_1572", at = @At("TAIL"))
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;tick()V", shift = At.Shift.AFTER))
 	private void afterScreenTick(CallbackInfo ci) {
 		ScreenEvents.afterTick(this.tickingScreen).invoker().afterTick(this.tickingScreen);
 		// Finally set the currently ticking screen to null

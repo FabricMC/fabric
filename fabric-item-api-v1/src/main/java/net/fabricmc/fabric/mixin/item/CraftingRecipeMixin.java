@@ -30,13 +30,13 @@ import net.fabricmc.fabric.impl.item.RecipeRemainderHandler;
 
 @Mixin(CraftingRecipe.class)
 public interface CraftingRecipeMixin {
-	@WrapOperation(method = "method_64671", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
+	@WrapOperation(method = "collectRecipeRemainders", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private static Item captureStack(ItemStack stack, Operation<Item> operation) {
 		RecipeRemainderHandler.REMAINDER_STACK.set(stack.getRecipeRemainder());
 		return operation.call(stack);
 	}
 
-	@Redirect(method = "method_64671", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getRecipeRemainder()Lnet/minecraft/item/ItemStack;"))
+	@Redirect(method = "collectRecipeRemainders", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getRecipeRemainder()Lnet/minecraft/item/ItemStack;"))
 	private static ItemStack getStackRemainder(Item item) {
 		ItemStack remainder = RecipeRemainderHandler.REMAINDER_STACK.get();
 		RecipeRemainderHandler.REMAINDER_STACK.remove();

@@ -24,13 +24,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.recipe.RecipeManager;
+import net.minecraft.recipe.ServerRecipeManager;
 import net.minecraft.registry.RegistryWrapper;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricRecipeManager;
 
-@Mixin(RecipeManager.class)
-public class RecipeManagerMixin implements FabricRecipeManager {
+@Mixin(ServerRecipeManager.class)
+public class ServerRecipeManagerMixin implements FabricRecipeManager {
 	@Unique
 	private RegistryWrapper.WrapperLookup registries;
 

@@ -10,10 +10,10 @@
     "ResourceMixin",
     "ResourcePackManagerMixin",
     "ResourcePackProfileMixin",
-    "RecipeManagerMixin",
     "SelectKnownPacksC2SPacketMixin",
     "ServerConfigurationNetworkHandlerMixin",
     "ServerPropertiesHandlerMixin",
+    "ServerRecipeManagerMixin",
     "SimpleResourceReloadMixin",
     "SynchronizeRegistriesTaskMixin",
     "TestServerMixin"
