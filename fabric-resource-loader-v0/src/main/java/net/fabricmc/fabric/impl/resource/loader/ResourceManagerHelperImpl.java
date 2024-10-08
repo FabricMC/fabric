@@ -245,7 +245,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 			}
 		}
 
-		throw new IllegalStateException("No RecipeManager found in listeners!");
+		throw new IllegalStateException("No ServerRecipeManager found in listeners!");
 	}
 
 	@Override

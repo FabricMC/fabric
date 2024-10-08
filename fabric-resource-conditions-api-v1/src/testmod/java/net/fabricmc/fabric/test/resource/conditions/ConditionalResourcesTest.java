@@ -18,7 +18,7 @@ package net.fabricmc.fabric.test.resource.conditions;
 
 import net.minecraft.block.entity.BannerPattern;
 import net.minecraft.loot.LootTable;
-import net.minecraft.recipe.RecipeManager;
+import net.minecraft.recipe.ServerRecipeManager;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
@@ -39,7 +39,7 @@ public class ConditionalResourcesTest {
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void conditionalRecipes(TestContext context) {
-		RecipeManager manager = context.getWorld().getRecipeManager();
+		ServerRecipeManager manager = context.getWorld().getRecipeManager();
 
 		if (manager.get(RegistryKey.of(RegistryKeys.RECIPE, id("not_loaded"))).isPresent()) {
 			throw new AssertionError("not_loaded recipe should not have been loaded.");

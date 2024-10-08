@@ -41,7 +41,7 @@ public class ClientRegistriesMixin {
 	/**
 	 * Keep the pre-24w04a behavior of removing empty registries, even if the client knows that registry.
 	 */
-	@WrapOperation(method = "method_62155", at = @At(value = "FIELD", target = "Lnet/minecraft/registry/RegistryLoader;SYNCED_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC))
+	@WrapOperation(method = "createRegistryManager", at = @At(value = "FIELD", target = "Lnet/minecraft/registry/RegistryLoader;SYNCED_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC))
 	private List<RegistryLoader.Entry<?>> skipEmptyRegistries(Operation<List<RegistryLoader.Entry<?>>> operation, ResourceFactory resourceFactory, @Coerce ClientRegistriesDynamicRegistriesAccessor storage, boolean bl) {
 		Map<RegistryKey<? extends Registry<?>>, List<SerializableRegistries.SerializedRegistryEntry>> dynamicRegistries = storage.getDynamicRegistries();
 
