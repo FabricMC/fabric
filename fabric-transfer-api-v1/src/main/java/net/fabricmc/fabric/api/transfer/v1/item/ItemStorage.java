@@ -165,6 +165,25 @@ public final class ItemStorage {
 				Items.BLACK_SHULKER_BOX
 		);
 
-		ItemStorage.ITEM.registerForItems((itemStack, context) -> new BundleContentsStorage(context), Items.BUNDLE);
+		ItemStorage.ITEM.registerForItems(
+				(itemStack, context) -> new BundleContentsStorage(context),
+				Items.BUNDLE,
+				Items.WHITE_BUNDLE,
+				Items.ORANGE_BUNDLE,
+				Items.MAGENTA_BUNDLE,
+				Items.LIGHT_BLUE_BUNDLE,
+				Items.YELLOW_BUNDLE,
+				Items.LIME_BUNDLE,
+				Items.PINK_BUNDLE,
+				Items.GRAY_BUNDLE,
+				Items.LIGHT_GRAY_BUNDLE,
+				Items.CYAN_BUNDLE,
+				Items.PURPLE_BUNDLE,
+				Items.BLUE_BUNDLE,
+				Items.BROWN_BUNDLE,
+				Items.GREEN_BUNDLE,
+				Items.RED_BUNDLE,
+				Items.BLACK_BUNDLE
+		);
 	}
 }

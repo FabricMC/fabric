@@ -27,8 +27,8 @@ import org.apache.commons.lang3.math.Fraction;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.BundleContentsComponent;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -42,9 +42,11 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 	private final ContainerItemContext ctx;
 	private final List<BundleSlotWrapper> slotCache = new ArrayList<>();
 	private List<StorageView<ItemVariant>> slots = List.of();
+	private final Item originalItem;
 
 	public BundleContentsStorage(ContainerItemContext ctx) {
 		this.ctx = ctx;
+		this.originalItem = ctx.getItemVariant().getItem();
 	}
 
 	private boolean updateStack(ComponentChanges changes, TransactionContext transaction) {
@@ -56,7 +58,7 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 	public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notBlankNotNegative(resource, maxAmount);
 
-		if (!isStillBundle()) return 0;
+		if (!isStillValid()) return 0;
 
 		if (maxAmount > Integer.MAX_VALUE) maxAmount = Integer.MAX_VALUE;
 
@@ -67,6 +69,8 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 		var builder = new BundleContentsComponent.Builder(bundleContents());
 
 		int inserted = builder.add(stack);
+
+		if (inserted == 0) return 0;
 
 		ComponentChanges changes = ComponentChanges.builder()
 				.add(DataComponentTypes.BUNDLE_CONTENTS, builder.build())
@@ -81,7 +85,7 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 	public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
 		StoragePreconditions.notNegative(maxAmount);
 
-		if (!isStillBundle()) return 0;
+		if (!isStillValid()) return 0;
 
 		updateSlotsIfNeeded();
 
@@ -102,17 +106,19 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 		return slots.iterator();
 	}
 
-	private boolean isStillBundle() {
-		return ctx.getItemVariant().getItem() == Items.BUNDLE;
+	private boolean isStillValid() {
+		return ctx.getItemVariant().getItem() == originalItem;
 	}
 
 	private void updateSlotsIfNeeded() {
-		if (slots.size() != bundleContents().size()) {
-			while (bundleContents().size() > slotCache.size()) {
+		int bundleSize = bundleContents().size();
+
+		if (slots.size() != bundleSize) {
+			while (bundleSize > slotCache.size()) {
 				slotCache.add(new BundleSlotWrapper(slotCache.size()));
 			}
 
-			slots = Collections.unmodifiableList(slotCache.subList(0, bundleContents().size()));
+			slots = Collections.unmodifiableList(slotCache.subList(0, bundleSize));
 		}
 	}
 
@@ -137,7 +143,7 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 		public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
 			StoragePreconditions.notNegative(maxAmount);
 
-			if (!BundleContentsStorage.this.isStillBundle()) return 0;
+			if (!BundleContentsStorage.this.isStillValid()) return 0;
 			if (bundleContents().size() <= index) return 0;
 			if (!resource.matches(getStack())) return 0;
 
@@ -148,12 +154,8 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 			stacksCopy.get(index).decrement(extracted);
 			if (stacksCopy.get(index).isEmpty()) stacksCopy.remove(index);
 
-			var builder = new BundleContentsComponent.Builder(BundleContentsComponent.DEFAULT);
-
-			for (ItemStack stack : stacksCopy) builder.add(stack);
-
 			ComponentChanges changes = ComponentChanges.builder()
-					.add(DataComponentTypes.BUNDLE_CONTENTS, builder.build())
+					.add(DataComponentTypes.BUNDLE_CONTENTS, new BundleContentsComponent(stacksCopy))
 					.build();
 
 			if (!updateStack(changes, transaction)) return 0;
