@@ -35,7 +35,7 @@ public final class ConventionalFluidTags {
 	}
 
 	/**
-	 * Holds all fluids related to water without the behaviors attached to the vanilla lava fluid tag.
+	 * Holds all fluids related to lava without the behaviors attached to the vanilla lava fluid tag.
 	 */
 	public static final TagKey<Fluid> LAVA = register("lava");
 	/**
