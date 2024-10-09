@@ -23,6 +23,9 @@ import java.util.Optional;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.recipe.display.SlotDisplay;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.ComponentChanges;
@@ -84,13 +87,20 @@ public class ComponentsIngredient implements CustomIngredient {
 
 	@Override
 	public List<RegistryEntry<Item>> getMatchingStacks() {
-		return base.getMatchingStacks().stream()
-				.filter(registryEntry -> {
-					ItemStack itemStack = registryEntry.value().getDefaultStack();
-					itemStack.applyChanges(components);
-					return base.test(itemStack);
-				})
-				.toList();
+		return base.getMatchingStacks();
+	}
+
+	@Override
+	public SlotDisplay toDisplay() {
+		return new SlotDisplay.CompositeSlotDisplay(
+			base.getMatchingStacks().stream().map(this::createEntryDisplay).toList()
+		);
+	}
+
+	private SlotDisplay createEntryDisplay(RegistryEntry<Item> entry) {
+		ItemStack stack = entry.value().getDefaultStack();
+		stack.applyChanges(components);
+		return new SlotDisplay.StackSlotDisplay(stack);
 	}
 
 	@Override

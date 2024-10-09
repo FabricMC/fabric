@@ -23,7 +23,9 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.display.SlotDisplay;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 
@@ -87,6 +89,20 @@ public interface CustomIngredient {
 	 * <p>The serializer must have been registered using {@link CustomIngredientSerializer#register}.
 	 */
 	CustomIngredientSerializer<?> getSerializer();
+
+	/**
+	 * Returns a {@link SlotDisplay} representing this ingredient, this is synced to the client to display in the recipe book.
+	 *
+	 * @return a {@link SlotDisplay} instance.
+	 */
+	default SlotDisplay toDisplay() {
+		// Matches the vanilla logic in Ingredient.toDisplay()
+		return RegistryEntryList.of(getMatchingStacks()).getStorage().map(
+				SlotDisplay.TagSlotDisplay::new,
+				(itemEntries) -> new SlotDisplay.CompositeSlotDisplay(
+						itemEntries.stream().map(Ingredient::method_64981).toList()
+				));
+	}
 
 	/**
 	 * {@return a new {@link Ingredient} behaving as defined by this custom ingredient}.
