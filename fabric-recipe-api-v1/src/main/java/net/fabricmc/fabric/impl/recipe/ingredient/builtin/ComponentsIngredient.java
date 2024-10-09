@@ -23,9 +23,6 @@ import java.util.Optional;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import net.minecraft.recipe.display.SlotDisplay;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.ComponentChanges;
@@ -35,6 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.display.SlotDisplay;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
