@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.client.rendering;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,12 +34,14 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.CloudRenderMode;
 import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.DefaultFramebufferSet;
 import net.minecraft.client.render.Fog;
 import net.minecraft.client.render.FrameGraphBuilder;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderPass;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
@@ -63,6 +66,9 @@ public abstract class WorldRendererMixin {
 	@Final
 	@Shadow
 	private MinecraftClient client;
+	@Shadow
+	@Final
+	private DefaultFramebufferSet framebufferSet;
 	@Unique private final WorldRenderContextImpl context = new WorldRenderContextImpl();
 
 	@Inject(method = "render", at = @At("HEAD"))
@@ -151,8 +157,11 @@ public abstract class WorldRendererMixin {
 	}
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;"))
-	private void beforeClouds(CallbackInfo ci) {
-		WorldRenderEvents.AFTER_TRANSLUCENT.invoker().afterTranslucent(context);
+	private void beforeClouds(CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder) {
+		RenderPass afterTranslucentPass = frameGraphBuilder.createPass("afterTranslucent");
+		framebufferSet.mainFramebuffer = afterTranslucentPass.transfer(framebufferSet.mainFramebuffer);
+
+		afterTranslucentPass.setRenderer(() -> WorldRenderEvents.AFTER_TRANSLUCENT.invoker().afterTranslucent(context));
 	}
 
 	@Inject(method = "method_62214", at = @At("RETURN"))
