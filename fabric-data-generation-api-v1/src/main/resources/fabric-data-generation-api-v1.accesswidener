@@ -291,6 +291,7 @@ transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableG
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	mushroomBlockDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	shortPlantDrops	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	dropsWithShears	(Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/loot/LootTable$Builder;
+transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	method_65053	(Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	multifaceGrowthDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/loot/condition/LootCondition$Builder;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	paleMossCarpetDrops	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	leavesDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;[F)Lnet/minecraft/loot/LootTable$Builder;
