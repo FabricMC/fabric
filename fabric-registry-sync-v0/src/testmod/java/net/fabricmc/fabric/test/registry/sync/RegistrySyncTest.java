@@ -147,7 +147,7 @@ public class RegistrySyncTest implements ModInitializer {
 			return;
 		}
 
-		if (registry == Registries.RECIPE_SERIALIZER) {
+		if (registry.getValue().equals(Identifier.of("recipe_serializer"))) {
 			// Recipe serializers are not synced, as there is an unused codec left over.
 			return;
 		}
