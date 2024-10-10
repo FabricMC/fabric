@@ -54,7 +54,7 @@ public class AnyIngredient extends CombinedIngredient {
 	}
 
 	@Override
-	public List<RegistryEntry<Item>> getMatchingStacks() {
+	public List<RegistryEntry<Item>> getMatchingItems() {
 		List<RegistryEntry<Item>> previewStacks = new ArrayList<>();
 
 		for (Ingredient ingredient : ingredients) {

@@ -73,7 +73,7 @@ public interface CustomIngredient {
 	 *
 	 * <p>Note: no caching needs to be done by the implementation, this is already handled by the ingredient itself.
 	 */
-	List<RegistryEntry<Item>> getMatchingStacks();
+	List<RegistryEntry<Item>> getMatchingItems();
 
 	/**
 	 * Returns whether this ingredient always requires {@linkplain #test direct stack testing}.
@@ -97,10 +97,10 @@ public interface CustomIngredient {
 	 */
 	default SlotDisplay toDisplay() {
 		// Matches the vanilla logic in Ingredient.toDisplay()
-		return RegistryEntryList.of(getMatchingStacks()).getStorage().map(
+		return RegistryEntryList.of(getMatchingItems()).getStorage().map(
 				SlotDisplay.TagSlotDisplay::new,
 				(itemEntries) -> new SlotDisplay.CompositeSlotDisplay(
-						itemEntries.stream().map(Ingredient::method_64981).toList()
+						itemEntries.stream().map(Ingredient::createDisplayWithRemainder).toList()
 				));
 	}
 

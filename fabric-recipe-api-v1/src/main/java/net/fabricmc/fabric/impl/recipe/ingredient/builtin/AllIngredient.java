@@ -54,7 +54,7 @@ public class AllIngredient extends CombinedIngredient {
 	}
 
 	@Override
-	public List<RegistryEntry<Item>> getMatchingStacks() {
+	public List<RegistryEntry<Item>> getMatchingItems() {
 		// There's always at least one sub ingredient, so accessing ingredients[0] is safe.
 		List<RegistryEntry<Item>> previewStacks = new ArrayList<>(ingredients.getFirst().getMatchingStacks());
 

@@ -84,7 +84,7 @@ public class ComponentsIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public List<RegistryEntry<Item>> getMatchingStacks() {
+	public List<RegistryEntry<Item>> getMatchingItems() {
 		return base.getMatchingStacks();
 	}
 

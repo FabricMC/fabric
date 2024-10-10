@@ -95,7 +95,7 @@ public class CustomIngredientImpl extends Ingredient {
 	@Override
 	public List<RegistryEntry<Item>> getMatchingStacks() {
 		if (this.matchingStacks == null) {
-			this.matchingStacks = customIngredient.getMatchingStacks();
+			this.matchingStacks = customIngredient.getMatchingItems();
 		}
 
 		return this.matchingStacks;
