@@ -32,6 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.display.SlotDisplay;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
@@ -84,13 +85,20 @@ public class ComponentsIngredient implements CustomIngredient {
 
 	@Override
 	public List<RegistryEntry<Item>> getMatchingItems() {
-		return base.getMatchingItems().stream()
-				.filter(registryEntry -> {
-					ItemStack itemStack = registryEntry.value().getDefaultStack();
-					itemStack.applyChanges(components);
-					return base.test(itemStack);
-				})
-				.toList();
+		return base.getMatchingItems();
+	}
+
+	@Override
+	public SlotDisplay toDisplay() {
+		return new SlotDisplay.CompositeSlotDisplay(
+			base.getMatchingItems().stream().map(this::createEntryDisplay).toList()
+		);
+	}
+
+	private SlotDisplay createEntryDisplay(RegistryEntry<Item> entry) {
+		ItemStack stack = entry.value().getDefaultStack();
+		stack.applyChanges(components);
+		return new SlotDisplay.StackSlotDisplay(stack);
 	}
 
 	@Override

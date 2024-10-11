@@ -25,6 +25,7 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.display.SlotDisplay;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
@@ -57,6 +58,13 @@ abstract class CombinedIngredient implements CustomIngredient {
 
 	List<Ingredient> getIngredients() {
 		return ingredients;
+	}
+
+	@Override
+	public SlotDisplay toDisplay() {
+		return new SlotDisplay.CompositeSlotDisplay(
+				ingredients.stream().map(Ingredient::toDisplay).toList()
+		);
 	}
 
 	static class Serializer<I extends CombinedIngredient> implements CustomIngredientSerializer<I> {
