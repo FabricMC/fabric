@@ -35,6 +35,7 @@ classes/
 run
 *.log
 *.log.gz
+focus.txt
 
 # Windows
 *.db
