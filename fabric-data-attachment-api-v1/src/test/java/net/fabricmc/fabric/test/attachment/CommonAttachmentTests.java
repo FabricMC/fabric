@@ -87,7 +87,10 @@ public class CommonAttachmentTests {
 		ServerWorld serverWorld = mock(ServerWorld.class, CALLS_REAL_METHODS);
 		Entity entity = mock(Entity.class, CALLS_REAL_METHODS);
 		BlockEntity blockEntity = mock(BlockEntity.class, CALLS_REAL_METHODS);
+
 		WorldChunk worldChunk = mock(WorldChunk.class, CALLS_REAL_METHODS);
+		worldChunk.method_65066(pos -> { });
+
 		ProtoChunk protoChunk = mock(ProtoChunk.class, CALLS_REAL_METHODS);
 
 		for (AttachmentTarget target : new AttachmentTarget[]{serverWorld, entity, blockEntity, worldChunk, protoChunk}) {

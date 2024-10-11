@@ -147,6 +147,11 @@ public class RegistrySyncTest implements ModInitializer {
 			return;
 		}
 
+		if (registry.getValue().equals(Identifier.of("recipe_serializer"))) {
+			// Recipe serializers are not synced, as there is an unused codec left over.
+			return;
+		}
+
 		if (!RegistryAttributeHolder.get(registry).hasAttribute(RegistryAttribute.SYNCED)) {
 			throw new IllegalStateException("Registry " + registry.getValue() + " is not marked as SYNCED!");
 		}

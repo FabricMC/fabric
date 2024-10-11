@@ -98,6 +98,6 @@ public class VoidChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public void getDebugHudText(List<String> list, NoiseConfig noiseConfig, BlockPos blockPos) {
+	public void appendDebugHudText(List<String> list, NoiseConfig noiseConfig, BlockPos blockPos) {
 	}
 }

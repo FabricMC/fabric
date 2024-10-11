@@ -5,6 +5,10 @@
     "minecraft:swamp",
     "minecraft:stony_shore",
     "minecraft:dark_forest",
+    {
+      "id": "minecraft:pale_garden",
+      "required": false
+    },
     "minecraft:windswept_forest",
     "minecraft:birch_forest",
     "minecraft:old_growth_birch_forest",

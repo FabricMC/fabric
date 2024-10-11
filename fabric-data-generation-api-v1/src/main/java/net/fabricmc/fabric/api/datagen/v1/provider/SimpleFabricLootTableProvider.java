@@ -20,9 +20,9 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.data.DataWriter;
-import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.util.context.ContextType;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -34,21 +34,21 @@ import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
 public abstract class SimpleFabricLootTableProvider implements FabricLootTableProvider {
 	protected final FabricDataOutput output;
 	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup;
-	protected final LootContextType lootContextType;
+	protected final ContextType contextType;
 
-	public SimpleFabricLootTableProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup, LootContextType lootContextType) {
+	public SimpleFabricLootTableProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup, ContextType contextType) {
 		this.output = output;
 		this.registryLookup = registryLookup;
-		this.lootContextType = lootContextType;
+		this.contextType = contextType;
 	}
 
 	@Override
 	public CompletableFuture<?> run(DataWriter writer) {
-		return FabricLootTableProviderImpl.run(writer, this, lootContextType, output, registryLookup);
+		return FabricLootTableProviderImpl.run(writer, this, contextType, output, registryLookup);
 	}
 
 	@Override
 	public String getName() {
-		return Objects.requireNonNull(LootContextTypes.MAP.inverse().get(lootContextType), "Could not get id for loot context type") + " Loot Table";
+		return Objects.requireNonNull(LootContextTypes.MAP.inverse().get(contextType), "Could not get id for loot context type") + " Loot Table";
 	}
 }

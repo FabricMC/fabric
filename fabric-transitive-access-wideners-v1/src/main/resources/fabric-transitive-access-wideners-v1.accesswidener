@@ -160,6 +160,7 @@ transitive-accessible method net/minecraft/block/CoralBlock <init> (Lnet/minecra
 transitive-accessible method net/minecraft/block/CoralFanBlock <init> (Lnet/minecraft/block/Block;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/CoralWallFanBlock <init> (Lnet/minecraft/block/Block;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/CraftingTableBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
+transitive-accessible method net/minecraft/block/CreakingHeartBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/CropBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/DeadBushBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/DeadCoralBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
@@ -265,6 +266,7 @@ transitive-accessible field net/minecraft/client/render/RenderPhase CUTOUT_PROGR
 transitive-accessible field net/minecraft/client/render/RenderPhase TRANSLUCENT_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase TRANSLUCENT_MOVING_BLOCK_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase ARMOR_CUTOUT_NO_CULL_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
+transitive-accessible field net/minecraft/client/render/RenderPhase ARMOR_TRANSLUCENT Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase ENTITY_SOLID_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase ENTITY_CUTOUT_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;
 transitive-accessible field net/minecraft/client/render/RenderPhase ENTITY_CUTOUT_NONULL_PROGRAM Lnet/minecraft/client/render/RenderPhase$ShaderProgram;

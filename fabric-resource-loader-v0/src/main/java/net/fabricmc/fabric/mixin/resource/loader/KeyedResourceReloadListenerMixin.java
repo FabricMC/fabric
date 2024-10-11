@@ -22,7 +22,7 @@ import java.util.Locale;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.recipe.RecipeManager;
+import net.minecraft.recipe.ServerRecipeManager;
 import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.server.function.FunctionLoader;
 import net.minecraft.util.Identifier;
@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 
 @Mixin({
 		/* public */
-		RecipeManager.class, ServerAdvancementLoader.class, FunctionLoader.class
+		ServerRecipeManager.class, ServerAdvancementLoader.class, FunctionLoader.class
 		/* private */
 })
 public abstract class KeyedResourceReloadListenerMixin implements IdentifiableResourceReloadListener {
@@ -45,7 +45,7 @@ public abstract class KeyedResourceReloadListenerMixin implements IdentifiableRe
 		if (this.fabric$id == null) {
 			Object self = this;
 
-			if (self instanceof RecipeManager) {
+			if (self instanceof ServerRecipeManager) {
 				this.fabric$id = ResourceReloadListenerKeys.RECIPES;
 			} else if (self instanceof ServerAdvancementLoader) {
 				this.fabric$id = ResourceReloadListenerKeys.ADVANCEMENTS;

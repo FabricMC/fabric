@@ -22,8 +22,11 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.ShapelessRecipe;
 import net.minecraft.recipe.input.CraftingRecipeInput;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.GameTestException;
 import net.minecraft.test.TestContext;
@@ -37,8 +40,8 @@ public class ShapelessRecipeMatchTests {
 	 */
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testShapelessMatch(TestContext context) {
-		Identifier recipeId = Identifier.of("fabric-recipe-api-v1-testmod", "test_shapeless_match");
-		ShapelessRecipe recipe = (ShapelessRecipe) context.getWorld().getRecipeManager().get(recipeId).get().value();
+		RegistryKey<Recipe<?>> recipeKey = RegistryKey.of(RegistryKeys.RECIPE, Identifier.of("fabric-recipe-api-v1-testmod", "test_shapeless_match"));
+		ShapelessRecipe recipe = (ShapelessRecipe) context.getWorld().getRecipeManager().get(recipeKey).get().value();
 
 		ItemStack undamagedPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
 		ItemStack damagedPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);

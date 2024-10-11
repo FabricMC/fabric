@@ -80,7 +80,7 @@ public class ClientTagsLoader {
 			tagEntry.resolve(new TagEntry.ValueGetter<>() {
 				@Nullable
 				@Override
-				public Identifier direct(Identifier id) {
+				public Identifier direct(Identifier id, boolean required) {
 					immediateChildIds.add(id);
 					return id;
 				}
