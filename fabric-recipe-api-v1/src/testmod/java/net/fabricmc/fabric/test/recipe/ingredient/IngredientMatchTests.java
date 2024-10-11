@@ -42,9 +42,9 @@ public class IngredientMatchTests {
 	public void testAllIngredient(TestContext context) {
 		Ingredient allIngredient = DefaultCustomIngredients.all(Ingredient.ofItems(Items.APPLE, Items.CARROT), Ingredient.ofItems(Items.STICK, Items.CARROT));
 
-		assertEquals(1, allIngredient.getMatchingStacks().size());
-		assertEquals(Items.CARROT, allIngredient.getMatchingStacks().getFirst().value());
-		assertEquals(false, allIngredient.getMatchingStacks().isEmpty());
+		assertEquals(1, allIngredient.getMatchingItems().size());
+		assertEquals(Items.CARROT, allIngredient.getMatchingItems().getFirst().value());
+		assertEquals(false, allIngredient.getMatchingItems().isEmpty());
 
 		assertEquals(false, allIngredient.test(new ItemStack(Items.APPLE)));
 		assertEquals(true, allIngredient.test(new ItemStack(Items.CARROT)));
@@ -52,8 +52,8 @@ public class IngredientMatchTests {
 
 		Ingredient emptyAllIngredient = DefaultCustomIngredients.all(Ingredient.ofItems(Items.APPLE), Ingredient.ofItems(Items.STICK));
 
-		assertEquals(0, emptyAllIngredient.getMatchingStacks().size());
-		assertEquals(true, emptyAllIngredient.getMatchingStacks().isEmpty());
+		assertEquals(0, emptyAllIngredient.getMatchingItems().size());
+		assertEquals(true, emptyAllIngredient.getMatchingItems().isEmpty());
 
 		assertEquals(false, emptyAllIngredient.test(new ItemStack(Items.APPLE)));
 		assertEquals(false, emptyAllIngredient.test(new ItemStack(Items.STICK)));
@@ -65,12 +65,12 @@ public class IngredientMatchTests {
 	public void testAnyIngredient(TestContext context) {
 		Ingredient anyIngredient = DefaultCustomIngredients.any(Ingredient.ofItems(Items.APPLE, Items.CARROT), Ingredient.ofItems(Items.STICK, Items.CARROT));
 
-		assertEquals(4, anyIngredient.getMatchingStacks().size());
-		assertEquals(Items.APPLE, anyIngredient.getMatchingStacks().getFirst().value());
-		assertEquals(Items.CARROT, anyIngredient.getMatchingStacks().get(1).value());
-		assertEquals(Items.STICK, anyIngredient.getMatchingStacks().get(2).value());
-		assertEquals(Items.CARROT, anyIngredient.getMatchingStacks().get(3).value());
-		assertEquals(false, anyIngredient.getMatchingStacks().isEmpty());
+		assertEquals(4, anyIngredient.getMatchingItems().size());
+		assertEquals(Items.APPLE, anyIngredient.getMatchingItems().getFirst().value());
+		assertEquals(Items.CARROT, anyIngredient.getMatchingItems().get(1).value());
+		assertEquals(Items.STICK, anyIngredient.getMatchingItems().get(2).value());
+		assertEquals(Items.CARROT, anyIngredient.getMatchingItems().get(3).value());
+		assertEquals(false, anyIngredient.getMatchingItems().isEmpty());
 
 		assertEquals(true, anyIngredient.test(new ItemStack(Items.APPLE)));
 		assertEquals(true, anyIngredient.test(new ItemStack(Items.CARROT)));
@@ -83,9 +83,9 @@ public class IngredientMatchTests {
 	public void testDifferenceIngredient(TestContext context) {
 		Ingredient differenceIngredient = DefaultCustomIngredients.difference(Ingredient.ofItems(Items.APPLE, Items.CARROT), Ingredient.ofItems(Items.STICK, Items.CARROT));
 
-		assertEquals(1, differenceIngredient.getMatchingStacks().size());
-		assertEquals(Items.APPLE, differenceIngredient.getMatchingStacks().getFirst().value());
-		assertEquals(false, differenceIngredient.getMatchingStacks().isEmpty());
+		assertEquals(1, differenceIngredient.getMatchingItems().size());
+		assertEquals(Items.APPLE, differenceIngredient.getMatchingItems().getFirst().value());
+		assertEquals(false, differenceIngredient.getMatchingItems().isEmpty());
 
 		assertEquals(true, differenceIngredient.test(new ItemStack(Items.APPLE)));
 		assertEquals(false, differenceIngredient.test(new ItemStack(Items.CARROT)));
@@ -113,15 +113,15 @@ public class IngredientMatchTests {
 		assertEquals(true, undamagedIngredient.test(renamedUndamagedDiamondPickaxe));
 		assertEquals(false, noNameUndamagedIngredient.test(renamedUndamagedDiamondPickaxe));
 
-		assertEquals(3, undamagedIngredient.getMatchingStacks().size());
-		ItemStack result0 = undamagedIngredient.getMatchingStacks().getFirst().value().getDefaultStack();
-		ItemStack result1 = undamagedIngredient.getMatchingStacks().get(1).value().getDefaultStack();
+		assertEquals(3, undamagedIngredient.getMatchingItems().size());
+		ItemStack result0 = undamagedIngredient.getMatchingItems().getFirst().value().getDefaultStack();
+		ItemStack result1 = undamagedIngredient.getMatchingItems().get(1).value().getDefaultStack();
 
 		assertEquals(Items.DIAMOND_PICKAXE, result0.getItem());
 		assertEquals(Items.NETHERITE_PICKAXE, result1.getItem());
 		assertEquals(ComponentChanges.EMPTY, result0.getComponentChanges());
 		assertEquals(ComponentChanges.EMPTY, result1.getComponentChanges());
-		assertEquals(false, undamagedIngredient.getMatchingStacks().isEmpty());
+		assertEquals(false, undamagedIngredient.getMatchingItems().isEmpty());
 
 		// Undamaged is fine
 		assertEquals(true, undamagedIngredient.test(new ItemStack(Items.DIAMOND_PICKAXE)));
@@ -192,11 +192,11 @@ public class IngredientMatchTests {
 		stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(rejectedNbt2));
 		assertEquals(false, customDataIngredient.test(stack));
 
-		List<RegistryEntry<Item>> matchingStacks = customDataIngredient.getMatchingStacks();
-		assertEquals(1, matchingStacks.size());
-		assertEquals(Items.STICK, matchingStacks.getFirst().value());
+		List<RegistryEntry<Item>> matchingItems = customDataIngredient.getMatchingItems();
+		assertEquals(1, matchingItems.size());
+		assertEquals(Items.STICK, matchingItems.getFirst().value());
 		// Test disabled as the vanilla API no longer exposes the stack with data.
-		// assertEquals(NbtComponent.of(requiredNbt), matchingStacks.getFirst().value().getDefaultStack().get(DataComponentTypes.CUSTOM_DATA));
+		// assertEquals(NbtComponent.of(requiredNbt), matchingItems.getFirst().value().getDefaultStack().get(DataComponentTypes.CUSTOM_DATA));
 
 		context.complete();
 	}

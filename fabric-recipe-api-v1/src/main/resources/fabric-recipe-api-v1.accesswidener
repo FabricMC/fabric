@@ -2,7 +2,7 @@ accessWidener   v2  named
 
 extendable    class    net/minecraft/recipe/Ingredient
 accessible    method   net/minecraft/recipe/Ingredient <init> (Lnet/minecraft/registry/entry/RegistryEntryList;)V
-accessible    field    net/minecraft/recipe/Ingredient matchingStacks Ljava/util/List;
+accessible    field    net/minecraft/recipe/Ingredient matchingItems Ljava/util/List;
 
 accessible    field    net/minecraft/network/ClientConnection    channel    Lio/netty/channel/Channel;
 

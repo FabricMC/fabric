@@ -83,8 +83,8 @@ public class ComponentsIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public List<RegistryEntry<Item>> getMatchingStacks() {
-		return base.getMatchingStacks().stream()
+	public List<RegistryEntry<Item>> getMatchingItems() {
+		return base.getMatchingItems().stream()
 				.filter(registryEntry -> {
 					ItemStack itemStack = registryEntry.value().getDefaultStack();
 					itemStack.applyChanges(components);
