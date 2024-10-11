@@ -61,13 +61,13 @@ public class CustomDataIngredient implements CustomIngredient {
 
 	@Override
 	public List<RegistryEntry<Item>> getMatchingItems() {
-		return base.getMatchingStacks();
+		return base.getMatchingItems();
 	}
 
 	@Override
 	public SlotDisplay toDisplay() {
 		return new SlotDisplay.CompositeSlotDisplay(
-				base.getMatchingStacks().stream().map(this::createEntryDisplay).toList()
+				base.getMatchingItems().stream().map(this::createEntryDisplay).toList()
 		);
 	}
 

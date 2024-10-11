@@ -58,7 +58,7 @@ public class AnyIngredient extends CombinedIngredient {
 		List<RegistryEntry<Item>> previewStacks = new ArrayList<>();
 
 		for (Ingredient ingredient : ingredients) {
-			previewStacks.addAll(ingredient.getMatchingStacks());
+			previewStacks.addAll(ingredient.getMatchingItems());
 		}
 
 		return previewStacks;
