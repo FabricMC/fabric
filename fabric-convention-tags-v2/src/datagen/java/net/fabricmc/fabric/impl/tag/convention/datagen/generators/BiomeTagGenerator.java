@@ -189,6 +189,7 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.CHERRY_GROVE)
 				.add(BiomeKeys.MEADOW)
 				.add(BiomeKeys.SWAMP)
+				.add(BiomeKeys.MANGROVE_SWAMP)
 				.add(BiomeKeys.BEACH)
 				.add(BiomeKeys.OCEAN)
 				.add(BiomeKeys.DEEP_OCEAN);
@@ -200,7 +201,6 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.addTag(ConventionalBiomeTags.IS_TEMPERATE_END);
 
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_HOT_OVERWORLD)
-				.add(BiomeKeys.MANGROVE_SWAMP)
 				.add(BiomeKeys.JUNGLE)
 				.add(BiomeKeys.BAMBOO_JUNGLE)
 				.add(BiomeKeys.SPARSE_JUNGLE)
@@ -212,6 +212,7 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.SAVANNA_PLATEAU)
 				.add(BiomeKeys.WINDSWEPT_SAVANNA)
 				.add(BiomeKeys.STONY_PEAKS)
+				.add(BiomeKeys.MUSHROOM_FIELDS)
 				.add(BiomeKeys.WARM_OCEAN);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_HOT_NETHER)
 				.add(BiomeKeys.NETHER_WASTES)
