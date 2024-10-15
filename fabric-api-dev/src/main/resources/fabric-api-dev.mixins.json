@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.dev",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "BlockAndItemMixin",
+    "BlockBoxMixin",
+    "BootstrapMixin",
+    "ChunkMixin",
+    "CommandManagerMixin",
+    "UtilMixin",
+    "WeightMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
