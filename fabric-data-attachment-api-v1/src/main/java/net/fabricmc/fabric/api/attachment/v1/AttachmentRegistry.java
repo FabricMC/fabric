@@ -22,6 +22,8 @@ import java.util.function.Supplier;
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
@@ -138,6 +140,15 @@ public final class AttachmentRegistry {
 		 * @return the builder
 		 */
 		Builder<A> initializer(Supplier<A> initializer);
+
+		/**
+		 * Declares that this attachment type may be automatically synchronized with some clients, as determined by {@code syncPredicate}.
+		 *
+		 * @param packetCodec the codec used to serialize the attachment data over the network
+		 * @param syncPredicate an {@link AttachmentSyncPredicate} determining with which clients to synchronize data
+		 * @return the builder
+		 */
+		AttachmentRegistry.Builder<A> syncWith(PacketCodec<PacketByteBuf, A> packetCodec, AttachmentSyncPredicate syncPredicate);
 
 		/**
 		 * Builds and registers the {@link AttachmentType}.

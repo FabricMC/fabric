@@ -6,10 +6,16 @@
     "AttachmentTargetsMixin",
     "BannerBlockEntityMixin",
     "BlockEntityMixin",
+    "ChunkDataSenderMixin",
+    "ChunkMixin",
     "ChunkSerializerMixin",
+    "ClientConnectionMixin",
+    "CustomPayloadS2CPacketAccessor",
     "EntityMixin",
     "ServerWorldMixin",
+    "VarIntsAccessor",
     "WorldChunkMixin",
+    "WorldMixin",
     "WrapperProtoChunkMixin"
   ],
   "injectors": {
