@@ -44,7 +44,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		generateFoodTags();
 		generateDyeTags();
 		generateDyedTags();
-		generateCropTags();
+		generateCropAndSeedsTags();
 		generateVillagerJobSites();
 		generateOtherTags();
 		copyItemTags();
@@ -54,6 +54,13 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	private void copyItemTags() {
 		copy(ConventionalBlockTags.STONES, ConventionalItemTags.STONES);
 		copy(ConventionalBlockTags.COBBLESTONES, ConventionalItemTags.COBBLESTONES);
+		copy(ConventionalBlockTags.NORMAL_COBBLESTONES, ConventionalItemTags.NORMAL_COBBLESTONES);
+		copy(ConventionalBlockTags.MOSSY_COBBLESTONES, ConventionalItemTags.MOSSY_COBBLESTONES);
+		copy(ConventionalBlockTags.INFESTED_COBBLESTONES, ConventionalItemTags.INFESTED_COBBLESTONES);
+		copy(ConventionalBlockTags.DEEPSLATE_COBBLESTONES, ConventionalItemTags.DEEPSLATE_COBBLESTONES);
+		copy(ConventionalBlockTags.NETHERRACKS, ConventionalItemTags.NETHERRACKS);
+		copy(ConventionalBlockTags.END_STONES, ConventionalItemTags.END_STONES);
+		copy(ConventionalBlockTags.GRAVELS, ConventionalItemTags.GRAVELS);
 		copy(ConventionalBlockTags.OBSIDIANS, ConventionalItemTags.OBSIDIANS);
 		copy(ConventionalBlockTags.NORMAL_OBSIDIANS, ConventionalItemTags.NORMAL_OBSIDIANS);
 		copy(ConventionalBlockTags.CRYING_OBSIDIANS, ConventionalItemTags.CRYING_OBSIDIANS);
@@ -62,6 +69,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.BOOKSHELVES, ConventionalItemTags.BOOKSHELVES);
 		copy(ConventionalBlockTags.CHESTS, ConventionalItemTags.CHESTS);
 		copy(ConventionalBlockTags.WOODEN_CHESTS, ConventionalItemTags.WOODEN_CHESTS);
+		copy(ConventionalBlockTags.TRAPPED_CHESTS, ConventionalItemTags.TRAPPED_CHESTS);
+		copy(ConventionalBlockTags.ENDER_CHESTS, ConventionalItemTags.ENDER_CHESTS);
 		copy(ConventionalBlockTags.GLASS_BLOCKS, ConventionalItemTags.GLASS_BLOCKS);
 		copy(ConventionalBlockTags.GLASS_BLOCKS_COLORLESS, ConventionalItemTags.GLASS_BLOCKS_COLORLESS);
 		copy(ConventionalBlockTags.GLASS_BLOCKS_TINTED, ConventionalItemTags.GLASS_BLOCKS_TINTED);
@@ -129,6 +138,10 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.BUDS, ConventionalItemTags.BUDS);
 		copy(ConventionalBlockTags.CLUSTERS, ConventionalItemTags.CLUSTERS);
 
+		copy(ConventionalBlockTags.COLORLESS_SANDS, ConventionalItemTags.COLORLESS_SANDS);
+		copy(ConventionalBlockTags.RED_SANDS, ConventionalItemTags.RED_SANDS);
+		copy(ConventionalBlockTags.SANDS, ConventionalItemTags.SANDS);
+
 		copy(ConventionalBlockTags.SANDSTONE_BLOCKS, ConventionalItemTags.SANDSTONE_BLOCKS);
 		copy(ConventionalBlockTags.SANDSTONE_SLABS, ConventionalItemTags.SANDSTONE_SLABS);
 		copy(ConventionalBlockTags.SANDSTONE_STAIRS, ConventionalItemTags.SANDSTONE_STAIRS);
@@ -157,6 +170,11 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.STORAGE_BLOCKS_SLIME, ConventionalItemTags.STORAGE_BLOCKS_SLIME);
 		copy(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT, ConventionalItemTags.STORAGE_BLOCKS_WHEAT);
 
+		copy(ConventionalBlockTags.FENCES, ConventionalItemTags.FENCES);
+		copy(ConventionalBlockTags.WOODEN_FENCES, ConventionalItemTags.WOODEN_FENCES);
+		copy(ConventionalBlockTags.NETHER_BRICK_FENCES, ConventionalItemTags.NETHER_BRICK_FENCES);
+		copy(ConventionalBlockTags.FENCE_GATES, ConventionalItemTags.FENCE_GATES);
+		copy(ConventionalBlockTags.WOODEN_FENCE_GATES, ConventionalItemTags.WOODEN_FENCE_GATES);
 		copy(ConventionalBlockTags.STRIPPED_LOGS, ConventionalItemTags.STRIPPED_LOGS);
 		copy(ConventionalBlockTags.STRIPPED_WOODS, ConventionalItemTags.STRIPPED_WOODS);
 	}
@@ -214,10 +232,12 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateConsumableTags() {
-		getOrCreateTagBuilder(ConventionalItemTags.POTIONS)
+		getOrCreateTagBuilder(ConventionalItemTags.BOTTLE_POTIONS)
 				.add(Items.POTION)
 				.add(Items.SPLASH_POTION)
 				.add(Items.LINGERING_POTION);
+		getOrCreateTagBuilder(ConventionalItemTags.POTIONS)
+				.addOptionalTag(ConventionalItemTags.BOTTLE_POTIONS);
 	}
 
 	private void generateFoodTags() {
@@ -460,9 +480,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.IRON_NUGGETS)
 				.addOptionalTag(ConventionalItemTags.GOLD_NUGGETS);
 		copy(ConventionalBlockTags.ORES, ConventionalItemTags.ORES);
-		getOrCreateTagBuilder(ConventionalItemTags.ORES)
-				.addOptionalTag(ConventionalItemTags.NETHERITE_SCRAP_ORES)
-				.addOptionalTag(ConventionalItemTags.QUARTZ_ORES);
 		getOrCreateTagBuilder(ConventionalItemTags.RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.COPPER_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.GOLD_RAW_MATERIALS)
@@ -513,10 +530,16 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.COAL)
 				.addOptionalTag(ItemTags.COALS);
 
-		getOrCreateTagBuilder(ConventionalItemTags.QUARTZ_ORES)
-				.add(Items.NETHER_QUARTZ_ORE);
-		getOrCreateTagBuilder(ConventionalItemTags.NETHERITE_SCRAP_ORES)
-				.add(Items.ANCIENT_DEBRIS);
+		copy(ConventionalBlockTags.COAL_ORES, ConventionalItemTags.COAL_ORES);
+		copy(ConventionalBlockTags.COPPER_ORES, ConventionalItemTags.COPPER_ORES);
+		copy(ConventionalBlockTags.DIAMOND_ORES, ConventionalItemTags.DIAMOND_ORES);
+		copy(ConventionalBlockTags.EMERALD_ORES, ConventionalItemTags.EMERALD_ORES);
+		copy(ConventionalBlockTags.GOLD_ORES, ConventionalItemTags.GOLD_ORES);
+		copy(ConventionalBlockTags.IRON_ORES, ConventionalItemTags.IRON_ORES);
+		copy(ConventionalBlockTags.LAPIS_ORES, ConventionalItemTags.LAPIS_ORES);
+		copy(ConventionalBlockTags.NETHERITE_SCRAP_ORES, ConventionalItemTags.NETHERITE_SCRAP_ORES);
+		copy(ConventionalBlockTags.REDSTONE_ORES, ConventionalItemTags.REDSTONE_ORES);
+		copy(ConventionalBlockTags.QUARTZ_ORES, ConventionalItemTags.QUARTZ_ORES);
 
 		getOrCreateTagBuilder(ConventionalItemTags.QUARTZ_GEMS)
 				.add(Items.QUARTZ);
@@ -535,6 +558,16 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.IRON_NUGGET);
 		getOrCreateTagBuilder(ConventionalItemTags.GOLD_NUGGETS)
 				.add(Items.GOLD_NUGGET);
+
+		copy(ConventionalBlockTags.ORE_BEARING_GROUND_DEEPSLATE, ConventionalItemTags.ORE_BEARING_GROUND_DEEPSLATE);
+		copy(ConventionalBlockTags.ORE_BEARING_GROUND_NETHERRACK, ConventionalItemTags.ORE_BEARING_GROUND_NETHERRACK);
+		copy(ConventionalBlockTags.ORE_BEARING_GROUND_STONE, ConventionalItemTags.ORE_BEARING_GROUND_STONE);
+		copy(ConventionalBlockTags.ORE_RATES_DENSE, ConventionalItemTags.ORE_RATES_DENSE);
+		copy(ConventionalBlockTags.ORE_RATES_SINGULAR, ConventionalItemTags.ORE_RATES_SINGULAR);
+		copy(ConventionalBlockTags.ORE_RATES_SPARSE, ConventionalItemTags.ORE_RATES_SPARSE);
+		copy(ConventionalBlockTags.ORES_IN_GROUND_DEEPSLATE, ConventionalItemTags.ORES_IN_GROUND_DEEPSLATE);
+		copy(ConventionalBlockTags.ORES_IN_GROUND_NETHERRACK, ConventionalItemTags.ORES_IN_GROUND_NETHERRACK);
+		copy(ConventionalBlockTags.ORES_IN_GROUND_STONE, ConventionalItemTags.ORES_IN_GROUND_STONE);
 	}
 
 	private void generateToolTags() {
@@ -688,7 +721,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.forEach(getOrCreateTagBuilder(ConventionalItemTags.VILLAGER_JOB_SITES)::add);
 	}
 
-	private void generateCropTags() {
+	private void generateCropAndSeedsTags() {
 		getOrCreateTagBuilder(ConventionalItemTags.CROPS)
 				.addOptionalTag(ConventionalItemTags.BEETROOT_CROPS)
 				.addOptionalTag(ConventionalItemTags.CACTUS_CROPS)
@@ -721,6 +754,23 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.SUGAR_CANE);
 		getOrCreateTagBuilder(ConventionalItemTags.WHEAT_CROPS)
 				.add(Items.WHEAT);
+
+		getOrCreateTagBuilder(ConventionalItemTags.SEEDS)
+				.addOptionalTag(ConventionalItemTags.BEETROOT_SEEDS)
+				.addOptionalTag(ConventionalItemTags.MELON_SEEDS)
+				.addOptionalTag(ConventionalItemTags.PUMPKIN_SEEDS)
+				.addOptionalTag(ConventionalItemTags.TORCHFLOWER_SEEDS)
+				.addOptionalTag(ConventionalItemTags.WHEAT_SEEDS);
+		getOrCreateTagBuilder(ConventionalItemTags.BEETROOT_SEEDS)
+				.add(Items.BEETROOT_SEEDS);
+		getOrCreateTagBuilder(ConventionalItemTags.MELON_SEEDS)
+				.add(Items.MELON_SEEDS);
+		getOrCreateTagBuilder(ConventionalItemTags.PUMPKIN_SEEDS)
+				.add(Items.PUMPKIN_SEEDS);
+		getOrCreateTagBuilder(ConventionalItemTags.TORCHFLOWER_SEEDS)
+				.add(Items.TORCHFLOWER_SEEDS);
+		getOrCreateTagBuilder(ConventionalItemTags.WHEAT_SEEDS)
+				.add(Items.WHEAT_SEEDS);
 	}
 
 	private void generateOtherTags() {
@@ -735,6 +785,25 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 		getOrCreateTagBuilder(ConventionalItemTags.LEATHERS)
 				.add(Items.LEATHER);
+
+		getOrCreateTagBuilder(ConventionalItemTags.BONES)
+				.add(Items.BONE);
+
+		getOrCreateTagBuilder(ConventionalItemTags.EGGS)
+				.add(Items.EGG);
+
+		getOrCreateTagBuilder(ConventionalItemTags.FEATHERS)
+				.add(Items.FEATHER);
+
+		getOrCreateTagBuilder(ConventionalItemTags.GUNPOWDERS)
+				.add(Items.GUNPOWDER);
+
+		getOrCreateTagBuilder(ConventionalItemTags.MUSHROOMS)
+				.add(Items.RED_MUSHROOM)
+				.add(Items.BROWN_MUSHROOM);
+
+		getOrCreateTagBuilder(ConventionalItemTags.NETHER_STARS)
+				.add(Items.NETHER_STAR);
 
 		getOrCreateTagBuilder(ConventionalItemTags.MUSIC_DISCS)
 				.add(Items.MUSIC_DISC_13, Items.MUSIC_DISC_CAT, Items.MUSIC_DISC_BLOCKS, Items.MUSIC_DISC_CHIRP, Items.MUSIC_DISC_FAR,

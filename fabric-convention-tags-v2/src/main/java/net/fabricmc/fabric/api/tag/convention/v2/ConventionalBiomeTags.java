@@ -55,30 +55,56 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_OVERWORLD = register("is_overworld");
 
+	/**
+	 * Biomes that are above 0.8 temperature. (Excluding 0.8)
+	 */
 	public static final TagKey<Biome> IS_HOT = register("is_hot");
 	public static final TagKey<Biome> IS_HOT_OVERWORLD = register("is_hot/overworld");
 	public static final TagKey<Biome> IS_HOT_NETHER = register("is_hot/nether");
+	public static final TagKey<Biome> IS_HOT_END = register("is_hot/end");
 
+	/**
+	 * Biomes that are between 0.5 and 0.8 temperature range. (Including 0.5 and 0.8)
+	 */
 	public static final TagKey<Biome> IS_TEMPERATE = register("is_temperate");
 	public static final TagKey<Biome> IS_TEMPERATE_OVERWORLD = register("is_temperate/overworld");
+	public static final TagKey<Biome> IS_TEMPERATE_NETHER = register("is_temperate/nether");
+	public static final TagKey<Biome> IS_TEMPERATE_END = register("is_temperate/end");
 
+	/**
+	 * Biomes that are below 0.5 temperature. (Excluding 0.5)
+	 */
 	public static final TagKey<Biome> IS_COLD = register("is_cold");
 	public static final TagKey<Biome> IS_COLD_OVERWORLD = register("is_cold/overworld");
+	public static final TagKey<Biome> IS_COLD_NETHER = register("is_cold/nether");
 	public static final TagKey<Biome> IS_COLD_END = register("is_cold/end");
 
 	public static final TagKey<Biome> IS_WET = register("is_wet");
 	public static final TagKey<Biome> IS_WET_OVERWORLD = register("is_wet/overworld");
+	public static final TagKey<Biome> IS_WET_NETHER = register("is_wet/nether");
+	public static final TagKey<Biome> IS_WET_END = register("is_wet/end");
 
 	public static final TagKey<Biome> IS_DRY = register("is_dry");
 	public static final TagKey<Biome> IS_DRY_OVERWORLD = register("is_dry/overworld");
 	public static final TagKey<Biome> IS_DRY_NETHER = register("is_dry/nether");
 	public static final TagKey<Biome> IS_DRY_END = register("is_dry/end");
 
+	/**
+	 * If a biome has trees but spawn infrequently like a Savanna or Sparse Jungle, then the biome is considered having sparse vegetation. It does NOT mean no trees.
+	 */
 	public static final TagKey<Biome> IS_VEGETATION_SPARSE = register("is_sparse_vegetation");
 	public static final TagKey<Biome> IS_VEGETATION_SPARSE_OVERWORLD = register("is_sparse_vegetation/overworld");
+	public static final TagKey<Biome> IS_VEGETATION_SPARSE_NETHER = register("is_sparse_vegetation/nether");
+	public static final TagKey<Biome> IS_VEGETATION_SPARSE_END = register("is_sparse_vegetation/end");
 
+	/**
+	 * If a biome has more vegetation than a regular Forest biome, then it is considered having dense vegetation.
+	 * This is more subjective so simply do your best with classifying your biomes.
+	 */
 	public static final TagKey<Biome> IS_VEGETATION_DENSE = register("is_dense_vegetation");
 	public static final TagKey<Biome> IS_VEGETATION_DENSE_OVERWORLD = register("is_dense_vegetation/overworld");
+	public static final TagKey<Biome> IS_VEGETATION_DENSE_NETHER = register("is_dense_vegetation/nether");
+	public static final TagKey<Biome> IS_VEGETATION_DENSE_END = register("is_dense_vegetation/end");
 
 	public static final TagKey<Biome> IS_CONIFEROUS_TREE = register("is_tree/coniferous");
 	public static final TagKey<Biome> IS_SAVANNA_TREE = register("is_tree/savanna");
@@ -142,9 +168,33 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_DEAD = register("is_dead");
 	/**
+	 * Biomes whose flora primarily consists of vibrant thick vegetation and pools of water. Think of Lush Caves as an example.
+	 */
+	public static final TagKey<Biome> IS_LUSH = register("is_lush");
+	/**
+	 * Biomes whose theme revolves around magic. Like a forest full of fairies or plants of magical abilities.
+	 */
+	public static final TagKey<Biome> IS_MAGICAL = register("is_magical");
+	/**
+	 * Intended for biomes that spawns infrequently and can be difficult to find.
+	 */
+	public static final TagKey<Biome> IS_RARE = register("is_rare");
+	/**
+	 * Biomes that spawn as a flat-topped hill often.
+	 */
+	public static final TagKey<Biome> IS_PLATEAU = register("is_plateau");
+	/**
+	 * For biomes that are intended to be creepy or scary. For example, see Deep Dark biome or Dark Forest biome.
+	 */
+	public static final TagKey<Biome> IS_SPOOKY = register("is_spooky");
+	/**
 	 * Biomes with a large amount of flowers.
 	 */
 	public static final TagKey<Biome> IS_FLORAL = register("is_floral");
+	/**
+	 * Biomes that are able to spawn sand-based blocks on the surface.
+	 */
+	public static final TagKey<Biome> IS_SANDY = register("is_sandy");
 	/**
 	 * For biomes that contains lots of naturally spawned snow.
 	 * For biomes where lot of ice is present, see {@link ConventionalBiomeTags#IS_ICY}.

@@ -78,6 +78,12 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.FROZEN_RIVER)
 				.add(BiomeKeys.DEEP_FROZEN_OCEAN)
 				.add(BiomeKeys.FROZEN_OCEAN);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SANDY)
+				.add(BiomeKeys.DESERT)
+				.add(BiomeKeys.BADLANDS)
+				.add(BiomeKeys.WOODED_BADLANDS)
+				.add(BiomeKeys.ERODED_BADLANDS)
+				.add(BiomeKeys.BEACH);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SNOWY)
 				.add(BiomeKeys.SNOWY_BEACH)
 				.add(BiomeKeys.SNOWY_PLAINS)
@@ -166,26 +172,35 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.END_MIDLANDS)
 				.add(BiomeKeys.END_HIGHLANDS)
 				.add(BiomeKeys.END_BARRENS);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_COLD_NETHER);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_COLD)
-				.addTag(ConventionalBiomeTags.IS_COLD_OVERWORLD);
+				.addTag(ConventionalBiomeTags.IS_COLD_OVERWORLD)
+				.addTag(ConventionalBiomeTags.IS_COLD_NETHER)
+				.addTag(ConventionalBiomeTags.IS_COLD_END);
 
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TEMPERATE_OVERWORLD)
-				.add(BiomeKeys.FOREST)
+				.add(BiomeKeys.PLAINS)
 				.add(BiomeKeys.SUNFLOWER_PLAINS)
-				.add(BiomeKeys.SWAMP)
-				.add(BiomeKeys.STONY_SHORE)
-				.add(BiomeKeys.DARK_FOREST)
-				.add(BiomeKeys.WINDSWEPT_FOREST)
+				.add(BiomeKeys.FOREST)
+				.add(BiomeKeys.FLOWER_FOREST)
 				.add(BiomeKeys.BIRCH_FOREST)
 				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST)
+				.add(BiomeKeys.DARK_FOREST)
+				.add(BiomeKeys.CHERRY_GROVE)
 				.add(BiomeKeys.MEADOW)
-				.add(BiomeKeys.PLAINS);
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TEMPERATE)
-				.addTag(ConventionalBiomeTags.IS_TEMPERATE_OVERWORLD);
-
-		getOrCreateTagBuilder(ConventionalBiomeTags.IS_HOT_OVERWORLD)
 				.add(BiomeKeys.SWAMP)
 				.add(BiomeKeys.MANGROVE_SWAMP)
+				.add(BiomeKeys.BEACH)
+				.add(BiomeKeys.OCEAN)
+				.add(BiomeKeys.DEEP_OCEAN);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TEMPERATE_NETHER);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TEMPERATE_END);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TEMPERATE)
+				.addTag(ConventionalBiomeTags.IS_TEMPERATE_OVERWORLD)
+				.addTag(ConventionalBiomeTags.IS_TEMPERATE_NETHER)
+				.addTag(ConventionalBiomeTags.IS_TEMPERATE_END);
+
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_HOT_OVERWORLD)
 				.add(BiomeKeys.JUNGLE)
 				.add(BiomeKeys.BAMBOO_JUNGLE)
 				.add(BiomeKeys.SPARSE_JUNGLE)
@@ -197,6 +212,7 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.SAVANNA_PLATEAU)
 				.add(BiomeKeys.WINDSWEPT_SAVANNA)
 				.add(BiomeKeys.STONY_PEAKS)
+				.add(BiomeKeys.MUSHROOM_FIELDS)
 				.add(BiomeKeys.WARM_OCEAN);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_HOT_NETHER)
 				.add(BiomeKeys.NETHER_WASTES)
@@ -204,9 +220,11 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.WARPED_FOREST)
 				.add(BiomeKeys.SOUL_SAND_VALLEY)
 				.add(BiomeKeys.BASALT_DELTAS);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_HOT_END);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_HOT)
 				.addTag(ConventionalBiomeTags.IS_HOT_OVERWORLD)
-				.addTag(ConventionalBiomeTags.IS_HOT_NETHER);
+				.addTag(ConventionalBiomeTags.IS_HOT_NETHER)
+				.addTag(ConventionalBiomeTags.IS_HOT_END);
 
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_WET_OVERWORLD)
 				.add(BiomeKeys.SWAMP)
@@ -217,8 +235,12 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.BEACH)
 				.add(BiomeKeys.LUSH_CAVES)
 				.add(BiomeKeys.DRIPSTONE_CAVES);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_WET_NETHER);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_WET_END);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_WET)
-				.addTag(ConventionalBiomeTags.IS_WET_OVERWORLD);
+				.addTag(ConventionalBiomeTags.IS_WET_OVERWORLD)
+				.addTag(ConventionalBiomeTags.IS_WET_NETHER)
+				.addTag(ConventionalBiomeTags.IS_WET_END);
 
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_DRY_OVERWORLD)
 				.add(BiomeKeys.DESERT)
@@ -252,8 +274,12 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.JUNGLE)
 				.add(BiomeKeys.BAMBOO_JUNGLE)
 				.add(BiomeKeys.MANGROVE_SWAMP);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_DENSE_NETHER);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_DENSE_END);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_DENSE)
-				.addOptionalTag(ConventionalBiomeTags.IS_VEGETATION_DENSE_OVERWORLD);
+				.addOptionalTag(ConventionalBiomeTags.IS_VEGETATION_DENSE_OVERWORLD)
+				.addOptionalTag(ConventionalBiomeTags.IS_VEGETATION_DENSE_NETHER)
+				.addOptionalTag(ConventionalBiomeTags.IS_VEGETATION_DENSE_END);
 
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_SPARSE_OVERWORLD)
 				.add(BiomeKeys.WOODED_BADLANDS)
@@ -267,8 +293,12 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.SNOWY_SLOPES)
 				.add(BiomeKeys.JAGGED_PEAKS)
 				.add(BiomeKeys.FROZEN_PEAKS);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_SPARSE_NETHER);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_SPARSE_END);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_VEGETATION_SPARSE)
-				.addOptionalTag(ConventionalBiomeTags.IS_VEGETATION_SPARSE_OVERWORLD);
+				.addOptionalTag(ConventionalBiomeTags.IS_VEGETATION_SPARSE_OVERWORLD)
+				.addOptionalTag(ConventionalBiomeTags.IS_VEGETATION_SPARSE_NETHER)
+				.addOptionalTag(ConventionalBiomeTags.IS_VEGETATION_SPARSE_END);
 
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_CONIFEROUS_TREE)
 				.addOptionalTag(ConventionalBiomeTags.IS_TAIGA)
@@ -285,6 +315,31 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SAVANNA_TREE)
 				.addOptionalTag(ConventionalBiomeTags.IS_SAVANNA);
 
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_LUSH)
+				.add(BiomeKeys.LUSH_CAVES);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_MAGICAL);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_RARE)
+				.add(BiomeKeys.SUNFLOWER_PLAINS)
+				.add(BiomeKeys.FLOWER_FOREST)
+				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST)
+				.add(BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA)
+				.add(BiomeKeys.BAMBOO_JUNGLE)
+				.add(BiomeKeys.SPARSE_JUNGLE)
+				.add(BiomeKeys.ERODED_BADLANDS)
+				.add(BiomeKeys.SAVANNA_PLATEAU)
+				.add(BiomeKeys.WINDSWEPT_SAVANNA)
+				.add(BiomeKeys.ICE_SPIKES)
+				.add(BiomeKeys.WINDSWEPT_GRAVELLY_HILLS)
+				.add(BiomeKeys.MUSHROOM_FIELDS)
+				.add(BiomeKeys.DEEP_DARK);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_PLATEAU)
+				.add(BiomeKeys.WOODED_BADLANDS)
+				.add(BiomeKeys.SAVANNA_PLATEAU)
+				.add(BiomeKeys.CHERRY_GROVE)
+				.add(BiomeKeys.MEADOW);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SPOOKY)
+				.add(BiomeKeys.DARK_FOREST)
+				.add(BiomeKeys.DEEP_DARK);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_FLORAL)
 				.add(BiomeKeys.SUNFLOWER_PLAINS)
 				.add(BiomeKeys.MEADOW)
