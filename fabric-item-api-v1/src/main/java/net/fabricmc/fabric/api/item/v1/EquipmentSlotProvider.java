@@ -31,7 +31,7 @@ import net.minecraft.item.ItemStack;
  * <p>Equipment slot providers can be set with {@link FabricItem.Settings#equipmentSlot(EquipmentSlotProvider)}.
  *
  * <p>If the equipment slot is not entity-dependent, you can set {@link
- * net.minecraft.component.type.EquippableComponent} on the item stack
+ * net.minecraft.component.type.EquippableComponent} on the item
  * instead of using this provider.
  */
 @FunctionalInterface
