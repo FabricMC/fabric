@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.4",
+    "fabricloader": ">=0.16.7",
     "fabric-entity-events-v1": "*",
     "fabric-object-builder-api-v1": "*"
   },
