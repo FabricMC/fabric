@@ -143,6 +143,10 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> STORAGE_BLOCKS_SLIME = register("storage_blocks/slime");
 	public static final TagKey<Block> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
 
+	// Logs
+	public static final TagKey<Block> STRIPPED_LOGS = register("stripped_logs");
+	public static final TagKey<Block> STRIPPED_WOODS = register("stripped_woods");
+
 	// Misc
 	public static final TagKey<Block> PLAYER_WORKSTATIONS_CRAFTING_TABLES = register("player_workstations/crafting_tables");
 	public static final TagKey<Block> PLAYER_WORKSTATIONS_FURNACES = register("player_workstations/furnaces");
