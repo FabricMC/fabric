@@ -175,6 +175,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.NETHER_BRICK_FENCES, ConventionalItemTags.NETHER_BRICK_FENCES);
 		copy(ConventionalBlockTags.FENCE_GATES, ConventionalItemTags.FENCE_GATES);
 		copy(ConventionalBlockTags.WOODEN_FENCE_GATES, ConventionalItemTags.WOODEN_FENCE_GATES);
+		copy(ConventionalBlockTags.STRIPPED_LOGS, ConventionalItemTags.STRIPPED_LOGS);
+		copy(ConventionalBlockTags.STRIPPED_WOODS, ConventionalItemTags.STRIPPED_WOODS);
 	}
 
 	private void generateDyeTags() {
@@ -305,6 +307,9 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.CANDY_FOODS)
 				.addOptionalTag(ConventionalItemTags.CANDIES_FOODS);
 
+		getOrCreateTagBuilder(ConventionalItemTags.PIE_FOODS)
+				.add(Items.PUMPKIN_PIE);
+
 		getOrCreateTagBuilder(ConventionalItemTags.GOLDEN_FOODS)
 				.add(Items.GOLDEN_APPLE)
 				.add(Items.ENCHANTED_GOLDEN_APPLE)
@@ -363,6 +368,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.COOKED_FISH_FOODS)
 				.addOptionalTag(ConventionalItemTags.SOUP_FOODS)
 				.addOptionalTag(ConventionalItemTags.CANDY_FOODS)
+				.addOptionalTag(ConventionalItemTags.PIE_FOODS)
 				.addOptionalTag(ConventionalItemTags.GOLDEN_FOODS)
 				.addOptionalTag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
 				.addOptionalTag(ConventionalItemTags.FOOD_POISONING_FOODS);
