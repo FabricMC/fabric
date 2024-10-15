@@ -34,6 +34,7 @@ import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 public class WorldRenderEventsTests implements ClientModInitializer {
 	private static boolean onBlockOutline(WorldRenderContext wrc, WorldRenderContext.BlockOutlineContext blockOutlineContext) {
@@ -59,7 +60,7 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 	}
 
 	/**
-	 * Renders a translucent box at (0, 100, 0).
+	 * Renders a translucent filled box at (0, 100, 0).
 	 */
 	private static void renderAfterTranslucent(WorldRenderContext context) {
 		MatrixStack matrices = context.matrixStack();
@@ -75,7 +76,7 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 
-		VertexRendering.drawBox(matrices, buffer, 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
+		VertexRendering.drawFilledBox(matrices, buffer, 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
 		BufferRenderer.drawWithGlobalProgram(buffer.end());
 
 		matrices.pop();
@@ -85,8 +86,8 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// Renders a diamond block above diamond blocks when they are looked at.
-		//WorldRenderEvents.BLOCK_OUTLINE.register(WorldRenderEventsTests::onBlockOutline);
-		// Renders a translucent box at (0, 100, 0)
-		//WorldRenderEvents.AFTER_TRANSLUCENT.register(WorldRenderEventsTests::renderAfterTranslucent);
+		WorldRenderEvents.BLOCK_OUTLINE.register(WorldRenderEventsTests::onBlockOutline);
+		// Renders a translucent filled box at (0, 100, 0)
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(WorldRenderEventsTests::renderAfterTranslucent);
 	}
 }
