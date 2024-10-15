@@ -64,7 +64,7 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 
 		ItemStack stack = resource.toStack((int) maxAmount);
 
-		if (!stack.isEmpty() || !stack.getItem().canBeNested()) return 0;
+		if (stack.isEmpty() || !stack.getItem().canBeNested()) return 0;
 
 		var builder = new BundleContentsComponent.Builder(bundleContents());
 
