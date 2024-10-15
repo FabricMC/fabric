@@ -175,6 +175,10 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> CANDY_FOODS = register("foods/candy");
 	/**
+	 * Pies and other pie-like foods belong in this tag.
+	 */
+	public static final TagKey<Item> PIE_FOODS = register("foods/pie");
+	/**
 	 * Any gold-based foods would go in this tag. Such as Golden Apples or Glistering Melon Slice.
 	 */
 	public static final TagKey<Item> GOLDEN_FOODS = register("foods/golden");
