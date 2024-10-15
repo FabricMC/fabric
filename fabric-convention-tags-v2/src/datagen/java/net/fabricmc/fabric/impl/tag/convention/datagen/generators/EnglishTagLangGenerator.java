@@ -346,6 +346,13 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalFluidTags.WATER, "Water");
 		translationBuilder.add(ConventionalFluidTags.MILK, "Milk");
 		translationBuilder.add(ConventionalFluidTags.HONEY, "Honey");
+		translationBuilder.add(ConventionalFluidTags.GASEOUS, "Gaseous");
+		translationBuilder.add(ConventionalFluidTags.EXPERIENCE, "Experience");
+		translationBuilder.add(ConventionalFluidTags.POTION, "Potion");
+		translationBuilder.add(ConventionalFluidTags.SUSPICIOUS_STEW, "Suspicious Stew");
+		translationBuilder.add(ConventionalFluidTags.MUSHROOM_STEW, "Mushroom Stew");
+		translationBuilder.add(ConventionalFluidTags.RABBIT_STEW, "Rabbit Stew");
+		translationBuilder.add(ConventionalFluidTags.BEETROOT_SOUP, "Beetroot Soup");
 		translationBuilder.add(ConventionalFluidTags.HIDDEN_FROM_RECIPE_VIEWERS, "Hidden From Recipe Viewers");
 
 		// Structures
