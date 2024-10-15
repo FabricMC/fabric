@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.mojang.datafixers.util.Either;
 import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -43,6 +44,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
@@ -75,6 +77,16 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	@Inject(method = "onDeath", at = @At("TAIL"))
 	private void notifyDeath(DamageSource source, CallbackInfo ci) {
 		ServerLivingEntityEvents.AFTER_DEATH.invoker().afterDeath((ServerPlayerEntity) (Object) this, source);
+	}
+
+	@Inject(method = "teleportTo", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayerEntity;inTeleportationState:Z", opcode = Opcodes.PUTFIELD), cancellable = true)
+	private void beforeWorldChanged(TeleportTarget teleportTarget, CallbackInfoReturnable<Entity> cir) {
+		ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
+		boolean allowed = ServerEntityWorldChangeEvents.ALLOW_PLAYER_CHANGE_WORLD.invoker().allowChangeWorld(player, player.getServerWorld(), teleportTarget.world());
+
+		if (!allowed) {
+			cir.setReturnValue(null);
+		}
 	}
 
 	/**
