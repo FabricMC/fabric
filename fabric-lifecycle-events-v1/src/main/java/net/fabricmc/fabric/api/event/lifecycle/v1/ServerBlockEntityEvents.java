@@ -49,6 +49,15 @@ public final class ServerBlockEntityEvents {
 		}
 	});
 
+	/**
+	 * Called when a BlockEntity is ticked by a ServerWorld.
+	 */
+	public static final Event<Tick> BLOCK_ENTITY_TICK = EventFactory.createArrayBacked(ServerBlockEntityEvents.Tick.class, callbacks -> (blockEntity, world) -> {
+		for (Tick callback : callbacks) {
+			callback.onTick(blockEntity, world);
+		}
+	});
+
 	@FunctionalInterface
 	public interface Load {
 		void onLoad(BlockEntity blockEntity, ServerWorld world);
@@ -57,5 +66,10 @@ public final class ServerBlockEntityEvents {
 	@FunctionalInterface
 	public interface Unload {
 		void onUnload(BlockEntity blockEntity, ServerWorld world);
+	}
+
+	@FunctionalInterface
+	public interface Tick {
+		void onTick(BlockEntity blockEntity, ServerWorld world);
 	}
 }

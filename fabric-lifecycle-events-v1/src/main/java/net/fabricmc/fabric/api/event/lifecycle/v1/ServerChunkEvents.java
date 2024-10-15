@@ -48,6 +48,15 @@ public final class ServerChunkEvents {
 		}
 	});
 
+	/**
+	 * Called when a chunk is ticked by a ServerWorld.
+	 */
+	public static final Event<ServerChunkEvents.Tick> CHUNK_TICK = EventFactory.createArrayBacked(ServerChunkEvents.Tick.class, callbacks -> (serverWorld, chunk) -> {
+		for (Tick callback : callbacks) {
+			callback.onChunkTick(serverWorld, chunk);
+		}
+	});
+
 	@FunctionalInterface
 	public interface Load {
 		void onChunkLoad(ServerWorld world, WorldChunk chunk);
@@ -56,5 +65,10 @@ public final class ServerChunkEvents {
 	@FunctionalInterface
 	public interface Unload {
 		void onChunkUnload(ServerWorld world, WorldChunk chunk);
+	}
+
+	@FunctionalInterface
+	public interface Tick {
+		void onChunkTick(ServerWorld world, WorldChunk chunk);
 	}
 }
