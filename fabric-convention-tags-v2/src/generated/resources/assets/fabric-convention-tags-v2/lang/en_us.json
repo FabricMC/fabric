@@ -85,6 +85,7 @@
   "tag.enchantment.c.increase_block_drops": "Increases Block Drops",
   "tag.enchantment.c.increase_entity_drops": "Increases Entity Drops",
   "tag.enchantment.c.weapon_damage_enhancements": "Weapon Damage Enhancements",
+  "tag.entity_type.c.animals": "Animals",
   "tag.entity_type.c.boats": "Boats",
   "tag.entity_type.c.bosses": "Bosses",
   "tag.entity_type.c.capturing_not_supported": "Capturing Not Supported",
