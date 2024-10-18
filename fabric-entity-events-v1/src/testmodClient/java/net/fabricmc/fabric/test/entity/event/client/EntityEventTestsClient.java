@@ -16,17 +16,29 @@
 
 package net.fabricmc.fabric.test.entity.event.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.entity.EquipmentSlot;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRenderEvents;
+import net.fabricmc.fabric.api.entity.event.client.ClientWorldChangeEvents;
 import net.fabricmc.fabric.test.entity.event.EntityEventTests;
 
 public class EntityEventTestsClient implements ClientModInitializer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(EntityEventTestsClient.class);
+
 	@Override
 	public void onInitializeClient() {
 		LivingEntityFeatureRenderEvents.ALLOW_CAPE_RENDER.register(player -> {
 			return !player.getEquippedStack(EquipmentSlot.CHEST).isOf(EntityEventTests.DIAMOND_ELYTRA);
+		});
+
+		ClientWorldChangeEvents.AFTER_CLIENT_WORLD_CHANGE.register((client, world) -> {
+			if (world != null) {
+				LOGGER.info("Client world changed to {}", world.getRegistryKey().getValue());
+			}
 		});
 	}
 }
