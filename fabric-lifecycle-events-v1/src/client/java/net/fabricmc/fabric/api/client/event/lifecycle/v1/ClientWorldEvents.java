@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.entity.event.client;
+package net.fabricmc.fabric.api.client.event.lifecycle.v1;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +24,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-public final class ClientWorldChangeEvents {
+public class ClientWorldEvents {
 	/**
 	 * An event which is called after the client world has been changed.
 	 */

@@ -3,8 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.client.entity.event",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "elytra.ClientPlayerEntityMixin",
-    "MinecraftClientMixin"
+    "elytra.ClientPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1,
