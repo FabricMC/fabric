@@ -25,19 +25,24 @@ public final class ClientPlayerEvents {
 	/**
 	 * An event that is called when a player is moving during using an item.
 	 */
-	public static final Event<ModifyPlayerMovementDuringUsingitem> MODIFY_PLAYER_MOVEMENT_DURING_USINGITEM = EventFactory.createArrayBacked(ModifyPlayerMovementDuringUsingitem.class, callbacks -> player -> {
-		for (ModifyPlayerMovementDuringUsingitem callback : callbacks) {
-			callback.modifyPlayerMovementDuringUsingitem(player);
+	public static final Event<DisableUsingitemSlowdown> DISABLE_USINGITEM_SLOWDOWN = EventFactory.createArrayBacked(DisableUsingitemSlowdown.class, callbacks -> player -> {
+		for (DisableUsingitemSlowdown callback : callbacks) {
+			if (callback.disableUsingitemSlowdown(player)) {
+				return true;
+			}
 		}
+
+		return false;
 	});
 
 	@FunctionalInterface
-	public interface ModifyPlayerMovementDuringUsingitem {
+	public interface DisableUsingitemSlowdown {
 		/**
 		 * Called when a player is moving during using an item.
 		 *
 		 * @param player the player is moving during using an item.
+		 * @return true if the player can move without slowdown during using an item, false otherwise.
 		 */
-		void modifyPlayerMovementDuringUsingitem(ClientPlayerEntity player);
+		boolean disableUsingitemSlowdown(ClientPlayerEntity player);
 	}
 }

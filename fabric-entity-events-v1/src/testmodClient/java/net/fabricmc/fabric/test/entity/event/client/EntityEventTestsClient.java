@@ -36,14 +36,13 @@ public class EntityEventTestsClient implements ClientModInitializer {
 			return !player.getEquippedStack(EquipmentSlot.CHEST).isOf(EntityEventTests.DIAMOND_ELYTRA);
 		});
 
-		ClientPlayerEvents.MODIFY_PLAYER_MOVEMENT_DURING_USINGITEM.register(player -> {
-			LOGGER.info("Player {} is moving during using item.", player);
-
+		ClientPlayerEvents.DISABLE_USINGITEM_SLOWDOWN.register(player -> {
 			if (player.getMainHandStack().isOf(Items.BOW) && player.getEquippedStack(EquipmentSlot.FEET).isOf(Items.DIAMOND_BOOTS)) {
 				LOGGER.info("Player {} can move without slowdown becase of diamond boots on feet.", player);
-				player.input.movementForward *= 5F;
-				player.input.movementSideways *= 5F;
+				return true;
 			}
+
+			return false;
 		});
 	}
 }

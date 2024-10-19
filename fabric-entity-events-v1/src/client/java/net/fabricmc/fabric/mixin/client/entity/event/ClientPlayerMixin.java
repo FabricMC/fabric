@@ -32,7 +32,10 @@ abstract class ClientPlayerMixin {
 		ClientPlayerEntity player = (ClientPlayerEntity) (Object) this;
 
 		if (player.isUsingItem() && !player.hasVehicle() && (player.input.movementForward != 0.0F || player.input.movementSideways != 0.0F)) {
-			ClientPlayerEvents.MODIFY_PLAYER_MOVEMENT_DURING_USINGITEM.invoker().modifyPlayerMovementDuringUsingitem(player);
+			if (ClientPlayerEvents.DISABLE_USINGITEM_SLOWDOWN.invoker().disableUsingitemSlowdown(player)) {
+				player.input.movementSideways *= 5.0F;
+				player.input.movementForward *= 5.0F;
+			}
 		}
 	}
 }
