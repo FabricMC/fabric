@@ -109,6 +109,8 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE, "Redstone Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_SLIME, "Slime Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT, "Wheat Storage Blocks");
+		translationBuilder.add(ConventionalBlockTags.STRIPPED_LOGS, "Stripped Logs");
+		translationBuilder.add(ConventionalBlockTags.STRIPPED_WOODS, "Stripped Woods");
 		translationBuilder.add(ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, "Crafting Tables");
 		translationBuilder.add(ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES, "Furnaces");
 		translationBuilder.add(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED, "Relocation Not Supported");
@@ -195,6 +197,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.COOKED_FISH_FOODS, "Cooked Fishes");
 		translationBuilder.add(ConventionalItemTags.SOUP_FOODS, "Soups");
 		translationBuilder.add(ConventionalItemTags.CANDY_FOODS, "Candies");
+		translationBuilder.add(ConventionalItemTags.PIE_FOODS, "Pies");
 		translationBuilder.add(ConventionalItemTags.GOLDEN_FOODS, "Golden Foods");
 		translationBuilder.add(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS, "Edible When Placed");
 		translationBuilder.add(ConventionalItemTags.FOOD_POISONING_FOODS, "Food Poisoning");
@@ -298,6 +301,8 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_REDSTONE, "Redstone Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_SLIME, "Slime Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_WHEAT, "Wheat Storage Blocks");
+		translationBuilder.add(ConventionalItemTags.STRIPPED_LOGS, "Stripped Log Blocks");
+		translationBuilder.add(ConventionalItemTags.STRIPPED_WOODS, "Stripped Wood Blocks");
 		translationBuilder.add(ConventionalItemTags.CROPS, "Crops");
 		translationBuilder.add(ConventionalItemTags.BEETROOT_CROPS, "Beetroot Crops");
 		translationBuilder.add(ConventionalItemTags.CACTUS_CROPS, "Cactus Crops");
@@ -345,6 +350,13 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalFluidTags.WATER, "Water");
 		translationBuilder.add(ConventionalFluidTags.MILK, "Milk");
 		translationBuilder.add(ConventionalFluidTags.HONEY, "Honey");
+		translationBuilder.add(ConventionalFluidTags.GASEOUS, "Gaseous");
+		translationBuilder.add(ConventionalFluidTags.EXPERIENCE, "Experience");
+		translationBuilder.add(ConventionalFluidTags.POTION, "Potion");
+		translationBuilder.add(ConventionalFluidTags.SUSPICIOUS_STEW, "Suspicious Stew");
+		translationBuilder.add(ConventionalFluidTags.MUSHROOM_STEW, "Mushroom Stew");
+		translationBuilder.add(ConventionalFluidTags.RABBIT_STEW, "Rabbit Stew");
+		translationBuilder.add(ConventionalFluidTags.BEETROOT_SOUP, "Beetroot Soup");
 		translationBuilder.add(ConventionalFluidTags.HIDDEN_FROM_RECIPE_VIEWERS, "Hidden From Recipe Viewers");
 
 		// Structures
