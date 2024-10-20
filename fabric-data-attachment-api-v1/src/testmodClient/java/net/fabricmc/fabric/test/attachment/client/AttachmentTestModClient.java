@@ -132,9 +132,15 @@ public class AttachmentTestModClient implements ClientModInitializer {
 										Entity entity = ((ClientWorldAccessor) context.getSource().getWorld())
 												.invokeGetEntityLookup()
 												.get(uuid);
+
+										if (entity == null) {
+											throw AttachmentTestMod.TARGET_NOT_FOUND.create();
+										}
+
 										displayClientAttachmentInfo(context, entity, e -> uuid.toString());
 										return 1;
 									},
+									literal("entity"),
 									argument("uuid", UuidArgumentType.uuid())
 								))
 								.then(chain(
@@ -145,7 +151,7 @@ public class AttachmentTestModClient implements ClientModInitializer {
 												.getBlockEntity(pos);
 
 										if (be == null) {
-											throw AttachmentTestMod.BLOCK_ENTITY_NOT_LOADED.create();
+											throw AttachmentTestMod.TARGET_NOT_FOUND.create();
 										}
 
 										displayClientAttachmentInfo(

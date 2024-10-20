@@ -12,6 +12,7 @@
     "ClientConnectionMixin",
     "CustomPayloadS2CPacketAccessor",
     "EntityMixin",
+    "EntityTrackerEntryMixin",
     "ServerWorldMixin",
     "VarIntsAccessor",
     "WorldChunkMixin",

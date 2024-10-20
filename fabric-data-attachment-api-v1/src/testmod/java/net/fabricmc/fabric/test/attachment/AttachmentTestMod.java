@@ -82,17 +82,20 @@ public class AttachmentTestMod implements ModInitializer {
 			.buildAndRegister(Identifier.of(MOD_ID, "synced_all"));
 	public static final AttachmentType<Boolean> SYNCED_WITH_TARGET = AttachmentRegistry.<Boolean>builder()
 			.initializer(() -> false)
+			.persistent(Codec.BOOL)
 			.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.targetOnly())
 			.buildAndRegister(Identifier.of(MOD_ID, "synced_target"));
 	public static final AttachmentType<Boolean> SYNCED_EXCEPT_TARGET = AttachmentRegistry.<Boolean>builder()
 			.initializer(() -> false)
+			.persistent(Codec.BOOL)
 			.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.allButTarget())
 			.buildAndRegister(Identifier.of(MOD_ID, "synced_except_target"));
 	public static final AttachmentType<Boolean> SYNCED_CREATIVE_ONLY = AttachmentRegistry.<Boolean>builder()
 			.initializer(() -> false)
+			.persistent(Codec.BOOL)
 			.syncWith(PacketCodecs.BOOL.cast(), (target, player) -> player.isCreative())
 			.buildAndRegister(Identifier.of(MOD_ID, "synced_custom"));
-	public static final SimpleCommandExceptionType BLOCK_ENTITY_NOT_LOADED = new SimpleCommandExceptionType(Text.literal("No block entity found"));
+	public static final SimpleCommandExceptionType TARGET_NOT_FOUND = new SimpleCommandExceptionType(Text.literal("Target not found"));
 
 	public static final ChunkPos FAR_CHUNK_POS = new ChunkPos(300, 0);
 
@@ -139,6 +142,7 @@ public class AttachmentTestMod implements ModInitializer {
 				overworld.setAttached(PERSISTENT, "world_data");
 
 				chunk.setAttached(PERSISTENT, "chunk_data");
+				chunk.setAttached(SYNCED_WITH_ALL, true);
 
 				ProtoChunk protoChunk = (ProtoChunk) overworld.getChunkManager().getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z, ChunkStatus.STRUCTURE_STARTS, true);
 				protoChunk.setAttached(PERSISTENT, "protochunk_data");
@@ -194,7 +198,7 @@ public class AttachmentTestMod implements ModInitializer {
 				"Set self flag (synced with %s) to %%s".formatted(syncedWith)
 		)).then(
 				argument("target", EntityArgumentType.entity()).executes(context -> updateAttachmentFor(
-						EntityArgumentType.getPlayer(context, "target"),
+						EntityArgumentType.getEntity(context, "target"),
 						type,
 						context,
 						"Set entity flag (synced with %s) to %%s".formatted(syncedWith)
@@ -203,7 +207,7 @@ public class AttachmentTestMod implements ModInitializer {
 			BlockEntity be = context.getSource().getWorld().getBlockEntity(BlockPosArgumentType.getBlockPos(context, "pos"));
 
 			if (be == null) {
-				throw BLOCK_ENTITY_NOT_LOADED.create();
+				throw TARGET_NOT_FOUND.create();
 			}
 
 			return updateAttachmentFor(
