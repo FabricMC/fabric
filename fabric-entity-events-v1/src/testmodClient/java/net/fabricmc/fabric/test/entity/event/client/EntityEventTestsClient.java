@@ -36,13 +36,27 @@ public class EntityEventTestsClient implements ClientModInitializer {
 			return !player.getEquippedStack(EquipmentSlot.CHEST).isOf(EntityEventTests.DIAMOND_ELYTRA);
 		});
 
-		ClientPlayerEvents.DISABLE_USINGITEM_SLOWDOWN.register(player -> {
-			if (player.getMainHandStack().isOf(Items.BOW) && player.getEquippedStack(EquipmentSlot.FEET).isOf(Items.DIAMOND_BOOTS)) {
-				LOGGER.info("Player {} can move without slowdown becase of diamond boots on feet.", player);
-				return true;
+		ClientPlayerEvents.ADJUST_USING_ITEM_SPEED.register(player -> {
+			if (player.getMainHandStack().isOf(Items.BOW) && player.getEquippedStack(EquipmentSlot.FEET).isOf(Items.LEATHER_BOOTS)) {
+				LOGGER.info("Player {} can move with normal speed becase of leather boots on feet.", player);
+				return 1.0F;
 			}
 
-			return false;
+			if (player.getMainHandStack().isOf(Items.BOW) && player.getEquippedStack(EquipmentSlot.FEET).isOf(Items.IRON_BOOTS)) {
+				LOGGER.info("Player {} can't move during using bow becase of iron boots on feet.", player);
+				return 0.0F;
+			}
+
+			return ClientPlayerEvents.USING_DEFAULT_SLOWDOWN_SPEED;
+		});
+
+		ClientPlayerEvents.ADJUST_USING_ITEM_SPEED.register(player -> {
+			if (player.getMainHandStack().isOf(Items.BOW) && player.getOffHandStack().isOf(Items.FEATHER)) {
+				LOGGER.info("Player {} can move with half speed becase of feather in offhand.", player);
+				return 0.5F;
+			}
+
+			return ClientPlayerEvents.USING_DEFAULT_SLOWDOWN_SPEED;
 		});
 	}
 }

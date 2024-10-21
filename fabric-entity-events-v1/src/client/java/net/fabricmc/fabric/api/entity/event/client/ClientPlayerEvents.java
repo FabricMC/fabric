@@ -22,27 +22,42 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 public final class ClientPlayerEvents {
+	/*
+	 * Flag for using default slowdown during using an item.
+	 */
+	public static final float USING_DEFAULT_SLOWDOWN_SPEED = -1.0F;
+
+	/*
+	 * Default slowdown speed when using an item in Minecraft.
+	 */
+	public static final float DEFAULT_SLOWDOWN_SPEED = 0.2F;
+
 	/**
 	 * An event that is called when a player is moving during using an item.
 	 */
-	public static final Event<DisableUsingitemSlowdown> DISABLE_USINGITEM_SLOWDOWN = EventFactory.createArrayBacked(DisableUsingitemSlowdown.class, callbacks -> player -> {
-		for (DisableUsingitemSlowdown callback : callbacks) {
-			if (callback.disableUsingitemSlowdown(player)) {
-				return true;
+	public static final Event<AdjustUsingItemSpeed> ADJUST_USING_ITEM_SPEED = EventFactory.createArrayBacked(AdjustUsingItemSpeed.class, callbacks -> player -> {
+		float maxSpeed = -0.1F;
+
+		for (AdjustUsingItemSpeed callback : callbacks) {
+			float currentSpeed = callback.adjustUsingItemSpeed(player);
+
+			if (currentSpeed >= 0.0F && currentSpeed <= 1.0F) {
+				maxSpeed = currentSpeed > maxSpeed ? currentSpeed : maxSpeed;
 			}
 		}
 
-		return false;
+		return maxSpeed == -0.1F ? DEFAULT_SLOWDOWN_SPEED : maxSpeed;
 	});
 
 	@FunctionalInterface
-	public interface DisableUsingitemSlowdown {
+	public interface AdjustUsingItemSpeed {
 		/**
 		 * Called when a player is moving during using an item.
 		 *
 		 * @param player the player is moving during using an item.
-		 * @return true if the player can move without slowdown during using an item, false otherwise.
+		 * @return the percentage of the player's speed from 0.0F to 1.0F.
+		 * {@link #DEFAULT_SLOWDOWN_SPEED} indicates that no adjustment should be applied.
 		 */
-		boolean disableUsingitemSlowdown(ClientPlayerEntity player);
+		float adjustUsingItemSpeed(ClientPlayerEntity player);
 	}
 }
