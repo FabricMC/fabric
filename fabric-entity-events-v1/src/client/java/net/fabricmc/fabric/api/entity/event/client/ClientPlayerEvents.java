@@ -28,9 +28,9 @@ public final class ClientPlayerEvents {
 	public static final float USING_DEFAULT_SLOWDOWN_SPEED = -1.0F;
 
 	/*
-	 * Default slowdown speed when using an item in Minecraft.
+	 * Default percentage of speed slowdown when using an item in Minecraft.
 	 */
-	public static final float DEFAULT_SLOWDOWN_SPEED = 0.2F;
+	private static final float DEFAULT_SLOWDOWN_SPEED = 0.2F;
 
 	/**
 	 * An event that is called when a player is moving during using an item.
