@@ -94,6 +94,11 @@ public interface AttachmentType<A> {
 	Supplier<A> initializer();
 
 	/**
+	 * @return whether this attachment type can be synchronized with clients
+	 */
+	boolean isSynced();
+
+	/**
 	 * @return whether the attachments should persist after an entity dies, for example when a player respawns or
 	 * when a mob is converted (e.g. zombie → drowned)
 	 */
