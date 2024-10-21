@@ -5,7 +5,8 @@
   "client": [
     "CyclingButtonWidgetAccessor",
     "MinecraftDedicatedServerMixin",
-    "ScreenAccessor"
+    "ScreenAccessor",
+    "TitleScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

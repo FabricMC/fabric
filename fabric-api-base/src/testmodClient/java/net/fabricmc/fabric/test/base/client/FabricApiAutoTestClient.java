@@ -27,6 +27,7 @@ import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.submit
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.takeScreenshot;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForLoadingComplete;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForScreen;
+import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForTitleScreenFade;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForWorldTicks;
 
 import java.io.IOException;
@@ -84,7 +85,8 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 
 		{
 			waitForScreen(TitleScreen.class);
-			takeScreenshot("title_screen", Duration.ofSeconds(2));
+			waitForTitleScreenFade();
+			takeScreenshot("title_screen", Duration.ZERO);
 			clickScreenButton("menu.singleplayer");
 		}
 

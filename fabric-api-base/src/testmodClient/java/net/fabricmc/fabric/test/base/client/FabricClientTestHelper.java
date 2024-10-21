@@ -27,6 +27,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
@@ -44,6 +45,7 @@ import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.test.base.client.mixin.CyclingButtonWidgetAccessor;
 import net.fabricmc.fabric.test.base.client.mixin.ScreenAccessor;
+import net.fabricmc.fabric.test.base.client.mixin.TitleScreenAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 
 // Provides thread safe utils for interacting with a running game.
@@ -167,6 +169,16 @@ public final class FabricClientTestHelper {
 			final var serverInfo = new ServerInfo("localhost", server.getConnectionAddress(), ServerInfo.ServerType.OTHER);
 			ConnectScreen.connect(client.currentScreen, client, ServerAddress.parse(server.getConnectionAddress()), serverInfo, false, null);
 			return null;
+		});
+	}
+
+	public static void waitForTitleScreenFade() {
+		waitFor("Title screen fade", client -> {
+			if (!(client.currentScreen instanceof TitleScreen titleScreen)) {
+				return false;
+			}
+
+			return !((TitleScreenAccessor) titleScreen).getDoBackgroundFade();
 		});
 	}
 
