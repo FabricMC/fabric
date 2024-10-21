@@ -19,17 +19,28 @@ package net.fabricmc.fabric.mixin.event.lifecycle;
 import java.util.function.BooleanSupplier;
 
 import org.objectweb.asm.Opcodes;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.chunk.WorldChunk;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin {
+	@Shadow
+	@Final
+	private MinecraftServer server;
+
 	// Make sure "insideBlockTick" is true before we call the start tick, so inject after it is set
 	@Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/server/world/ServerWorld;inBlockTick:Z", opcode = Opcodes.PUTFIELD, ordinal = 0, shift = At.Shift.AFTER))
 	private void startWorldTick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
@@ -39,5 +50,20 @@ public abstract class ServerWorldMixin {
 	@Inject(method = "tick", at = @At(value = "TAIL"))
 	private void endWorldTick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
 		ServerTickEvents.END_WORLD_TICK.invoker().onEndTick((ServerWorld) (Object) this);
+	}
+
+	@Inject(method = "tickChunk", at = @At("RETURN"))
+	private void tick(WorldChunk chunk, int randomTickSpeed, CallbackInfo ci) {
+		ServerChunkEvents.CHUNK_TICK.invoker().onChunkTick((ServerWorld) (Object) this, chunk);
+	}
+
+	@Inject(method = "tickEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;tick()V", shift = At.Shift.AFTER))
+	private void tick(Entity entity, CallbackInfo ci) {
+		ServerEntityEvents.ENTITY_TICK.invoker().onTick(entity, (ServerWorld) (Object) this);
+	}
+
+	@Inject(method = "tickPassenger", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;tickRiding()V", shift = At.Shift.AFTER))
+	private void tickRiding(Entity vehicle, Entity passenger, CallbackInfo ci) {
+		ServerEntityEvents.ENTITY_TICK.invoker().onTick(passenger, (ServerWorld) (Object) this);
 	}
 }

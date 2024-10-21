@@ -8,9 +8,10 @@
     "LivingEntityMixin",
     "MinecraftServerMixin",
     "PlayerManagerMixin",
-    "ServerWorldServerEntityHandlerMixin",
-    "ServerWorldMixin",
     "ServerChunkLoadingManagerMixin",
+    "ServerWorldMixin",
+    "ServerWorldServerEntityHandlerMixin",
+    "WorldChunkMixin",
     "WorldMixin"
   ],
   "server": [
