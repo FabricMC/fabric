@@ -25,7 +25,7 @@ public final class ClientPlayerEvents {
 	/*
 	 * Flag for using default slowdown during using an item.
 	 */
-	public static final float USING_DEFAULT_SLOWDOWN_SPEED = -1.0F;
+	public static final float USE_DEFAULT_SLOWDOWN_SPEED = -1.0F;
 
 	/*
 	 * Default percentage of speed slowdown when using an item in Minecraft.
@@ -36,7 +36,7 @@ public final class ClientPlayerEvents {
 	 * An event that is called when a player is moving during using an item.
 	 */
 	public static final Event<AdjustUsingItemSpeed> ADJUST_USING_ITEM_SPEED = EventFactory.createArrayBacked(AdjustUsingItemSpeed.class, callbacks -> player -> {
-		float maxSpeed = -0.1F;
+		float maxSpeed = USE_DEFAULT_SLOWDOWN_SPEED;
 
 		for (AdjustUsingItemSpeed callback : callbacks) {
 			float currentSpeed = callback.adjustUsingItemSpeed(player);
@@ -46,7 +46,7 @@ public final class ClientPlayerEvents {
 			}
 		}
 
-		return maxSpeed == -0.1F ? DEFAULT_SLOWDOWN_SPEED : maxSpeed;
+		return maxSpeed == USE_DEFAULT_SLOWDOWN_SPEED ? DEFAULT_SLOWDOWN_SPEED : maxSpeed;
 	});
 
 	@FunctionalInterface
@@ -56,7 +56,7 @@ public final class ClientPlayerEvents {
 		 *
 		 * @param player the player is moving during using an item.
 		 * @return the percentage of the player's speed from 0.0F to 1.0F.
-		 * {@link #DEFAULT_SLOWDOWN_SPEED} indicates that no adjustment should be applied.
+		 * Return {@link #USE_DEFAULT_SLOWDOWN_SPEED} indicates that no adjustment should be applied.
 		 */
 		float adjustUsingItemSpeed(ClientPlayerEntity player);
 	}
