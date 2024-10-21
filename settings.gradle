@@ -14,6 +14,7 @@ include 'fabric-api-bom'
 include 'fabric-api-catalog'
 
 include 'fabric-api-base'
+include 'fabric-api-dev'
 
 include 'fabric-api-lookup-api-v1'
 include 'fabric-biome-api-v1'
