@@ -80,8 +80,12 @@ public final class FabricClientTestHelper {
 	}
 
 	public static void takeScreenshot(String name) {
+		takeScreenshot(name, Duration.ofSeconds(1));
+	}
+
+	public static void takeScreenshot(String name, Duration delay) {
 		// Allow time for any screens to open
-		waitFor(Duration.ofSeconds(1));
+		waitFor(delay);
 
 		submitAndWait(client -> {
 			ScreenshotRecorder.saveScreenshot(FabricLoader.getInstance().getGameDir().toFile(), name + ".png", client.getFramebuffer(), (message) -> {

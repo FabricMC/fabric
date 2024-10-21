@@ -34,6 +34,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 
 import com.mojang.authlib.GameProfile;
 import org.spongepowered.asm.mixin.MixinEnvironment;
@@ -83,7 +84,7 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 
 		{
 			waitForScreen(TitleScreen.class);
-			takeScreenshot("title_screen");
+			takeScreenshot("title_screen", Duration.ofSeconds(2));
 			clickScreenButton("menu.singleplayer");
 		}
 
