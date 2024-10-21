@@ -70,6 +70,12 @@ public class CommonAttachmentTests {
 			Codec.INT
 	);
 
+	private static final AttachmentType<WheelInfo> WHEEL = AttachmentRegistry.create(Identifier.of(AttachmentTestMod.MOD_ID, "wheel_info"),
+			attachment -> attachment
+					.initializer(() -> new WheelInfo(100, 5432, 37))
+					.persistent(WheelInfo.CODEC)
+	);
+
 	@BeforeAll
 	static void beforeAll() {
 		SharedConstants.createGameVersion();
@@ -176,9 +182,8 @@ public class CommonAttachmentTests {
 		AttachmentType<Boolean> notCopiedOnRespawn = AttachmentRegistry.create(
 				Identifier.of(MOD_ID, "not_copied_on_respawn")
 		);
-		AttachmentType<Boolean> copiedOnRespawn = AttachmentRegistry.<Boolean>builder()
-				.copyOnDeath()
-				.buildAndRegister(Identifier.of(MOD_ID, "copied_on_respawn"));
+		AttachmentType<Boolean> copiedOnRespawn = AttachmentRegistry.create(Identifier.of(MOD_ID, "copied_on_respawn"),
+				AttachmentRegistry.Builder::copyOnDeath);
 
 		Entity original = mock(Entity.class, CALLS_REAL_METHODS);
 		original.setAttached(notCopiedOnRespawn, true);
