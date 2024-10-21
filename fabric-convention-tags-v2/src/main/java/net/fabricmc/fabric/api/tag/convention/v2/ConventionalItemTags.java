@@ -36,6 +36,13 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> STONES = register("stones");
 	public static final TagKey<Item> COBBLESTONES = register("cobblestones");
+	public static final TagKey<Item> DEEPSLATE_COBBLESTONES = register("cobblestones/deepslate");
+	public static final TagKey<Item> INFESTED_COBBLESTONES = register("cobblestones/infested");
+	public static final TagKey<Item> MOSSY_COBBLESTONES = register("cobblestones/mossy");
+	public static final TagKey<Item> NORMAL_COBBLESTONES = register("cobblestones/normal");
+	public static final TagKey<Item> NETHERRACKS = register("netherracks");
+	public static final TagKey<Item> END_STONES = register("end_stones");
+	public static final TagKey<Item> GRAVELS = register("gravels");
 	public static final TagKey<Item> OBSIDIANS = register("obsidians");
 	/**
 	 * For common obsidian that has no special quirks or behaviors. Ideal for recipe use.
@@ -117,9 +124,17 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> COPPER_INGOTS = register("ingots/copper");
 	public static final TagKey<Item> NETHERITE_INGOTS = register("ingots/netherite");
 
-	// Ores - vanilla instances
+	// Ores - vanilla instances (All ores consolidated here for consistency)
+	public static final TagKey<Item> COAL_ORES = register("ores/coal");
+	public static final TagKey<Item> COPPER_ORES = register("ores/copper");
+	public static final TagKey<Item> DIAMOND_ORES = register("ores/diamond");
+	public static final TagKey<Item> EMERALD_ORES = register("ores/emerald");
+	public static final TagKey<Item> GOLD_ORES = register("ores/gold");
+	public static final TagKey<Item> IRON_ORES = register("ores/iron");
+	public static final TagKey<Item> LAPIS_ORES = register("ores/lapis");
 	public static final TagKey<Item> NETHERITE_SCRAP_ORES = register("ores/netherite_scrap");
 	public static final TagKey<Item> QUARTZ_ORES = register("ores/quartz");
+	public static final TagKey<Item> REDSTONE_ORES = register("ores/redstone");
 
 	// Gems - vanilla instances
 	public static final TagKey<Item> QUARTZ_GEMS = register("gems/quartz");
@@ -138,7 +153,18 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> GLOWSTONE_DUSTS = register("dusts/glowstone");
 
 	// Consumables
+	/**
+	 * Items that can hold various potion effects by making use of {@link net.minecraft.component.DataComponentTypes#POTION_CONTENTS}.
+	 * Contents of this tag may not always be a kind of bottle. Buckets of potions could go here.
+	 * The subtags would be the name of the container that is holding the potion effects such as `c:potions/bucket` or `c:potions/vial` as examples.
+	 */
 	public static final TagKey<Item> POTIONS = register("potions");
+	/**
+	 * Variations of the potion bottle that can hold various effects by using {@link net.minecraft.component.DataComponentTypes#POTION_CONTENTS}.
+	 * Examples are splash and lingering potions from vanilla.
+	 * If a mod adds a new variant like seeking potion that applies effect to the closest entity at impact, that would in this tag.
+	 */
+	public static final TagKey<Item> BOTTLE_POTIONS = register("potions/bottle");
 
 	// Foods
 	public static final TagKey<Item> FOODS = register("foods");
@@ -209,6 +235,8 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> BOOKSHELVES = register("bookshelves");
 	public static final TagKey<Item> CHESTS = register("chests");
 	public static final TagKey<Item> WOODEN_CHESTS = register("chests/wooden");
+	public static final TagKey<Item> TRAPPED_CHESTS = register("chests/trapped");
+	public static final TagKey<Item> ENDER_CHESTS = register("chests/ender");
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Item> GLASS_BLOCKS_COLORLESS = register("glass_blocks/colorless");
 	/**
@@ -236,6 +264,11 @@ public final class ConventionalItemTags {
 
 	public static final TagKey<Item> VILLAGER_JOB_SITES = register("villager_job_sites");
 
+	// Sands
+	public static final TagKey<Item> SANDS = register("sands");
+	public static final TagKey<Item> RED_SANDS = register("sands/red");
+	public static final TagKey<Item> COLORLESS_SANDS = register("sands/colorless");
+
 	// Sandstone
 	public static final TagKey<Item> SANDSTONE_BLOCKS = register("sandstone/blocks");
 	public static final TagKey<Item> SANDSTONE_SLABS = register("sandstone/slabs");
@@ -246,6 +279,13 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> UNCOLORED_SANDSTONE_BLOCKS = register("sandstone/uncolored_blocks");
 	public static final TagKey<Item> UNCOLORED_SANDSTONE_SLABS = register("sandstone/uncolored_slabs");
 	public static final TagKey<Item> UNCOLORED_SANDSTONE_STAIRS = register("sandstone/uncolored_stairs");
+
+	// Fences and Fence Gates
+	public static final TagKey<Item> FENCES = register("fences");
+	public static final TagKey<Item> WOODEN_FENCES = register("fences/wooden");
+	public static final TagKey<Item> NETHER_BRICK_FENCES = register("fences/nether_brick");
+	public static final TagKey<Item> FENCE_GATES = register("fence_gates");
+	public static final TagKey<Item> WOODEN_FENCE_GATES = register("fence_gates/wooden");
 
 	// Dyes
 	public static final TagKey<Item> DYES = register("dyes");
@@ -342,11 +382,31 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> SUGAR_CANE_CROPS = register("crops/sugar_cane");
 	public static final TagKey<Item> WHEAT_CROPS = register("crops/wheat");
 
+	// Seeds
+	/**
+	 * For items that are explicitly seeds for use cases such as refilling a bird feeder block or certain seed-based recipes.
+	 */
+	public static final TagKey<Item> SEEDS = register("seeds");
+	public static final TagKey<Item> BEETROOT_SEEDS = register("seeds/beetroot");
+	public static final TagKey<Item> MELON_SEEDS = register("seeds/melon");
+	public static final TagKey<Item> PUMPKIN_SEEDS = register("seeds/pumpkin");
+	public static final TagKey<Item> TORCHFLOWER_SEEDS = register("seeds/torchflower");
+	public static final TagKey<Item> WHEAT_SEEDS = register("seeds/wheat");
+
 	// Other
 	public static final TagKey<Item> PLAYER_WORKSTATIONS_CRAFTING_TABLES = register("player_workstations/crafting_tables");
 	public static final TagKey<Item> PLAYER_WORKSTATIONS_FURNACES = register("player_workstations/furnaces");
 	public static final TagKey<Item> STRINGS = register("strings");
 	public static final TagKey<Item> LEATHERS = register("leathers");
+	public static final TagKey<Item> BONES = register("bones");
+	public static final TagKey<Item> EGGS = register("eggs");
+	public static final TagKey<Item> FEATHERS = register("feathers");
+	public static final TagKey<Item> GUNPOWDERS = register("gunpowders");
+	/**
+	 * Small mushroom items. Not the full block forms.
+	 */
+	public static final TagKey<Item> MUSHROOMS = register("mushrooms");
+	public static final TagKey<Item> NETHER_STARS = register("nether_stars");
 	/**
 	 * For music disc-like materials to be used in recipes.
 	 * A pancake with a JUKEBOX_PLAYABLE component attached to play in Jukeboxes as an Easter Egg is not a music disc and would not go in this tag.
@@ -377,6 +437,46 @@ public final class ConventionalItemTags {
 	 * Tag that holds all items that recipe viewers should not show to users.
 	 */
 	public static final TagKey<Item> HIDDEN_FROM_RECIPE_VIEWERS = register("hidden_from_recipe_viewers");
+
+	/**
+	 * Blocks which are often replaced by deepslate ores, i.e. the ores in the tag {@link #ORES_IN_GROUND_DEEPSLATE}, during world generation
+	 */
+	public static final TagKey<Item> ORE_BEARING_GROUND_DEEPSLATE = register("ore_bearing_ground/deepslate");
+	/**
+	 * Blocks which are often replaced by netherrack ores, i.e. the ores in the tag {@link #ORES_IN_GROUND_NETHERRACK}, during world generation
+	 */
+	public static final TagKey<Item> ORE_BEARING_GROUND_NETHERRACK = register("ore_bearing_ground/netherrack");
+	/**
+	 * Blocks which are often replaced by stone ores, i.e. the ores in the tag {@link #ORES_IN_GROUND_STONE}, during world generation
+	 */
+	public static final TagKey<Item> ORE_BEARING_GROUND_STONE = register("ore_bearing_ground/stone");
+	/**
+	 * Ores which on average result in more than one resource worth of materials ignoring fortune and other modifiers.
+	 * (example, Copper Ore)
+	 */
+	public static final TagKey<Item> ORE_RATES_DENSE = register("ore_rates/dense");
+	/**
+	 * Ores which on average result in one resource worth of materials ignoring fortune and other modifiers.
+	 * (Example, Iron Ore)
+	 */
+	public static final TagKey<Item> ORE_RATES_SINGULAR = register("ore_rates/singular");
+	/**
+	 * Ores which on average result in less than one resource worth of materials ignoring fortune and other modifiers.
+	 * (Example, Nether Gold Ore as it drops 2 to 6 Gold Nuggets which is less than normal Gold Ore's Raw Gold drop)
+	 */
+	public static final TagKey<Item> ORE_RATES_SPARSE = register("ore_rates/sparse");
+	/**
+	 * Ores in deepslate (or in equivalent blocks in the tag {@link #ORE_BEARING_GROUND_DEEPSLATE}) which could logically use deepslate as recipe input or output.
+	 */
+	public static final TagKey<Item> ORES_IN_GROUND_DEEPSLATE = register("ores_in_ground/deepslate");
+	/**
+	 * Ores in netherrack (or in equivalent blocks in the tag {@link #ORE_BEARING_GROUND_NETHERRACK}) which could logically use netherrack as recipe input or output.
+	 */
+	public static final TagKey<Item> ORES_IN_GROUND_NETHERRACK = register("ores_in_ground/netherrack");
+	/**
+	 * Ores in stone (or in equivalent blocks in the tag {@link #ORE_BEARING_GROUND_STONE}) which could logically use stone as recipe input or output.
+	 */
+	public static final TagKey<Item> ORES_IN_GROUND_STONE = register("ores_in_ground/stone");
 
 	/**
 	 * This tag is redundant. Please use {@link ConventionalItemTags#STORAGE_BLOCKS} tag instead.
