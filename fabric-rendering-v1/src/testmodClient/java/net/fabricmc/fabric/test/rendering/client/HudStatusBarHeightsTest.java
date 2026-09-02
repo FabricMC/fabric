@@ -29,13 +29,17 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
+import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudStatusBarHeightRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.mixin.client.rendering.HudAccessor;
 
-public class HudStatusBarHeightsTest implements ClientModInitializer {
+public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClientGameTest {
 	private static final Identifier HEART_CONTAINER_TEXTURE = Identifier.withDefaultNamespace("hud/heart/container");
 	private static final Identifier HEART_HALF_TEXTURE = Identifier.withDefaultNamespace("hud/heart/absorbing_half");
 	private static final Identifier HEART_FULL_TEXTURE = Identifier.withDefaultNamespace("hud/heart/absorbing_full");
@@ -262,6 +266,24 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 			if (l * 2 + 1 == k) {
 				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_HALF_SPRITE, n, y, 9, 9);
 			}
+		}
+	}
+
+	@Override
+	public void runTest(ClientGameTestContext context) {
+		// Set up required test environment
+		context.getInput().resizeWindow(2048, 1024); // Multiple of 256 to not squish the pixels of 256x overlays.
+		context.runOnClient(client -> {
+			if (client.gui.hud.isHidden()) {
+				client.gui.hud.toggle();
+			}
+
+			client.options.guiScale().set(2);
+		});
+
+		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
+			singleplayer.getConnection().waitForChunksRender();
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_status_bar_height_stamina").withRegion(1044, 926, 162, 20).save());
 		}
 	}
 }

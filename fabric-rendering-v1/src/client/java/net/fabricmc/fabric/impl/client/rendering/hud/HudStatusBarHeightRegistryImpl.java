@@ -28,6 +28,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.IntBinaryOperator;
 import java.util.function.ToIntFunction;
+import java.util.function.UnaryOperator;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
@@ -134,7 +135,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 			VanillaHudElements.HEALTH_BAR,
 			INFO_BAR::getStatusBarHeight,
 			VanillaHudElements.ARMOR_BAR,
-			HEALTH_BAR::getStatusBarHeight,
+			reduceToIntFunctions(INFO_BAR, HEALTH_BAR, Integer::sum),
 			VanillaHudElements.MOUNT_HEALTH,
 			INFO_BAR::getStatusBarHeight,
 			VanillaHudElements.FOOD_BAR,
@@ -208,6 +209,30 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	public static void addRight(Identifier id, StatusBarHeightProvider heightProvider) {
 		if (yPosProviders == null) {
 			RIGHT_HEIGHT_PROVIDERS.put(id, heightProvider);
+		} else {
+			throw new IllegalStateException("Height provider registry already frozen!");
+		}
+	}
+
+	public static void replaceLeft(Identifier id, UnaryOperator<StatusBarHeightProvider> replacer) {
+		if (yPosProviders == null) {
+			if (!LEFT_HEIGHT_PROVIDERS.containsKey(id)) {
+				throw new IllegalArgumentException("Unknown status bar: " + id);
+			}
+
+			LEFT_HEIGHT_PROVIDERS.put(id, replacer.apply(LEFT_HEIGHT_PROVIDERS.get(id)));
+		} else {
+			throw new IllegalStateException("Height provider registry already frozen!");
+		}
+	}
+
+	public static void replaceRight(Identifier id, UnaryOperator<StatusBarHeightProvider> replacer) {
+		if (yPosProviders == null) {
+			if (!RIGHT_HEIGHT_PROVIDERS.containsKey(id)) {
+				throw new IllegalArgumentException("Unknown status bar: " + id);
+			}
+
+			RIGHT_HEIGHT_PROVIDERS.put(id, replacer.apply(RIGHT_HEIGHT_PROVIDERS.get(id)));
 		} else {
 			throw new IllegalStateException("Height provider registry already frozen!");
 		}

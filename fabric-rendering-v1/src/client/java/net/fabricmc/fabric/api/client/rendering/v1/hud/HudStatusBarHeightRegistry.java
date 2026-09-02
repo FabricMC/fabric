@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.rendering.v1.hud;
 
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
@@ -60,8 +61,8 @@ public final class HudStatusBarHeightRegistry {
 	 * actual element must also be taken into account here; so when an element currently does not actually render
 	 * {@code 0} must be returned.
 	 *
-	 * <p>Vanilla height providers for this side are: {@link HudStatusBarHeightRegistryImpl#HEALTH_BAR},
-	 * {@link HudStatusBarHeightRegistryImpl#ARMOR_BAR}
+	 * <p>Vanilla height providers for this side are: {@link HudStatusBarHeightRegistryImpl#INFO_BAR},
+	 * {@link HudStatusBarHeightRegistryImpl#HEALTH_BAR}, {@link HudStatusBarHeightRegistryImpl#ARMOR_BAR}
 	 *
 	 * <p>Existing height providers (like vanilla) can be replaced to coincide with
 	 * {@link HudElementRegistry#replaceElement(Identifier, Function)}.
@@ -88,8 +89,9 @@ public final class HudStatusBarHeightRegistry {
 	 * actual element must also be taken into account here; so when an element currently does not actually render
 	 * {@code 0} must be returned.
 	 *
-	 * <p>Vanilla height providers for this side are: {@link HudStatusBarHeightRegistryImpl#MOUNT_HEALTH},
-	 * {@link HudStatusBarHeightRegistryImpl#FOOD_BAR}, {@link HudStatusBarHeightRegistryImpl#AIR_BAR}
+	 * <p>Vanilla height providers for this side are: {@link HudStatusBarHeightRegistryImpl#INFO_BAR},
+	 * {@link HudStatusBarHeightRegistryImpl#MOUNT_HEALTH}, {@link HudStatusBarHeightRegistryImpl#FOOD_BAR},
+	 * {@link HudStatusBarHeightRegistryImpl#AIR_BAR}
 	 *
 	 * <p>Existing height providers (like vanilla) can be replaced to coincide with
 	 * {@link HudElementRegistry#replaceElement(Identifier, Function)}.
@@ -105,6 +107,18 @@ public final class HudStatusBarHeightRegistry {
 		Objects.requireNonNull(id, "id is null");
 		Objects.requireNonNull(heightProvider, "height provider is null");
 		HudStatusBarHeightRegistryImpl.addRight(id, heightProvider);
+	}
+
+	public static void replaceLeft(Identifier id, UnaryOperator<StatusBarHeightProvider> replacer) {
+		Objects.requireNonNull(id, "id is null");
+		Objects.requireNonNull(replacer, "replacer is null");
+		HudStatusBarHeightRegistryImpl.replaceLeft(id, replacer);
+	}
+
+	public static void replaceRight(Identifier id, UnaryOperator<StatusBarHeightProvider> replacer) {
+		Objects.requireNonNull(id, "id is null");
+		Objects.requireNonNull(replacer, "replacer is null");
+		HudStatusBarHeightRegistryImpl.replaceRight(id, replacer);
 	}
 
 	/**
