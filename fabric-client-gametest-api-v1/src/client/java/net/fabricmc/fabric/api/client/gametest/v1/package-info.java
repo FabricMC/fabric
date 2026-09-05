@@ -41,15 +41,10 @@
  * is exactly one server tick per client tick while a server is running (singleplayer or multiplayer). There is also a
  * limit of one client tick per frame.
  *
- * <h2>Network synchronization</h2>
- *
- * <p>Network packets are internally tracked and managed so that they are always handled at a consistent time, always
- * before the next tick. Calling {@code waitTick()} is always enough for a server packet to be handled on the client or
- * vice versa.
- *
- * <p>If your mod interacts with the network code at a low level, such as by directly hooking into the Netty pipeline to
- * send or handle packets, you may need to disable network synchronization. You can do this by setting the
- * {@code fabric.client.gametest.disableNetworkSynchronizer} system property.
+ * <p>Network packets can take a variable number of ticks to arrive on the other side. To make consistent game tests, see
+ * {@link net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection#waitForClientboundPackets()  TestServerConnection.waitForClientboundPackets()},
+ * {@link net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection#waitForServerboundPackets()  TestServerConnection.waitForServerboundPackets()},
+ * and similar methods.
  *
  * <h2>Default settings</h2>
  * The client gametest API adjusts some default settings, usually for consistency of tests. These settings can always be
@@ -77,6 +72,18 @@
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
+ *         <td>{@linkplain net.minecraft.client.Options#maxAnisotropyBit() Anisotropic filtering}</td>
+ *         <td>{@code 0} (disabled)</td>
+ *         <td>{@code 2}</td>
+ *         <td>Consistency of tests</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.client.Options#chunkSectionFadeInTime() Chunk fade}</td>
+ *         <td>{@code 0}</td>
+ *         <td>{@code 0.75}</td>
+ *         <td>Consistency of tests</td>
+ *     </tr>
+ *     <tr>
  *         <td>{@linkplain net.minecraft.client.Options#onboardAccessibility Onboard accessibility}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
@@ -87,7 +94,7 @@
  *         <td>{@code 5}</td>
  *         <td>{@code 10}</td>
  *         <td>Speeds up loading of chunks, especially for functions such as
- *         {@link net.fabricmc.fabric.api.client.gametest.v1.context.TestClientLevelContext#waitForChunksRender() TestClientLevelContext.waitForChunksRender()}</td>
+ *         {@link net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection#waitForChunksRender() TestServerConnection.waitForChunksRender()}</td>
  *     </tr>
  *     <tr>
  *         <td>{@linkplain net.minecraft.client.Options#getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource) Music volume}</td>
@@ -129,21 +136,27 @@
  *         <td>Consistency of tests and creates cleaner tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_TIME Do daylight cycle}</td>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_TIME Advance time}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_WEATHER Do weather cycle}</td>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_WEATHER Advance weather}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#SPAWN_MOBS Do mob spawning}</td>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#SPAWN_MOBS Spawn mobs}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
+ *         <td>Consistency of tests</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#RESPAWN_RADIUS Respawn radius}</td>
+ *         <td>{@code 0}</td>
+ *         <td>{@code 10}</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  * </table>

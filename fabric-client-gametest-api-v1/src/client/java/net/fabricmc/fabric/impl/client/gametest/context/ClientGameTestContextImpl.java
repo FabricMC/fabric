@@ -91,9 +91,13 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	private static final Map<String, Object> DEFAULT_GAME_OPTIONS = new HashMap<>();
 
 	public static void initGameOptions(Options options) {
+		// When adding to the list of default game options, remember to update the list in module documentation
+
 		// Messes with the consistency of gametests
 		options.tutorialStep = TutorialSteps.NONE;
 		options.cloudStatus().set(CloudStatus.OFF);
+		options.maxAnisotropyBit().set(0);
+		options.chunkSectionFadeInTime().set(0D);
 
 		// Messes with game tests starting
 		options.onboardAccessibility = false;
@@ -104,11 +108,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		// Just annoying
 		options.getSoundSourceOptionInstance(SoundSource.MUSIC).set(0.0);
 
-		// Disable Anisotropic Filtering
-		options.maxAnisotropyBit().set(0);
-
-		// Disable chunk fade
-		options.chunkSectionFadeInTime().set(0D);
+		// When adding to the list of default game options, remember to update the list in module documentation
 
 		((OptionsAccessor) options).invokeProcessOptions(new Options.FieldAccess() {
 			@Override
@@ -527,19 +527,27 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 
 	@Override
 	public <E extends Throwable> void runOnClient(FailableConsumer<Minecraft, E> action) throws E {
-		ThreadingImpl.checkOnGametestThread("runOnClient");
+		ThreadingImpl.checkOnGametestOrClientThread("runOnClient");
 		Preconditions.checkNotNull(action, "action");
 
-		ThreadingImpl.runOnClient(() -> action.accept(Minecraft.getInstance()));
+		if (ThreadingImpl.unsafeClientInstance.isSameThread()) {
+			action.accept(Minecraft.getInstance());
+		} else {
+			ThreadingImpl.runOnClient(() -> action.accept(Minecraft.getInstance()));
+		}
 	}
 
 	@Override
 	public <T, E extends Throwable> T computeOnClient(FailableFunction<Minecraft, T, E> function) throws E {
-		ThreadingImpl.checkOnGametestThread("computeOnClient");
+		ThreadingImpl.checkOnGametestOrClientThread("computeOnClient");
 		Preconditions.checkNotNull(function, "function");
 
-		MutableObject<T> result = new MutableObject<>();
-		ThreadingImpl.runOnClient(() -> result.setValue(function.apply(Minecraft.getInstance())));
-		return result.getValue();
+		if (ThreadingImpl.unsafeClientInstance.isSameThread()) {
+			return function.apply(Minecraft.getInstance());
+		} else {
+			MutableObject<T> result = new MutableObject<>();
+			ThreadingImpl.runOnClient(() -> result.setValue(function.apply(Minecraft.getInstance())));
+			return result.getValue();
+		}
 	}
 }
