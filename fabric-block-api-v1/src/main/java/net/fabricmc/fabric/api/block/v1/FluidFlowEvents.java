@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.registry.fluid;
+package net.fabricmc.fabric.api.block.v1;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>Note: Not updating the block state at the fluid position and returning {@code false} will likely cause unintended behavior, as fluids that could flow won't.
  *
  * <pre>{@code
- * FluidFlowCallback.EVENT.register((fluid, level, fluidPosition) -> {
+ * FluidFlowEvents.ALLOW.register((fluid, level, fluidPosition) -> {
  *     // For example, check if this is a specific fluid
  *     if (!fluid.is(Tags.MY_FLUID)) return true;
  *
@@ -45,9 +45,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * }</pre>
  */
 @FunctionalInterface
-public interface AllowFluidFlow {
-	Event<AllowFluidFlow> EVENT = EventFactory.createArrayBacked(AllowFluidFlow.class, fluidFlowInteractionEvents -> (fluid, level, fluidPosition) -> {
-		for (AllowFluidFlow event : fluidFlowInteractionEvents) {
+public interface FluidFlowEvents {
+	Event<FluidFlowEvents> ALLOW = EventFactory.createArrayBacked(FluidFlowEvents.class, fluidFlowInteractionEvents -> (fluid, level, fluidPosition) -> {
+		for (FluidFlowEvents event : fluidFlowInteractionEvents) {
 			if (!event.allowFlow(fluid, level, fluidPosition)) {
 				return false;
 			}

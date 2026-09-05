@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.content.registry.fluid;
+package net.fabricmc.fabric.mixin.block;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,8 +28,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.LavaFluid;
 
-import net.fabricmc.fabric.api.registry.fluid.AllowFluidFlow;
+import net.fabricmc.fabric.api.block.v1.FluidFlowEvents;
 
 @Mixin(FlowingFluid.class)
 public abstract class FlowingFluidMixin extends Fluid {
@@ -39,7 +40,10 @@ public abstract class FlowingFluidMixin extends Fluid {
 
 	@Inject(method = "spreadTo", at = @At("HEAD"), cancellable = true)
 	private void shouldSpreadLiquid(LevelAccessor level, BlockPos pos, BlockState state, Direction direction, FluidState target, CallbackInfo ci) {
-		if (!AllowFluidFlow.EVENT.invoker().allowFlow(level.getFluidState(pos.relative(direction.getOpposite())), level, pos)) {
+		// Have the same injector in LavaFluid, no need to check twice.
+		if (target.getType() instanceof LavaFluid) return;
+
+		if (!FluidFlowEvents.ALLOW.invoker().allowFlow(level.getFluidState(pos.relative(direction.getOpposite())), level, pos)) {
 			ci.cancel();
 		}
 	}
