@@ -60,16 +60,16 @@ public class ThreadPrinting {
 			if (i == 0 && threadInfo.getLockInfo() != null) {
 				Thread.State ts = threadInfo.getThreadState();
 				switch (ts) {
-				case BLOCKED -> {
-					sb.append("\t-  blocked on ").append(threadInfo.getLockInfo());
-					sb.append('\n');
-				}
-				case WAITING, TIMED_WAITING -> {
-					sb.append("\t-  waiting on ").append(threadInfo.getLockInfo());
-					sb.append('\n');
-				}
-				default -> {
-				}
+					case BLOCKED -> {
+						sb.append("\t-  blocked on ").append(threadInfo.getLockInfo());
+						sb.append('\n');
+					}
+					case WAITING, TIMED_WAITING -> {
+						sb.append("\t-  waiting on ").append(threadInfo.getLockInfo());
+						sb.append('\n');
+					}
+					default -> {
+					}
 				}
 			}
 

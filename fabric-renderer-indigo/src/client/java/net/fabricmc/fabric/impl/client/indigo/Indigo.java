@@ -78,9 +78,9 @@ public class Indigo implements ClientModInitializer {
 		}
 
 		return switch (property.toLowerCase(Locale.ROOT)) {
-		case "true" -> TriState.TRUE;
-		case "false" -> TriState.FALSE;
-		default -> TriState.DEFAULT;
+			case "true" -> TriState.TRUE;
+			case "false" -> TriState.FALSE;
+			default -> TriState.DEFAULT;
 		};
 	}
 

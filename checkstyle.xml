@@ -117,12 +117,30 @@
 			<property name="option" value="eol"/>
 		</module>
 
+		<!-- Traditional cases stay aligned with the switch; enhanced cases are indented one level. -->
 		<module name="Indentation">
+			<property name="id" value="traditionalSwitchIndentation"/>
 			<property name="basicOffset" value="4"/>
 			<property name="caseIndent" value="0"/>
 			<property name="throwsIndent" value="4"/>
 			<property name="arrayInitIndent" value="4"/>
 			<property name="lineWrappingIndentation" value="8"/>
+		</module>
+		<module name="Indentation">
+			<property name="id" value="enhancedSwitchIndentation"/>
+			<property name="basicOffset" value="4"/>
+			<property name="caseIndent" value="4"/>
+			<property name="throwsIndent" value="4"/>
+			<property name="arrayInitIndent" value="4"/>
+			<property name="lineWrappingIndentation" value="8"/>
+		</module>
+		<module name="SuppressionXpathSingleFilter">
+			<property name="id" value="traditionalSwitchIndentation"/>
+			<property name="query" value="//*[ancestor-or-self::SWITCH_RULE]"/>
+		</module>
+		<module name="SuppressionXpathSingleFilter">
+			<property name="id" value="enhancedSwitchIndentation"/>
+			<property name="query" value="//*[not(ancestor-or-self::SWITCH_RULE)]"/>
 		</module>
 
 		<module name="ParenPad"/>

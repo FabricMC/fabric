@@ -194,8 +194,8 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 
 		private static Fraction getWeight(DataResult<Fraction> weight) {
 			return switch (weight) {
-			case DataResult.Success<Fraction> success -> success.value();
-			case DataResult.Error<Fraction> ignored -> Fraction.ONE;
+				case DataResult.Success<Fraction> success -> success.value();
+				case DataResult.Error<Fraction> ignored -> Fraction.ONE;
 			};
 		}
 	}

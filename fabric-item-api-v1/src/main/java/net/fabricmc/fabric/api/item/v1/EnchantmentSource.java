@@ -63,9 +63,9 @@ public enum EnchantmentSource {
 	 */
 	public ResourceSource toResourceSource() {
 		return switch (this) {
-		case VANILLA -> ResourceSource.VANILLA;
-		case MOD -> ResourceSource.MOD;
-		case DATA_PACK -> ResourceSource.DATA_PACK;
+			case VANILLA -> ResourceSource.VANILLA;
+			case MOD -> ResourceSource.MOD;
+			case DATA_PACK -> ResourceSource.DATA_PACK;
 		};
 	}
 
@@ -80,9 +80,9 @@ public enum EnchantmentSource {
 	@Deprecated
 	public static EnchantmentSource fromResourceSource(ResourceSource source) {
 		return switch (source) {
-		case ResourceSource.VANILLA -> VANILLA;
-		case ResourceSource.MOD -> MOD;
-		case ResourceSource.DATA_PACK -> DATA_PACK;
+			case ResourceSource.VANILLA -> VANILLA;
+			case ResourceSource.MOD -> MOD;
+			case ResourceSource.DATA_PACK -> DATA_PACK;
 		};
 	}
 }

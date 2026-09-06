@@ -90,12 +90,12 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 			checkStack(stack);
 
 			switch (visibility) {
-			case PARENT_AND_SEARCH_TABS -> {
-				this.displayStacks.add(stack);
-				this.searchTabStacks.add(stack);
-			}
-			case PARENT_TAB_ONLY -> this.displayStacks.add(stack);
-			case SEARCH_TAB_ONLY -> this.searchTabStacks.add(stack);
+				case PARENT_AND_SEARCH_TABS -> {
+					this.displayStacks.add(stack);
+					this.searchTabStacks.add(stack);
+				}
+				case PARENT_TAB_ONLY -> this.displayStacks.add(stack);
+				case SEARCH_TAB_ONLY -> this.searchTabStacks.add(stack);
 			}
 		}
 	}
@@ -119,12 +119,12 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 			checkStack(stack);
 
 			switch (visibility) {
-			case PARENT_AND_SEARCH_TABS -> {
-				this.displayStacks.add(0, stack);
-				this.searchTabStacks.add(0, stack);
-			}
-			case PARENT_TAB_ONLY -> this.displayStacks.add(0, stack);
-			case SEARCH_TAB_ONLY -> this.searchTabStacks.add(0, stack);
+				case PARENT_AND_SEARCH_TABS -> {
+					this.displayStacks.add(0, stack);
+					this.searchTabStacks.add(0, stack);
+				}
+				case PARENT_TAB_ONLY -> this.displayStacks.add(0, stack);
+				case SEARCH_TAB_ONLY -> this.searchTabStacks.add(0, stack);
 			}
 		}
 	}
@@ -202,12 +202,12 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 		}
 
 		switch (visibility) {
-		case PARENT_AND_SEARCH_TABS -> {
-			insertAfter(afterLast, newStacks, displayStacks);
-			insertAfter(afterLast, newStacks, searchTabStacks);
-		}
-		case PARENT_TAB_ONLY -> insertAfter(afterLast, newStacks, displayStacks);
-		case SEARCH_TAB_ONLY -> insertAfter(afterLast, newStacks, searchTabStacks);
+			case PARENT_AND_SEARCH_TABS -> {
+				insertAfter(afterLast, newStacks, displayStacks);
+				insertAfter(afterLast, newStacks, searchTabStacks);
+			}
+			case PARENT_TAB_ONLY -> insertAfter(afterLast, newStacks, displayStacks);
+			case SEARCH_TAB_ONLY -> insertAfter(afterLast, newStacks, searchTabStacks);
 		}
 	}
 
@@ -227,12 +227,12 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 		}
 
 		switch (visibility) {
-		case PARENT_AND_SEARCH_TABS -> {
-			insertAfter(afterLast, newStacks, displayStacks);
-			insertAfter(afterLast, newStacks, searchTabStacks);
-		}
-		case PARENT_TAB_ONLY -> insertAfter(afterLast, newStacks, displayStacks);
-		case SEARCH_TAB_ONLY -> insertAfter(afterLast, newStacks, searchTabStacks);
+			case PARENT_AND_SEARCH_TABS -> {
+				insertAfter(afterLast, newStacks, displayStacks);
+				insertAfter(afterLast, newStacks, searchTabStacks);
+			}
+			case PARENT_TAB_ONLY -> insertAfter(afterLast, newStacks, displayStacks);
+			case SEARCH_TAB_ONLY -> insertAfter(afterLast, newStacks, searchTabStacks);
 		}
 	}
 
@@ -252,12 +252,12 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 		}
 
 		switch (visibility) {
-		case PARENT_AND_SEARCH_TABS -> {
-			insertAfter(afterLast, newStacks, displayStacks);
-			insertAfter(afterLast, newStacks, searchTabStacks);
-		}
-		case PARENT_TAB_ONLY -> insertAfter(afterLast, newStacks, displayStacks);
-		case SEARCH_TAB_ONLY -> insertAfter(afterLast, newStacks, searchTabStacks);
+			case PARENT_AND_SEARCH_TABS -> {
+				insertAfter(afterLast, newStacks, displayStacks);
+				insertAfter(afterLast, newStacks, searchTabStacks);
+			}
+			case PARENT_TAB_ONLY -> insertAfter(afterLast, newStacks, displayStacks);
+			case SEARCH_TAB_ONLY -> insertAfter(afterLast, newStacks, searchTabStacks);
 		}
 	}
 
@@ -319,12 +319,12 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 		}
 
 		switch (visibility) {
-		case PARENT_AND_SEARCH_TABS -> {
-			insertBefore(beforeFirst, newStacks, displayStacks);
-			insertBefore(beforeFirst, newStacks, searchTabStacks);
-		}
-		case PARENT_TAB_ONLY -> insertBefore(beforeFirst, newStacks, displayStacks);
-		case SEARCH_TAB_ONLY -> insertBefore(beforeFirst, newStacks, searchTabStacks);
+			case PARENT_AND_SEARCH_TABS -> {
+				insertBefore(beforeFirst, newStacks, displayStacks);
+				insertBefore(beforeFirst, newStacks, searchTabStacks);
+			}
+			case PARENT_TAB_ONLY -> insertBefore(beforeFirst, newStacks, displayStacks);
+			case SEARCH_TAB_ONLY -> insertBefore(beforeFirst, newStacks, searchTabStacks);
 		}
 	}
 
@@ -344,12 +344,12 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 		}
 
 		switch (visibility) {
-		case PARENT_AND_SEARCH_TABS -> {
-			insertBefore(beforeFirst, newStacks, displayStacks);
-			insertBefore(beforeFirst, newStacks, searchTabStacks);
-		}
-		case PARENT_TAB_ONLY -> insertBefore(beforeFirst, newStacks, displayStacks);
-		case SEARCH_TAB_ONLY -> insertBefore(beforeFirst, newStacks, searchTabStacks);
+			case PARENT_AND_SEARCH_TABS -> {
+				insertBefore(beforeFirst, newStacks, displayStacks);
+				insertBefore(beforeFirst, newStacks, searchTabStacks);
+			}
+			case PARENT_TAB_ONLY -> insertBefore(beforeFirst, newStacks, displayStacks);
+			case SEARCH_TAB_ONLY -> insertBefore(beforeFirst, newStacks, searchTabStacks);
 		}
 	}
 
@@ -369,12 +369,12 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 		}
 
 		switch (visibility) {
-		case PARENT_AND_SEARCH_TABS -> {
-			insertBefore(beforeFirst, newStacks, displayStacks);
-			insertBefore(beforeFirst, newStacks, searchTabStacks);
-		}
-		case PARENT_TAB_ONLY -> insertBefore(beforeFirst, newStacks, displayStacks);
-		case SEARCH_TAB_ONLY -> insertBefore(beforeFirst, newStacks, searchTabStacks);
+			case PARENT_AND_SEARCH_TABS -> {
+				insertBefore(beforeFirst, newStacks, displayStacks);
+				insertBefore(beforeFirst, newStacks, searchTabStacks);
+			}
+			case PARENT_TAB_ONLY -> insertBefore(beforeFirst, newStacks, displayStacks);
+			case SEARCH_TAB_ONLY -> insertBefore(beforeFirst, newStacks, searchTabStacks);
 		}
 	}
 

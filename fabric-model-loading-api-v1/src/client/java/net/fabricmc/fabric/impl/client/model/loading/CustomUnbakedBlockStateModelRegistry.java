@@ -94,10 +94,10 @@ public class CustomUnbakedBlockStateModelRegistry {
 				Objects.requireNonNull(model);
 
 				return switch (model) {
-				case CustomUnbakedBlockStateModel custom -> DataResult.success(Either.right(Either.left(custom)));
-				case SingleVariant.Unbaked simple -> DataResult.success(Either.right(Either.right(simple)));
-				case WeightedVariants.Unbaked weighted -> DataResult.success(Either.left(weighted));
-				default -> DataResult.error(() -> "Only a custom model or a single variant or a list of variants are supported");
+					case CustomUnbakedBlockStateModel custom -> DataResult.success(Either.right(Either.left(custom)));
+					case SingleVariant.Unbaked simple -> DataResult.success(Either.right(Either.right(simple)));
+					case WeightedVariants.Unbaked weighted -> DataResult.success(Either.left(weighted));
+					default -> DataResult.error(() -> "Only a custom model or a single variant or a list of variants are supported");
 				};
 			});
 

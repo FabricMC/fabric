@@ -62,9 +62,9 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 	@Nullable
 	public static PayloadTypeRegistryImpl<?> get(ProtocolInfo<?> state) {
 		return switch (state.id()) {
-		case CONFIGURATION -> state.flow() == PacketFlow.CLIENTBOUND ? CLIENTBOUND_CONFIGURATION : SERVERBOUND_CONFIGURATION;
-		case PLAY -> state.flow() == PacketFlow.CLIENTBOUND ? CLIENTBOUND_PLAY : SERVERBOUND_PLAY;
-		default -> null;
+			case CONFIGURATION -> state.flow() == PacketFlow.CLIENTBOUND ? CLIENTBOUND_CONFIGURATION : SERVERBOUND_CONFIGURATION;
+			case PLAY -> state.flow() == PacketFlow.CLIENTBOUND ? CLIENTBOUND_PLAY : SERVERBOUND_PLAY;
+			default -> null;
 		};
 	}
 

@@ -48,9 +48,9 @@ public record VanillaPacketTypes(PacketType<?>[] types) {
 
 	public static VanillaPacketTypes get(ProtocolInfo<?> protocolInfo) {
 		return switch (protocolInfo.id()) {
-		case CONFIGURATION -> protocolInfo.flow() == PacketFlow.CLIENTBOUND ? CONFIGURATION_S2C : CONFIGURATION_C2S;
-		case PLAY -> protocolInfo.flow() == PacketFlow.CLIENTBOUND ? PLAY_S2C : PLAY_C2S;
-		default -> throw new IllegalArgumentException("Not implemented for " + protocolInfo.id() + "!");
+			case CONFIGURATION -> protocolInfo.flow() == PacketFlow.CLIENTBOUND ? CONFIGURATION_S2C : CONFIGURATION_C2S;
+			case PLAY -> protocolInfo.flow() == PacketFlow.CLIENTBOUND ? PLAY_S2C : PLAY_C2S;
+			default -> throw new IllegalArgumentException("Not implemented for " + protocolInfo.id() + "!");
 		};
 	}
 }
