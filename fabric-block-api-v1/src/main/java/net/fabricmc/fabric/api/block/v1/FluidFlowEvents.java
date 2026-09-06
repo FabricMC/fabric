@@ -24,30 +24,11 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Callback for when any fluid tries to flow or has a neighbor update.
- *
- * <p>The default behavior is to return {@code true}, which means that the fluid is allowed to flow.
- * <br/>By returning {@code false}, you are saying that you are preventing the fluid from flowing, canceling all further callbacks.
- *
- * <p>Note: Not updating the block state at the fluid position and returning {@code false} will likely cause unintended behavior, as fluids that could flow won't.
- *
- * <pre>{@code
- * FluidFlowEvents.ALLOW.register((fluid, level, fluidPosition) -> {
- *     // For example, check if this is a specific fluid
- *     if (!fluid.is(Tags.MY_FLUID)) return true;
- *
- *     // For example, check if the block below matches some tag
- *     if (!level.getBlockState(fluidPosition.below()).is(Tags.MY_BLOCK)) return true;
- *
- *     // Perform some logic for fluid interaction ...
- *     return false;
- * });
- * }</pre>
+ * Holds events related to flowing fluids.
  */
-@FunctionalInterface
-public interface FluidFlowEvents {
-	Event<FluidFlowEvents> ALLOW = EventFactory.createArrayBacked(FluidFlowEvents.class, fluidFlowInteractionEvents -> (fluid, level, fluidPosition) -> {
-		for (FluidFlowEvents event : fluidFlowInteractionEvents) {
+public final class FluidFlowEvents {
+	Event<Allow> ALLOW = EventFactory.createArrayBacked(Allow.class, fluidFlowInteractionEvents -> (fluid, level, fluidPosition) -> {
+		for (Allow event : fluidFlowInteractionEvents) {
 			if (!event.allowFlow(fluid, level, fluidPosition)) {
 				return false;
 			}
@@ -57,12 +38,36 @@ public interface FluidFlowEvents {
 	});
 
 	/**
-	 * Called when a fluid flows.
+	 * Callback for when any fluid tries to flow or has a neighbor update.
 	 *
-	 * @param fluid         The fluid state of the flowing fluid.
-	 * @param level         The level the event took place in.
-	 * @param fluidPosition The position in the level that the fluid flowed into.
-	 * @return {@code true} if the fluid is allowed to flow into the position. {@code false} if the fluid is not allowed to flow, such as a block was created.
+	 * <p>The default behavior is to return {@code true}, which means that the fluid is allowed to flow.
+	 * <br/>By returning {@code false}, you are saying that you are preventing the fluid from flowing, canceling all further callbacks.
+	 *
+	 * <p>Note: Not updating the block state at the fluid position and returning {@code false} will likely cause unintended behavior, as fluids that could flow won't.
+	 *
+	 * <pre>{@code
+	 * FluidFlowEvents.ALLOW.register((fluid, level, fluidPosition) -> {
+	 *     // For example, check if this is a specific fluid
+	 *     if (!fluid.is(Tags.MY_FLUID)) return true;
+	 *
+	 *     // For example, check if the block below matches some tag
+	 *     if (!level.getBlockState(fluidPosition.below()).is(Tags.MY_BLOCK)) return true;
+	 *
+	 *     // Perform some logic for fluid interaction ...
+	 *     return false;
+	 * });
+	 * }</pre>
 	 */
-	boolean allowFlow(FluidState fluid, LevelAccessor level, BlockPos fluidPosition);
+	@FunctionalInterface
+	interface Allow {
+		/**
+		 * Called when a fluid flows.
+		 *
+		 * @param fluid         The fluid state of the flowing fluid.
+		 * @param level         The level the event took place in.
+		 * @param fluidPosition The position in the level that the fluid flowed into.
+		 * @return {@code true} if the fluid is allowed to flow into the position. {@code false} if the fluid is not allowed to flow, such as a block was created.
+		 */
+		boolean allowFlow(FluidState fluid, LevelAccessor level, BlockPos fluidPosition);
+	}
 }
