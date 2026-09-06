@@ -44,12 +44,6 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.repository.BuiltInPackSource;
-import net.minecraft.server.packs.repository.PackRepository;
-import net.minecraft.server.packs.repository.ServerPacksSource;
-import net.minecraft.server.packs.resources.CloseableResourceManager;
-import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
@@ -118,7 +112,7 @@ public final class FabricDataGenHelper {
 		// Ensure that the DataGeneratorEntrypoint is constructed on the main thread.
 		final List<DataGeneratorEntrypoint> entrypoints = dataGeneratorInitializers.stream().map(EntrypointContainer::getEntrypoint).toList();
 		CompletableFuture<HolderLookup.Provider> worldRegistriesFuture = CompletableFuture.supplyAsync(() -> createWorldLookupProvider(entrypoints), Util.backgroundExecutor());
-		CompletableFuture<HolderLookup.Provider> registriesFuture = worldRegistriesFuture.thenComposeAsync(provider -> createReloadableLookupProvider(entrypoints, provider), Util.backgroundExecutor());
+		CompletableFuture<HolderLookup.Provider> registriesFuture = worldRegistriesFuture.thenApplyAsync(provider -> createReloadableLookupProvider(entrypoints, provider), Util.backgroundExecutor());
 
 		Object2IntOpenHashMap<String> jsonKeySortOrders = (Object2IntOpenHashMap<String>) DataProvider.FIXED_ORDER_FIELDS;
 		Object2IntOpenHashMap<String> defaultJsonKeySortOrders = new Object2IntOpenHashMap<>(jsonKeySortOrders);
@@ -187,48 +181,26 @@ public final class FabricDataGenHelper {
 		return registryLookup;
 	}
 
-	private static CompletableFuture<HolderLookup.Provider> createReloadableLookupProvider(List<DataGeneratorEntrypoint> dataGeneratorInitializers, HolderLookup.Provider registryLookup) {
-		PackRepository packRepository = ServerPacksSource.createVanillaTrustedRepository();
-		packRepository.reload();
-		packRepository.setSelected(List.of(BuiltInPackSource.VANILLA_ID));
-
-		CloseableResourceManager resourceManager = new MultiPackResourceManager(PackType.SERVER_DATA, packRepository.openAllSelected());
-		CompletableFuture<RegistryAccess.Frozen> reloadableRegistriesFuture = RegistryDataLoader.load(
-				resourceManager,
-				registryLookup.listRegistries().toList(),
-				RegistryDataLoader.RELOADABLE_REGISTRIES,
-				Util.backgroundExecutor()
-		);
-
-		RegistrySetBuilder reloadableRegistryBuilder = new RegistrySetBuilder();
+	private static HolderLookup.Provider createReloadableLookupProvider(List<DataGeneratorEntrypoint> dataGeneratorInitializers, HolderLookup.Provider registryLookup) {
+		RegistrySetBuilder registryBuilder = new RegistrySetBuilder();
 		HashSet<ResourceKey<? extends Registry<?>>> vanillaReloadableRegistries = new HashSet<>();
-		HashSet<ResourceKey<? extends Registry<?>>> moddedReloadableRegistries = new HashSet<>();
-		RegistryDataLoader.RELOADABLE_REGISTRIES.forEach(registry -> vanillaReloadableRegistries.add(registry.key()));
+		VanillaRegistries.RELOADABLE_BUILDER.entries.stream()
+				.flatMap(RegistrySetBuilder.RegistryStub::requiredRegistries)
+				.forEach(vanillaReloadableRegistries::add);
 
 		for (RegistryDataLoader.RegistryData<?> registry : DynamicRegistries.getReloadableRegistries()) {
 			if (!vanillaReloadableRegistries.contains(registry.key())) {
-				addEmptyRegistry(reloadableRegistryBuilder, registry.key());
-				moddedReloadableRegistries.add(registry.key());
+				addEmptyRegistry(registryBuilder, registry.key());
 			}
 		}
 
+		registryBuilder.entries.addAll(VanillaRegistries.RELOADABLE_BUILDER.entries);
+
 		for (DataGeneratorEntrypoint entrypoint : dataGeneratorInitializers) {
-			entrypoint.buildReloadableRegistry(reloadableRegistryBuilder);
+			entrypoint.buildReloadableRegistry(registryBuilder);
 		}
 
-		return reloadableRegistriesFuture.thenApply(reloadableRegistries -> {
-			reloadableRegistries.listRegistries().forEach(registry -> {
-				//noinspection unchecked
-				reloadableRegistryBuilder.add((ResourceKey<Registry<Object>>) registry.key(), bootstrap -> {
-					//noinspection unchecked
-					((HolderLookup.RegistryLookup<Object>) registry).listElements().forEach(reference -> {
-						bootstrap.register(reference.key(), reference.value());
-					});
-				});
-			});
-
-			return reloadableRegistryBuilder.build(registryLookup);
-		}).whenComplete((_, _) -> resourceManager.close());
+		return registryBuilder.build(registryLookup);
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})

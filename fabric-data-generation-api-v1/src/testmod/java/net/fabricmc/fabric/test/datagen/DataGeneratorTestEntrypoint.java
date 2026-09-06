@@ -42,6 +42,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.advancements.Advancement;
@@ -580,6 +581,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		protected void configure(HolderLookup.Provider registries, Entries entries) {
 			registries.lookupOrThrow(Registries.LOOT_TABLE)
 					.getOrThrow(BuiltInLootTables.PIGLIN_BARTERING);
+
+			Advancement vanillaAdvancement = registries.lookupOrThrow(Registries.ADVANCEMENT).getOrThrow(ResourceKey.create(Registries.ADVANCEMENT, Identifier.withDefaultNamespace("recipes/misc/stick"))).value();
+			Advancement.CODEC.encodeStart(registries.createSerializationContext(JsonOps.INSTANCE), vanillaAdvancement).getOrThrow();
 
 			entries.add(
 					TEST_NUMBER_PROVIDER_KEY,
