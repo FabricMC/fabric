@@ -70,4 +70,6 @@ public final class FluidFlowEvents {
 		 */
 		boolean allowFlow(FluidState fluid, LevelAccessor level, BlockPos fluidPosition);
 	}
+
+	private FluidFlowEvents() { }
 }
