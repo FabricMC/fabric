@@ -58,10 +58,9 @@ import net.fabricmc.fabric.mixin.client.rendering.HudAccessor;
 
 public final class HudStatusBarHeightRegistryImpl implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("fabric-rendering-v1");
-	/**
-	 * The height at which vanilla begins rendering status bars; this is used for health and food / mount health.
-	 */
-	static final int DEFAULT_HEIGHT = 29;
+	/// The height at which vanilla begins rendering status bars; this is used for the info bar.
+	/// This number is derived from the `- 24 - 5` in [net.minecraft.client.gui.contextualbar.ContextualBar#top].
+	static final int DEFAULT_HEIGHT = 24;
 	/**
 	 * The height at which the held item tooltip renders in vanilla; for our purposes we already subtract the default
 	 * height.
@@ -76,7 +75,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	/**
 	 * Height provider for the vanilla info bar.
 	 */
-	static final StatusBarHeightProvider INFO_BAR = _ -> 10;
+	static final StatusBarHeightProvider INFO_BAR = _ -> 5;
 	/**
 	 * Height provider for the vanilla health bar.
 	 */
@@ -305,13 +304,19 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		// combines all height providers "below" a hud element for determining the height at which it should render at
 		YPosProvider yPosProvider = YPosProvider.ZERO;
 
-		for (Identifier heightProviderLocation : orderedHeightProviders) {
-			if (heightProviderLocation.equals(id)) {
+		for (Identifier heightProviderId : orderedHeightProviders) {
+			if (heightProviderLookup.containsKey(heightProviderId)) {
+				yPosProvider = reduceToIntFunctions(
+						yPosProvider,
+						heightProviderLookup.get(heightProviderId),
+						Integer::sum
+				);
+			}
+			// We include the hud element (id)'s own height provider because textures are rendered starting from the top left,
+			// so getHeight(id) should include the hud element's own height in order for GuiGraphics.guiHeight() - getHeight(id)
+			// to be at the top of where the hud element should render.
+			if (heightProviderId.equals(id)) {
 				return yPosProvider;
-			} else if (heightProviderLookup.containsKey(heightProviderLocation)) {
-				yPosProvider = reduceToIntFunctions(yPosProvider,
-						heightProviderLookup.get(heightProviderLocation),
-						Integer::sum);
 			}
 		}
 
@@ -361,17 +366,8 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	}
 
 	private static boolean isVanillaHeightProvider(Identifier id) {
-		if (LEFT_HEIGHT_PROVIDERS.containsKey(id) && LEFT_HEIGHT_PROVIDERS.get(id) == LEFT_VANILLA_HEIGHT_PROVIDERS.get(
-				id)) {
-			return true;
-		}
-
-		if (RIGHT_HEIGHT_PROVIDERS.containsKey(id)
-				&& RIGHT_HEIGHT_PROVIDERS.get(id) == RIGHT_VANILLA_HEIGHT_PROVIDERS.get(id)) {
-			return true;
-		}
-
-		return false;
+		return LEFT_HEIGHT_PROVIDERS.containsKey(id) && LEFT_HEIGHT_PROVIDERS.get(id) == LEFT_VANILLA_HEIGHT_PROVIDERS.get(id)
+				|| RIGHT_HEIGHT_PROVIDERS.containsKey(id) && RIGHT_HEIGHT_PROVIDERS.get(id) == RIGHT_VANILLA_HEIGHT_PROVIDERS.get(id);
 	}
 
 	private static void replaceVanillaElement(Identifier id, YPosProvider yPosProvider) {
