@@ -65,6 +65,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 		testArmorBar();
 		testToughnessBar();
 		testStaminaBar();
+		testReplacers();
 	}
 
 	private static void testHealthBar() {
@@ -267,6 +268,25 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_HALF_SPRITE, n, y, 9, 9);
 			}
 		}
+	}
+
+	private static void testReplacers() {
+		Identifier id = Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "height_provider_replacer_test_bar_that_should_never_show_up");
+
+		// Test that height providers can be chained.
+		HudStatusBarHeightRegistry.replaceLeft(VanillaHudElements.HEALTH_BAR, heightProvider -> player -> heightProvider.getStatusBarHeight(player) * 2);
+		HudStatusBarHeightRegistry.replaceLeft(VanillaHudElements.HEALTH_BAR, heightProvider -> player -> heightProvider.getStatusBarHeight(player) / 2);
+		HudStatusBarHeightRegistry.replaceRight(VanillaHudElements.FOOD_BAR, heightProvider -> player -> heightProvider.getStatusBarHeight(player) * 2);
+		HudStatusBarHeightRegistry.replaceRight(VanillaHudElements.FOOD_BAR, heightProvider -> player -> heightProvider.getStatusBarHeight(player) / 2);
+
+		HudElementRegistry.attachElementAfter(VanillaHudElements.INFO_BAR, id, (_, _) -> {});
+		// Test that registering replacers before the height providers work
+		HudStatusBarHeightRegistry.replaceLeft(id, _ -> _ -> 0);
+		HudStatusBarHeightRegistry.replaceRight(id, _ -> _ -> 0);
+		// Register height providers which would move the rest of the hud elements on top,
+		// which should fail the game test if these height providers are not replaced by the replacers above.
+		HudStatusBarHeightRegistry.addLeft(id, _ -> 100);
+		HudStatusBarHeightRegistry.addRight(id, _ -> 100);
 	}
 
 	@Override

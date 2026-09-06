@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.client.rendering.v1.hud;
 
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
@@ -66,6 +65,7 @@ public final class HudStatusBarHeightRegistry {
 	 *
 	 * <p>Existing height providers (like vanilla) can be replaced to coincide with
 	 * {@link HudElementRegistry#replaceElement(Identifier, Function)}.
+	 * (Method {@link #replaceLeft(Identifier, Function)} might be more suitable for this use case.)
 	 *
 	 * <p>Registration is frozen once the client has fully started.
 	 *
@@ -95,6 +95,7 @@ public final class HudStatusBarHeightRegistry {
 	 *
 	 * <p>Existing height providers (like vanilla) can be replaced to coincide with
 	 * {@link HudElementRegistry#replaceElement(Identifier, Function)}.
+	 * (Method {@link #replaceRight(Identifier, Function)} might be more suitable for this use case.)
 	 *
 	 * <p>Registration is frozen once the client has fully started.
 	 *
@@ -109,13 +110,41 @@ public final class HudStatusBarHeightRegistry {
 		HudStatusBarHeightRegistryImpl.addRight(id, heightProvider);
 	}
 
-	public static void replaceLeft(Identifier id, UnaryOperator<StatusBarHeightProvider> replacer) {
+	/// Replaces the height provider for a status bar on the left side above the hotbar.
+	///
+	/// This can be used to delegate to the original height provider when needed,
+	/// convenient for conditionally hiding or conditionally resizing a bar.
+	/// This can be used on vanilla bars as well.
+	///
+	/// Registration is frozen once the client has fully started.
+	///
+	/// @param id       the [Identifier]; must have a corresponding [StatusBarHeightProvider]
+	///                 registered by vanilla or any mod.
+	/// @param replacer the replacer function that takes a [StatusBarHeightProvider]
+	///                 and returns a new [StatusBarHeightProvider].
+	///
+	/// @see #addLeft(Identifier, StatusBarHeightProvider)
+	public static void replaceLeft(Identifier id, Function<StatusBarHeightProvider, StatusBarHeightProvider> replacer) {
 		Objects.requireNonNull(id, "id is null");
 		Objects.requireNonNull(replacer, "replacer is null");
 		HudStatusBarHeightRegistryImpl.replaceLeft(id, replacer);
 	}
 
-	public static void replaceRight(Identifier id, UnaryOperator<StatusBarHeightProvider> replacer) {
+	/// Replaces the height provider for a status bar on the right side above the hotbar.
+	///
+	/// This can be used to delegate to the original height provider when needed,
+	/// convenient for conditionally hiding or conditionally resizing a bar.
+	/// This can be used on vanilla bars as well.
+	///
+	/// Registration is frozen once the client has fully started.
+	///
+	/// @param id       the [Identifier]; must have a corresponding [StatusBarHeightProvider]
+	///                 registered by vanilla or any mod.
+	/// @param replacer the replacer function that takes a [StatusBarHeightProvider]
+	///                 and returns a new [StatusBarHeightProvider].
+	///
+	/// @see #addRight(Identifier, StatusBarHeightProvider)
+	public static void replaceRight(Identifier id, Function<StatusBarHeightProvider, StatusBarHeightProvider> replacer) {
 		Objects.requireNonNull(id, "id is null");
 		Objects.requireNonNull(replacer, "replacer is null");
 		HudStatusBarHeightRegistryImpl.replaceRight(id, replacer);

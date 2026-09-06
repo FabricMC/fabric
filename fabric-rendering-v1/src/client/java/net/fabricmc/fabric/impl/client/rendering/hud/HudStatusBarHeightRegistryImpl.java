@@ -26,9 +26,9 @@ import java.util.SequencedSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 import java.util.function.ToIntFunction;
-import java.util.function.UnaryOperator;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
@@ -183,6 +183,13 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	static final Map<Identifier, StatusBarHeightProvider> RIGHT_HEIGHT_PROVIDERS = new HashMap<>(
 			RIGHT_VANILLA_HEIGHT_PROVIDERS);
 
+	/// Height provider replacers registered for the left side above the hotbar.
+	/// Applied in [#init()] where all height providers would have been registered.
+	static final Map<Identifier, Function<StatusBarHeightProvider, StatusBarHeightProvider>> LEFT_HEIGHT_PROVIDER_REPLACERS = new HashMap<>();
+	/// Height provider replacers registered for the right side above the hotbar.
+	/// Applied in [#init()] where all height providers would have been registered.
+	static final Map<Identifier, Function<StatusBarHeightProvider, StatusBarHeightProvider>> RIGHT_HEIGHT_PROVIDER_REPLACERS = new HashMap<>();
+
 	/**
 	 * Height providers used during rendering computed from everything that was registered.
 	 *
@@ -214,28 +221,20 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		}
 	}
 
-	public static void replaceLeft(Identifier id, UnaryOperator<StatusBarHeightProvider> replacer) {
-		if (yPosProviders == null) {
-			if (!LEFT_HEIGHT_PROVIDERS.containsKey(id)) {
-				throw new IllegalArgumentException("Unknown status bar: " + id);
-			}
-
-			LEFT_HEIGHT_PROVIDERS.put(id, replacer.apply(LEFT_HEIGHT_PROVIDERS.get(id)));
-		} else {
+	public static void replaceLeft(Identifier id, Function<StatusBarHeightProvider, StatusBarHeightProvider> replacer) {
+		if (yPosProviders != null) {
 			throw new IllegalStateException("Height provider registry already frozen!");
 		}
+
+		LEFT_HEIGHT_PROVIDER_REPLACERS.merge(id, replacer, Function::andThen);
 	}
 
-	public static void replaceRight(Identifier id, UnaryOperator<StatusBarHeightProvider> replacer) {
-		if (yPosProviders == null) {
-			if (!RIGHT_HEIGHT_PROVIDERS.containsKey(id)) {
-				throw new IllegalArgumentException("Unknown status bar: " + id);
-			}
-
-			RIGHT_HEIGHT_PROVIDERS.put(id, replacer.apply(RIGHT_HEIGHT_PROVIDERS.get(id)));
-		} else {
+	public static void replaceRight(Identifier id, Function<StatusBarHeightProvider, StatusBarHeightProvider> replacer) {
+		if (yPosProviders != null) {
 			throw new IllegalStateException("Height provider registry already frozen!");
 		}
+
+		RIGHT_HEIGHT_PROVIDER_REPLACERS.merge(id, replacer, Function::andThen);
 	}
 
 	public static int getHeight(Identifier id) {
@@ -261,16 +260,29 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		if (LEFT_VANILLA_HEIGHT_PROVIDERS.equals(LEFT_HEIGHT_PROVIDERS) && RIGHT_VANILLA_HEIGHT_PROVIDERS.equals(
 				RIGHT_HEIGHT_PROVIDERS)) {
 			HudStatusBarHeightRegistryImpl.yPosProviders = VANILLA_Y_POS_PROVIDERS;
-		} else {
-			Map<Identifier, YPosProvider> yPosProviders = new LinkedHashMap<>();
-			YPosProvider maxLeftYPosProvider = getYPosProviders(LEFT_HEIGHT_PROVIDERS,
-					yPosProviders::put);
-			YPosProvider maxRightYPosProvider = getYPosProviders(RIGHT_HEIGHT_PROVIDERS,
-					yPosProviders::put);
-			applyVanillaYPosProviders(yPosProviders,
-					reduceToIntFunctions(maxLeftYPosProvider, maxRightYPosProvider, Math::max));
-			HudStatusBarHeightRegistryImpl.yPosProviders = ImmutableMap.copyOf(yPosProviders);
+			return;
 		}
+
+		Map<Identifier, YPosProvider> yPosProviders = new LinkedHashMap<>();
+		applyHeightProviderReplacers(LEFT_HEIGHT_PROVIDERS, LEFT_HEIGHT_PROVIDER_REPLACERS);
+		applyHeightProviderReplacers(RIGHT_HEIGHT_PROVIDERS, RIGHT_HEIGHT_PROVIDER_REPLACERS);
+		YPosProvider maxLeftYPosProvider = getYPosProviders(LEFT_HEIGHT_PROVIDERS,
+				yPosProviders::put);
+		YPosProvider maxRightYPosProvider = getYPosProviders(RIGHT_HEIGHT_PROVIDERS,
+				yPosProviders::put);
+		applyVanillaYPosProviders(yPosProviders,
+				reduceToIntFunctions(maxLeftYPosProvider, maxRightYPosProvider, Math::max));
+		HudStatusBarHeightRegistryImpl.yPosProviders = ImmutableMap.copyOf(yPosProviders);
+	}
+
+	private static void applyHeightProviderReplacers(Map<Identifier, StatusBarHeightProvider> heightProviders, Map<Identifier, Function<StatusBarHeightProvider, StatusBarHeightProvider>> heightProviderReplacers) {
+		heightProviderReplacers.forEach((k, replacer) -> {
+			if (!heightProviders.containsKey(k)) {
+				throw new IllegalArgumentException("Unknown status bar: " + k + ". Did you register the height provider replacer to the correct side?");
+			}
+
+			heightProviders.computeIfPresent(k, (_, v) -> replacer.apply(v));
+		});
 	}
 
 	private static YPosProvider getYPosProviders(Map<Identifier, StatusBarHeightProvider> heightProviderLookup, BiConsumer<Identifier, YPosProvider> yPosProviderConsumer) {
