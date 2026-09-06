@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Holds events related to flowing fluids.
  */
 public final class FluidFlowEvents {
-	Event<Allow> ALLOW = EventFactory.createArrayBacked(Allow.class, fluidFlowInteractionEvents -> (fluid, level, fluidPosition) -> {
+	public static final Event<Allow> ALLOW = EventFactory.createArrayBacked(Allow.class, fluidFlowInteractionEvents -> (fluid, level, fluidPosition) -> {
 		for (Allow event : fluidFlowInteractionEvents) {
 			if (!event.allowFlow(fluid, level, fluidPosition)) {
 				return false;
@@ -59,7 +59,7 @@ public final class FluidFlowEvents {
 	 * }</pre>
 	 */
 	@FunctionalInterface
-	interface Allow {
+	public interface Allow {
 		/**
 		 * Called when a fluid flows.
 		 *
