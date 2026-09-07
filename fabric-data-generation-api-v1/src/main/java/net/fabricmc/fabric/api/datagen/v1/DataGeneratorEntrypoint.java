@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.datagen.v1;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.SingleRegistryBootstrap;
 import net.minecraft.resources.ResourceKey;
 
 /**
@@ -50,8 +51,8 @@ public interface DataGeneratorEntrypoint {
 	}
 
 	/**
-	 * Builds a registry containing dynamic registry entries to be generated.
-	 * Users should call {@link RegistrySetBuilder#add(ResourceKey, RegistrySetBuilder.RegistryBootstrap)}
+	 * Builds a registry containing world dynamic registry entries to be generated.
+	 * Users should call {@link RegistrySetBuilder#add(ResourceKey, SingleRegistryBootstrap)}
 	 * to register a bootstrap function, which adds registry entries to be generated.
 	 *
 	 * <p>This is invoked asynchronously.
@@ -59,6 +60,18 @@ public interface DataGeneratorEntrypoint {
 	 * @param registryBuilder a {@link RegistrySetBuilder} instance
 	 */
 	default void buildRegistry(RegistrySetBuilder registryBuilder) {
+	}
+
+	/**
+	 * Builds a registry containing reloadable dynamic registry entries to be generated.
+	 * Users should call {@link RegistrySetBuilder#add(ResourceKey, SingleRegistryBootstrap)}
+	 * to register a bootstrap function, which adds registry entries to be generated.
+	 *
+	 * <p>This is invoked asynchronously.
+	 *
+	 * @param registryBuilder a {@link RegistrySetBuilder} instance
+	 */
+	default void buildReloadableRegistry(RegistrySetBuilder registryBuilder) {
 	}
 
 	/**

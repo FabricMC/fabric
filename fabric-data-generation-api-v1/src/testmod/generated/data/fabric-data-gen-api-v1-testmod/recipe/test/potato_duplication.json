@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:dirt",
+    "minecraft:potato"
+  ],
+  "result": {
+    "count": 4,
+    "id": "minecraft:potato"
+  }
+}

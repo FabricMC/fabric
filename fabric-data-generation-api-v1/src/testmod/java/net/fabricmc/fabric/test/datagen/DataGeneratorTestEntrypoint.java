@@ -36,24 +36,30 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.triggers.InventoryChangeTrigger;
 import net.minecraft.advancements.triggers.KilledTrigger;
+import net.minecraft.advancements.triggers.RecipeUnlockedTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.MultiRegistryBootstrap;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.core.registries.codec.RegistryCodecs;
 import net.minecraft.data.PackOutput;
@@ -115,6 +121,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	private static final ResourceCondition ALWAYS_LOADED = ResourceConditions.alwaysTrue();
 	private static final ResourceCondition NEVER_LOADED = ResourceConditions.alwaysFalse();
 
+	private static final ResourceKey<Recipe<?>> POTATO_DUPLICATION_RECIPE = ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath("fabric-data-gen-api-v1-testmod", "test/potato_duplication"));
+
 	@Override
 	public void addJsonKeySortOrders(JsonKeySortOrderCallback callback) {
 		callback.add("trigger", 0);
@@ -171,6 +179,21 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 				this::bootstrapTestDatagenRegistry
 		);
 		// do NOT add TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY, should still work without it
+	}
+
+	@Override
+	public void buildReloadableRegistry(RegistrySetBuilder registryBuilder) {
+		registryBuilder.add(new MultiRegistryBootstrap() {
+			@Override
+			public Set<ResourceKey<? extends Registry<?>>> requestedRegistries() {
+				return Set.of(Registries.ADVANCEMENT, Registries.RECIPE);
+			}
+
+			@Override
+			public void run(BootstrapGetter registries) {
+				createReloadableRecipeProvider(registries.get(Registries.RECIPE), registries.get(Registries.ADVANCEMENT)).buildRecipes();
+			}
+		});
 	}
 
 	private void bootstrapTestDatagenRegistry(BootstrapContext<DataGeneratorTestContent.TestDatagenObject> context) {
@@ -285,6 +308,19 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		public String getName() {
 			return "Test Recipes";
 		}
+	}
+
+	private static RecipeProvider createReloadableRecipeProvider(BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
+		return new RecipeProvider(recipes, advancements) {
+			@Override
+			public void buildRecipes() {
+				shapeless(RecipeCategory.TOOLS, Items.POTATO, 4)
+						.requires(Items.DIRT)
+						.requires(Items.POTATO)
+						.unlockedBy("potato", InventoryChangeTrigger.TriggerInstance.hasItems(Items.POTATO))
+						.save(output, POTATO_DUPLICATION_RECIPE);
+			}
+		};
 	}
 
 	private static class ExistingEnglishLangProvider extends FabricLanguageProvider {
@@ -441,6 +477,17 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					.addCriterion("killed_something", KilledTrigger.TriggerInstance.playerKilledEntity())
 					.parent(createPlaceholder(Identifier.withDefaultNamespace("adventure/root")))
 					.save(consumer, Identifier.fromNamespaceAndPath(MOD_ID, "test/adventure_child"));
+
+			AdvancementHolder recipeDependent = Advancement.Builder.advancement()
+					.display(Items.POTATO,
+							Component.literal("Potato Duplication Recipe Dependent"),
+							Component.literal("You unlocked the Potato Duplication recipe."),
+							AdvancementType.GOAL,
+							false, false, false
+					)
+					.addCriterion("recipe_unlocked", RecipeUnlockedTrigger.unlocked(registryLookup.getOrThrow(POTATO_DUPLICATION_RECIPE)))
+					.parent(root)
+					.save(consumer, Identifier.fromNamespaceAndPath(MOD_ID, "test/recipe_depentent"));
 		}
 	}
 
@@ -535,10 +582,15 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			registries.lookupOrThrow(Registries.LOOT_TABLE)
 					.getOrThrow(BuiltInLootTables.PIGLIN_BARTERING);
 
+			Advancement vanillaAdvancement = registries.lookupOrThrow(Registries.ADVANCEMENT).getOrThrow(ResourceKey.create(Registries.ADVANCEMENT, Identifier.withDefaultNamespace("recipes/misc/stick"))).value();
+			Advancement.CODEC.encodeStart(registries.createSerializationContext(JsonOps.INSTANCE), vanillaAdvancement).getOrThrow();
+
 			entries.add(
 					TEST_NUMBER_PROVIDER_KEY,
 					new ConstantValue(123)
 			);
+
+			entries.add(registries.getOrThrow(POTATO_DUPLICATION_RECIPE));
 		}
 
 		@Override
