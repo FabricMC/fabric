@@ -99,16 +99,16 @@ public class AoCalculator {
 		final AoConfig config = Indigo.AMBIENT_OCCLUSION_MODE;
 
 		switch (config) {
-		case VANILLA -> calcVanilla(quad);
-		case EMULATE -> calcFastVanilla(quad);
-		case HYBRID -> {
-			if (vanillaShade) {
-				calcFastVanilla(quad);
-			} else {
-				calcEnhanced(quad);
+			case VANILLA -> calcVanilla(quad);
+			case EMULATE -> calcFastVanilla(quad);
+			case HYBRID -> {
+				if (vanillaShade) {
+					calcFastVanilla(quad);
+				} else {
+					calcEnhanced(quad);
+				}
 			}
-		}
-		case ENHANCED -> calcEnhanced(quad);
+			case ENHANCED -> calcEnhanced(quad);
 		}
 
 		if (Indigo.DEBUG_COMPARE_LIGHTING && vanillaShade && (config == AoConfig.EMULATE || config == AoConfig.HYBRID)) {

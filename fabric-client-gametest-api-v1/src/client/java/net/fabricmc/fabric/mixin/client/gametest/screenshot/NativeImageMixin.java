@@ -49,28 +49,28 @@ public abstract class NativeImageMixin implements NativeImageHooks {
 		byte[] result = new byte[getWidth() * getHeight()];
 
 		switch (this.format) {
-		case RGBA -> {
-			for (int i = 0; i < result.length; i++) {
-				int red = MemoryUtil.memGetByte(pixels + i * 4) & 0xff;
-				int green = MemoryUtil.memGetByte(pixels + i * 4 + 1) & 0xff;
-				int blue = MemoryUtil.memGetByte(pixels + i * 4 + 2) & 0xff;
-				result[i] = toGrayscale(red, green, blue);
+			case RGBA -> {
+				for (int i = 0; i < result.length; i++) {
+					int red = MemoryUtil.memGetByte(pixels + i * 4) & 0xff;
+					int green = MemoryUtil.memGetByte(pixels + i * 4 + 1) & 0xff;
+					int blue = MemoryUtil.memGetByte(pixels + i * 4 + 2) & 0xff;
+					result[i] = toGrayscale(red, green, blue);
+				}
 			}
-		}
-		case RGB -> {
-			for (int i = 0; i < result.length; i++) {
-				int red = MemoryUtil.memGetByte(pixels + i * 3) & 0xff;
-				int green = MemoryUtil.memGetByte(pixels + i * 3 + 1) & 0xff;
-				int blue = MemoryUtil.memGetByte(pixels + i * 3 + 2) & 0xff;
-				result[i] = toGrayscale(red, green, blue);
+			case RGB -> {
+				for (int i = 0; i < result.length; i++) {
+					int red = MemoryUtil.memGetByte(pixels + i * 3) & 0xff;
+					int green = MemoryUtil.memGetByte(pixels + i * 3 + 1) & 0xff;
+					int blue = MemoryUtil.memGetByte(pixels + i * 3 + 2) & 0xff;
+					result[i] = toGrayscale(red, green, blue);
+				}
 			}
-		}
-		case LUMINANCE_ALPHA -> {
-			for (int i = 0; i < result.length; i++) {
-				result[i] = MemoryUtil.memGetByte(pixels + i * 2);
+			case LUMINANCE_ALPHA -> {
+				for (int i = 0; i < result.length; i++) {
+					result[i] = MemoryUtil.memGetByte(pixels + i * 2);
+				}
 			}
-		}
-		case LUMINANCE -> MemoryUtil.memByteBuffer(pixels, getWidth() * getHeight()).get(result);
+			case LUMINANCE -> MemoryUtil.memByteBuffer(pixels, getWidth() * getHeight()).get(result);
 		}
 
 		return result;
@@ -81,51 +81,51 @@ public abstract class NativeImageMixin implements NativeImageHooks {
 		this.checkAllocated();
 
 		return switch (this.format) {
-		case RGBA -> {
-			int[] result = this.getPixelsABGR();
+			case RGBA -> {
+				int[] result = this.getPixelsABGR();
 
-			for (int i = 0; i < result.length; i++) {
-				int color = result[i];
-				int blue = (color >> 16) & 0xff;
-				int green = (color >> 8) & 0xff;
-				int red = color & 0xff;
-				result[i] = (red << 16) | (green << 8) | blue;
+				for (int i = 0; i < result.length; i++) {
+					int color = result[i];
+					int blue = (color >> 16) & 0xff;
+					int green = (color >> 8) & 0xff;
+					int red = color & 0xff;
+					result[i] = (red << 16) | (green << 8) | blue;
+				}
+
+				yield result;
 			}
+			case RGB -> {
+				int[] result = new int[getWidth() * getHeight()];
 
-			yield result;
-		}
-		case RGB -> {
-			int[] result = new int[getWidth() * getHeight()];
+				for (int i = 0; i < result.length; i++) {
+					int red = MemoryUtil.memGetByte(pixels + i * 3) & 0xff;
+					int green = MemoryUtil.memGetByte(pixels + i * 3 + 1) & 0xff;
+					int blue = MemoryUtil.memGetByte(pixels + i * 3 + 2) & 0xff;
+					result[i] = (red << 16) | (green << 8) | blue;
+				}
 
-			for (int i = 0; i < result.length; i++) {
-				int red = MemoryUtil.memGetByte(pixels + i * 3) & 0xff;
-				int green = MemoryUtil.memGetByte(pixels + i * 3 + 1) & 0xff;
-				int blue = MemoryUtil.memGetByte(pixels + i * 3 + 2) & 0xff;
-				result[i] = (red << 16) | (green << 8) | blue;
+				yield result;
 			}
+			case LUMINANCE_ALPHA -> {
+				int[] result = new int[getWidth() * getHeight()];
 
-			yield result;
-		}
-		case LUMINANCE_ALPHA -> {
-			int[] result = new int[getWidth() * getHeight()];
+				for (int i = 0; i < result.length; i++) {
+					int luminance = MemoryUtil.memGetByte(pixels + i * 2) & 0xff;
+					result[i] = (luminance << 16) | (luminance << 8) | luminance;
+				}
 
-			for (int i = 0; i < result.length; i++) {
-				int luminance = MemoryUtil.memGetByte(pixels + i * 2) & 0xff;
-				result[i] = (luminance << 16) | (luminance << 8) | luminance;
+				yield result;
 			}
+			case LUMINANCE -> {
+				int[] result = new int[getWidth() * getHeight()];
 
-			yield result;
-		}
-		case LUMINANCE -> {
-			int[] result = new int[getWidth() * getHeight()];
+				for (int i = 0; i < result.length; i++) {
+					int luminance = MemoryUtil.memGetByte(pixels + i) & 0xff;
+					result[i] = (luminance << 16) | (luminance << 8) | luminance;
+				}
 
-			for (int i = 0; i < result.length; i++) {
-				int luminance = MemoryUtil.memGetByte(pixels + i) & 0xff;
-				result[i] = (luminance << 16) | (luminance << 8) | luminance;
+				yield result;
 			}
-
-			yield result;
-		}
 		};
 	}
 

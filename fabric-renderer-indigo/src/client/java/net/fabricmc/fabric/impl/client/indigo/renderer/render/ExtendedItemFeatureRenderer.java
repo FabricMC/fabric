@@ -109,9 +109,9 @@ public class ExtendedItemFeatureRenderer extends RenderTypeFeatureRenderer<Exten
 		ItemStackRenderState.FoilType foilType = quadFoilType == null ? submit.foilType() : quadFoilType;
 
 		RenderType renderType = switch (foilType) {
-		case NONE -> quad.itemRenderType();
-		case STANDARD -> quad.itemGlintRenderType();
-		case SPECIAL -> quad.itemGlintSpecialRenderType();
+			case NONE -> quad.itemRenderType();
+			case STANDARD -> quad.itemGlintRenderType();
+			case SPECIAL -> quad.itemGlintSpecialRenderType();
 		};
 
 		VertexConsumer vertexConsumer = getVertexBuilder(renderType);

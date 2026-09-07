@@ -95,8 +95,8 @@ public final class RegistrySyncManager {
 
 	private static Component getIncompatibleClientComponent(@Nullable String brand, Map<Identifier, Object2IntMap<Identifier>> map) {
 		String brandText = switch (brand) {
-		case "fabric" -> "Fabric API";
-		case null, default -> "Fabric Loader and Fabric API";
+			case "fabric" -> "Fabric API";
+			case null, default -> "Fabric Loader and Fabric API";
 		};
 
 		final int toDisplay = 4;

@@ -240,9 +240,9 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	@Nullable
 	private String getProtocol() {
 		return switch (receiver.getProtocol()) {
-		case PLAY -> CommonRegisterPayload.PLAY_PROTOCOL;
-		case CONFIGURATION -> CommonRegisterPayload.CONFIGURATION_PROTOCOL;
-		default -> null; // We don't support receiving this packet on any other phase
+			case PLAY -> CommonRegisterPayload.PLAY_PROTOCOL;
+			case CONFIGURATION -> CommonRegisterPayload.CONFIGURATION_PROTOCOL;
+			default -> null; // We don't support receiving this packet on any other phase
 		};
 	}
 }

@@ -189,8 +189,8 @@ public final class TestInputImpl implements TestInput {
 
 	private static void pressOrReleaseKey(Minecraft client, InputConstants.Key key, int action) {
 		switch (key.getType()) {
-		case KEYBOARD -> ((KeyboardHandlerAccessor) client.keyboardHandler).invokeKeyPress(client.getWindow().handle(), action, new KeyEvent(key.getValue(), SDLKeyboard.SDL_GetKeyFromScancode(key.getValue(), (short) 0, false), 0));
-		case MOUSE -> ((MouseHandlerAccessor) client.mouseHandler).invokeOnButton(client.getWindow().handle(), new MouseButtonInfo(key.getValue(), 0), action);
+			case KEYBOARD -> ((KeyboardHandlerAccessor) client.keyboardHandler).invokeKeyPress(client.getWindow().handle(), action, new KeyEvent(key.getValue(), SDLKeyboard.SDL_GetKeyFromScancode(key.getValue(), (short) 0, false), 0));
+			case MOUSE -> ((MouseHandlerAccessor) client.mouseHandler).invokeOnButton(client.getWindow().handle(), new MouseButtonInfo(key.getValue(), 0), action);
 		}
 	}
 

@@ -57,9 +57,9 @@ public enum EventResult implements StringRepresentable {
 	 */
 	public boolean allowAction(boolean passResult) {
 		return switch (this) {
-		case PASS -> passResult;
-		case ALLOW -> true;
-		case DENY -> false;
+			case PASS -> passResult;
+			case ALLOW -> true;
+			case DENY -> false;
 		};
 	}
 
