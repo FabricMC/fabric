@@ -7,7 +7,10 @@
     "BlockMixin",
     "BlockStateMixin",
     "ChunkSectionBlockStateCounterMixin",
+    "FlowingFluidMixin",
+    "LavaFluidMixin",
     "LevelChunkSectionMixin",
+    "LiquidBlockMixin",
     "LivingEntityMixin"
   ],
   "injectors": {

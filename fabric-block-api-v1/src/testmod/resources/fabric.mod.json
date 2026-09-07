@@ -10,7 +10,10 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.block.ClimbableTrapdoorTest"
+      "net.fabricmc.fabric.test.block.BlockTest"
+    ],
+    "fabric-gametest": [
+      "net.fabricmc.fabric.test.block.BlockGameTest"
     ]
   }
 }
