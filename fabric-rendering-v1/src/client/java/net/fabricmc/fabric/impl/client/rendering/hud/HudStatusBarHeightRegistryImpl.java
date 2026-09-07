@@ -21,6 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.SequencedCollection;
 import java.util.SequencedSet;
 import java.util.Set;
@@ -230,6 +232,31 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		return DEFAULT_HEIGHT + yPosProviders.get(id).getYPos(player);
 	}
 
+	public static int getElementHeight(Identifier id) {
+		if (yPosProviders == null) {
+			throw new IllegalStateException("Trying to get status bar height for " + id + " too early");
+		}
+
+		Player player = ((HudAccessor) Minecraft.getInstance().gui.hud).fabric$callGetCameraPlayer();
+
+		if (player == null) {
+			throw new IllegalStateException("Trying to get status bar height for " + id + " without a camera player");
+		}
+
+		OptionalInt left = Optional.ofNullable(LEFT_HEIGHT_PROVIDERS.get(id)).map(provider -> OptionalInt.of(provider.getStatusBarHeight(player))).orElse(OptionalInt.empty());
+		OptionalInt right = Optional.ofNullable(RIGHT_HEIGHT_PROVIDERS.get(id)).map(provider -> OptionalInt.of(provider.getStatusBarHeight(player))).orElse(OptionalInt.empty());
+
+		if (left.isEmpty() && right.isEmpty()) {
+			throw new IllegalArgumentException("Unknown status bar: " + id);
+		}
+
+		if (left.isPresent() && right.isPresent() && left.getAsInt() != right.getAsInt()) {
+			throw new IllegalStateException("Status bar " + id + " has different heights registered for left and right sides: " + left.getAsInt() + " vs " + right.getAsInt());
+		}
+
+		return left.orElseGet(right::getAsInt);
+	}
+
 	static void init() {
 		// skip resolving if no custom height providers have been registered
 		if (LEFT_VANILLA_HEIGHT_PROVIDERS.equals(LEFT_HEIGHT_PROVIDERS) && RIGHT_VANILLA_HEIGHT_PROVIDERS.equals(
@@ -367,8 +394,17 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	}
 
 	private static boolean isVanillaHeightProvider(Identifier id) {
-		return LEFT_HEIGHT_PROVIDERS.containsKey(id) && LEFT_HEIGHT_PROVIDERS.get(id) == LEFT_VANILLA_HEIGHT_PROVIDERS.get(id)
-				|| RIGHT_HEIGHT_PROVIDERS.containsKey(id) && RIGHT_HEIGHT_PROVIDERS.get(id) == RIGHT_VANILLA_HEIGHT_PROVIDERS.get(id);
+		if (LEFT_HEIGHT_PROVIDERS.containsKey(id) && LEFT_HEIGHT_PROVIDERS.get(id) == LEFT_VANILLA_HEIGHT_PROVIDERS.get(
+				id)) {
+			return true;
+		}
+
+		if (RIGHT_HEIGHT_PROVIDERS.containsKey(id)
+				&& RIGHT_HEIGHT_PROVIDERS.get(id) == RIGHT_VANILLA_HEIGHT_PROVIDERS.get(id)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private static void replaceVanillaElement(Identifier id, YPosProvider yPosProvider) {
