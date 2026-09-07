@@ -279,7 +279,8 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 		HudStatusBarHeightRegistry.replaceRight(VanillaHudElements.FOOD_BAR, heightProvider -> player -> heightProvider.getStatusBarHeight(player) * 2);
 		HudStatusBarHeightRegistry.replaceRight(VanillaHudElements.FOOD_BAR, heightProvider -> player -> heightProvider.getStatusBarHeight(player) / 2);
 
-		HudElementRegistry.attachElementAfter(VanillaHudElements.INFO_BAR, id, (_, _) -> {});
+		HudElementRegistry.attachElementAfter(VanillaHudElements.INFO_BAR, id, (_, _) -> {
+		});
 		// Test that registering replacers before the height providers work
 		HudStatusBarHeightRegistry.replaceLeft(id, _ -> _ -> 0);
 		HudStatusBarHeightRegistry.replaceRight(id, _ -> _ -> 0);
