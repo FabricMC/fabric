@@ -129,17 +129,17 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 */
 	static final Map<Identifier, YPosProvider> VANILLA_Y_POS_PROVIDERS = ImmutableMap.of(
 			VanillaHudElements.INFO_BAR,
-			YPosProvider.ZERO,
+			INFO_BAR::getStatusBarHeight,
 			VanillaHudElements.HEALTH_BAR,
-			INFO_BAR::getStatusBarHeight,
+			reduceToIntFunctions(INFO_BAR, HEALTH_BAR, Integer::sum),
 			VanillaHudElements.ARMOR_BAR,
-			HEALTH_BAR::getStatusBarHeight,
+			reduceToIntFunctions(reduceToIntFunctions(INFO_BAR, HEALTH_BAR, Integer::sum), ARMOR_BAR, Integer::sum),
 			VanillaHudElements.MOUNT_HEALTH,
-			INFO_BAR::getStatusBarHeight,
+			reduceToIntFunctions(INFO_BAR, MOUNT_HEALTH, Integer::sum),
 			VanillaHudElements.FOOD_BAR,
-			INFO_BAR::getStatusBarHeight,
+			reduceToIntFunctions(reduceToIntFunctions(INFO_BAR, MOUNT_HEALTH, Integer::sum), FOOD_BAR, Integer::sum),
 			VanillaHudElements.AIR_BAR,
-			reduceToIntFunctions(reduceToIntFunctions(INFO_BAR, MOUNT_HEALTH, Integer::sum), FOOD_BAR, Integer::sum));
+			reduceToIntFunctions(reduceToIntFunctions(INFO_BAR, MOUNT_HEALTH, Integer::sum), reduceToIntFunctions(FOOD_BAR, AIR_BAR, Integer::sum), Integer::sum));
 	/**
 	 * Height providers registered for the left side above the hotbar.
 	 *
