@@ -312,6 +312,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 						Integer::sum
 				);
 			}
+
 			// We include the hud element (id)'s own height provider because textures are rendered starting from the top left,
 			// so getHeight(id) should include the hud element's own height in order for GuiGraphics.guiHeight() - getHeight(id)
 			// to be at the top of where the hud element should render.
