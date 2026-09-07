@@ -247,33 +247,33 @@ public final class GeometryHelper {
 		final boolean b;
 
 		switch (quad.lightFace()) {
-		case DOWN -> {
-			a = x > EPS_MIN;
-			b = z < EPS_MAX;
-		}
-		case UP -> {
-			a = x > EPS_MIN;
-			b = z > EPS_MIN;
-		}
-		case NORTH -> {
-			a = x < EPS_MAX;
-			b = y < EPS_MAX;
-		}
-		case SOUTH -> {
-			a = x > EPS_MIN;
-			b = y < EPS_MAX;
-		}
-		case WEST -> {
-			a = z > EPS_MIN;
-			b = y < EPS_MAX;
-		}
-		case EAST -> {
-			a = z < EPS_MAX;
-			b = y < EPS_MAX;
-		}
-		default -> {
-			return 0;
-		}
+			case DOWN -> {
+				a = x > EPS_MIN;
+				b = z < EPS_MAX;
+			}
+			case UP -> {
+				a = x > EPS_MIN;
+				b = z > EPS_MIN;
+			}
+			case NORTH -> {
+				a = x < EPS_MAX;
+				b = y < EPS_MAX;
+			}
+			case SOUTH -> {
+				a = x > EPS_MIN;
+				b = y < EPS_MAX;
+			}
+			case WEST -> {
+				a = z > EPS_MIN;
+				b = y < EPS_MAX;
+			}
+			case EAST -> {
+				a = z < EPS_MAX;
+				b = y < EPS_MAX;
+			}
+			default -> {
+				return 0;
+			}
 		}
 
 		int result = 0;

@@ -65,7 +65,7 @@ public class CustomBlockTransformsTest implements ModInitializer {
 
 		// make hoes able to turn bamboo mosaics into top-half bamboo mosaic slabs, with the effects of tilling
 		BlockTransformerHelper.registerTilling(Blocks.BAMBOO_MOSAIC,
-				BlockStateProvider.simple(
+				BlockStateProvider.of(
 						Blocks.BAMBOO_MOSAIC_SLAB.defaultBlockState().setValue(
 								BlockStateProperties.SLAB_TYPE, SlabType.TOP
 						)

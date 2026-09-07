@@ -37,7 +37,7 @@ import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
@@ -76,7 +76,7 @@ public class CustomDamageTest implements ModInitializer {
 	public static class WeirdPick extends Item {
 		protected WeirdPick(ResourceKey<Item> resourceKey) {
 			super(new Item.Properties().pickaxe(ToolMaterial.GOLD, 3f, 5f).customDamage(WEIRD_DAMAGE_HANDLER)
-					.cookingFuel(NumberProviders.COOKING_TIME_WOOD_ITEMS_LARGE).setId(resourceKey));
+					.cookingFuel(ContextIntProviders.COOKING_TIME_WOOD_ITEMS_LARGE).setId(resourceKey));
 		}
 
 		@Override

@@ -16,12 +16,29 @@
 
 package net.fabricmc.fabric.mixin.datagen.loot;
 
-import org.spongepowered.asm.mixin.Mixin;
+import java.util.Iterator;
 
+import com.google.common.collect.Iterators;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.data.loot.packs.VanillaBlockLoot;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.api.datagen.v1.loot.FabricBlockLootSubProvider;
 
 @Mixin(BlockLootSubProvider.class)
 public class BlockLootSubProviderMixin implements FabricBlockLootSubProvider {
+	@ModifyExpressionValue(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/DefaultedRegistry;iterator()Ljava/util/Iterator;"))
+	private Iterator<Block> onlyVanillaBlocks(Iterator<Block> blocks) {
+		if ((Object) this instanceof VanillaBlockLoot) {
+			return Iterators.filter(blocks, block -> BuiltInRegistries.BLOCK.getKey(block).getNamespace().equals(Identifier.DEFAULT_NAMESPACE));
+		}
+
+		return blocks;
+	}
 }

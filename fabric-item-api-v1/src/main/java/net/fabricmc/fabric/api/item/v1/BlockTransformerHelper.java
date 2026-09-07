@@ -228,7 +228,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlockState The block state which results from the stripping.
 	 */
 	public static void registerStripping(BlockPredicate fromBlockPredicate, BlockState toBlockState) {
-		registerStripping(fromBlockPredicate, BlockStateProvider.simple(toBlockState));
+		registerStripping(fromBlockPredicate, BlockStateProvider.of(toBlockState));
 	}
 
 	/**
@@ -239,7 +239,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlockState The block state which results from the tilling.
 	 */
 	public static void registerTilling(BlockPredicate fromBlockPredicate, BlockState toBlockState) {
-		registerTilling(fromBlockPredicate, BlockStateProvider.simple(toBlockState));
+		registerTilling(fromBlockPredicate, BlockStateProvider.of(toBlockState));
 	}
 
 	/**
@@ -250,7 +250,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlockState The block state which results from the flattening.
 	 */
 	public static void registerFlattening(BlockPredicate fromBlockPredicate, BlockState toBlockState) {
-		registerFlattening(fromBlockPredicate, BlockStateProvider.simple(toBlockState));
+		registerFlattening(fromBlockPredicate, BlockStateProvider.of(toBlockState));
 	}
 
 	/**
@@ -261,7 +261,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlockState The block state which results from the stripping.
 	 */
 	public static void registerStripping(Block fromBlock, BlockState toBlockState) {
-		registerStripping(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.simple(toBlockState));
+		registerStripping(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.of(toBlockState));
 	}
 
 	/**
@@ -272,7 +272,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlockState The block state which results from the tilling.
 	 */
 	public static void registerTilling(Block fromBlock, BlockState toBlockState) {
-		registerTilling(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.simple(toBlockState));
+		registerTilling(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.of(toBlockState));
 	}
 
 	/**
@@ -283,7 +283,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlockState The block state which results from the flattening.
 	 */
 	public static void registerFlattening(Block fromBlock, BlockState toBlockState) {
-		registerFlattening(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.simple(toBlockState));
+		registerFlattening(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.of(toBlockState));
 	}
 
 	/**
@@ -294,7 +294,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlockState The block state which results from the stripping.
 	 */
 	public static void registerStripping(Block[] fromBlocks, BlockState toBlockState) {
-		registerStripping(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.simple(toBlockState));
+		registerStripping(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.of(toBlockState));
 	}
 
 	/**
@@ -305,7 +305,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlockState The block state which results from the tilling.
 	 */
 	public static void registerTilling(Block[] fromBlocks, BlockState toBlockState) {
-		registerTilling(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.simple(toBlockState));
+		registerTilling(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.of(toBlockState));
 	}
 
 	/**
@@ -316,7 +316,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlockState The block state which results from the flattening.
 	 */
 	public static void registerFlattening(Block[] fromBlocks, BlockState toBlockState) {
-		registerFlattening(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.simple(toBlockState));
+		registerFlattening(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.of(toBlockState));
 	}
 
 	/**
@@ -327,7 +327,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlockState The block state which results from the stripping.
 	 */
 	public static void registerStripping(TagKey<Block> fromBlocks, BlockState toBlockState) {
-		registerStripping(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.simple(toBlockState));
+		registerStripping(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.of(toBlockState));
 	}
 
 	/**
@@ -338,7 +338,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlockState The block state which results from the tilling.
 	 */
 	public static void registerTilling(TagKey<Block> fromBlocks, BlockState toBlockState) {
-		registerTilling(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.simple(toBlockState));
+		registerTilling(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.of(toBlockState));
 	}
 
 	/**
@@ -349,7 +349,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlockState The block state which results from the flattening.
 	 */
 	public static void registerFlattening(TagKey<Block> fromBlocks, BlockState toBlockState) {
-		registerFlattening(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.simple(toBlockState));
+		registerFlattening(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.of(toBlockState));
 	}
 
 	/**
@@ -360,7 +360,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlock The block which results from the stripping.
 	 */
 	public static void registerStripping(BlockPredicate fromBlockPredicate, Block toBlock) {
-		registerStripping(fromBlockPredicate, BlockStateProvider.simple(toBlock));
+		registerStripping(fromBlockPredicate, BlockStateProvider.of(toBlock));
 	}
 
 	/**
@@ -371,7 +371,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlock The block which results from the tilling.
 	 */
 	public static void registerTilling(BlockPredicate fromBlockPredicate, Block toBlock) {
-		registerTilling(fromBlockPredicate, BlockStateProvider.simple(toBlock));
+		registerTilling(fromBlockPredicate, BlockStateProvider.of(toBlock));
 	}
 
 	/**
@@ -382,7 +382,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlock The block which results from the flattening.
 	 */
 	public static void registerFlattening(BlockPredicate fromBlockPredicate, Block toBlock) {
-		registerFlattening(fromBlockPredicate, BlockStateProvider.simple(toBlock));
+		registerFlattening(fromBlockPredicate, BlockStateProvider.of(toBlock));
 	}
 
 	/**
@@ -393,7 +393,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlock The block which results from the stripping.
 	 */
 	public static void registerStripping(Block fromBlock, Block toBlock) {
-		registerStripping(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.simple(toBlock));
+		registerStripping(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.of(toBlock));
 	}
 
 	/**
@@ -404,7 +404,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlock The block which results from the tilling.
 	 */
 	public static void registerTilling(Block fromBlock, Block toBlock) {
-		registerTilling(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.simple(toBlock));
+		registerTilling(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.of(toBlock));
 	}
 
 	/**
@@ -415,7 +415,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlock The block which results from the flattening.
 	 */
 	public static void registerFlattening(Block fromBlock, Block toBlock) {
-		registerFlattening(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.simple(toBlock));
+		registerFlattening(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.of(toBlock));
 	}
 
 	/**
@@ -426,7 +426,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlock The block which results from the stripping.
 	 */
 	public static void registerStripping(Block[] fromBlocks, Block toBlock) {
-		registerStripping(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.simple(toBlock));
+		registerStripping(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.of(toBlock));
 	}
 
 	/**
@@ -437,7 +437,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlock The block which results from the tilling.
 	 */
 	public static void registerTilling(Block[] fromBlocks, Block toBlock) {
-		registerTilling(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.simple(toBlock));
+		registerTilling(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.of(toBlock));
 	}
 
 	/**
@@ -448,7 +448,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlock The block which results from the flattening.
 	 */
 	public static void registerFlattening(Block[] fromBlocks, Block toBlock) {
-		registerFlattening(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.simple(toBlock));
+		registerFlattening(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.of(toBlock));
 	}
 
 	/**
@@ -459,7 +459,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlock The block which results from the stripping.
 	 */
 	public static void registerStripping(TagKey<Block> fromBlocks, Block toBlock) {
-		registerStripping(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.simple(toBlock));
+		registerStripping(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.of(toBlock));
 	}
 
 	/**
@@ -470,7 +470,7 @@ public final class BlockTransformerHelper {
 	 * @param toBlock The block which results from the tilling.
 	 */
 	public static void registerTilling(TagKey<Block> fromBlocks, Block toBlock) {
-		registerTilling(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.simple(toBlock));
+		registerTilling(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.of(toBlock));
 	}
 
 	/**
@@ -481,6 +481,6 @@ public final class BlockTransformerHelper {
 	 * @param toBlock The block which results from the flattening.
 	 */
 	public static void registerFlattening(TagKey<Block> fromBlocks, Block toBlock) {
-		registerFlattening(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.simple(toBlock));
+		registerFlattening(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.of(toBlock));
 	}
 }

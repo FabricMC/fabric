@@ -7,6 +7,9 @@ loom {
 }
 
 fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base',
+	)
 	testDependencies(
 		':fabric-rendering-v1',
 	)

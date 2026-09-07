@@ -1,7 +1,7 @@
 [
   {
     "block_state_provider": {
-      "type": "minecraft:rule_based_state_provider",
+      "type": "minecraft:rule_based",
       "rules": [
         {
           "if_true": {
@@ -14,8 +14,7 @@
             ]
           },
           "then": {
-            "type": "minecraft:simple_state_provider",
-            "state": "minecraft:cracked_stone_bricks"
+            "id": "minecraft:cracked_stone_bricks"
           }
         }
       ]

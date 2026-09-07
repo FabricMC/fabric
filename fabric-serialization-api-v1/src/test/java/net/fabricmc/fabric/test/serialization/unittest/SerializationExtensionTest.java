@@ -54,9 +54,9 @@ public class SerializationExtensionTest {
 
 		assertEquals(directWrite.buildResult(), defaultedWrite.buildResult(), () -> "Written NBT data is not equal!\n"
 				+ "Direct write:\n"
-				+ NbtUtils.prettyPrint(directWrite.buildResult(), true)
+				+ NbtUtils.toPrettyComponent(directWrite.buildResult()).getString()
 				+ "\nDefaulted write:\n"
-				+ NbtUtils.prettyPrint(defaultedWrite.buildResult(), true));
+				+ NbtUtils.toPrettyComponent(defaultedWrite.buildResult()).getString());
 	}
 
 	@Test

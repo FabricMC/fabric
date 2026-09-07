@@ -39,7 +39,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
@@ -81,13 +81,20 @@ public class DataGeneratorTestContent implements ModInitializer {
 			TEST_DATAGEN_DYNAMIC_REGISTRY_KEY,
 			Identifier.fromNamespaceAndPath(MOD_ID, "tinier_potato")
 	);
-	public static final ResourceKey<NumberProvider> TEST_NUMBER_PROVIDER_KEY = ResourceKey.create(
-			Registries.NUMBER_PROVIDER,
+	public static final ResourceKey<ContextIntProvider> TEST_NUMBER_PROVIDER_KEY = ResourceKey.create(
+			Registries.CONTEXT_INT_PROVIDER,
 			Identifier.fromNamespaceAndPath(MOD_ID, "tiniest_potato")
 	);
 	// Empty registry
 	public static final ResourceKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY =
 			ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("fabric", "test_datagen_dynamic_empty"));
+	// Reloadable registry
+	public static final ResourceKey<Registry<TestDatagenObject>> TEST_DATAGEN_RELOADABLE_REGISTRY_KEY =
+			ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("fabric", "test_datagen_reloadable"));
+	public static final ResourceKey<TestDatagenObject> TEST_RELOADABLE_REGISTRY_ITEM_KEY = ResourceKey.create(
+			TEST_DATAGEN_RELOADABLE_REGISTRY_KEY,
+			Identifier.fromNamespaceAndPath(MOD_ID, "cuttlefish")
+	);
 
 	public static final TagKey<SoundEvent> EQUIP_SOUNDS = TagKey.create(Registries.SOUND_EVENT, Identifier.fromNamespaceAndPath(MOD_ID, "test_equip_sounds"));
 
@@ -113,6 +120,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 
 		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY, TestDatagenObject.CODEC);
 		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY, TestDatagenObject.CODEC);
+		DynamicRegistries.registerReloadable(TEST_DATAGEN_RELOADABLE_REGISTRY_KEY, TestDatagenObject.CODEC);
 	}
 
 	private static BlockItemId createBlockItemId(String name) {

@@ -39,7 +39,7 @@ public final class OxidizableBlocksRegistryImpl {
 		refreshRandomTickCache(from);
 		refreshRandomTickCache(to);
 
-		BlockTransformerHelperImpl.registerOxidationScraping(BlockPredicate.matchesBlocks(to), BlockStateProvider.simple(from));
+		BlockTransformerHelperImpl.registerOxidationScraping(BlockPredicate.matchesBlocks(to), BlockStateProvider.of(from));
 	}
 
 	public static void registerWaxable(Block unwaxed, Block waxed) {
@@ -47,7 +47,7 @@ public final class OxidizableBlocksRegistryImpl {
 		Objects.requireNonNull(waxed, "Waxed block cannot be null!");
 		HoneycombItem.WAXABLES.get().put(unwaxed, waxed);
 
-		BlockTransformerHelperImpl.registerWaxScraping(BlockPredicate.matchesBlocks(waxed), BlockStateProvider.simple(unwaxed));
+		BlockTransformerHelperImpl.registerWaxScraping(BlockPredicate.matchesBlocks(waxed), BlockStateProvider.of(unwaxed));
 	}
 
 	public static void registerWeatheringCopperBlocks(WeatheringCopperCollection<Block> copperBlocks) {

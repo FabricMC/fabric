@@ -106,8 +106,8 @@ public class ModPackResourcesSorter {
 			LoadPhaseData second = getOrCreatePhase(secondPhase, false);
 
 			switch (order) {
-			case BEFORE -> LoadPhaseData.link(first, second);
-			case AFTER -> LoadPhaseData.link(second, first);
+				case BEFORE -> LoadPhaseData.link(first, second);
+				case AFTER -> LoadPhaseData.link(second, first);
 			}
 
 			NodeSorting.sort(this.sortedPhases, "event phases", Comparator.comparing(data -> data.modId));

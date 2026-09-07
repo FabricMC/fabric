@@ -44,7 +44,7 @@ import net.minecraft.world.level.storage.loot.functions.SetEnchantmentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetNameFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
@@ -121,7 +121,7 @@ public class LootTest implements ModInitializer {
 				lure.ifPresent((lureEnchantment) -> tableBuilder.withPool(LootPool.lootPool().add(
 						LootItem.lootTableItem(Items.FISHING_ROD)
 				).apply(
-						new SetEnchantmentsFunction.Builder().withEnchantment(lureEnchantment, ConstantValue.exactly(1))
+						new SetEnchantmentsFunction.Builder().withEnchantment(lureEnchantment, ContextIntProviders.exactly(1))
 				)));
 			}
 		});
@@ -142,7 +142,7 @@ public class LootTest implements ModInitializer {
 				return;
 			}
 
-			ItemInstance tool = Objects.requireNonNull(context.getOptionalParameter(LootContextParams.TOOL), "LootContext contains tool, but it was null");
+			ItemInstance tool = Objects.requireNonNull(context.getOptional(LootContextParams.TOOL), "LootContext contains tool, but it was null");
 
 			if (!tool.is(Items.DIAMOND_PICKAXE)) {
 				return;

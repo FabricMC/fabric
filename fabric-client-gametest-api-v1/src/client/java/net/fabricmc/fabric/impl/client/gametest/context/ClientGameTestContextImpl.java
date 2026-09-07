@@ -91,9 +91,13 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	private static final Map<String, Object> DEFAULT_GAME_OPTIONS = new HashMap<>();
 
 	public static void initGameOptions(Options options) {
+		// When adding to the list of default game options, remember to update the list in module documentation
+
 		// Messes with the consistency of gametests
 		options.tutorialStep = TutorialSteps.NONE;
 		options.cloudStatus().set(CloudStatus.OFF);
+		options.maxAnisotropyBit().set(0);
+		options.chunkSectionFadeInTime().set(0D);
 
 		// Messes with game tests starting
 		options.onboardAccessibility = false;
@@ -104,11 +108,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		// Just annoying
 		options.getSoundSourceOptionInstance(SoundSource.MUSIC).set(0.0);
 
-		// Disable Anisotropic Filtering
-		options.maxAnisotropyBit().set(0);
-
-		// Disable chunk fade
-		options.chunkSectionFadeInTime().set(0D);
+		// When adding to the list of default game options, remember to update the list in module documentation
 
 		((OptionsAccessor) options).invokeProcessOptions(new Options.FieldAccess() {
 			@Override
@@ -381,15 +381,16 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 
 	private <T> T doTakeScreenshot(TestScreenshotCommonOptionsImpl<?> options, Function<NativeImage, T> screenshotConsumer) {
 		ThreadingImpl.checkOnGametestThread("doTakeScreenshot");
+		Vector2i screenshotSize = options.size != null ? options.size : computeOnClient(client -> new Vector2i(client.getWindow().getScreenWidth(), client.getWindow().getScreenHeight()));
 
 		Vector2i prevSize = computeOnClient(client -> {
 			int prevWidth = client.getWindow().getWidth();
 			int prevHeight = client.getWindow().getHeight();
 
-			if (options.size != null) {
-				client.getWindow().setWidth(options.size.x);
-				client.getWindow().setHeight(options.size.y);
-				client.gameRenderer.resize(options.size.x, options.size.y);
+			if (prevWidth != screenshotSize.x || prevHeight != screenshotSize.y) {
+				client.getWindow().setWidth(screenshotSize.x);
+				client.getWindow().setHeight(screenshotSize.y);
+				client.gameRenderer.resize(screenshotSize.x, screenshotSize.y);
 			}
 
 			return new Vector2i(prevWidth, prevHeight);
@@ -424,7 +425,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		} catch (ExecutionException | InterruptedException e) {
 			throw new RuntimeException(e);
 		} finally {
-			if (options.size != null) {
+			if (!prevSize.equals(screenshotSize)) {
 				computeOnClient(client -> {
 					client.getWindow().setWidth(prevSize.x);
 					client.getWindow().setHeight(prevSize.y);

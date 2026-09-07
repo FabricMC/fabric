@@ -80,13 +80,13 @@ public abstract class ValidateModuleTask extends DefaultTask {
 		}
 
 		switch ((String) moduleLifecycle) {
-		case "stable", "experimental" -> { }
-		case "deprecated" -> {
-			if (!getProjectPath().get().startsWith(":deprecated")) {
-				throw new GradleException("Deprecated module " + getProjectName().get() + " must be in the deprecated sub directory.");
+			case "stable", "experimental" -> { }
+			case "deprecated" -> {
+				if (!getProjectPath().get().startsWith(":deprecated")) {
+					throw new GradleException("Deprecated module " + getProjectName().get() + " must be in the deprecated sub directory.");
+				}
 			}
-		}
-		default -> throw new GradleException("Module " + getProjectName().get() + " has an invalid module lifecycle " + moduleLifecycle);
+			default -> throw new GradleException("Module " + getProjectName().get() + " has an invalid module lifecycle " + moduleLifecycle);
 		}
 
 		Object dependsObject = json.get("depends");

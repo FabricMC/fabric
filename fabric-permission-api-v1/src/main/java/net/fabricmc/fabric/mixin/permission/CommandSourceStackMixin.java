@@ -52,13 +52,13 @@ public abstract class CommandSourceStackMixin implements PermissionContextOwner,
 	@Inject(method = "<init>(Lnet/minecraft/commands/CommandSource;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/Vec2;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/server/permissions/PermissionSet;Lnet/minecraft/commands/CommandSourceStack$NamesProvider;Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/world/entity/Entity;)V", at = @At("TAIL"))
 	private void storeOriginalSource(CommandSource source, Vec3 position, Vec2 rotation, ServerLevel level, PermissionSet permissions, CommandSourceStack.NamesProvider namesProvider, MinecraftServer server, Entity entity, CallbackInfo ci) {
 		this.sourceType = switch (entity) {
-		case Player _ -> PermissionContext.Type.PLAYER;
-		case Entity _ -> PermissionContext.Type.ENTITY;
-		case null -> PermissionContext.Type.SYSTEM;
+			case Player _ -> PermissionContext.Type.PLAYER;
+			case Entity _ -> PermissionContext.Type.ENTITY;
+			case null -> PermissionContext.Type.SYSTEM;
 		};
 		this.sourceUuid = switch (entity) {
-		case Entity _ -> entity.getUUID();
-		case null -> Util.NIL_UUID;
+			case Entity _ -> entity.getUUID();
+			case null -> Util.NIL_UUID;
 		};
 	}
 

@@ -201,10 +201,6 @@ public class ClientGameTestTest implements FabricClientGameTest {
 			if (client.getWindow().getScreenWidth() != expectedWidth || client.getWindow().getScreenHeight() != expectedHeight) {
 				throw new AssertionError("Expected window size to be (%d, %d) but was (%d, %d)".formatted(expectedWidth, expectedHeight, client.getWindow().getScreenWidth(), client.getWindow().getScreenHeight()));
 			}
-
-			if (client.getWindow().getWidth() != expectedWidth || client.getWindow().getHeight() != expectedHeight) {
-				throw new AssertionError("Expected framebuffer size to be (%d, %d) but was (%d, %d)".formatted(expectedWidth, expectedHeight, client.getWindow().getWidth(), client.getWindow().getHeight()));
-			}
 		});
 
 		Path screenshotPath = context.takeScreenshot("screenshot_size_test");

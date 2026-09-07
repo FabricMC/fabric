@@ -30,5 +30,10 @@ public enum RegistryAttribute {
 	/**
 	 * Registry is optional, any connecting client will not be disconnected if the registry is not present.
 	 */
-	OPTIONAL
+	OPTIONAL,
+
+	/**
+	 * Registry contents are validated to contain all entries available previously.
+	 */
+	SAVE_DATA_VALIDATED
 }

@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.BlockTransformer;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
@@ -119,7 +120,7 @@ public final class BlockTransformerHelperImpl {
 		return BlockTransformer.BlockTransformData.builder(RuleBasedStateProvider.builder()
 						.ifTrueThenProvide(
 								fromBlockPredicate,
-								new CopyPropertiesProvider(toBlockState))
+								new CopyPropertiesProvider(Holder.direct(toBlockState)))
 						.build()
 				)
 				.sound(SoundEvents.AXE_STRIP)
@@ -165,7 +166,7 @@ public final class BlockTransformerHelperImpl {
 		return BlockTransformer.BlockTransformData.builder(RuleBasedStateProvider.builder()
 						.ifTrueThenProvide(
 								fromBlockPredicate,
-								new CopyPropertiesProvider(toBlockState)
+								new CopyPropertiesProvider(Holder.direct(toBlockState))
 						)
 						.build()
 				)
@@ -181,7 +182,7 @@ public final class BlockTransformerHelperImpl {
 		return BlockTransformer.BlockTransformData.builder(RuleBasedStateProvider.builder()
 						.ifTrueThenProvide(
 								fromBlockPredicate,
-								new CopyPropertiesProvider(toBlockState)
+								new CopyPropertiesProvider(Holder.direct(toBlockState))
 						)
 						.build()
 				)

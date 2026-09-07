@@ -26,8 +26,6 @@ accessible	field	net/minecraft/core/RegistrySetBuilder	entries	Ljava/util/List;
 accessible	class	net/minecraft/core/RegistrySetBuilder$RegistryStub
 accessible	method	net/minecraft/core/RegistrySetBuilder$RegistryStub	requiredRegistries	()Ljava/util/stream/Stream;
 
-accessible	field	net/minecraft/world/level/storage/loot/parameters/LootContextParamSets	REGISTRY	Lcom/google/common/collect/BiMap;
-
 transitive-accessible	method	net/minecraft/data/BlockFamilies	familyBuilder	(Lnet/minecraft/world/level/block/Block;)Lnet/minecraft/data/BlockFamily$Builder;
 transitive-accessible	field	net/minecraft/client/data/models/BlockModelGenerators	blockStateOutput	Ljava/util/function/Consumer;
 transitive-accessible	field	net/minecraft/client/data/models/BlockModelGenerators	modelOutput	Ljava/util/function/BiConsumer;

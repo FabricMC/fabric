@@ -24,7 +24,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -34,7 +36,7 @@ import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 public abstract class AbstractFurnaceBlockEntityMixin {
 	// Copy the stack before the .shrink
 	@Inject(method = "consumeFuel", at = @At("HEAD"))
-	private static void copyStack(NonNullList<ItemStack> items, ItemStack fuel, CallbackInfo ci, @Share("itemStack") LocalRef<ItemStack> copiedStack) {
+	private static void copyStack(ServerLevel level, BlockPos pos, NonNullList<ItemStack> items, ItemStack fuel, CallbackInfo ci, @Share("itemStack") LocalRef<ItemStack> copiedStack) {
 		copiedStack.set(fuel.copy());
 	}
 

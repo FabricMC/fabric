@@ -8,7 +8,10 @@
     "BlockStateMixin",
     "ChunkSectionBlockStateCounterMixin",
     "EnchantmentMenuMixin",
+    "FlowingFluidMixin",
+    "LavaFluidMixin",
     "LevelChunkSectionMixin",
+    "LiquidBlockMixin",
     "LivingEntityMixin"
   ],
   "injectors": {

@@ -42,7 +42,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.level.storage.loot.providers.number.ResolvableNumber;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt;
 import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -59,11 +59,11 @@ import net.fabricmc.fabric.impl.transfer.DebugMessages;
  * Implementation of {@code Storage<ItemVariant>} for composters.
  */
 public class ComposterWrapper extends SnapshotParticipant<ComposterWrapper.PendingAction> {
-	record PendingAction(@Nullable ResolvableNumber compostProvider, boolean extractBonemeal) {
+	record PendingAction(@Nullable ResolvableInt compostProvider, boolean extractBonemeal) {
 		private static final PendingAction NONE = new PendingAction(null, false);
 		private static final PendingAction EXTRACT_BONEMEAL = new PendingAction(null, true);
 
-		private static PendingAction insert(ResolvableNumber compostProvider) {
+		private static PendingAction insert(ResolvableInt compostProvider) {
 			return new PendingAction(compostProvider, false);
 		}
 	}
@@ -230,13 +230,13 @@ public class ComposterWrapper extends SnapshotParticipant<ComposterWrapper.Pendi
 		}
 	}
 
-	private static int getLayersToAdd(ServerLevel level, BlockPos pos, BlockState state, ResolvableNumber provider) {
+	private static int getLayersToAdd(ServerLevel level, BlockPos pos, BlockState state, ResolvableInt provider) {
 		LootContext lootContext = new LootContext.Builder(
 				new LootParams.Builder(level)
 						.withParameter(LootContextParams.BLOCK_STATE, state)
 						.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
 						.create(LootContextParamSets.BLOCK_INTERACT)
 		).create(Optional.empty());
-		return provider.getInt(lootContext, 0);
+		return provider.get(lootContext, 0);
 	}
 }

@@ -1,0 +1,27 @@
+{
+  "parent": "fabric-data-gen-api-v1-testmod:test/root",
+  "criteria": {
+    "recipe_unlocked": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipes": "fabric-data-gen-api-v1-testmod:test/potato_duplication"
+      }
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": "You unlocked the Potato Duplication recipe.",
+    "frame": "goal",
+    "icon": {
+      "id": "minecraft:potato"
+    },
+    "show_toast": false,
+    "title": "Potato Duplication Recipe Dependent"
+  },
+  "requirements": [
+    [
+      "recipe_unlocked"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

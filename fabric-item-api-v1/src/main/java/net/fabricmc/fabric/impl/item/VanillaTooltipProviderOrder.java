@@ -151,25 +151,25 @@ public final class VanillaTooltipProviderOrder {
 	private static Type unmapObjectOrArrayDesc(Type desc) {
 		MappingResolver remapper = FabricLoader.getInstance().getMappingResolver();
 		return switch (desc.getSort()) {
-		case Type.ARRAY -> {
-			Type component = desc.getElementType();
+			case Type.ARRAY -> {
+				Type component = desc.getElementType();
 
-			if (component.getSort() == Type.OBJECT) {
-				yield Type.getType(
-						"[".repeat(desc.getDimensions())
-								+ "L"
-								+ remapper.unmapClassName(
-										"official",
-										component.getClassName()
-								)
-								.replace(".", "/")
-								+ ";"
-				);
-			} else {
-				yield component;
+				if (component.getSort() == Type.OBJECT) {
+					yield Type.getType(
+							"[".repeat(desc.getDimensions())
+									+ "L"
+									+ remapper.unmapClassName(
+											"official",
+											component.getClassName()
+									)
+									.replace(".", "/")
+									+ ";"
+					);
+				} else {
+					yield component;
+				}
 			}
-		}
-		case Type.OBJECT -> Type.getType(
+			case Type.OBJECT -> Type.getType(
 				"L"
 						+ remapper.unmapClassName(
 								"official",
@@ -178,7 +178,7 @@ public final class VanillaTooltipProviderOrder {
 						.replace(".", "/")
 						+ ";"
 		);
-		default -> desc;
+			default -> desc;
 		};
 	}
 }

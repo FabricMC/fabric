@@ -50,8 +50,8 @@ public class CustomArgumentTest implements ModInitializer {
 	private static int executeSmileyCommand(CommandContext<CommandSourceStack> context) {
 		SmileyArgument smiley = context.getArgument(ARG_NAME, SmileyArgument.class);
 		String feedback = switch (smiley) {
-		case SAD -> "Oh no, here is a heart: <3";
-		case HAPPY -> "Nice to see that you are having a good day :)";
+			case SAD -> "Oh no, here is a heart: <3";
+			case HAPPY -> "Nice to see that you are having a good day :)";
 		};
 		context.getSource().sendSuccess(() -> Component.literal(feedback), false);
 

@@ -49,7 +49,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.PathType;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ContextFloatProviders;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 import net.minecraft.world.phys.BlockHitResult;
 
 import net.fabricmc.api.ModInitializer;
@@ -117,11 +118,11 @@ public final class ContentRegistryTest implements ModInitializer {
 		DefaultItemComponentEvents.MODIFY.register(context -> {
 			context.modify(SMELTING_FUEL_INCLUDED_BY_ITEM, builder -> builder.set(
 					DataComponents.COOKING_FUEL,
-					new CookingFuel(NumberProviders.COOKING_TIME_BAMBOO, NumberProviders.COOKING_DEFAULT_SPEED_MULTIPLIER)
+					new CookingFuel(ContextIntProviders.COOKING_TIME_BAMBOO, ContextFloatProviders.COOKING_DEFAULT_SPEED_MULTIPLIER)
 			));
 			context.modify(item -> item.builtInRegistryHolder().is(SMELTING_FUELS_INCLUDED_BY_TAG), (builder, item) -> builder.set(
 					DataComponents.COOKING_FUEL,
-					new CookingFuel(NumberProviders.COOKING_TIME_DRY_PLANTS, NumberProviders.COOKING_DEFAULT_SPEED_MULTIPLIER)
+					new CookingFuel(ContextIntProviders.COOKING_TIME_DRY_PLANTS, ContextFloatProviders.COOKING_DEFAULT_SPEED_MULTIPLIER)
 			));
 			context.modify(item -> item.builtInRegistryHolder().is(SMELTING_FUELS_EXCLUDED_BY_TAG) || item.builtInRegistryHolder().is(ItemTags.NON_FLAMMABLE_WOOD),
 					(builder, item) -> builder.set(DataComponents.COOKING_FUEL, null));

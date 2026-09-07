@@ -59,15 +59,15 @@ public class CustomIngredientSync implements ModInitializer {
 	public static Set<Identifier> decodeResponsePayload(ServerboundCustomIngredientPayload payload) {
 		int protocolVersion = payload.protocolVersion();
 		switch (protocolVersion) {
-		case PROTOCOL_VERSION_1 -> {
-			Set<Identifier> serializers = payload.registeredSerializers();
-			// Remove unknown keys to save memory
-			serializers.removeIf(id -> !CustomIngredientImpl.REGISTERED_SERIALIZERS.containsKey(id));
-			return serializers;
-		}
-		default -> {
-			throw new IllegalArgumentException("Unknown ingredient sync protocol version: " + protocolVersion);
-		}
+			case PROTOCOL_VERSION_1 -> {
+				Set<Identifier> serializers = payload.registeredSerializers();
+				// Remove unknown keys to save memory
+				serializers.removeIf(id -> !CustomIngredientImpl.REGISTERED_SERIALIZERS.containsKey(id));
+				return serializers;
+			}
+			default -> {
+				throw new IllegalArgumentException("Unknown ingredient sync protocol version: " + protocolVersion);
+			}
 		}
 	}
 

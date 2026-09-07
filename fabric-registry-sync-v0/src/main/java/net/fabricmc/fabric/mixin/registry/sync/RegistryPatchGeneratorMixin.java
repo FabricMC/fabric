@@ -30,9 +30,21 @@ import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
 @Mixin(RegistryPatchGenerator.class)
 class RegistryPatchGeneratorMixin {
-	@Redirect(at = @At(value = "FIELD", target = "Lnet/minecraft/resources/RegistryDataLoader;WORLD_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC), method = "lambda$createWorldLookup$0")
-	private static List<RegistryDataLoader.RegistryData<?>> getDynamicRegistries() {
-		// Register cloners for all bootstrapping registries (including modded ones).
-		return DynamicRegistries.getBootstrappingRegistries();
+	@Redirect(
+			at = @At(value = "FIELD", target = "Lnet/minecraft/resources/RegistryDataLoader;WORLD_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC),
+			method = "lambda$createWorldLookup$0"
+	)
+	private static List<RegistryDataLoader.RegistryData<?>> getWorldRegistries() {
+		// Register cloners for all world registries (including modded ones).
+		return DynamicRegistries.getWorldRegistries();
+	}
+
+	@Redirect(
+			at = @At(value = "FIELD", target = "Lnet/minecraft/resources/RegistryDataLoader;RELOADABLE_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC),
+			method = "lambda$createReloadableLookup$0"
+	)
+	private static List<RegistryDataLoader.RegistryData<?>> getReloadableRegistries() {
+		// Register cloners for all reloadable registries (including modded ones).
+		return DynamicRegistries.getReloadableRegistries();
 	}
 }

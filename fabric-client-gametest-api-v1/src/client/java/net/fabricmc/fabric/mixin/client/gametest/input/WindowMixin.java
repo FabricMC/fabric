@@ -136,16 +136,22 @@ public abstract class WindowMixin implements WindowHooks {
 		int prevHeight = this.height;
 		int prevWindowedWidth = this.windowedWidth;
 		int prevWindowedHeight = this.windowedHeight;
+		int prevFramebufferWidth = this.framebufferWidth;
+		int prevFramebufferHeight = this.framebufferHeight;
 
 		original.call();
 
 		this.realWidth = this.width;
 		this.realHeight = this.height;
+		this.realFramebufferWidth = this.framebufferWidth;
+		this.realFramebufferHeight = this.framebufferHeight;
 
 		this.width = prevWidth;
 		this.height = prevHeight;
 		this.windowedWidth = prevWindowedWidth;
 		this.windowedHeight = prevWindowedHeight;
+		this.framebufferWidth = prevFramebufferWidth;
+		this.framebufferHeight = prevFramebufferHeight;
 	}
 
 	@Inject(method = "setWindowed", at = @At("HEAD"), cancellable = true)
