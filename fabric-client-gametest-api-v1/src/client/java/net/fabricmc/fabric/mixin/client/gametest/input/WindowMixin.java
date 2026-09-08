@@ -90,8 +90,8 @@ public abstract class WindowMixin implements WindowHooks {
 	@Unique
 	private int realFramebufferHeight;
 
-	@Inject(method = "<init>", at = @At("RETURN"))
-	private void onInit(WindowEventHandler eventHandler, DisplayData displayData, String fullscreenVideoModeString, boolean exclusiveFullscreen, String title, MonitorManager monitorManager, GpuBackend backend, CallbackInfo ci) {
+	@Inject(method = "<init>(Lcom/mojang/blaze3d/platform/WindowEventHandler;Lcom/mojang/blaze3d/platform/DisplayData;Ljava/lang/String;ZLjava/lang/String;Lcom/mojang/blaze3d/platform/MonitorManager;Lcom/mojang/renderpearl/api/device/GpuBackend;I)V", at = @At("RETURN"))
+	private void onInit(WindowEventHandler eventHandler, DisplayData displayData, String fullscreenVideoModeString, boolean exclusiveFullscreen, String title, MonitorManager monitorManager, GpuBackend backend, int maximumSize, CallbackInfo ci) {
 		this.defaultWidth = displayData.width();
 		this.defaultHeight = displayData.height();
 		this.realWidth = this.width;
