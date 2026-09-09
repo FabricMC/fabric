@@ -72,7 +72,7 @@ public final class LootTableEvents {
 	 * {@link FabricLootTableBuilder#modifyPools(java.util.function.Consumer)} to add the new item to
 	 * the original loot pool instead.
 	 * {@snippet :
-	 * LootTableEvents.MODIFY.register((key, tableBuilder, source, registryInfoLookup) -> {
+	 * LootTableEvents.MODIFY.register((key, tableBuilder, source, holder) -> {
 	 *     // If the loot table is for the cobblestone block and it is not overridden by a user:
 	 *     if (Blocks.COBBLESTONE.getLootTable() == key && source.isBuiltin()) {
 	 *         // Create a new loot pool that will hold the diamonds.
@@ -165,7 +165,7 @@ public final class LootTableEvents {
 		 * @param key              the loot table key
 		 * @param original        the original loot table
 		 * @param source          the source of the original loot table
-		 * @param holder      the registryInfoLookup lookup
+		 * @param holder      the holder lookup
 		 * @return the new loot table, or null if it wasn't replaced
 		 */
 		@Nullable
@@ -181,7 +181,7 @@ public final class LootTableEvents {
 		 * @param key              the loot table key
 		 * @param tableBuilder    a builder of the loot table being loaded
 		 * @param source          the source of the loot table
-		 * @param holder      the registryInfoLookup lookup
+		 * @param holder      the holder lookup
 		 */
 		void modifyLootTable(ResourceKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source, HolderLookup.Provider holder);
 	}
@@ -214,7 +214,7 @@ public final class LootTableEvents {
 	public interface ModifyDrops {
 		/**
 		 * Called after a loot table is finished generating drops to modify drops.
-		 * @param holder the loot table's registry registryInfoLookup. This will be a {@link Holder.Reference} if the lootTable is registered, or a {@link Holder.Direct} if the table is inline
+		 * @param holder the loot table's registry holder. This will be a {@link Holder.Reference} if the lootTable is registered, or a {@link Holder.Direct} if the table is inline
 		 * @param context the loot context for the current drops
 		 * @param drops the list of drops from the loot table to modify
 		 */
