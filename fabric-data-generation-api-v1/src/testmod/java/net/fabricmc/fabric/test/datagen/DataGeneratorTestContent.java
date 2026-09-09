@@ -106,7 +106,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock(BLOCK_WITH_VANILLA_LOOT_TABLE_KEY, BlockBehaviour.Properties.of().overrideLootTable(Blocks.STONE.getLootTable()));
 		BLOCK_THAT_DROPS_NOTHING = createBlock(BLOCK_THAT_DROPS_NOTHING_KEY, BlockBehaviour.Properties.of().noLootTable());
 
-		SIMPLE_ENTITY_TYPE = createEntityType(SIMPLE_ENTITY_TYPE_KEY, EntityType.Builder.createNothing(MobCategory.MISC));
+		SIMPLE_ENTITY_TYPE = createEntityType(SIMPLE_ENTITY_TYPE_KEY, EntityType.Builder.createNothing(MobCategory.MONSTER));
 		ENTITY_TYPE_WITHOUT_LOOT_TABLE = createEntityType(ENTITY_TYPE_WITHOUT_LOOT_TABLE_KEY, EntityType.Builder.createNothing(MobCategory.MISC));
 
 		CreativeModeTabEvents.modifyOutputEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.accept(SIMPLE_BLOCK));
