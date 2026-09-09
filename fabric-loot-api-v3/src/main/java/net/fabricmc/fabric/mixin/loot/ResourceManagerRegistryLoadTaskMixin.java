@@ -74,7 +74,7 @@ abstract class ResourceManagerRegistryLoadTaskMixin {
 
 			@Override
 			public <A> Optional<? extends HolderLookup.RegistryLookup<A>> lookup(ResourceKey<? extends Registry<? extends A>> key) {
-				return Optional.of(new LootTableLookup<>(registryInfoLookup.lookup(key).orElse(null), provider.lookup(key).orElse(null)));
+				return Optional.of(new LootTableLookup<>(registryInfoLookup.lookup(key).orElseThrow(), provider.lookup(key).orElseThrow()));
 			}
 
 			@Override
