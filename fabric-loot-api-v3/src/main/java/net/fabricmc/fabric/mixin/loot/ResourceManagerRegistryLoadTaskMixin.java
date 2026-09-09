@@ -58,7 +58,6 @@ abstract class ResourceManagerRegistryLoadTaskMixin {
 			return result;
 		}
 
-
 		HolderLookup.Provider provider = LootUtil.getActiveReloadProvider(this.resourceManager);
 
 		RegistryOps.RegistryInfoLookup registryInfoLookup = ops::getter;

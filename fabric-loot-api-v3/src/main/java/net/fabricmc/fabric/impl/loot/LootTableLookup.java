@@ -30,7 +30,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 
 public class LootTableLookup<T> implements HolderLookup.RegistryLookup<T> {
-
 	private final HolderGetter<T> lookup;
 	private final RegistryLookup<T> holderLookup;
 
