@@ -63,6 +63,10 @@ abstract class ResourceManagerRegistryLoadTaskMixin {
 
 		RegistryOps.RegistryInfoLookup registryInfoLookup = ops::getter;
 
+		if (provider == null) {
+			return result;
+		}
+
 		var fullProvider = new HolderLookup.Provider() {
 			@Override
 			public Stream<ResourceKey<? extends Registry<?>>> listRegistryKeys() {
@@ -70,19 +74,15 @@ abstract class ResourceManagerRegistryLoadTaskMixin {
 			}
 
 			@Override
-			public <T> Optional<? extends HolderLookup.RegistryLookup<T>> lookup(ResourceKey<? extends Registry<? extends T>> key) {
-				return Optional.of(new LootTableLookup<>(registryInfoLookup.lookup(key), provider.lookup(key)));
+			public <A> Optional<? extends HolderLookup.RegistryLookup<A>> lookup(ResourceKey<? extends Registry<? extends A>> key) {
+				return Optional.of(new LootTableLookup<>(registryInfoLookup.lookup(key).orElse(null), provider.lookup(key).orElse(null)));
 			}
 
 			@Override
-			public <T> Optional<Holder.Reference<T>> get(ResourceKey<T> id) {
+			public <A> Optional<Holder.Reference<A>> get(ResourceKey<A> id) {
 				return registryInfoLookup.lookup(id.registryKey()).orElseThrow().get(id);
 			}
 		};
-
-		if (provider == null) {
-			return result;
-		}
 
 		return result.mapLeft(value -> (T) LootUtil.modifyLootTable(
 				(ResourceKey<LootTable>) key,

@@ -31,41 +31,41 @@ import net.minecraft.tags.TagKey;
 
 public class LootTableLookup<T> implements HolderLookup.RegistryLookup<T> {
 
-	private final Optional<HolderGetter<T>> lookup;
-	private final Optional<? extends RegistryLookup<T>> holderLookup;
+	private final HolderGetter<T> lookup;
+	private final RegistryLookup<T> holderLookup;
 
-	public LootTableLookup(Optional<HolderGetter<T>> registryLookup, Optional<? extends RegistryLookup<T>> holderLookup) {
+	public LootTableLookup(HolderGetter<T> registryLookup, RegistryLookup<T> holderLookup) {
 		this.lookup = registryLookup;
 		this.holderLookup = holderLookup;
 	}
 
 	@Override
 	public Stream<Holder.Reference<T>> listElements() {
-		return holderLookup.orElseThrow().listElements();
+		return holderLookup.listElements();
 	}
 
 	@Override
 	public Stream<HolderSet.Named<T>> listTags() {
-		return holderLookup.orElseThrow().listTags();
+		return holderLookup.listTags();
 	}
 
 	@Override
 	public ResourceKey<? extends Registry<? extends T>> key() {
-		return holderLookup.orElseThrow().key();
+		return holderLookup.key();
 	}
 
 	@Override
 	public Lifecycle registryLifecycle() {
-		return holderLookup.orElseThrow().registryLifecycle();
+		return holderLookup.registryLifecycle();
 	}
 
 	@Override
 	public Optional<Holder.Reference<T>> get(ResourceKey<T> id) {
-		return lookup.orElseThrow().get(id);
+		return lookup.get(id);
 	}
 
 	@Override
 	public Optional<HolderSet.Named<T>> get(TagKey<T> id) {
-		return lookup.orElseThrow().get(id);
+		return lookup.get(id);
 	}
 }
