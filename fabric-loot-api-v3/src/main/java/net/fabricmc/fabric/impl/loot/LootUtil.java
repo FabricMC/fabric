@@ -26,6 +26,7 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.repository.PackSource;
@@ -54,7 +55,8 @@ public final class LootUtil {
 		return RELOAD_PROVIDERS.get(resourceManager);
 	}
 
-	public static LootTable modifyLootTable(ResourceKey<LootTable> key, LootTable table, LootTableSource source, HolderLookup.Provider provider) {
+	@SuppressWarnings("deprecation")
+	public static LootTable modifyLootTable(ResourceKey<LootTable> key, LootTable table, LootTableSource source, HolderLookup.Provider provider, RegistryOps.RegistryInfoLookup registryInfoLookup) {
 		LootTable replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(key, table, source, provider);
 
 		if (replacement != null) {
@@ -64,6 +66,7 @@ public final class LootUtil {
 
 		LootTable.Builder builder = FabricLootTableBuilder.copyOf(table);
 		LootTableEvents.MODIFY.invoker().modifyLootTable(key, builder, source, provider);
+		LootTableEvents.MODIFY_WITH_LOOKUP.invoker().modifyLootTable(key, builder, source, registryInfoLookup);
 		return builder.build();
 	}
 

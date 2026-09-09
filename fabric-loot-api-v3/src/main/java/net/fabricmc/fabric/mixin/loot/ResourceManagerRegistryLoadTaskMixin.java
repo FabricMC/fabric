@@ -62,7 +62,8 @@ abstract class ResourceManagerRegistryLoadTaskMixin {
 				(ResourceKey<LootTable>) key,
 				(LootTable) value,
 				LootUtil.determineSource(resource),
-				provider
+				provider,
+				ops::getter
 		));
 	}
 }

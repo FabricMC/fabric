@@ -23,6 +23,7 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.ItemStack;
@@ -71,7 +72,7 @@ public final class LootTableEvents {
 	 * {@link FabricLootTableBuilder#modifyPools(java.util.function.Consumer)} to add the new item to
 	 * the original loot pool instead.
 	 * {@snippet :
-	 * LootTableEvents.MODIFY.register((key, tableBuilder, source, holder) -> {
+	 * LootTableEvents.MODIFY.register((key, tableBuilder, source, registryInfoLookup) -> {
 	 *     // If the loot table is for the cobblestone block and it is not overridden by a user:
 	 *     if (Blocks.COBBLESTONE.getLootTable() == key && source.isBuiltin()) {
 	 *         // Create a new loot pool that will hold the diamonds.
@@ -86,9 +87,52 @@ public final class LootTableEvents {
 	 *     }
 	 * });
 	 * }
+	 *
+	 * @deprecated Use {@link #MODIFY_WITH_LOOKUP} instead, which provides reloadable registry access via {@link RegistryOps.RegistryInfoLookup}
 	 */
+	@Deprecated
 	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (key, tableBuilder, source, holder) -> {
 		for (Modify listener : listeners) {
+			listener.modifyLootTable(key, tableBuilder, source, holder);
+		}
+	});
+
+	/**
+	 * This event can be used to modify loot tables.
+	 * The main use case is to add items to vanilla or mod loot tables (e.g. modded seeds to grass).
+	 *
+	 * <p>You can also modify loot tables that are created by {@link #REPLACE}.
+	 * They have the loot table source {@link LootTableSource#REPLACED}.
+	 *
+	 * <h4>Example: adding diamonds to the cobblestone loot table</h4>
+	 *
+	 * <p>We'll add a new diamond {@linkplain net.minecraft.world.level.storage.loot.LootPool loot pool} to the cobblestone loot table
+	 * that will be dropped alongside the original cobblestone loot pool.
+	 *
+	 * <p>If you want only one of the items to drop, you can use
+	 * {@link FabricLootTableBuilder#modifyPools(java.util.function.Consumer)} to add the new item to
+	 * the original loot pool instead.
+	 * {@snippet :
+	 * LootTableEvents.MODIFY_WITH_LOOKUP.register((key, tableBuilder, source, registryInfoLookup) -> {
+	 *     // If the loot table is for the cobblestone block and it is not overridden by a user:
+	 *     if (Blocks.COBBLESTONE.getLootTable() == key && source.isBuiltin()) {
+	 *         // Create a new loot pool that will hold the diamonds.
+	 *         LootPool.Builder pool = LootPool.lootPool()
+	 *             // Add diamonds...
+	 *             .add(LootItem.lootTableItem(Items.DIAMOND))
+	 *             // ...only if the block would survive a potential explosion.
+	 *             .when(ExplosionCondition.survivesExplosion());
+	 *
+	 *         // Add the loot pool to the loot table
+	 *         tableBuilder.withPool(pool);
+	 *     }
+	 * });
+	 * }
+	 *
+	 * <p>This is the preferred replacement for {@link #MODIFY}, providing access to relodable registry information via {@link RegistryOps.RegistryInfoLookup}.
+	 */
+	public static final Event<ModifyWithLookup> MODIFY_WITH_LOOKUP = EventFactory.createArrayBacked(ModifyWithLookup.class, listeners -> (key, tableBuilder, source, holder) -> {
+		for (ModifyWithLookup listener : listeners) {
 			listener.modifyLootTable(key, tableBuilder, source, holder);
 		}
 	});
@@ -103,7 +147,7 @@ public final class LootTableEvents {
 	});
 
 	/**
-	 * This event can be used for cases where the {@link #MODIFY} and {@link #REPLACE} events are inconvenient, such as when you are modifying the result of many loot tables that are unknown,
+	 * This event can be used for cases where the {@link #MODIFY_WITH_LOOKUP} and {@link #REPLACE} events are inconvenient, such as when you are modifying the result of many loot tables that are unknown,
 	 * and don't wish to add a custom loot function to every table.
 	 * <br/>Note: if the table was requested to separate drops into stacks of a given size, the resulting drops from this event will be separated.
 	 */
@@ -121,7 +165,7 @@ public final class LootTableEvents {
 		 * @param key              the loot table key
 		 * @param original        the original loot table
 		 * @param source          the source of the original loot table
-		 * @param holder      the holder lookup
+		 * @param holder      the registryInfoLookup lookup
 		 * @return the new loot table, or null if it wasn't replaced
 		 */
 		@Nullable
@@ -129,6 +173,7 @@ public final class LootTableEvents {
 	}
 
 	@FunctionalInterface
+	@Deprecated
 	public interface Modify {
 		/**
 		 * Called when a loot table is loading to modify loot tables.
@@ -136,9 +181,22 @@ public final class LootTableEvents {
 		 * @param key              the loot table key
 		 * @param tableBuilder    a builder of the loot table being loaded
 		 * @param source          the source of the loot table
-		 * @param holder      the holder lookup
+		 * @param holder      the registryInfoLookup lookup
 		 */
 		void modifyLootTable(ResourceKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source, HolderLookup.Provider holder);
+	}
+
+	@FunctionalInterface
+	public interface ModifyWithLookup {
+		/**
+		 * Called when a loot table is loading to modify loot tables.
+		 *
+		 * @param key              the loot table key
+		 * @param tableBuilder    a builder of the loot table being loaded
+		 * @param source          the source of the loot table
+		 * @param registryInfoLookup      lookup interface used to access registry information
+		 */
+		void modifyLootTable(ResourceKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source, RegistryOps.RegistryInfoLookup registryInfoLookup);
 	}
 
 	@FunctionalInterface
@@ -156,7 +214,7 @@ public final class LootTableEvents {
 	public interface ModifyDrops {
 		/**
 		 * Called after a loot table is finished generating drops to modify drops.
-		 * @param holder the loot table's registry holder. This will be a {@link Holder.Reference} if the lootTable is registered, or a {@link Holder.Direct} if the table is inline
+		 * @param holder the loot table's registry registryInfoLookup. This will be a {@link Holder.Reference} if the lootTable is registered, or a {@link Holder.Direct} if the table is inline
 		 * @param context the loot context for the current drops
 		 * @param drops the list of drops from the loot table to modify
 		 */

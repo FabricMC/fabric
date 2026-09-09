@@ -82,7 +82,7 @@ public class LootTest implements ModInitializer {
 			return null;
 		});
 
-		LootTableEvents.MODIFY.register((key, tableBuilder, source, provider) -> {
+		LootTableEvents.MODIFY_WITH_LOOKUP.register((key, tableBuilder, source, provider) -> {
 			if (Blocks.WOOL.black().getLootTable().orElse(null) == key && source != LootTableSource.REPLACED) {
 				throw new AssertionError("black wool loot table should have LootTableSource.REPLACED, got " + source);
 			}
@@ -114,7 +114,7 @@ public class LootTest implements ModInitializer {
 			}
 		});
 
-		LootTableEvents.MODIFY.register((key, tableBuilder, source, provider) -> {
+		LootTableEvents.MODIFY_WITH_LOOKUP.register((key, tableBuilder, source, provider) -> {
 			if (EntityTypes.SALMON.getDefaultLootTable().orElse(null) == key) {
 				Optional<Holder<Enchantment>> lure = provider.lookup(Registries.ENCHANTMENT).flatMap(registry -> registry.get(Enchantments.LURE));
 
