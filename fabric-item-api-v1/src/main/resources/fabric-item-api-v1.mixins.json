@@ -6,6 +6,7 @@
     "AbstractContainerMenuMixin",
     "AbstractFurnaceBlockEntityMixin",
     "AnvilMenuMixin",
+    "BlockTransformerMixin",
     "BrewingStandBlockEntityMixin",
     "BuiltInRegistriesMixin",
     "CraftingRecipeMixin",
