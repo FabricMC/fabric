@@ -45,15 +45,19 @@ public final class LootTableLookup<T> implements HolderLookup.RegistryLookup<T> 
 
 	@Override
 	public Stream<Holder.Reference<T>> listElements() {
-		if (holderLookup != null)
+		if (holderLookup != null) {
 			return holderLookup.listElements();
+		}
+
 		return Stream.empty();
 	}
 
 	@Override
 	public Stream<HolderSet.Named<T>> listTags() {
-		if (holderLookup != null)
+		if (holderLookup != null) {
 			return holderLookup.listTags();
+		}
+
 		return Stream.empty();
 	}
 
@@ -64,8 +68,10 @@ public final class LootTableLookup<T> implements HolderLookup.RegistryLookup<T> 
 
 	@Override
 	public Lifecycle registryLifecycle() {
-		if (holderLookup != null)
+		if (holderLookup != null) {
 			return holderLookup.registryLifecycle();
+		}
+
 		return Lifecycle.stable();
 	}
 
