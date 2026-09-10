@@ -46,6 +46,7 @@ public class LootTableHolderProvider implements HolderLookup.Provider {
 		if (registryInfoLookup.lookup(key).isEmpty()) {
 			return Optional.empty();
 		}
+
 		return Optional.of(new LootTableLookup<>(key, registryInfoLookup.lookup(key).orElseThrow(), holderLookup.lookup(key).orElseThrow()));
 	}
 
