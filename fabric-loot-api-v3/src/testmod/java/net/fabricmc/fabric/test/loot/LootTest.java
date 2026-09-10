@@ -36,10 +36,12 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
 import net.minecraft.world.level.storage.loot.functions.SetEnchantmentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetNameFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -111,6 +113,12 @@ public class LootTest implements ModInitializer {
 			// emeralds to the same loot pool.
 			if (Blocks.WOOL.yellow().getLootTable().orElse(null) == key) {
 				tableBuilder.modifyPools(poolBuilder -> poolBuilder.add(LootItem.lootTableItem(Items.EMERALD)));
+			}
+
+			// Modify pink wool to drop *either* pink wool or end city loot chests by adding
+			// end city loot chests to the same loot pool.
+			if (Blocks.WOOL.pink().getLootTable().orElse(null) == key) {
+				tableBuilder.modifyPools(poolBuilder -> poolBuilder.add(NestedLootTable.lootTableReference(provider.getOrThrow(BuiltInLootTables.END_CITY_TREASURE))));
 			}
 		});
 

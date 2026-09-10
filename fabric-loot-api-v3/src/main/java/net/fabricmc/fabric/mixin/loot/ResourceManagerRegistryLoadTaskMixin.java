@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import com.google.gson.JsonElement;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -29,9 +26,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
@@ -40,7 +35,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.storage.loot.LootTable;
 
-import net.fabricmc.fabric.impl.loot.LootTableLookup;
+import net.fabricmc.fabric.impl.loot.LootTableHolderProvider;
 import net.fabricmc.fabric.impl.loot.LootUtil;
 
 @Mixin(ResourceManagerRegistryLoadTask.class)
@@ -66,22 +61,7 @@ abstract class ResourceManagerRegistryLoadTaskMixin {
 			return result;
 		}
 
-		var fullProvider = new HolderLookup.Provider() {
-			@Override
-			public Stream<ResourceKey<? extends Registry<?>>> listRegistryKeys() {
-				return provider.listRegistryKeys();
-			}
-
-			@Override
-			public <A> Optional<? extends HolderLookup.RegistryLookup<A>> lookup(ResourceKey<? extends Registry<? extends A>> key) {
-				return Optional.of(new LootTableLookup<>(registryInfoLookup.lookup(key).orElseThrow(), provider.lookup(key).orElseThrow()));
-			}
-
-			@Override
-			public <A> Optional<Holder.Reference<A>> get(ResourceKey<A> id) {
-				return registryInfoLookup.lookup(id.registryKey()).orElseThrow().get(id);
-			}
-		};
+		var fullProvider = new LootTableHolderProvider(provider, registryInfoLookup);
 
 		return result.mapLeft(value -> (T) LootUtil.modifyLootTable(
 				(ResourceKey<LootTable>) key,
