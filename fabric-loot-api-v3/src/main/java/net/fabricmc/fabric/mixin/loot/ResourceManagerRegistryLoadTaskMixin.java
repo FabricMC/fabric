@@ -61,7 +61,7 @@ abstract class ResourceManagerRegistryLoadTaskMixin {
 			return result;
 		}
 
-		var fullProvider = new LootTableHolderProvider(provider, registryInfoLookup);
+		var fullProvider = new LootTableHolderProvider(registryInfoLookup, provider);
 
 		return result.mapLeft(value -> (T) LootUtil.modifyLootTable(
 				(ResourceKey<LootTable>) key,

@@ -28,27 +28,30 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 
 public class LootTableHolderProvider implements HolderLookup.Provider {
-	private final HolderLookup.Provider provider;
 	private final RegistryOps.RegistryInfoLookup registryInfoLookup;
+	private final HolderLookup.Provider holderLookup;
 
-	public LootTableHolderProvider(HolderLookup.Provider provider, RegistryOps.RegistryInfoLookup registryInfoLookup) {
-		this.provider = provider;
+	public LootTableHolderProvider(RegistryOps.RegistryInfoLookup registryInfoLookup, HolderLookup.Provider holderLookup) {
 		this.registryInfoLookup = registryInfoLookup;
+		this.holderLookup = holderLookup;
 	}
 
 	@Override
 	public Stream<ResourceKey<? extends Registry<?>>> listRegistryKeys() {
-		return provider.listRegistryKeys();
+		return holderLookup.listRegistryKeys();
 	}
 
 	@Override
 	public <A> Optional<? extends HolderLookup.RegistryLookup<A>> lookup(ResourceKey<? extends Registry<? extends A>> key) {
-		return Optional.of(new LootTableLookup<>(registryInfoLookup.lookup(key).orElseThrow(), provider.lookup(key).orElseThrow()));
+		if (registryInfoLookup.lookup(key).isEmpty()) {
+			return Optional.empty();
+		}
+		return Optional.of(new LootTableLookup<>(key, registryInfoLookup.lookup(key).orElseThrow(), holderLookup.lookup(key).orElseThrow()));
 	}
 
 	@Override
 	public <A> Optional<Holder.Reference<A>> get(ResourceKey<A> id) {
-		return registryInfoLookup.lookup(id.registryKey()).orElseThrow().get(id);
+		return registryInfoLookup.lookup(id.registryKey()).flatMap(getter -> getter.get(id));
 	}
 
 	@Override
@@ -63,6 +66,6 @@ public class LootTableHolderProvider implements HolderLookup.Provider {
 
 	@Override
 	public <T> Optional<HolderSet.Named<T>> get(TagKey<T> id) {
-		return registryInfoLookup.lookup(id.registry()).orElseThrow().get(id);
+		return registryInfoLookup.lookup(id.registry()).flatMap(getter -> getter.get(id));
 	}
 }

@@ -30,10 +30,12 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 
 public class LootTableLookup<T> implements HolderLookup.RegistryLookup<T> {
+	private final ResourceKey<? extends Registry<? extends T>> key;
 	private final HolderGetter<T> lookup;
 	private final RegistryLookup<T> holderLookup;
 
-	public LootTableLookup(HolderGetter<T> registryLookup, RegistryLookup<T> holderLookup) {
+	public LootTableLookup(ResourceKey<? extends Registry<? extends T>> key, HolderGetter<T> registryLookup, RegistryLookup<T> holderLookup) {
+		this.key = key;
 		this.lookup = registryLookup;
 		this.holderLookup = holderLookup;
 	}
@@ -50,7 +52,7 @@ public class LootTableLookup<T> implements HolderLookup.RegistryLookup<T> {
 
 	@Override
 	public ResourceKey<? extends Registry<? extends T>> key() {
-		return holderLookup.key();
+		return key;
 	}
 
 	@Override
