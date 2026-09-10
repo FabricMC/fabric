@@ -27,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.ApiStatus;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -84,18 +85,23 @@ public abstract class FabricLanguageProvider implements DataProvider {
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput output) {
-		TreeMap<String, String> translationEntries = new TreeMap<>();
-
 		return this.registryLookup.thenCompose(lookup -> {
-			generateTranslations(lookup, (String key, String value) -> {
-				Objects.requireNonNull(key);
-				Objects.requireNonNull(value);
+			TreeMap<String, String> translationEntries = new TreeMap<>();
 
-				if (translationEntries.containsKey(key)) {
-					throw new RuntimeException("Existing translation key found - " + key + " - Duplicate will be ignored.");
+			generateTranslations(lookup, new TranslationBuilder() {
+				@Override
+				public boolean has(String translationKey) {
+					Objects.requireNonNull(translationKey, "translationKey");
+					return translationEntries.containsKey(translationKey);
 				}
 
-				translationEntries.put(key, value);
+				@Override
+				@Nullable
+				public String overwrite(String translationKey, String value) {
+					Objects.requireNonNull(translationKey, "translationKey");
+					Objects.requireNonNull(value, "value");
+					return translationEntries.put(translationKey, value);
+				}
 			});
 
 			JsonObject langEntryJson = new JsonObject();
@@ -128,15 +134,41 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	 * A consumer used by {@link FabricLanguageProvider#generateTranslations}.
 	 */
 	@ApiStatus.NonExtendable
-	@FunctionalInterface
 	public interface TranslationBuilder {
+		/**
+		 * Returns whether this data generator has already added the given translation key.
+		 *
+		 * @param translationKey The key of the translation.
+		 * @return Whether this data generator has already added the key.
+		 */
+		boolean has(String translationKey);
+
+		/**
+		 * Adds a translation, overwriting a translation if it exists.
+		 *
+		 * @param translationKey The key of the translation.
+		 * @param value The value of the entry.
+		 * @return The overwritten value, or {@code null} if no value was overwritten.
+		 */
+		@Nullable
+		String overwrite(String translationKey, String value);
+
 		/**
 		 * Adds a translation.
 		 *
 		 * @param translationKey The key of the translation.
 		 * @param value          The value of the entry.
+		 * @throws IllegalStateException If the translation key already exists.
 		 */
-		void add(String translationKey, String value);
+		default void add(String translationKey, String value) {
+			String overwrittenValue = overwrite(translationKey, value);
+
+			if (overwrittenValue != null) {
+				// we overwrote something, restore back to that value and then throw
+				overwrite(translationKey, overwrittenValue);
+				throw new IllegalStateException("Existing translation key found - " + translationKey + " - Duplicate will be ignored.");
+			}
+		}
 
 		/**
 		 * Adds a translation for an {@link Item}.
@@ -163,8 +195,20 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 *
 		 * @param resourceKey The {@link ResourceKey} to get the translation key from.
 		 * @param value The value of the entry.
+		 * @deprecated Use {@link #addCreativeModeTab} instead.
 		 */
+		@Deprecated
 		default void add(ResourceKey<CreativeModeTab> resourceKey, String value) {
+			addCreativeModeTab(resourceKey, value);
+		}
+
+		/**
+		 * Adds a translation for an {@link CreativeModeTab}.
+		 *
+		 * @param resourceKey The {@link ResourceKey} to get the translation key from.
+		 * @param value The value of the entry.
+		 */
+		default void addCreativeModeTab(ResourceKey<CreativeModeTab> resourceKey, String value) {
 			final CreativeModeTab group = BuiltInRegistries.CREATIVE_MODE_TAB.getValueOrThrow(resourceKey);
 			final ComponentContents content = group.getDisplayName().getContents();
 
@@ -201,8 +245,20 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 *
 		 * @param attribute The {@link Attribute} to get the translation key from.
 		 * @param value     The value of the entry.
+		 * @deprecated Use {@link #addAttribute} instead.
 		 */
+		@Deprecated
 		default void add(Holder<Attribute> attribute, String value) {
+			addAttribute(attribute, value);
+		}
+
+		/**
+		 * Adds a translation for an {@link Attribute}.
+		 *
+		 * @param attribute The {@link Attribute} to get the translation key from.
+		 * @param value     The value of the entry.
+		 */
+		default void addAttribute(Holder<Attribute> attribute, String value) {
 			add(attribute.value().getDescriptionId(), value);
 		}
 
@@ -263,6 +319,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 *
 		 * @param existingLanguageFile The path to the existing language file.
 		 * @throws IOException If loading the language file failed.
+		 * @throws IllegalStateException If the translation file contains any translation key that already exists.
 		 */
 		default void add(Path existingLanguageFile) throws IOException {
 			try (Reader reader = Files.newBufferedReader(existingLanguageFile)) {
@@ -270,6 +327,22 @@ public abstract class FabricLanguageProvider implements DataProvider {
 
 				for (String key : translations.keySet()) {
 					add(key, translations.get(key).getAsString());
+				}
+			}
+		}
+
+		/**
+		 * Merges an existing language file into the generated language file, overwriting existing translations.
+		 *
+		 * @param existingLanguageFile The path to the existing language file.
+		 * @throws IOException If loading the language file failed.
+		 */
+		default void overwriteWith(Path existingLanguageFile) throws IOException {
+			try (Reader reader = Files.newBufferedReader(existingLanguageFile)) {
+				JsonObject translations = StrictJsonParser.parse(reader).getAsJsonObject();
+
+				for (String key : translations.keySet()) {
+					overwrite(key, translations.get(key).getAsString());
 				}
 			}
 		}
