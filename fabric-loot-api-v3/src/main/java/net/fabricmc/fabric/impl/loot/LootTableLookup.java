@@ -35,7 +35,7 @@ public final class LootTableLookup<T> implements HolderLookup.RegistryLookup<T> 
 	// Obtained from RegistryInfoLookup, can access reloadable registries like loot tables, but cannot list elements or tags.
 	private final HolderGetter<T> lookup;
 	// Obtained from HolderLookup.Provider, can list elements and tags, but does not have access to reloadable registries like loot tables.
-	private final RegistryLookup<T> holderLookup;
+	private final @Nullable RegistryLookup<T> holderLookup;
 
 	public LootTableLookup(ResourceKey<? extends Registry<? extends T>> key, HolderGetter<T> registryLookup, @Nullable RegistryLookup<T> holderLookup) {
 		this.key = key;
