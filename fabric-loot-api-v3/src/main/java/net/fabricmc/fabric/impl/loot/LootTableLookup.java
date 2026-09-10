@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.mojang.serialization.Lifecycle;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
@@ -29,12 +30,14 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 
-public class LootTableLookup<T> implements HolderLookup.RegistryLookup<T> {
+public final class LootTableLookup<T> implements HolderLookup.RegistryLookup<T> {
 	private final ResourceKey<? extends Registry<? extends T>> key;
+	// Obtained from RegistryInfoLookup, can access reloadable registries like loot tables, but cannot list elements or tags.
 	private final HolderGetter<T> lookup;
+	// Obtained from HolderLookup.Provider, can list elements and tags, but does not have access to reloadable registries like loot tables.
 	private final RegistryLookup<T> holderLookup;
 
-	public LootTableLookup(ResourceKey<? extends Registry<? extends T>> key, HolderGetter<T> registryLookup, RegistryLookup<T> holderLookup) {
+	public LootTableLookup(ResourceKey<? extends Registry<? extends T>> key, HolderGetter<T> registryLookup, @Nullable RegistryLookup<T> holderLookup) {
 		this.key = key;
 		this.lookup = registryLookup;
 		this.holderLookup = holderLookup;
@@ -42,12 +45,16 @@ public class LootTableLookup<T> implements HolderLookup.RegistryLookup<T> {
 
 	@Override
 	public Stream<Holder.Reference<T>> listElements() {
-		return holderLookup.listElements();
+		if (holderLookup != null)
+			return holderLookup.listElements();
+		return Stream.empty();
 	}
 
 	@Override
 	public Stream<HolderSet.Named<T>> listTags() {
-		return holderLookup.listTags();
+		if (holderLookup != null)
+			return holderLookup.listTags();
+		return Stream.empty();
 	}
 
 	@Override
@@ -57,7 +64,9 @@ public class LootTableLookup<T> implements HolderLookup.RegistryLookup<T> {
 
 	@Override
 	public Lifecycle registryLifecycle() {
-		return holderLookup.registryLifecycle();
+		if (holderLookup != null)
+			return holderLookup.registryLifecycle();
+		return Lifecycle.stable();
 	}
 
 	@Override

@@ -27,8 +27,10 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 
-public class LootTableHolderProvider implements HolderLookup.Provider {
+public final class LootTableHolderProvider implements HolderLookup.Provider {
+	// RegistryInfoLookup can access reloadable registries like loot tables, but cannot list elements or tags.
 	private final RegistryOps.RegistryInfoLookup registryInfoLookup;
+	// HolderLookup.Provider can list elements and tags, but does not have access to reloadable registries like loot tables.
 	private final HolderLookup.Provider holderLookup;
 
 	public LootTableHolderProvider(RegistryOps.RegistryInfoLookup registryInfoLookup, HolderLookup.Provider holderLookup) {
@@ -43,11 +45,13 @@ public class LootTableHolderProvider implements HolderLookup.Provider {
 
 	@Override
 	public <A> Optional<? extends HolderLookup.RegistryLookup<A>> lookup(ResourceKey<? extends Registry<? extends A>> key) {
+		// If the registry info lookup doesn't have access to the registry, it really doesn't exist.
+		// This isn't checked for the holder lookup, as it is not used for actual registry querying.
 		if (registryInfoLookup.lookup(key).isEmpty()) {
 			return Optional.empty();
 		}
 
-		return Optional.of(new LootTableLookup<>(key, registryInfoLookup.lookup(key).orElseThrow(), holderLookup.lookup(key).orElseThrow()));
+		return Optional.of(new LootTableLookup<>(key, registryInfoLookup.lookup(key).orElseThrow(), holderLookup.lookup(key).orElse(null)));
 	}
 
 	@Override

@@ -61,6 +61,7 @@ abstract class ResourceManagerRegistryLoadTaskMixin {
 			return result;
 		}
 
+		// Merge the HolderLookup.Provider and RegistryOps.RegistryInfoLookup into a HolderLookup.Provider with access to reloadable registries.
 		var fullProvider = new LootTableHolderProvider(registryInfoLookup, provider);
 
 		return result.mapLeft(value -> (T) LootUtil.modifyLootTable(

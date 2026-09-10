@@ -115,10 +115,10 @@ public class LootTest implements ModInitializer {
 				tableBuilder.modifyPools(poolBuilder -> poolBuilder.add(LootItem.lootTableItem(Items.EMERALD)));
 			}
 
-			// Modify pink wool to drop *either* pink wool or end city loot chests by adding
-			// end city loot chests to the same loot pool.
+			// Modify pink wool to drop *either* pink wool or armadillo scutes by adding
+			// armadillo shedding to the same loot pool.
 			if (Blocks.WOOL.pink().getLootTable().orElse(null) == key) {
-				tableBuilder.modifyPools(poolBuilder -> poolBuilder.add(NestedLootTable.lootTableReference(provider.getOrThrow(BuiltInLootTables.END_CITY_TREASURE))));
+				tableBuilder.modifyPools(poolBuilder -> poolBuilder.add(NestedLootTable.lootTableReference(provider.getOrThrow(BuiltInLootTables.ARMADILLO_SHED))));
 			}
 		});
 
