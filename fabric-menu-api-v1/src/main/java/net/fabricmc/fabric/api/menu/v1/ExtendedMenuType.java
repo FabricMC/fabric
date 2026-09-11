@@ -26,7 +26,6 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 
-// TODO: This example needs an overhaul
 /**
  * A {@link MenuType} for an extended menus that
  * synchronizes additional data to the client when it is opened.
@@ -39,34 +38,62 @@ import net.minecraft.world.inventory.MenuType;
  * <h2>Example</h2>
  * <pre>
  * {@code
- * // Data class
- * public record OvenData(String label) {
- *     public static final StreamCodec<RegistryFriendlyByteBuf, OvenData> STREAM_CODEC = StreamCodec.composite(
- *     	ByteBufCodecs.STRING_UTF8,
- *     	OvenData::label,
- *     	OvenData::new
- *     );
+ * // Data record holding the additional information synced to the client
+ * public record OvenData(int burnTime) {
+ * 	public static final StreamCodec<RegistryFriendlyByteBuf, OvenData> STREAM_CODEC = StreamCodec.composite(
+ * 		ByteBufCodecs.VAR_INT,
+ * 		OvenData::burnTime,
+ * 		OvenData::new
+ * 	);
  * }
  *
  * // Creating and registering the type
- * public static final ExtendedMenuType<OvenMenu> OVEN =
- * 	new ExtendedMenuType((containerId, inventory, data) -> ..., OvenData.STREAM_CODEC);
- * Registry.register(BuiltInRegistries.MENU, Identifier.fromNamespaceAndPath("modid", "custom_menu"), OVEN);
+ * public static final ExtendedMenuType<OvenMenu, OvenData> OVEN_MENU = Registry.register(
+ * 	BuiltInRegistries.MENU,
+ * 	Identifier.fromNamespaceAndPath("modid", "oven"),
+ * 	new ExtendedMenuType<>(OvenMenu::new, OvenData.STREAM_CODEC)
+ * );
  *
  * // Note: remember to also register the screen using vanilla's MenuScreens!
  *
  * // Menu class
  * public class OvenMenu extends AbstractContainerMenu {
- * 	public OvenMenu(int syncId) {
- * 		super(MyMenus.OVEN, syncId);
+ * 	private final int burnTime;
+ *
+ * 	// Used on the client, constructed from the synced OvenData
+ * 	public OvenMenu(int containerId, Inventory playerInventory, OvenData data) {
+ * 		this(containerId, playerInventory, data.burnTime());
+ * 	}
+ *
+ * 	// Used on the server, constructed directly from the block entity
+ * 	public OvenMenu(int containerId, Inventory playerInventory, int burnTime) {
+ * 		super(MyMenus.OVEN_MENU, containerId);
+ * 		this.burnTime = burnTime;
+ * 	}
+ * }
+ *
+ * // Menu provider, typically implemented by a block entity
+ * public class OvenBlockEntity extends BlockEntity implements ExtendedMenuProvider<OvenData> {
+ * 	private int burnTime;
+ *
+ * 	@Override
+ * 	public OvenData getScreenOpeningData(ServerPlayer player) {
+ * 		return new OvenData(burnTime);
+ * 	}
+ *
+ * 	@Override
+ * 	public Component getDisplayName() {
+ * 		return Component.translatable("container.modid.oven");
+ * 	}
+ *
+ * 	@Override
+ * 	public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
+ * 		return new OvenMenu(containerId, playerInventory, burnTime);
  * 	}
  * }
  *
  * // Opening the extended menu
- * var provider = new ExtendedMenuProvider() {
- * 	...
- * };
- * player.openMenu(provider); // only works on ServerPlayer instances
+ * player.openMenu(ovenBlockEntity); // only works on ServerPlayer instances
  * }
  * </pre>
  *
