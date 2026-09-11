@@ -35,6 +35,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.storage.loot.LootTable;
 
+import net.fabricmc.fabric.impl.loot.LootTableHolderProvider;
 import net.fabricmc.fabric.impl.loot.LootUtil;
 
 @Mixin(ResourceManagerRegistryLoadTask.class)
@@ -54,15 +55,20 @@ abstract class ResourceManagerRegistryLoadTaskMixin {
 
 		HolderLookup.Provider provider = LootUtil.getActiveReloadProvider(this.resourceManager);
 
+		RegistryOps.RegistryInfoLookup registryInfoLookup = ops::getter;
+
 		if (provider == null) {
 			return result;
 		}
+
+		// Merge the HolderLookup.Provider and RegistryOps.RegistryInfoLookup into a HolderLookup.Provider with access to reloadable registries.
+		var fullProvider = new LootTableHolderProvider(registryInfoLookup, provider);
 
 		return result.mapLeft(value -> (T) LootUtil.modifyLootTable(
 				(ResourceKey<LootTable>) key,
 				(LootTable) value,
 				LootUtil.determineSource(resource),
-				provider
+				fullProvider
 		));
 	}
 }
