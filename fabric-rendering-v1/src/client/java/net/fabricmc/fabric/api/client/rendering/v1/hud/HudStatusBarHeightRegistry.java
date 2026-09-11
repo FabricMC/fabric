@@ -150,26 +150,37 @@ public final class HudStatusBarHeightRegistry {
 		HudStatusBarHeightRegistryImpl.replaceRight(id, replacer);
 	}
 
-	/**
-	 * Gets the total calculated height offset for a given HUD element ID. Usage:
-	 * {@snippet :
-	 * - net.minecraft.client.gui.GuiGraphics.guiHeight() - (39 + renderHeight)
-	 * + net.minecraft.client.gui.GuiGraphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(id)
-	 * }
-	 *
-	 * <p>This method is typically used by the rendering system to determine how much
-	 * to shift a HUD element. It returns the default HUD height which is {@code 39} plus the sum of all registered
-	 * provider heights that are considered "below" the position of the element associated with the given {@code id}.
-	 *
-	 * <p>Note: The registry must be initialized (frozen) before this method returns
-	 * values without throwing an exception. This initialization happens during the Minecraft client setup.
-	 *
-	 * @param id the {@link Identifier} of the HUD element.
-	 * @return the total height offset.
-	 */
+	/// Gets the total calculated Y offset for a given HUD element ID
+	/// from the bottom of the screen to the top of the element.
+	///
+	/// Usage:
+	/// ```diff
+	/// - net.minecraft.client.gui.GuiGraphics.guiHeight() - (39 + renderHeight)
+	/// + net.minecraft.client.gui.GuiGraphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(id)
+	/// ```
+	///
+	/// This method is typically used by the rendering system to determine how much to shift a HUD element.
+	/// It returns the default HUD height which is `24` plus the sum of all registered provider heights
+	/// including and below the position of the element associated with the given `id`.
+	/// Earlier hud elements are considered to be below later ones.
+	///
+	/// Note: The registry must be initialized (frozen) before this method returns
+	/// values without throwing an exception. This initialization happens during the Minecraft client setup.
+	///
+	/// @param id the [Identifier] of the HUD element.
+	/// @return the total Y offset from the bottom of the screen to the top of the element.
 	public static int getHeight(Identifier id) {
 		Objects.requireNonNull(id, "id is null");
 		return HudStatusBarHeightRegistryImpl.getHeight(id);
+	}
+
+	/// Gets the height of the given HUD element ID.
+	///
+	/// @param id the [Identifier] of the HUD element.
+	/// @return the height of the element.
+	public static int getElementHeight(Identifier id) {
+		Objects.requireNonNull(id, "id is null");
+		return HudStatusBarHeightRegistryImpl.getElementHeight(id);
 	}
 
 	private HudStatusBarHeightRegistry() {

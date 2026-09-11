@@ -16,12 +16,28 @@
 
 package net.fabricmc.fabric.mixin.datagen.loot;
 
-import org.spongepowered.asm.mixin.Mixin;
+import java.util.stream.Stream;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+
+import net.minecraft.core.Holder;
 import net.minecraft.data.loot.EntityLootSubProvider;
+import net.minecraft.data.loot.packs.VanillaEntityLoot;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntityType;
 
 import net.fabricmc.fabric.api.datagen.v1.loot.FabricEntityLootSubProvider;
 
 @Mixin(EntityLootSubProvider.class)
 public class EntityLootSubProviderMixin implements FabricEntityLootSubProvider {
+	@ModifyExpressionValue(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/loot/LootTableSubProvider$Context;listContextElements(Lnet/minecraft/resources/ResourceKey;)Ljava/util/stream/Stream;"))
+	private Stream<Holder.Reference<EntityType<?>>> onlyVanillaEntities(Stream<Holder.Reference<EntityType<?>>> entities) {
+		if ((Object) this instanceof VanillaEntityLoot) {
+			return entities.filter(entity -> entity.key().identifier().getNamespace().equals(Identifier.DEFAULT_NAMESPACE));
+		}
+
+		return entities;
+	}
 }

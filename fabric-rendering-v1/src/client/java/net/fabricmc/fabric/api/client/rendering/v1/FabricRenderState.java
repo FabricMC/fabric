@@ -36,8 +36,10 @@ import net.minecraft.client.renderer.state.level.BlockBreakingRenderState;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.client.renderer.state.level.CameraEntityRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.state.level.ParticlesRenderState;
+import net.minecraft.client.renderer.state.level.PlayerRenderState;
 import net.minecraft.client.renderer.state.level.SkyRenderState;
 import net.minecraft.client.renderer.state.level.WeatherRenderState;
 import net.minecraft.client.renderer.state.level.WorldBorderRenderState;
@@ -71,6 +73,12 @@ import net.minecraft.client.renderer.state.level.WorldBorderRenderState;
  *                     <li>{@link WorldBorderRenderState}
  *                     <li>{@link SkyRenderState}
  *                     <li>{@link ParticlesRenderState}
+ *                     <li>{@link PlayerRenderState}
+ *                         <ul>
+ *                             <li>{@link PlayerRenderState.ItemActivationRenderState}
+ *                             <li>{@link FirstPersonHandsAndItemsRenderState}
+ *                         </ul>
+ *                     </li>
  *                 </ul>
  *             </li>
  *             <li>{@link LightmapRenderState}

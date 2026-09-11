@@ -74,13 +74,13 @@ public final class TagAliasLoader extends SimpleReloadListener<Map<ResourceKey<?
 					Codec<TagAliasGroup<Object>> codec = TagAliasGroup.codec((ResourceKey<? extends Registry<Object>>) resourceKey);
 
 					switch (codec.parse(JsonOps.INSTANCE, json)) {
-					case DataResult.Success(TagAliasGroup<Object> group, Lifecycle unused) -> {
-						var data = new Data(groupId, group);
-						dataByRegistry.computeIfAbsent(resourceKey, key -> new ArrayList<>()).add(data);
-					}
-					case DataResult.Error<?> error -> {
-						LOGGER.error("[Fabric] Couldn't parse tag alias group file '{}' from '{}': {}", groupId, resourcePath, error.message());
-					}
+						case DataResult.Success(TagAliasGroup<Object> group, Lifecycle unused) -> {
+							var data = new Data(groupId, group);
+							dataByRegistry.computeIfAbsent(resourceKey, key -> new ArrayList<>()).add(data);
+						}
+						case DataResult.Error<?> error -> {
+							LOGGER.error("[Fabric] Couldn't parse tag alias group file '{}' from '{}': {}", groupId, resourcePath, error.message());
+						}
 					}
 				} catch (IOException | JsonParseException e) {
 					LOGGER.error("[Fabric] Couldn't parse tag alias group file '{}' from '{}'", groupId, resourcePath, e);

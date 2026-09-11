@@ -112,7 +112,7 @@ public final class FabricDataGenHelper {
 		// Ensure that the DataGeneratorEntrypoint is constructed on the main thread.
 		final List<DataGeneratorEntrypoint> entrypoints = dataGeneratorInitializers.stream().map(EntrypointContainer::getEntrypoint).toList();
 		CompletableFuture<HolderLookup.Provider> worldRegistriesFuture = CompletableFuture.supplyAsync(() -> createWorldLookupProvider(entrypoints), Util.backgroundExecutor());
-		CompletableFuture<HolderLookup.Provider> registriesFuture = worldRegistriesFuture.thenApplyAsync(FabricDataGenHelper::createReloadableLookupProvider, Util.backgroundExecutor());
+		CompletableFuture<HolderLookup.Provider> registriesFuture = worldRegistriesFuture.thenApplyAsync(provider -> createReloadableLookupProvider(entrypoints, provider), Util.backgroundExecutor());
 
 		Object2IntOpenHashMap<String> jsonKeySortOrders = (Object2IntOpenHashMap<String>) DataProvider.FIXED_ORDER_FIELDS;
 		Object2IntOpenHashMap<String> defaultJsonKeySortOrders = new Object2IntOpenHashMap<>(jsonKeySortOrders);
@@ -163,7 +163,7 @@ public final class FabricDataGenHelper {
 				.flatMap(RegistrySetBuilder.RegistryStub::requiredRegistries)
 				.forEach(vanillaWorldRegistries::add);
 
-		for (RegistryDataLoader.RegistryData<?> registry : DynamicRegistries.getBootstrappingRegistries()) {
+		for (RegistryDataLoader.RegistryData<?> registry : DynamicRegistries.getWorldRegistries()) {
 			if (!vanillaWorldRegistries.contains(registry.key())) {
 				addEmptyRegistry(registryBuilder, registry.key());
 			}
@@ -181,17 +181,26 @@ public final class FabricDataGenHelper {
 		return registryLookup;
 	}
 
-	private static HolderLookup.Provider createReloadableLookupProvider(HolderLookup.Provider registryLookup) {
-		RegistrySetBuilder reloadableRegistryBuilder = new RegistrySetBuilder();
-		addEmptyRegistries(reloadableRegistryBuilder, VanillaRegistries.RELOADABLE_BUILDER);
-		return reloadableRegistryBuilder.build(registryLookup);
-	}
-
-	private static void addEmptyRegistries(RegistrySetBuilder target, RegistrySetBuilder source) {
-		source.entries.stream()
+	private static HolderLookup.Provider createReloadableLookupProvider(List<DataGeneratorEntrypoint> dataGeneratorInitializers, HolderLookup.Provider registryLookup) {
+		RegistrySetBuilder registryBuilder = new RegistrySetBuilder();
+		HashSet<ResourceKey<? extends Registry<?>>> vanillaReloadableRegistries = new HashSet<>();
+		VanillaRegistries.RELOADABLE_BUILDER.entries.stream()
 				.flatMap(RegistrySetBuilder.RegistryStub::requiredRegistries)
-				.distinct()
-				.forEach(key -> addEmptyRegistry(target, key));
+				.forEach(vanillaReloadableRegistries::add);
+
+		for (RegistryDataLoader.RegistryData<?> registry : DynamicRegistries.getReloadableRegistries()) {
+			if (!vanillaReloadableRegistries.contains(registry.key())) {
+				addEmptyRegistry(registryBuilder, registry.key());
+			}
+		}
+
+		registryBuilder.entries.addAll(VanillaRegistries.RELOADABLE_BUILDER.entries);
+
+		for (DataGeneratorEntrypoint entrypoint : dataGeneratorInitializers) {
+			entrypoint.buildReloadableRegistry(registryBuilder);
+		}
+
+		return registryBuilder.build(registryLookup);
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})

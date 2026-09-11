@@ -51,7 +51,7 @@ abstract class LevelExtractorMixin {
 		return original.call(models, state);
 	}
 
-	@WrapOperation(method = "lambda$getViewBlockingState$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;isViewBlocking(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/AABB;)Z"))
+	@WrapOperation(method = "getViewBlockingState", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;isViewBlocking(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/AABB;)Z"))
 	private static boolean captureViewBlockingPosition(BlockState state, BlockGetter level, BlockPos blockPos, AABB bounds, Operation<Boolean> original) {
 		boolean viewBlocking = original.call(state, level, blockPos, bounds);
 

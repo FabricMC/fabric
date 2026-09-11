@@ -88,6 +88,13 @@ public class DataGeneratorTestContent implements ModInitializer {
 	// Empty registry
 	public static final ResourceKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY =
 			ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("fabric", "test_datagen_dynamic_empty"));
+	// Reloadable registry
+	public static final ResourceKey<Registry<TestDatagenObject>> TEST_DATAGEN_RELOADABLE_REGISTRY_KEY =
+			ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("fabric", "test_datagen_reloadable"));
+	public static final ResourceKey<TestDatagenObject> TEST_RELOADABLE_REGISTRY_ITEM_KEY = ResourceKey.create(
+			TEST_DATAGEN_RELOADABLE_REGISTRY_KEY,
+			Identifier.fromNamespaceAndPath(MOD_ID, "cuttlefish")
+	);
 
 	public static final TagKey<SoundEvent> EQUIP_SOUNDS = TagKey.create(Registries.SOUND_EVENT, Identifier.fromNamespaceAndPath(MOD_ID, "test_equip_sounds"));
 
@@ -99,7 +106,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock(BLOCK_WITH_VANILLA_LOOT_TABLE_KEY, BlockBehaviour.Properties.of().overrideLootTable(Blocks.STONE.getLootTable()));
 		BLOCK_THAT_DROPS_NOTHING = createBlock(BLOCK_THAT_DROPS_NOTHING_KEY, BlockBehaviour.Properties.of().noLootTable());
 
-		SIMPLE_ENTITY_TYPE = createEntityType(SIMPLE_ENTITY_TYPE_KEY, EntityType.Builder.createNothing(MobCategory.MISC));
+		SIMPLE_ENTITY_TYPE = createEntityType(SIMPLE_ENTITY_TYPE_KEY, EntityType.Builder.createNothing(MobCategory.MONSTER));
 		ENTITY_TYPE_WITHOUT_LOOT_TABLE = createEntityType(ENTITY_TYPE_WITHOUT_LOOT_TABLE_KEY, EntityType.Builder.createNothing(MobCategory.MISC));
 
 		CreativeModeTabEvents.modifyOutputEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.accept(SIMPLE_BLOCK));
@@ -113,6 +120,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 
 		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY, TestDatagenObject.CODEC);
 		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY, TestDatagenObject.CODEC);
+		DynamicRegistries.registerReloadable(TEST_DATAGEN_RELOADABLE_REGISTRY_KEY, TestDatagenObject.CODEC);
 	}
 
 	private static BlockItemId createBlockItemId(String name) {

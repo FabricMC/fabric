@@ -20,9 +20,9 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.util.context.ContextKeySet;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
@@ -49,6 +49,6 @@ public abstract class SimpleFabricLootTableSubProvider implements FabricLootTabl
 
 	@Override
 	public String getName() {
-		return Objects.requireNonNull(LootContextParamSets.REGISTRY.inverse().get(contextParamSet), "Could not get id for loot context param set") + " Loot Table";
+		return Objects.requireNonNull(BuiltInRegistries.CONTEXT_KEY_SET.getKey(contextParamSet), "Could not get id for loot context param set") + " Loot Table";
 	}
 }

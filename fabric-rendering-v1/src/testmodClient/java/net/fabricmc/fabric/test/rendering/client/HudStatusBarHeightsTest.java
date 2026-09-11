@@ -18,7 +18,6 @@ package net.fabricmc.fabric.test.rendering.client;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.Hud;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -140,6 +139,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 
 	private static void testStaminaBar() {
 		// register a stamina bar showing above the vanilla food bar
+		// 20 pixels to test bars of different heights
 		Identifier id = Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "stamina_bar");
 		HudElementRegistry.attachElementAfter(VanillaHudElements.FOOD_BAR,
 				id,
@@ -153,10 +153,8 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 						if (((HudAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0) {
 							int width = graphics.guiWidth() / 2 + 91;
 							int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(id);
-							extractStamina(graphics,
-									((HudAccessor) hud).fabric$callGetCameraPlayer(),
-									height,
-									width);
+							extractStamina(graphics, ((HudAccessor) hud).fabric$callGetCameraPlayer(), height, width);
+							extractStamina(graphics, ((HudAccessor) hud).fabric$callGetCameraPlayer(), height + 10, width);
 						}
 					}
 				});
@@ -168,7 +166,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 				LivingEntity livingEntity = ((HudAccessor) hud).fabric$callGetRiddenEntity();
 
 				if (((HudAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0) {
-					return 10;
+					return 20;
 				}
 			}
 
@@ -177,7 +175,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 	}
 
 	/**
-	 * @see Gui#extractArmor(GuiGraphicsExtractor, Player, int, int, int, int)
+	 * @see Hud#extractArmor(GuiGraphicsExtractor, Player, int, int, int, int)
 	 */
 	private static void extractHealth(GuiGraphicsExtractor graphics, Player player, int y, int heartRows, int height, int x) {
 		int l = Mth.floor(player.getHealth());
@@ -201,7 +199,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 	}
 
 	/**
-	 * @see Gui#extractArmor(GuiGraphicsExtractor, Player, int, int, int, int)
+	 * @see Hud#extractArmor(GuiGraphicsExtractor, Player, int, int, int, int)
 	 */
 	private static void extractArmor(GuiGraphicsExtractor graphics, Player player, int y, int heartRows, int height, int x) {
 		int l = player.getArmorValue();
@@ -224,7 +222,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 	}
 
 	/**
-	 * @see Gui#extractArmor(GuiGraphicsExtractor, Player, int, int, int, int)
+	 * @see Hud#extractArmor(GuiGraphicsExtractor, Player, int, int, int, int)
 	 */
 	private static void extractToughness(GuiGraphicsExtractor graphics, Player player, int y, int heartRows, int height, int x) {
 		int i = Mth.floor(player.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
@@ -251,7 +249,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 	}
 
 	/**
-	 * @see Gui#extractFood(GuiGraphicsExtractor, Player, int, int)
+	 * @see Hud#extractFood(GuiGraphicsExtractor, Player, int, int)
 	 */
 	private static void extractStamina(GuiGraphicsExtractor graphics, Player player, int y, int x) {
 		int k = player.getFoodData().getFoodLevel();

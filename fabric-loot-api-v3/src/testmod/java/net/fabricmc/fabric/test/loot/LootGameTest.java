@@ -62,6 +62,12 @@ public final class LootGameTest {
 		emeraldDrops.assertEquals(new ItemStack(Items.EMERALD));
 		LootTableDrops woolDrops = LootTableDrops.block(helper, Blocks.WOOL.yellow()).seed(490234).drop();
 		woolDrops.assertEquals(new ItemStack(Blocks.WOOL.yellow()));
+		// Pink wool should drop either pink wool or armadillo scutes.
+		// Let's generate the drops with specific seeds to check.
+		LootTableDrops pinkDrops = LootTableDrops.block(helper, Blocks.WOOL.pink()).seed(490234).drop();
+		pinkDrops.assertEquals(new ItemStack(Blocks.WOOL.pink()));
+		LootTableDrops scuteDrops = LootTableDrops.block(helper, Blocks.WOOL.pink()).seed(1).drop();
+		scuteDrops.assertEquals(new ItemStack(Items.ARMADILLO_SCUTE));
 		helper.succeed();
 	}
 

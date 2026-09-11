@@ -12,6 +12,7 @@
     "TagBuilderMixin",
     "TagsProviderMixin",
     "advancement.AdvancementBuilderMixin",
+    "advancement.VanillaAdventureAdvancementsMixin",
     "loot.BlockLootSubProviderAccessor",
     "loot.BlockLootSubProviderMixin",
     "loot.EntityLootSubProviderAccessor",
