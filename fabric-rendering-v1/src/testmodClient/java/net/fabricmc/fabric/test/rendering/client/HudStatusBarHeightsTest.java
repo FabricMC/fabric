@@ -302,7 +302,8 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
 			singleplayer.getConnection().waitForChunksRender();
-			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_status_bar_height_stamina").withRegion(1044, 926, 162, 20).save());
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_status_bar_left").withRegion(842, 906, 162, 60).save());
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_status_bar_right").withRegion(1044, 906, 162, 60).save());
 		}
 	}
 }
