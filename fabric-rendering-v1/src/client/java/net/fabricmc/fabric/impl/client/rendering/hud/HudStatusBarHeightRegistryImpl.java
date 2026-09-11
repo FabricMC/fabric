@@ -21,6 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.SequencedCollection;
 import java.util.SequencedSet;
 import java.util.Set;
@@ -58,10 +60,9 @@ import net.fabricmc.fabric.mixin.client.rendering.HudAccessor;
 
 public final class HudStatusBarHeightRegistryImpl implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("fabric-rendering-v1");
-	/**
-	 * The height at which vanilla begins rendering status bars; this is used for health and food / mount health.
-	 */
-	static final int DEFAULT_HEIGHT = 29;
+	/// The height at which vanilla begins rendering status bars; this is used for the info bar.
+	/// This number is derived from the `- 24 - 5` in [net.minecraft.client.gui.contextualbar.ContextualBar#top].
+	static final int DEFAULT_HEIGHT = 24;
 	/**
 	 * The height at which the held item tooltip renders in vanilla; for our purposes we already subtract the default
 	 * height.
@@ -76,7 +77,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	/**
 	 * Height provider for the vanilla info bar.
 	 */
-	static final StatusBarHeightProvider INFO_BAR = _ -> 10;
+	static final StatusBarHeightProvider INFO_BAR = _ -> 5;
 	/**
 	 * Height provider for the vanilla health bar.
 	 */
@@ -130,17 +131,17 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 */
 	static final Map<Identifier, YPosProvider> VANILLA_Y_POS_PROVIDERS = ImmutableMap.of(
 			VanillaHudElements.INFO_BAR,
-			YPosProvider.ZERO,
+			INFO_BAR::getStatusBarHeight,
 			VanillaHudElements.HEALTH_BAR,
-			INFO_BAR::getStatusBarHeight,
+			reduceToIntFunctions(INFO_BAR, HEALTH_BAR, Integer::sum),
 			VanillaHudElements.ARMOR_BAR,
-			HEALTH_BAR::getStatusBarHeight,
+			reduceToIntFunctions(reduceToIntFunctions(INFO_BAR, HEALTH_BAR, Integer::sum), ARMOR_BAR, Integer::sum),
 			VanillaHudElements.MOUNT_HEALTH,
-			INFO_BAR::getStatusBarHeight,
+			reduceToIntFunctions(INFO_BAR, MOUNT_HEALTH, Integer::sum),
 			VanillaHudElements.FOOD_BAR,
-			INFO_BAR::getStatusBarHeight,
+			reduceToIntFunctions(reduceToIntFunctions(INFO_BAR, MOUNT_HEALTH, Integer::sum), FOOD_BAR, Integer::sum),
 			VanillaHudElements.AIR_BAR,
-			reduceToIntFunctions(reduceToIntFunctions(INFO_BAR, MOUNT_HEALTH, Integer::sum), FOOD_BAR, Integer::sum));
+			reduceToIntFunctions(reduceToIntFunctions(INFO_BAR, MOUNT_HEALTH, Integer::sum), reduceToIntFunctions(FOOD_BAR, AIR_BAR, Integer::sum), Integer::sum));
 	/**
 	 * Height providers registered for the left side above the hotbar.
 	 *
@@ -231,6 +232,31 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		return DEFAULT_HEIGHT + yPosProviders.get(id).getYPos(player);
 	}
 
+	public static int getElementHeight(Identifier id) {
+		if (yPosProviders == null) {
+			throw new IllegalStateException("Trying to get status bar height for " + id + " too early");
+		}
+
+		Player player = ((HudAccessor) Minecraft.getInstance().gui.hud).fabric$callGetCameraPlayer();
+
+		if (player == null) {
+			throw new IllegalStateException("Trying to get status bar height for " + id + " without a camera player");
+		}
+
+		OptionalInt left = Optional.ofNullable(LEFT_HEIGHT_PROVIDERS.get(id)).map(provider -> OptionalInt.of(provider.getStatusBarHeight(player))).orElse(OptionalInt.empty());
+		OptionalInt right = Optional.ofNullable(RIGHT_HEIGHT_PROVIDERS.get(id)).map(provider -> OptionalInt.of(provider.getStatusBarHeight(player))).orElse(OptionalInt.empty());
+
+		if (left.isEmpty() && right.isEmpty()) {
+			throw new IllegalArgumentException("Unknown status bar: " + id);
+		}
+
+		if (left.isPresent() && right.isPresent() && left.getAsInt() != right.getAsInt()) {
+			throw new IllegalStateException("Status bar " + id + " has different heights registered for left and right sides: " + left.getAsInt() + " vs " + right.getAsInt());
+		}
+
+		return left.orElseGet(right::getAsInt);
+	}
+
 	static void init() {
 		// skip resolving if no custom height providers have been registered
 		if (LEFT_VANILLA_HEIGHT_PROVIDERS.equals(LEFT_HEIGHT_PROVIDERS) && RIGHT_VANILLA_HEIGHT_PROVIDERS.equals(
@@ -305,13 +331,20 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		// combines all height providers "below" a hud element for determining the height at which it should render at
 		YPosProvider yPosProvider = YPosProvider.ZERO;
 
-		for (Identifier heightProviderLocation : orderedHeightProviders) {
-			if (heightProviderLocation.equals(id)) {
+		for (Identifier heightProviderId : orderedHeightProviders) {
+			if (heightProviderLookup.containsKey(heightProviderId)) {
+				yPosProvider = reduceToIntFunctions(
+						yPosProvider,
+						heightProviderLookup.get(heightProviderId),
+						Integer::sum
+				);
+			}
+
+			// We include the hud element (id)'s own height provider because textures are rendered starting from the top left,
+			// so getHeight(id) should include the hud element's own height in order for GuiGraphics.guiHeight() - getHeight(id)
+			// to be at the top of where the hud element should render.
+			if (heightProviderId.equals(id)) {
 				return yPosProvider;
-			} else if (heightProviderLookup.containsKey(heightProviderLocation)) {
-				yPosProvider = reduceToIntFunctions(yPosProvider,
-						heightProviderLookup.get(heightProviderLocation),
-						Integer::sum);
 			}
 		}
 
